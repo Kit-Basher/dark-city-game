@@ -258,20 +258,55 @@ class GitHubAPI {
 // Character and Scene loading
 class ContentLoader {
     static async loadCharacters() {
-        const issues = await GitHubAPI.getIssues('character-sheet');
         const charactersList = document.getElementById('charactersList');
         
-        if (issues.length === 0) {
-            charactersList.innerHTML = '<p>No character sheets submitted yet.</p>';
+        // Check if charactersList element exists
+        if (!charactersList) {
+            console.log('Characters section not found on this page - skipping characters loading');
             return;
         }
         
-        charactersList.innerHTML = '';
-        issues.forEach(issue => {
-            const characterData = GitHubAPI.parseIssueBody(issue.body);
-            const card = this.createCharacterCard(characterData, issue);
-            charactersList.appendChild(card);
-        });
+        // Try to load from new JavaScript-based system first
+        try {
+            if (typeof CharacterSubmission !== 'undefined') {
+                const submissionSystem = new CharacterSubmission();
+                const approvedCharacters = submissionSystem.getApprovedSubmissions();
+                
+                if (approvedCharacters.length > 0) {
+                    charactersList.innerHTML = '';
+                    approvedCharacters.forEach(submission => {
+                        const character = submission.character;
+                        const card = this.createCharacterCardFromSubmission(character, submission);
+                        charactersList.appendChild(card);
+                    });
+                    console.log(`Loaded ${approvedCharacters.length} approved characters from localStorage`);
+                    return;
+                }
+            }
+        } catch (error) {
+            console.log('Failed to load from localStorage, falling back to GitHub API:', error);
+        }
+        
+        // Fallback to GitHub API system
+        try {
+            const issues = await GitHubAPI.getIssues('character-sheet');
+            
+            if (issues.length === 0) {
+                charactersList.innerHTML = '<p>No character sheets submitted yet.</p>';
+                return;
+            }
+            
+            charactersList.innerHTML = '';
+            issues.forEach(issue => {
+                const characterData = GitHubAPI.parseIssueBody(issue.body);
+                const card = this.createCharacterCard(characterData, issue);
+                charactersList.appendChild(card);
+            });
+            console.log(`Loaded ${issues.length} characters from GitHub API`);
+        } catch (error) {
+            console.error('Failed to load characters from GitHub API:', error);
+            charactersList.innerHTML = '<p>Unable to load characters at this time.</p>';
+        }
     }
 
     static async loadScenes() {
@@ -296,6 +331,45 @@ class ContentLoader {
             const card = this.createSceneCard(sceneData, issue);
             scenesList.appendChild(card);
         });
+    }
+
+    static createCharacterCardFromSubmission(character, submission) {
+        const card = document.createElement('div');
+        card.className = 'character-card';
+        card.style.cssText = `
+            background: #2a2a2a;
+            border: 2px solid #4CAF50;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        `;
+        
+        const approvedDate = new Date(submission.updated_at || submission.submitted_at).toLocaleDateString();
+        
+        card.innerHTML = `
+            <div style="position: relative;">
+                <div style="position: absolute; top: 10px; right: 10px; background: #4CAF50; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.7rem; font-weight: bold;">
+                    ✅ APPROVED
+                </div>
+                <h3 style="color: #ff6b35; margin-bottom: 0.5rem;">${character.name || 'Unnamed Character'}</h3>
+                <div style="color: #ccc; font-size: 0.9rem; margin-bottom: 1rem;">
+                    <p><strong>Playbook:</strong> ${character.playbook || 'Unknown'}</p>
+                    <p><strong>Classification:</strong> ${character.classification || 'Unknown'}</p>
+                    <p><strong>Subtype:</strong> ${character.subtype || 'None'}</p>
+                    <p><strong>Age:</strong> ${character.apparentAge || 'Unknown'}${character.actualAge ? ` (${character.actualAge})` : ''}</p>
+                    <p><strong>Approved:</strong> ${approvedDate}</p>
+                </div>
+                <div style="color: white; margin-bottom: 1rem;">
+                    ${character.bio ? `<p><strong>Bio:</strong> ${character.bio.substring(0, 150)}${character.bio.length > 150 ? '...' : ''}</p>` : ''}
+                </div>
+                <div style="margin-top: 1rem;">
+                    <a href="characters/index.html" class="btn btn-primary" style="font-size: 0.8rem; padding: 0.5rem 1rem;">View Details</a>
+                </div>
+            </div>
+        `;
+        
+        return card;
     }
 
     static createCharacterCard(characterData, issue) {

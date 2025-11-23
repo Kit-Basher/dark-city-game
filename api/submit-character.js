@@ -154,51 +154,69 @@ class CharacterSubmission {
         try {
             console.log('CharacterSubmission: Creating shareable URL for cross-page sync...');
             
-            // Store the latest submission in sessionStorage with timestamp
-            sessionStorage.setItem('latestSubmission', JSON.stringify(submission));
-            sessionStorage.setItem('latestSubmissionTimestamp', Date.now().toString());
-            
             // Create a URL with the submission data as a parameter
             const submissionData = btoa(JSON.stringify(submission)).substring(0, 800); // Limit URL length
             const shareUrl = `${window.location.origin}/moderator/?submission=${submissionData}`;
             
             console.log('CharacterSubmission: Shareable URL created:', shareUrl);
             
-            // Also try to create a simple notification system
-            this.createCrossPageNotification(submission);
+            // Store backup in case redirect fails
+            sessionStorage.setItem('latestSubmission', JSON.stringify(submission));
+            sessionStorage.setItem('latestSubmissionTimestamp', Date.now().toString());
+            
+            // Auto-redirect to moderator panel with the data
+            console.log('CharacterSubmission: Redirecting to moderator panel with submission data...');
+            
+            // Show brief success message before redirect
+            const successDiv = document.createElement('div');
+            successDiv.style.cssText = `
+                position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+                background: #4CAF50; color: white; padding: 2rem; border-radius: 10px;
+                z-index: 10000; font-size: 1.2rem; text-align: center;
+                box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            `;
+            successDiv.innerHTML = `
+                <h2>✅ Character Submitted Successfully!</h2>
+                <p>Redirecting to moderator panel for review...</p>
+                <p style="font-size: 0.9rem; opacity: 0.8;">This happens automatically for all submissions</p>
+            `;
+            document.body.appendChild(successDiv);
+            
+            // Redirect after 2 seconds
+            setTimeout(() => {
+                window.location.href = shareUrl;
+            }, 2000);
             
         } catch (error) {
             console.log('CharacterSubmission: Could not create shareable URL:', error);
+            
+            // Fallback: Show manual instructions
+            this.showManualInstructions(submission);
         }
     }
 
-    // Create cross-page notification system
-    createCrossPageNotification(submission) {
-        try {
-            // Store in multiple locations for redundancy
-            const storageKey = 'crossPageSubmission';
-            const data = {
-                submission: submission,
-                timestamp: Date.now(),
-                source: 'character-builder'
-            };
-            
-            // Try different storage methods
-            localStorage.setItem(storageKey, JSON.stringify(data));
-            sessionStorage.setItem(storageKey, JSON.stringify(data));
-            
-            // Create a global event that other pages can listen for
-            window.parent.postMessage({
-                type: 'characterSubmission',
-                action: 'newSubmission',
-                data: data
-            }, '*');
-            
-            console.log('CharacterSubmission: Cross-page notification created');
-            
-        } catch (error) {
-            console.log('CharacterSubmission: Cross-page notification failed:', error);
-        }
+    // Show manual instructions if auto-redirect fails
+    showManualInstructions(submission) {
+        const instructionsDiv = document.createElement('div');
+        instructionsDiv.style.cssText = `
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: #ff9800; color: white; padding: 2rem; border-radius: 10px;
+            z-index: 10000; font-size: 1.1rem; text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3); max-width: 500px;
+        `;
+        instructionsDiv.innerHTML = `
+            <h2>⚠️ Auto-Redirect Failed</h2>
+            <p>Your character was submitted successfully!</p>
+            <p><strong>Please manually go to the moderator panel:</strong></p>
+            <p><a href="/moderator/" style="color: white; text-decoration: underline;">Open Moderator Panel</a></p>
+            <p style="font-size: 0.9rem; opacity: 0.8;">The moderator will review your submission shortly.</p>
+            <button onclick="this.parentElement.remove()" style="
+                background: white; color: #ff9800; border: none; 
+                padding: 0.5rem 1rem; border-radius: 5px; cursor: pointer;
+                margin-top: 1rem;
+            ">Close</button>
+        `;
+        document.body.appendChild(instructionsDiv);
     }
 
     // Check for sessionStorage imports

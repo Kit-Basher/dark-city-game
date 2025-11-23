@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Character Builder - Dark City RPG</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .character-builder {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: #2a2a2a;
+            border-radius: 10px;
+            margin-top: 2rem;
+        }
+        
+        .form-section {
+            background: #1a1a1a;
+            padding: 2rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            border: 1px solid #4a5568;
+        }
+        
+        .form-section h3 {
+            color: #ff6b35;
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-group label {
+            color: #ff6b35;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            background: #2a2a2a;
+            border: 1px solid #4a5568;
+            color: white;
+            padding: 0.75rem;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .skill-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: #2a2a2a;
+            padding: 0.75rem;
+            border-radius: 5px;
+            border: 1px solid #4a5568;
+        }
+        
+        .skill-item input[type="text"] {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: white;
+        }
+        
+        .skill-item input[type="number"] {
+            width: 60px;
+            background: #4a5568;
+            border: none;
+            color: #ff6b35;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .preview-section {
+            background: #1a1a1a;
+            padding: 2rem;
+            border-radius: 8px;
+            border: 1px solid #ff6b35;
+            margin-top: 2rem;
+        }
+        
+        .preview-content {
+            color: white;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+        
+        .back-link {
+            color: #ff6b35;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .back-link:hover {
+            color: #e55a2b;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html#characters" class="back-link">← Back to Characters</a>
+        
+        <div class="character-builder">
+            <h2>Dark City Character Builder</h2>
+            <p>Create your character sheet and submit it directly to the game repository.</p>
+            
+            <form id="characterForm">
+                <!-- Basic Information -->
+                <div class="form-section">
+                    <h3>Basic Information</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="name">Character Name *</label>
+                            <input type="text" id="name" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="apparentAge">Apparent Age</label>
+                            <input type="text" id="apparentAge" name="apparentAge">
+                        </div>
+                        <div class="form-group">
+                            <label for="actualAge">Actual Age</label>
+                            <input type="text" id="actualAge" name="actualAge">
+                        </div>
+                        <div class="form-group">
+                            <label for="classification">Classification *</label>
+                            <input type="text" id="classification" name="classification" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="playbook">Playbook *</label>
+                            <input type="text" id="playbook" name="playbook" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="subtype">Subtype</label>
+                            <input type="text" id="subtype" name="subtype">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Character Bio -->
+                <div class="form-section">
+                    <h3>Character Bio</h3>
+                    <div class="form-group">
+                        <label for="bio">Character Background</label>
+                        <textarea id="bio" name="bio" placeholder="Describe your character's background, personality, and history..."></textarea>
+                    </div>
+                </div>
+                
+                <!-- Physical Forms -->
+                <div class="form-section">
+                    <h3>Physical Forms</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="humanHeight">Human Form Height</label>
+                            <input type="text" id="humanHeight" name="humanHeight">
+                        </div>
+                        <div class="form-group">
+                            <label for="humanWeight">Human Form Weight</label>
+                            <input type="text" id="humanWeight" name="humanWeight">
+                        </div>
+                        <div class="form-group">
+                            <label for="monsterHeight">Monster Form Height</label>
+                            <input type="text" id="monsterHeight" name="monsterHeight">
+                        </div>
+                        <div class="form-group">
+                            <label for="monsterWeight">Monster Form Weight</label>
+                            <input type="text" id="monsterWeight" name="monsterWeight">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Skills -->
+                <div class="form-section">
+                    <h3>Skills</h3>
+                    <p>Assign your skill levels (you get one +4, one +3, two +2, and three +1 skills)</p>
+                    <div class="skills-grid" id="skillsContainer">
+                        <div class="skill-item">
+                            <input type="text" placeholder="Skill name" class="skill-name">
+                            <input type="number" min="1" max="4" value="4" class="skill-level">
+                        </div>
+                        <div class="skill-item">
+                            <input type="text" placeholder="Skill name" class="skill-name">
+                            <input type="number" min="1" max="4" value="3" class="skill-level">
+                        </div>
+                        <div class="skill-item">
+                            <input type="text" placeholder="Skill name" class="skill-name">
+                            <input type="number" min="1" max="4" value="2" class="skill-level">
+                        </div>
+                        <div class="skill-item">
+                            <input type="text" placeholder="Skill name" class="skill-name">
+                            <input type="number" min="1" max="4" value="2" class="skill-level">
+                        </div>
+                        <div class="skill-item">
+                            <input type="text" placeholder="Skill name" class="skill-name">
+                            <input type="number" min="1" max="4" value="1" class="skill-level">
+                        </div>
+                        <div class="skill-item">
+                            <input type="text" placeholder="Skill name" class="skill-name">
+                            <input type="number" min="1" max="4" value="1" class="skill-level">
+                        </div>
+                        <div class="skill-item">
+                            <input type="text" placeholder="Skill name" class="skill-name">
+                            <input type="number" min="1" max="4" value="1" class="skill-level">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Stats -->
+                <div class="form-section">
+                    <h3>Stats</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="fatePoints">Fate Points</label>
+                            <input type="number" id="fatePoints" name="fatePoints" min="0" max="5" value="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="physicalStress">Physical Stress Cap</label>
+                            <input type="number" id="physicalStress" name="physicalStress" min="1" max="10" value="2">
+                        </div>
+                        <div class="form-group">
+                            <label for="mentalStress">Mental Stress Cap</label>
+                            <input type="number" id="mentalStress" name="mentalStress" min="1" max="10" value="2">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Preview -->
+                <div class="preview-section">
+                    <h3>Character Sheet Preview</h3>
+                    <div class="preview-content" id="preview">
+                        <!-- Preview will be generated here -->
+                    </div>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button type="button" class="btn btn-secondary" onclick="updatePreview()">Update Preview</button>
+                    <button type="submit" class="btn btn-primary">Submit Character Sheet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        // Generate character sheet preview
+        function updatePreview() {
+            const formData = new FormData(document.getElementById('characterForm'));
+            const data = Object.fromEntries(formData);
+            
+            // Generate skills table
+            const skills = [];
+            document.querySelectorAll('.skill-item').forEach(item => {
+                const name = item.querySelector('.skill-name').value;
+                const level = item.querySelector('.skill-level').value;
+                if (name) {
+                    skills.push({ name, level });
+                }
+            });
+            
+            // Sort skills by level (descending)
+            skills.sort((a, b) => b.level - a.level);
+            
+            // Generate markdown preview
+            let preview = `**Dark City Citizen ID**
+
+| Name: ${data.name || '???'} | Apparent Age: ${data.apparentAge || ''} | Actual Age: ${data.actualAge || ''} |
+| :---- | :---- | :---- |
+| **Classification:** ${data.classification || ''} | **Playbook:** ${data.playbook || ''} | **Subtype:** ${data.subtype || ''} |
+
+| -Character Bio-  |
+| :---- |
+
+| ${data.bio || ''} |
+| :---- |
+
+| -Human Form-  Height: ${data.humanHeight || ''} Weight: ${data.humanWeight || ''} |
+| :---- |
+
+| -Monster Form-  Height: ${data.monsterHeight || ''} Weight: ${data.monsterWeight || ''} |
+| :---- |
+
+# **-Stats-**
+
+| Character Aspects: |  |  |
+| :---- | :---- | :---- |
+
+                         **Stress Caps                                                Consequences**
+
+| Physical ${data.physicalStress || '?'} | Mental ${data.mentalStress || '?'} | Physical 0/${data.physicalStress || '?'} | Mental 0/${data.mentalStress || '?'} | Level 0 |
+| ----- | ----- | ----- | ----- | ----- |
+
+**Skills**`;
+
+            // Add skills to preview
+            const skillTable = [
+                ['+4', skills.filter(s => s.level == 4).map(s => s.name).join(', ')],
+                ['+3', skills.filter(s => s.level == 3).map(s => s.name).join(', ')],
+                ['+2', skills.filter(s => s.level == 2).map(s => s.name).join(', ')],
+                ['+1', skills.filter(s => s.level == 1).map(s => s.name).join(', ')]
+            ];
+            
+            skillTable.forEach(([level, names]) => {
+                preview += `\n| ${level} | ${names || '?'} |  |  |  |  |`;
+            });
+            
+            preview += `\n\n| Fate Points | ${data.fatePoints || '1'}/5 |
+| :---: | :---: |
+
+| Temporary Aspects and Minor Injuries | Date of Infliction |
+| ----- | ----- |
+|  |  |
+|  |  |
+|  |  |
+|  |  |
+|  |  |
+|  |  |
+|  |  |
+|  |  |
+|  |  |
+|  |  |
+|  |  |
+
+| Special Resources (like special FP, mechanic-related values, etc.) |  |
+| :---: | :---- |
+
+| Consequences | Date of Infliction |
+| ----- | ----- |
+|  |  |
+|  |  |
+|  |  |
+|  |  |
+|  |  |
+|  |  |
+|  |  |
+|  |  |
+
+# **-Moves-**
+
+| [Drag'n'drop moves into these.] | ??? |
+| :---- | :---- |
+| ??? | ??? |
+| ??? | ??? |
+| ??? | ??? |
+| ??? | [Put Darkest Self here.] |
+
+# **-Connections-**
+
+|  |
+| :---- |
+|  |
+|  |
+|  |
+|  |
+|  |
+|  |
+|  |
+|  |
+|  |
+|  |
+
+# **-Inventory-**
+
+| Item | Description |
+| ----- | ----- |
+|  |  |
+|  |  |
+|  |  |
+|  |  |
+|  |  |
+|  |  |
+|  |  |
+|  |  |
+|  |  |
+
+# **-Scene Archive-**
+
+| Scene Summary (Also list canonical date of scene, stat changes, and resources used) | Involved Characters |
+| ----- | ----- |
+|  |  |
+|  |  |
+|  |  |
+|  |  |
+|  |  |
+|  |  |
+|  |  |
+|  |  |`;
+            
+            document.getElementById('preview').innerHTML = `<pre style="white-space: pre-wrap; font-family: monospace; font-size: 0.9rem;">${preview}</pre>`;
+        }
+        
+        // Handle form submission
+        document.getElementById('characterForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Generate the final character sheet
+            updatePreview();
+            const characterSheet = document.getElementById('preview').textContent;
+            
+            // Create GitHub issue
+            const title = `[Character] ${document.getElementById('name').value}`;
+            const body = characterSheet;
+            
+            const issueUrl = `https://github.com/Kit-Basher/dark-city-game/issues/new?title=${encodeURIComponent(title)}&body=${encodeURIComponent(body)}&labels=character-sheet`;
+            
+            // Open GitHub issue creation page
+            window.open(issueUrl, '_blank');
+            
+            // Show success message
+            alert('Character sheet prepared! A new tab will open where you can submit it to GitHub.');
+        });
+        
+        // Auto-update preview on input change
+        document.getElementById('characterForm').addEventListener('input', updatePreview);
+        
+        // Initial preview
+        updatePreview();
+    </script>
+</body>
+</html>

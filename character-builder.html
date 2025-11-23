@@ -132,8 +132,8 @@
         <a href="index.html#characters" class="back-link">← Back to Characters</a>
         
         <div class="character-builder">
-            <h2>Dark City Character Builder</h2>
-            <p style="color: white;">Create your character sheet and submit it directly to the game repository.</p>
+            <h2 id="builderTitle">Dark City Character Builder</h2>
+            <p id="builderDescription" style="color: white;">Create your character sheet and submit it directly to the game repository.</p>
             
             <form id="characterForm">
                 <!-- Basic Information -->
@@ -442,8 +442,106 @@
         // Auto-update preview on input change
         document.getElementById('characterForm').addEventListener('input', updatePreview);
         
-        // Initial preview
-        updatePreview();
+        // Check if editing existing character
+        function loadEditingCharacter() {
+            const editingData = sessionStorage.getItem('editingCharacter');
+            if (editingData) {
+                const character = JSON.parse(editingData);
+                
+                // Update UI for editing mode
+                document.getElementById('builderTitle').textContent = 'Edit Character';
+                document.getElementById('builderDescription').textContent = 'Update your character sheet and submit changes to the game repository.';
+                
+                // Parse and load character data
+                loadCharacterData(character.body);
+                
+                // Clear sessionStorage
+                sessionStorage.removeItem('editingCharacter');
+            }
+        }
+        
+        // Load character data into form
+        function loadCharacterData(characterSheet) {
+            // Extract basic info
+            const nameMatch = characterSheet.match(/\|\s*Name:\s*([^|]+)/);
+            const apparentAgeMatch = characterSheet.match(/\|\s*Apparent Age:\s*([^|]+)/);
+            const actualAgeMatch = characterSheet.match(/\|\s*Actual Age:\s*([^|]+)/);
+            const classificationMatch = characterSheet.match(/\*\*Classification:\*\*\s*([^|]+)/);
+            const playbookMatch = characterSheet.match(/\*\*Playbook:\*\*\s*([^|]+)/);
+            const subtypeMatch = characterSheet.match(/\*\*Subtype:\*\*\s*([^|]+)/);
+            
+            // Extract bio
+            const bioMatch = characterSheet.match(/\|\s*([^|]+)\s*\|\s*:\s*----\s*\|\s*\n\s*\|\s*([^|]+)\s*\|/);
+            
+            // Extract forms
+            const humanFormMatch = characterSheet.match(/-Human Form-\s*Height:\s*([^|]+)\s*Weight:\s*([^|]+)/);
+            const monsterFormMatch = characterSheet.match(/-Monster Form-\s*Height:\s*([^|]+)\s*Weight:\s*([^|]+)/);
+            
+            // Extract stats
+            const fatePointsMatch = characterSheet.match(/\|\s*Fate Points\s*\|\s*(\d+)\/5/);
+            const physicalStressMatch = characterSheet.match(/\|\s*Physical\s*(\d+)\s*\|\s*Mental\s*(\d+)/);
+            
+            // Extract skills
+            const skills = [];
+            const skillMatches = characterSheet.matchAll(/\|\s*\+(\d+)\s*\|\s*([^|]+)\s*\|/g);
+            skillMatches.forEach(match => {
+                const level = match[1];
+                const names = match[2].trim();
+                if (names && names !== '?') {
+                    names.split(',').forEach(name => {
+                        if (name.trim()) {
+                            skills.push({ name: name.trim(), level: parseInt(level) });
+                        }
+                    });
+                }
+            });
+            
+            // Fill form fields
+            if (nameMatch) document.getElementById('name').value = nameMatch[1].trim();
+            if (apparentAgeMatch) document.getElementById('apparentAge').value = apparentAgeMatch[1].trim();
+            if (actualAgeMatch) document.getElementById('actualAge').value = actualAgeMatch[1].trim();
+            if (classificationMatch) document.getElementById('classification').value = classificationMatch[1].trim();
+            if (playbookMatch) document.getElementById('playbook').value = playbookMatch[1].trim();
+            if (subtypeMatch) document.getElementById('subtype').value = subtypeMatch[1].trim();
+            
+            if (bioMatch) document.getElementById('bio').value = bioMatch[2].trim();
+            
+            if (humanFormMatch) {
+                document.getElementById('humanHeight').value = humanFormMatch[1].trim();
+                document.getElementById('humanWeight').value = humanFormMatch[2].trim();
+            }
+            
+            if (monsterFormMatch) {
+                document.getElementById('monsterHeight').value = monsterFormMatch[1].trim();
+                document.getElementById('monsterWeight').value = monsterFormMatch[2].trim();
+            }
+            
+            if (fatePointsMatch) document.getElementById('fatePoints').value = fatePointsMatch[1];
+            
+            if (physicalStressMatch) {
+                document.getElementById('physicalStress').value = physicalStressMatch[1];
+                document.getElementById('mentalStress').value = physicalStressMatch[2];
+            }
+            
+            // Load skills
+            if (skills.length > 0) {
+                const skillInputs = document.querySelectorAll('.skill-item');
+                skills.forEach((skill, index) => {
+                    if (skillInputs[index]) {
+                        const nameInput = skillInputs[index].querySelector('.skill-name');
+                        const levelInput = skillInputs[index].querySelector('.skill-level');
+                        if (nameInput) nameInput.value = skill.name;
+                        if (levelInput) levelInput.value = skill.level;
+                    }
+                });
+            }
+        }
+        
+        // Initial setup
+        document.addEventListener('DOMContentLoaded', function() {
+            loadEditingCharacter();
+            updatePreview();
+        });
     </script>
 </body>
 </html>

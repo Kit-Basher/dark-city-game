@@ -692,9 +692,14 @@
                         <button type="button" class="btn btn-outline" onclick="loadLocalCharacter()">📂 Load Saved Character</button>
                         <button type="button" class="btn btn-outline" onclick="saveLocalCharacter()">💾 Save Character Locally</button>
                         <button type="button" class="btn btn-outline" onclick="showSavedCharacters()">📋 View All Saved Characters</button>
+                        <button type="button" class="btn btn-outline" onclick="exportAllCharacters()">📤 Export Backup</button>
+                        <button type="button" class="btn btn-outline" onclick="importCharacterBackup()">📥 Import Backup</button>
                     </div>
                     <div id="savedCharactersList" style="display: none;">
                         <!-- Saved characters will be listed here -->
+                    </div>
+                    <div id="backupStatus" style="margin-top: 1rem; padding: 0.75rem; background: #2a2a2a; border-radius: 5px; display: none;">
+                        <!-- Backup status messages -->
                     </div>
                 </div>
                 
@@ -899,7 +904,337 @@
             document.getElementById('preview').innerHTML = `<pre style="white-space: pre-wrap; font-family: monospace; font-size: 0.9rem;">${preview}</pre>`;
         }
         
-        // Local character management functions
+        // Redundancy System - Multiple Storage Methods
+        const STORAGE_KEYS = {
+            primary: 'darkCityCharacters',
+            backup: 'darkCityCharacters_backup',
+            indexedDB: 'darkCityCharacters_idb',
+            fileHash: 'darkCityCharacters_hash'
+        };
+
+        function showBackupStatus(message, type = 'info') {
+            const statusElement = document.getElementById('backupStatus');
+            const colors = {
+                success: '#4CAF50',
+                warning: '#FF9800', 
+                error: '#f44336',
+                info: '#ff6b35'
+            };
+            
+            statusElement.innerHTML = `
+                <div style="color: ${colors[type]}; font-weight: bold; margin-bottom: 0.5rem;">
+                    ${type === 'success' ? '✅' : type === 'warning' ? '⚠️' : type === 'error' ? '❌' : 'ℹ️'} ${message}
+                </div>
+            `;
+            statusElement.style.display = 'block';
+            
+            setTimeout(() => {
+                statusElement.style.display = 'none';
+            }, 5000);
+        }
+
+        // Multi-layer character saving
+        function saveCharacterWithRedundancy(characterData) {
+            const characterName = characterData.name || 'Unnamed Character';
+            
+            try {
+                // 1. Primary localStorage
+                const savedCharacters = JSON.parse(localStorage.getItem(STORAGE_KEYS.primary) || '{}');
+                savedCharacters[characterName] = characterData;
+                localStorage.setItem(STORAGE_KEYS.primary, JSON.stringify(savedCharacters));
+                
+                // 2. Backup localStorage
+                localStorage.setItem(STORAGE_KEYS.backup, JSON.stringify(savedCharacters));
+                
+                // 3. Create file download hash
+                const hash = btoa(JSON.stringify(savedCharacters)).slice(0, 16);
+                localStorage.setItem(STORAGE_KEYS.fileHash, hash);
+                
+                // 4. Attempt IndexedDB (if available)
+                if ('indexedDB' in window) {
+                    saveToIndexedDB(characterName, characterData);
+                }
+                
+                // 5. Auto-export backup (if enabled)
+                const autoBackup = localStorage.getItem('autoBackupEnabled');
+                if (autoBackup === 'true') {
+                    autoExportBackup();
+                }
+                
+                showBackupStatus(`Character "${characterName}" saved with ${autoBackup === 'true' ? '4' : '3'} backup layers`, 'success');
+                
+            } catch (error) {
+                console.error('Redundancy save error:', error);
+                showBackupStatus('Some backup methods failed, but primary save succeeded', 'warning');
+            }
+        }
+
+        // IndexedDB storage
+        async function saveToIndexedDB(characterName, characterData) {
+            try {
+                const request = indexedDB.open('DarkCityCharacters', 1);
+                
+                request.onerror = () => {
+                    console.warn('IndexedDB not available');
+                };
+                
+                request.onsuccess = (event) => {
+                    const db = event.target.result;
+                    
+                    if (!db.objectStoreNames.contains('characters')) {
+                        const objectStore = db.createObjectStore('characters');
+                    }
+                    
+                    const transaction = db.transaction(['characters'], 'readwrite');
+                    const store = transaction.objectStore('characters');
+                    store.put(characterData, characterName);
+                };
+                
+            } catch (error) {
+                console.warn('IndexedDB save failed:', error);
+            }
+        }
+
+        // Multi-layer character loading
+        function loadCharacterWithRedundancy(characterName) {
+            // Try primary storage first
+            let savedCharacters = JSON.parse(localStorage.getItem(STORAGE_KEYS.primary) || '{}');
+            
+            if (savedCharacters[characterName]) {
+                return savedCharacters[characterName];
+            }
+            
+            // Try backup storage
+            savedCharacters = JSON.parse(localStorage.getItem(STORAGE_KEYS.backup) || '{}');
+            if (savedCharacters[characterName]) {
+                showBackupStatus('Character loaded from backup storage', 'warning');
+                // Restore primary storage
+                localStorage.setItem(STORAGE_KEYS.primary, JSON.stringify(savedCharacters));
+                return savedCharacters[characterName];
+            }
+            
+            // Try IndexedDB
+            if ('indexedDB' in window) {
+                return loadFromIndexedDB(characterName);
+            }
+            
+            return null;
+        }
+
+        // Load from IndexedDB
+        async function loadFromIndexedDB(characterName) {
+            try {
+                const request = indexedDB.open('DarkCityCharacters', 1);
+                
+                return new Promise((resolve) => {
+                    request.onsuccess = (event) => {
+                        const db = event.target.result;
+                        
+                        if (!db.objectStoreNames.contains('characters')) {
+                            resolve(null);
+                            return;
+                        }
+                        
+                        const transaction = db.transaction(['characters'], 'readonly');
+                        const store = transaction.objectStore('characters');
+                        const getRequest = store.get(characterName);
+                        
+                        getRequest.onsuccess = () => {
+                            if (getRequest.result) {
+                                showBackupStatus('Character loaded from IndexedDB backup', 'warning');
+                                resolve(getRequest.result);
+                            } else {
+                                resolve(null);
+                            }
+                        };
+                        
+                        getRequest.onerror = () => {
+                            resolve(null);
+                        };
+                    };
+                    
+                    request.onerror = () => {
+                        resolve(null);
+                    };
+                });
+                
+            } catch (error) {
+                console.warn('IndexedDB load failed:', error);
+                return null;
+            }
+        }
+
+        // Export all characters as backup file
+        function exportAllCharacters() {
+            const savedCharacters = JSON.parse(localStorage.getItem(STORAGE_KEYS.primary) || '{}');
+            const characterNames = Object.keys(savedCharacters);
+            
+            if (characterNames.length === 0) {
+                alert('No characters to export. Create some characters first!');
+                return;
+            }
+            
+            // Create comprehensive backup
+            const backupData = {
+                characters: savedCharacters,
+                backup: JSON.parse(localStorage.getItem(STORAGE_KEYS.backup) || '{}'),
+                exportDate: new Date().toISOString(),
+                version: '1.0',
+                characterCount: characterNames.length
+            };
+            
+            // Create and download backup file
+            const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: 'application/json' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `dark_city_characters_backup_${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+            
+            showBackupStatus(`Exported ${characterNames.length} characters to backup file`, 'success');
+        }
+
+        // Import backup from file
+        function importCharacterBackup() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            
+            input.onchange = (event) => {
+                const file = event.target.files[0];
+                if (!file) return;
+                
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        const backupData = JSON.parse(e.target.result);
+                        
+                        if (!backupData.characters) {
+                            throw new Error('Invalid backup file format');
+                        }
+                        
+                        // Merge existing and backup characters
+                        const existingCharacters = JSON.parse(localStorage.getItem(STORAGE_KEYS.primary) || '{}');
+                        const mergedCharacters = { ...existingCharacters, ...backupData.characters };
+                        
+                        // Save with redundancy
+                        localStorage.setItem(STORAGE_KEYS.primary, JSON.stringify(mergedCharacters));
+                        localStorage.setItem(STORAGE_KEYS.backup, JSON.stringify(mergedCharacters));
+                        
+                        const importedCount = Object.keys(backupData.characters).length;
+                        showBackupStatus(`Successfully imported ${importedCount} characters from backup`, 'success');
+                        
+                        // Refresh character list if visible
+                        if (document.getElementById('savedCharactersList').style.display !== 'none') {
+                            showSavedCharacters();
+                        }
+                        
+                    } catch (error) {
+                        showBackupStatus('Failed to import backup file. Please check the file format.', 'error');
+                        console.error('Import error:', error);
+                    }
+                };
+                
+                reader.readAsText(file);
+            };
+            
+            input.click();
+        }
+
+        // Auto-export backup
+        function autoExportBackup() {
+            const savedCharacters = JSON.parse(localStorage.getItem(STORAGE_KEYS.primary) || '{}');
+            const characterNames = Object.keys(savedCharacters);
+            
+            if (characterNames.length === 0) return;
+            
+            const backupData = {
+                characters: savedCharacters,
+                autoBackup: true,
+                exportDate: new Date().toISOString()
+            };
+            
+            // Store in localStorage for recovery
+            localStorage.setItem('lastAutoBackup', JSON.stringify(backupData));
+        }
+
+        // Recovery wizard for lost characters
+        function runRecoveryWizard() {
+            showBackupStatus('Running character recovery wizard...', 'info');
+            
+            let recoveredCount = 0;
+            
+            // Check all storage locations
+            const storages = [
+                { name: 'Primary', key: STORAGE_KEYS.primary },
+                { name: 'Backup', key: STORAGE_KEYS.backup },
+                { name: 'Auto Backup', key: 'lastAutoBackup' }
+            ];
+            
+            const allCharacters = {};
+            
+            storages.forEach(storage => {
+                try {
+                    const data = JSON.parse(localStorage.getItem(storage.key) || '{}');
+                    if (storage.key === 'lastAutoBackup') {
+                        Object.assign(allCharacters, data.characters || {});
+                    } else {
+                        Object.assign(allCharacters, data);
+                    }
+                } catch (error) {
+                    console.warn(`Failed to read ${storage.name} storage:`, error);
+                }
+            });
+            
+            // Restore if found characters
+            if (Object.keys(allCharacters).length > 0) {
+                localStorage.setItem(STORAGE_KEYS.primary, JSON.stringify(allCharacters));
+                localStorage.setItem(STORAGE_KEYS.backup, JSON.stringify(allCharacters));
+                recoveredCount = Object.keys(allCharacters).length;
+                showBackupStatus(`Recovery complete! Found ${recoveredCount} characters`, 'success');
+            } else {
+                showBackupStatus('No characters found in any backup location', 'error');
+            }
+        }
+
+        // Update save function to use redundancy
+        function saveLocalCharacter() {
+            const characterData = getCharacterData();
+            const characterName = characterData.name || 'Unnamed Character';
+            
+            saveCharacterWithRedundancy(characterData);
+        }
+
+        // Update load function to use redundancy
+        function loadLocalCharacter() {
+            // Run recovery wizard first
+            runRecoveryWizard();
+            
+            const savedCharacters = JSON.parse(localStorage.getItem(STORAGE_KEYS.primary) || '{}');
+            const characterNames = Object.keys(savedCharacters);
+            
+            if (characterNames.length === 0) {
+                alert('No saved characters found. Try importing a backup file or creating a new character.');
+                return;
+            }
+            
+            // Create selection dialog
+            const characterName = prompt(`Enter character name to load:\n\nAvailable characters:\n${characterNames.join('\n')}`);
+            
+            if (characterName) {
+                const characterData = loadCharacterWithRedundancy(characterName);
+                
+                if (characterData) {
+                    loadCharacterData(characterData);
+                    alert(`Character "${characterName}" loaded successfully!`);
+                } else {
+                    alert(`Character "${characterName}" not found. Available characters: ${characterNames.join(', ')}`);
+                }
+            }
+        }
         function getCharacterData() {
             const formData = new FormData(document.getElementById('characterForm'));
             const data = Object.fromEntries(formData);

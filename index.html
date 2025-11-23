@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dark City - RPG Game Hub</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="nav-container">
+                <h1>Dark City</h1>
+                <ul class="nav-links">
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#rules">Rules</a></li>
+                    <li><a href="#characters">Characters</a></li>
+                    <li><a href="#scenes">Scenes</a></li>
+                    <li><a href="#calendar">Calendar</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section id="home" class="hero">
+            <div class="hero-content">
+                <h2>Welcome to Dark City</h2>
+                <p>A mysterious urban fantasy RPG where shadows hold secrets and every choice matters.</p>
+                <div class="hero-buttons">
+                    <a href="#rules" class="btn btn-primary">Read Rules</a>
+                    <a href="#characters" class="btn btn-secondary">Create Character</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="rules" class="section">
+            <div class="container">
+                <h2>Game Rules</h2>
+                <div class="rules-grid">
+                    <div class="rule-card">
+                        <h3>Core Mechanics</h3>
+                        <p>Basic gameplay rules and dice systems.</p>
+                        <a href="rules/core-mechanics.html" class="btn btn-outline">View Details</a>
+                    </div>
+                    <div class="rule-card">
+                        <h3>Character Creation</h3>
+                        <p>How to build your Dark City character.</p>
+                        <a href="rules/character-creation.html" class="btn btn-outline">View Details</a>
+                    </div>
+                    <div class="rule-card">
+                        <h3>Combat System</h3>
+                        <p>Rules for combat and conflict resolution.</p>
+                        <a href="rules/combat.html" class="btn btn-outline">View Details</a>
+                    </div>
+                    <div class="rule-card">
+                        <h3>World Setting</h3>
+                        <p>The lore and setting of Dark City.</p>
+                        <a href="rules/world-setting.html" class="btn btn-outline">View Details</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="characters" class="section">
+            <div class="container">
+                <h2>Character Sheets</h2>
+                <div class="character-actions">
+                    <a href="characters/template.html" class="btn btn-primary">View Character Template</a>
+                    <a href="https://github.com/yourusername/dark-city-game/issues/new?assignees=&labels=character+sheet&template=character-sheet.md" class="btn btn-secondary">Submit Character Sheet</a>
+                </div>
+                <div class="characters-grid" id="charactersList">
+                    <!-- Characters will be loaded here from GitHub API -->
+                </div>
+            </div>
+        </section>
+
+        <section id="scenes" class="section">
+            <div class="container">
+                <h2>Scene Tracking</h2>
+                <div class="scene-actions">
+                    <a href="scenes/template.html" class="btn btn-primary">View Scene Template</a>
+                    <a href="https://github.com/yourusername/dark-city-game/issues/new?assignees=&labels=scene&template=scene.md" class="btn btn-secondary">Submit Scene</a>
+                </div>
+                <div class="scenes-grid" id="scenesList">
+                    <!-- Scenes will be loaded here from GitHub API -->
+                </div>
+            </div>
+        </section>
+
+        <section id="calendar" class="section">
+            <div class="container">
+                <h2>Community Calendar</h2>
+                <div class="calendar-container">
+                    <div class="calendar-controls">
+                        <button id="prevMonth" class="btn btn-outline">&lt;</button>
+                        <span id="currentMonth"></span>
+                        <button id="nextMonth" class="btn btn-outline">&gt;</button>
+                    </div>
+                    <div class="calendar-grid" id="calendarGrid">
+                        <!-- Calendar will be generated here -->
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Dark City RPG. Built with GitHub Pages.</p>
+        </div>
+    </footer>
+
+    <script src="js/app.js"></script>
+</body>
+</html>

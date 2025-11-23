@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="../css/style.css">
     <style>
         .advancements-container {
-            max-width: 1000px;
+            max-width: 1200px;
             margin: 0 auto;
             padding: 2rem;
         }
@@ -33,7 +33,7 @@
             margin-top: 1rem;
         }
         
-        .section {
+        .intro-section {
             background: #1a1a1a;
             padding: 2rem;
             border-radius: 12px;
@@ -41,46 +41,71 @@
             border: 1px solid #4a5568;
         }
         
-        .section h2 {
+        .intro-section h2 {
+            color: #ff6b35;
+            margin-bottom: 1rem;
+        }
+        
+        .playbook-section {
+            background: #1a1a1a;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            border: 1px solid #4a5568;
+        }
+        
+        .playbook-section h2 {
             color: #ff6b35;
             margin-bottom: 1.5rem;
             border-bottom: 2px solid #ff6b35;
             padding-bottom: 0.5rem;
         }
         
-        .advancement-card {
-            background: #2a2a2a;
+        .subtype-section {
+            background: #252525;
             padding: 1.5rem;
             border-radius: 8px;
             margin: 1rem 0;
-            border-left: 4px solid #ff6b35;
         }
         
-        .advancement-card h3 {
+        .subtype-section h3 {
+            color: #e55a2b;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+        
+        .advancement-move {
+            background: #2a2a2a;
+            padding: 1rem;
+            border-radius: 6px;
+            margin: 0.5rem 0;
+            border-left: 3px solid #ff6b35;
+        }
+        
+        .advancement-move h4 {
             color: #ff6b35;
             margin-bottom: 0.5rem;
+            font-size: 1.1rem;
         }
         
-        .advancement-card p {
+        .advancement-move p {
             margin-bottom: 0;
-            line-height: 1.6;
+            line-height: 1.5;
+            color: #ccc;
         }
         
-        .pdf-download {
-            background: linear-gradient(135deg, #e55a2b 0%, #ff6b35 100%);
-            color: white;
-            padding: 1rem 2rem;
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: bold;
-            display: inline-block;
+        .advancement-note {
+            background: #3a1a1a;
+            border: 1px solid #ff3333;
+            padding: 1rem;
+            border-radius: 6px;
             margin: 1rem 0;
-            transition: all 0.3s ease;
         }
         
-        .pdf-download:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+        .advancement-note p {
+            color: #ffcccc;
+            margin: 0;
+            font-size: 0.9rem;
         }
         
         .back-link {
@@ -95,23 +120,55 @@
             color: #e55a2b;
         }
         
-        .advancement-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1rem;
-            margin-top: 1rem;
+        .search-box {
+            background: #2a2a2a;
+            border: 1px solid #4a5568;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 2rem;
         }
         
-        .category-section {
+        .search-box input {
+            width: 100%;
+            background: #1a1a1a;
+            border: 1px solid #4a5568;
+            color: white;
+            padding: 0.5rem;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        
+        .toc {
             background: #252525;
             padding: 1.5rem;
             border-radius: 8px;
-            margin: 1rem 0;
+            margin-bottom: 2rem;
         }
         
-        .category-section h3 {
-            color: #e55a2b;
+        .toc h3 {
+            color: #ff6b35;
             margin-bottom: 1rem;
+        }
+        
+        .toc ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .toc li {
+            margin: 0.5rem 0;
+        }
+        
+        .toc a {
+            color: #e55a2b;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .toc a:hover {
+            color: #ff6b35;
+            text-decoration: underline;
         }
     </style>
 </head>
@@ -121,123 +178,243 @@
         
         <div class="advancements-container">
             <div class="advancements-header">
-                <h1>Character Advancements</h1>
+                <h1>🎯 Character Advancements</h1>
                 <div class="advancements-subtitle">Choose new moves and abilities as your character grows in power</div>
             </div>
             
-            <div class="section">
-                <h2>📖 Advancement Overview</h2>
-                <p>As your characters gain experience and level up, they can choose new moves from the Advancements list. These are specially balanced versions of playbook moves that any character can take, regardless of their original playbook.</p>
+            <div class="intro-section">
+                <h2>📖 How Advancements Work</h2>
+                <p><strong>Character advancements</strong> are special moves that any character can take when they level up, regardless of their original playbook. These are balanced versions of playbook-exclusive moves that have been adapted for general use.</p>
                 
-                <div style="text-align: center; margin: 2rem 0;">
-                    <a href="../documents/Advancements Handout.pdf" class="btn btn-primary" target="_blank">
-                        📄 Download Complete Advancements PDF
-                    </a>
+                <div class="advancement-note">
+                    <p><strong>Key:</strong> <strong>-x-</strong> = Playbook exclusives | <strong>-x-a-</strong> = Playbook exclusive with advancement version | <strong>-a-</strong> = Advancement version of a playbook move</p>
                 </div>
                 
-                <p><strong>How to Use Advancements:</strong></p>
+                <p><strong>Using Advancements:</strong></p>
                 <ul>
                     <li>When your character levels up, choose one new advancement move</li>
-                    <li>These moves are balanced for any character to take</li>
-                    <li>Some advancements have prerequisites or special conditions</li>
-                    <li>Refer to the complete PDF for detailed mechanics and costs</li>
+                    <li>These moves work alongside your existing playbook moves</li>
+                    <li>Some advancement moves have special requirements or conditions</li>
+                    <li>Advancement moves allow characters to diversify beyond their original playbook</li>
                 </ul>
             </div>
             
-            <div class="section">
-                <h2>🎯 Advancement Categories</h2>
-                <p>The Advancements Handout is organized into several categories to help you find the right move for your character:</p>
-                
-                <div class="advancement-grid">
-                    <div class="category-section">
-                        <h3>⚔️ Combat & Physical</h3>
-                        <p>Moves that enhance fighting skills, physical abilities, and combat effectiveness.</p>
-                    </div>
-                    
-                    <div class="category-section">
-                        <h3>🔮 Magic & Supernatural</h3>
-                        <p>Moves that grant magical abilities, supernatural powers, and arcane knowledge.</p>
-                    </div>
-                    
-                    <div class="category-section">
-                        <h3>🧠 Mental & Social</h3>
-                        <p>Moves that improve mental skills, social manipulation, and emotional control.</p>
-                    </div>
-                    
-                    <div class="category-section">
-                        <h3>🦸 Special Abilities</h3>
-                        <p>Unique powers and special abilities that don't fit into other categories.</p>
-                    </div>
-                    
-                    <div class="category-section">
-                        <h3>🛡️ Defensive & Support</h3>
-                        <p>Moves focused on protection, healing, and supporting other characters.</p>
-                    </div>
-                    
-                    <div class="category-section">
-                        <h3>🌟 Unique Powers</h3>
-                        <p>One-of-a-kind abilities and signature moves for advanced characters.</p>
-                    </div>
-                </div>
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="🔍 Search advancement moves..." onkeyup="searchAdvancements()">
             </div>
             
-            <div class="section">
-                <h2>📋 Advancement Examples</h2>
-                <p>Here are a few examples of the types of moves available in the Advancements Handout:</p>
-                
-                <div class="advancement-card">
-                    <h3>Enhanced Senses</h3>
-                    <p>You gain heightened senses that allow you to perceive things others miss. Take +2 on Notice rolls when using your enhanced senses.</p>
-                </div>
-                
-                <div class="advancement-card">
-                    <h3>Quick Reflexes</h3>
-                    <p>Your reflexes are supernaturally fast. Once per scene, you can automatically succeed on a defense roll against a physical attack.</p>
-                </div>
-                
-                <div class="advancement-card">
-                    <h3>Social Charm</h3>
-                    <p>You have an innate charm that makes people like you. Take +2 on Rapport rolls when trying to persuade or influence others.</p>
-                </div>
-                
-                <div class="advancement-card">
-                    <h3>Minor Magic</h3>
-                    <p>You can perform minor magical effects. Choose one type of minor magic (illusions, telekinesis, elemental control, etc.).</p>
-                </div>
-            </div>
-            
-            <div class="section">
-                <h2>🎲 Using Advancements in Play</h2>
-                <p><strong>Integration with Playbooks:</strong></p>
-                <ul>
-                    <li>Advancements complement your existing playbook moves</li>
-                    <li>They allow characters to diversify beyond their original playbook</li>
-                    <li>Some advancements work especially well with certain playbook combinations</li>
-                    <li>They provide options for characters who want to branch out</li>
-                </ul>
-                
-                <p><strong>Character Development:</strong></p>
-                <ul>
-                    <li>Choose advancements that reflect your character's growth and experiences</li>
-                    <li>Consider how new abilities fit your character's story arc</li>
-                    <li>Work with your GM to integrate advancements into the narrative</li>
-                    <li>Use advancements to create unique character builds</li>
+            <div class="toc">
+                <h3>📚 Quick Navigation</h3>
+                <ul id="tocList">
+                    <!-- Table of contents will be generated by JavaScript -->
                 </ul>
             </div>
             
-            <div class="section">
-                <h2>📚 Complete Reference</h2>
-                <p>For the complete list of all advancement moves, detailed mechanics, Fate Point costs, and special conditions, please refer to the official Advancements Handout PDF:</p>
+            <!-- Ageless Playbook -->
+            <div class="playbook-section" id="ageless">
+                <h2>🕰️ Ageless Playbook</h2>
                 
-                <div style="text-align: center; margin: 2rem 0;">
-                    <a href="../documents/Advancements Handout.pdf" class="btn btn-primary" target="_blank">
-                        📄 Download Complete Advancements Handout
-                    </a>
+                <div class="advancement-move">
+                    <h4>Been There, Seen That</h4>
+                    <p>When facing an extraordinary situation, roll Will to keep calm. 10+ your calm allows you to remember 2 helpful facts about it. 7-9 you remember one useful fact.</p>
                 </div>
                 
-                <p><em>The PDF contains all available advancement moves with full descriptions, mechanics, and guidelines for character level progression.</em></p>
+                <div class="advancement-move">
+                    <h4>Repeated History</h4>
+                    <p>The first time in the scene you dismiss your current troubles by alluding to your storied past, roll with Deceive or Will: 10+ clear 1 negative Aspect that isn't an injury. 7-9 your listener gets +1 to their next Rapport roll.</p>
+                </div>
+                
+                <div class="advancement-move">
+                    <h4>Enthralled By Eternity</h4>
+                    <p>The first time in a scene you ignore someone's interest in you or push them away, you gain a Fate point.</p>
+                </div>
+                
+                <div class="advancement-move">
+                    <h4>Flicker</h4>
+                    <p>When you look a character in the eyes you may roll Will: 10+ you can take an automatic 10 on the next roll towards that character 7-9, they see a flicker of fire in your eyes and become aware you are more than you appear to be and you get +2 on your next roll towards them.</p>
+                </div>
+                
+                <!-- Ageless Subtypes -->
+                <div class="subtype-section">
+                    <h3>👑 Immortal</h3>
+                    
+                    <div class="advancement-move">
+                        <h4>I Bet…</h4>
+                        <p>You can almost always tell when someone is lying or not. Take +2 on any Empathy rolls to perceive deception.</p>
+                    </div>
+                    
+                    <div class="advancement-move">
+                        <h4>I Know A Guy</h4>
+                        <p>Though they may not all be your friends, you have made a lot of contacts over the years. Your rolodex contains names and numbers for almost any contact you could ever need. You get +2 on any Contacts rolls to find a supplier: 10+, you get the items you requested, fast and cheap. 7-9, you get the items but at an extra cost and effort. 6-, you get your item but it takes a lot of extra time and money.</p>
+                    </div>
+                    
+                    <div class="advancement-move">
+                        <h4>Collector</h4>
+                        <p>You are a collector of fine objects and have a one-of-a-kind collection of [choose what kind you specialize in]. Add 2 to any Wealth rolls you make to see if you have a specific item in your collection.</p>
+                    </div>
+                </div>
+                
+                <div class="subtype-section">
+                    <h3>🔥 Phoenix</h3>
+                    
+                    <div class="advancement-move">
+                        <h4>Phoenix Tear Vial -a-</h4>
+                        <p>You have a vial of the legendary healing tears of a true phoenix. Once per scene, you can administer a droplet. Roll 2d6: 10+ Your tears heal their worst negative physical consequence. 7-9, Heal any negative physical Aspects they have.</p>
+                    </div>
+                    
+                    <div class="advancement-move">
+                        <h4>Gift Of The Feather</h4>
+                        <p>You can choose to give someone a feather, lock of hair or other token, they can wish and you will hear the call, +2 on your 1st roll in your next scene.</p>
+                    </div>
+                    
+                    <div class="advancement-move">
+                        <h4>Song Of Glory</h4>
+                        <p>When singing, performing, or otherwise using your voice to entertain, roll Empathy. 10+ choose one: -Gain a connection to a listener -Give a listener the Aspect captivated -Break a listener out of their Darkest Self for the duration of your song. Once you finish singing, they will return to their Darkest Self. 7-9 One engaged NPC listener gains the Aspect "obsessed".</p>
+                    </div>
+                </div>
+                
+                <div class="subtype-section">
+                    <h3>🗿 Gargoyle</h3>
+                    
+                    <div class="advancement-move">
+                        <h4>Babewyn</h4>
+                        <p>During your dormant period, if someone else is on your grounds you can assume your human form. If you are alone you can still become human, but it takes effort, gain the adjective "drained".</p>
+                    </div>
+                    
+                    <div class="advancement-move">
+                        <h4>Hunky Punk</h4>
+                        <p>With concentration you can give your human form some of the durability of your monster form. When you fail a defense roll, you can roll Physique to brace yourself. 10+, you take a negative Aspect that reflects the physical damage to your monster form instead of a consequence. 7-9, subtract 1 from the incoming attack roll.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Ancient Playbook -->
+            <div class="playbook-section" id="ancient">
+                <h2>🐉 Ancient Playbook</h2>
+                
+                <div class="advancement-move">
+                    <h4>Authority</h4>
+                    <p>You speak and people listen. When you make a reasonable request people will do their best, add +2 to those Rapport rolls.</p>
+                </div>
+                
+                <div class="advancement-move">
+                    <h4>Mesmerizing</h4>
+                    <p>You can hypnotize people by gaze alone. Stare deeply into their eyes and don't blink, roll Provoke; 10+, they freeze up and will answer any basic queries until you lose eye contact or someone touches them, and afterwards won't remember anything unusual. 7-9, it'll still work, but only if you add another distraction. After they'll definitely know something weird happened.</p>
+                </div>
+                
+                <div class="advancement-move">
+                    <h4>My Hoard</h4>
+                    <p>You have a massive collection of goodies hidden away, choose what its location looks like and choose a simple category of items for it to contain; Historical artifacts, Golden artifacts, Gem encrusted artifacts, Spoils of war, Strange unknown artifacts, Personal trinkets etc etc etc.</p>
+                </div>
+                
+                <div class="advancement-move">
+                    <h4>The Big Reveal</h4>
+                    <p>When you reveal your true form to someone, if they accept you as you truly are, they gain a Fate point, if they reject you, you gain +1 to rolls against them for the rest of this scene.</p>
+                </div>
+                
+                <!-- Ancient Subtypes -->
+                <div class="subtype-section">
+                    <h3>🐲 Dragon</h3>
+                    
+                    <div class="advancement-move">
+                        <h4>Draconic Splendor</h4>
+                        <p>When you are free of negative aspects, PC's subtract 2 from mental conflict rolls against you and NPC's cannot cause you negative mental aspects or consequences.</p>
+                    </div>
+                    
+                    <div class="advancement-move">
+                        <h4>Coin Polisher</h4>
+                        <p>When you introduce a character to someone important to their story, they'll both owe you. When you roll Contacts: 10+; gain a Fate Point and +2 on rapport rolls this scene. 7-9; It goes great, take +1 on your next roll.</p>
+                    </div>
+                    
+                    <div class="advancement-move">
+                        <h4>Hoard</h4>
+                        <p>You have a Treasure you covet more than anything else, something you would lay your life on the line for. While in its presence you take +2 for any combat rolls and -2 for any other kind of roll.</p>
+                    </div>
+                </div>
+                
+                <div class="subtype-section">
+                    <h3>🧕 Mummy</h3>
+                    
+                    <div class="advancement-move">
+                        <h4>Tana Leaves</h4>
+                        <p>You have a limited supply of magical tana leaves and know how to use them. After making tea 5 times you'll have to get more leaves, which are hard to come by. Max once per scene you can Roll Crafts; 10+ you've brewed a powerful tea. Heal a minor injury or negative aspect. 7-9, the flavourful tea will clear one negative mental aspect. 6-, you've brewed a wonderfully delicious tea.</p>
+                    </div>
+                    
+                    <div class="advancement-move">
+                        <h4>The New Order</h4>
+                        <p>Once per scene, when you take it upon yourself to do menial labor that demeans you, gain a Fate Point.</p>
+                    </div>
+                </div>
+                
+                <div class="subtype-section">
+                    <h3>🐍 Serpentine</h3>
+                    
+                    <div class="advancement-move">
+                        <h4>Smell of Fear</h4>
+                        <p>Your nose is super sensitive to chemicals lingering in the air, you get +2 to Notice rolls to taste odors and discern known substances easily.</p>
+                    </div>
+                    
+                    <div class="advancement-move">
+                        <h4>Dynasty</h4>
+                        <p>In the past, your family was powerful. Whenever you take care of a massive problem for the family, gain a Fate Point.</p>
+                    </div>
+                    
+                    <div class="advancement-move">
+                        <h4>Big Fish</h4>
+                        <p>You've earned respect and power amongst your family, members below you now obey your beck and call. Spend a fate point to get an automatic 10 on your next Contacts roll.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Add more playbook sections as needed -->
+            <!-- This is a comprehensive start - I can continue adding all the other playbooks -->
+            
+            <div class="intro-section">
+                <h2>📚 More Advancements Coming Soon</h2>
+                <p>This page currently shows the Ageless and Ancient playbook advancements. The complete list includes all playbooks: Aquatic, Aware, Champion, Chosen, Fae, Mage, Mortal, Unsated, Wild, and more!</p>
+                <p>Each advancement move is carefully balanced to work with any character build while maintaining the unique flavor of the original playbook.</p>
             </div>
         </div>
     </div>
+    
+    <script>
+        // Generate table of contents
+        function generateTOC() {
+            const tocList = document.getElementById('tocList');
+            const sections = document.querySelectorAll('.playbook-section');
+            
+            sections.forEach(section => {
+                const id = section.id;
+                const title = section.querySelector('h2').textContent;
+                const li = document.createElement('li');
+                li.innerHTML = `<a href="#${id}">${title}</a>`;
+                tocList.appendChild(li);
+            });
+        }
+        
+        // Search functionality
+        function searchAdvancements() {
+            const input = document.getElementById('searchInput');
+            const filter = input.value.toUpperCase();
+            const moves = document.querySelectorAll('.advancement-move');
+            
+            moves.forEach(move => {
+                const h4 = move.querySelector('h4');
+                const p = move.querySelector('p');
+                const text = (h4.textContent + p.textContent).toUpperCase();
+                
+                if (text.includes(filter)) {
+                    move.style.display = '';
+                } else {
+                    move.style.display = 'none';
+                }
+            });
+        }
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            generateTOC();
+        });
+    </script>
 </body>
 </html>

@@ -125,6 +125,59 @@
         .back-link:hover {
             color: #e55a2b;
         }
+        
+        .moves-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .move-item {
+            background: #1a1a1a;
+            border: 1px solid #4a5568;
+            border-radius: 8px;
+            padding: 1rem;
+        }
+        
+        .move-header {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .move-name {
+            flex: 1;
+            background: #2a2a2a;
+            border: 1px solid #4a5568;
+            color: white;
+            padding: 0.5rem;
+            border-radius: 4px;
+        }
+        
+        .move-source {
+            background: #2a2a2a;
+            border: 1px solid #4a5568;
+            color: white;
+            padding: 0.5rem;
+            border-radius: 4px;
+        }
+        
+        .move-description {
+            width: 100%;
+            background: #2a2a2a;
+            border: 1px solid #4a5568;
+            color: white;
+            padding: 0.5rem;
+            border-radius: 4px;
+            resize: vertical;
+            font-family: inherit;
+        }
+        
+        .btn-small {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.8rem;
+        }
     </style>
 </head>
 <body>
@@ -232,6 +285,65 @@
                             <input type="text" placeholder="Skill name" class="skill-name">
                             <input type="number" min="1" max="4" value="1" class="skill-level">
                         </div>
+                    </div>
+                </div>
+                
+                <!-- Character Moves -->
+                <div class="form-section">
+                    <h3>Character Moves</h3>
+                    <p style="color: white;">Add your character's moves. Start with 3 moves from your playbook, then add more as you level up!</p>
+                    
+                    <div class="moves-container" id="movesContainer">
+                        <div class="move-item">
+                            <div class="move-header">
+                                <input type="text" placeholder="Move name" class="move-name">
+                                <select class="move-source">
+                                    <option value="playbook">Playbook Move</option>
+                                    <option value="advancement">Advancement Move</option>
+                                    <option value="custom">Custom Move</option>
+                                </select>
+                                <button type="button" class="btn btn-small btn-outline" onclick="removeMove(this)">×</button>
+                            </div>
+                            <textarea placeholder="Move description and mechanics..." class="move-description" rows="3"></textarea>
+                        </div>
+                        <div class="move-item">
+                            <div class="move-header">
+                                <input type="text" placeholder="Move name" class="move-name">
+                                <select class="move-source">
+                                    <option value="playbook">Playbook Move</option>
+                                    <option value="advancement">Advancement Move</option>
+                                    <option value="custom">Custom Move</option>
+                                </select>
+                                <button type="button" class="btn btn-small btn-outline" onclick="removeMove(this)">×</button>
+                            </div>
+                            <textarea placeholder="Move description and mechanics..." class="move-description" rows="3"></textarea>
+                        </div>
+                        <div class="move-item">
+                            <div class="move-header">
+                                <input type="text" placeholder="Move name" class="move-name">
+                                <select class="move-source">
+                                    <option value="playbook">Playbook Move</option>
+                                    <option value="advancement">Advancement Move</option>
+                                    <option value="custom">Custom Move</option>
+                                </select>
+                                <button type="button" class="btn btn-small btn-outline" onclick="removeMove(this)">×</button>
+                            </div>
+                            <textarea placeholder="Move description and mechanics..." class="move-description" rows="3"></textarea>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 1rem;">
+                        <button type="button" class="btn btn-outline" onclick="addMove()">+ Add Move</button>
+                        <button type="button" class="btn btn-outline" onclick="loadAdvancementMoves()">📚 Browse Advancement Moves</button>
+                    </div>
+                </div>
+                
+                <!-- Darkest Self -->
+                <div class="form-section">
+                    <h3>Darkest Self</h3>
+                    <div class="form-group">
+                        <label for="darkestSelf">Darkest Self Description</label>
+                        <textarea id="darkestSelf" name="darkestSelf" placeholder="Describe your character's Darkest Self - what happens when they're at their worst..." rows="4"></textarea>
                     </div>
                 </div>
                 
@@ -366,12 +478,25 @@
 
 # **-Moves-**
 
-| [Drag'n'drop moves into these.] | ??? |
+| Move Name | Type | Description |
+| :---- | :---- | :---- |`;
+
+            // Add moves to preview
+            const moves = getMovesData();
+            moves.forEach(move => {
+                const sourceIcon = move.source === 'playbook' ? '🎭' : move.source === 'advancement' ? '⭐' : '✨';
+                preview += `\n| ${move.name || 'Unnamed Move'} | ${sourceIcon} ${move.source} | ${move.description || 'No description'} |`;
+            });
+            
+            // Add empty move slots if less than 6 moves
+            const emptySlots = Math.max(0, 6 - moves.length);
+            for (let i = 0; i < emptySlots; i++) {
+                preview += `\n| [Empty Move Slot] | ??? | ??? |`;
+            }
+            
+            preview += `\n\n| **Darkest Self** |  |
 | :---- | :---- |
-| ??? | ??? |
-| ??? | ??? |
-| ??? | ??? |
-| ??? | [Put Darkest Self here.] |
+| ${getDarkestSelf()} |  |
 
 # **-Connections-**
 
@@ -442,6 +567,55 @@
         // Auto-update preview on input change
         document.getElementById('characterForm').addEventListener('input', updatePreview);
         
+        // Move management functions
+        function addMove() {
+            const container = document.getElementById('movesContainer');
+            const moveItem = document.createElement('div');
+            moveItem.className = 'move-item';
+            moveItem.innerHTML = `
+                <div class="move-header">
+                    <input type="text" placeholder="Move name" class="move-name">
+                    <select class="move-source">
+                        <option value="playbook">Playbook Move</option>
+                        <option value="advancement">Advancement Move</option>
+                        <option value="custom">Custom Move</option>
+                    </select>
+                    <button type="button" class="btn btn-small btn-outline" onclick="removeMove(this)">×</button>
+                </div>
+                <textarea placeholder="Move description and mechanics..." class="move-description" rows="3"></textarea>
+            `;
+            container.appendChild(moveItem);
+        }
+        
+        function removeMove(button) {
+            const moveItem = button.closest('.move-item');
+            moveItem.remove();
+            updatePreview();
+        }
+        
+        function loadAdvancementMoves() {
+            // Open advancements page in new tab
+            window.open('playbooks/advancements.html', '_blank');
+        }
+        
+        function getMovesData() {
+            const moves = [];
+            document.querySelectorAll('.move-item').forEach(item => {
+                const name = item.querySelector('.move-name').value;
+                const source = item.querySelector('.move-source').value;
+                const description = item.querySelector('.move-description').value;
+                
+                if (name || description) {
+                    moves.push({ name, source, description });
+                }
+            });
+            return moves;
+        }
+        
+        function getDarkestSelf() {
+            return document.getElementById('darkestSelf').value || 'Not defined';
+        }
+        
         // Check if editing existing character
         function loadEditingCharacter() {
             const editingData = sessionStorage.getItem('editingCharacter');
@@ -496,6 +670,28 @@
                 }
             });
             
+            // Extract moves
+            const moves = [];
+            const moveMatches = characterSheet.matchAll(/\|\s*([^|]+)\s*\|\s*([🎭⭐✨])\s*([^|]+)\s*\|\s*([^|]+)\s*\|/g);
+            moveMatches.forEach(match => {
+                const name = match[1].trim();
+                const icon = match[2];
+                const source = match[3].trim();
+                const description = match[4].trim();
+                
+                if (name && name !== '[Empty Move Slot]' && name !== 'Unnamed Move') {
+                    let sourceType = 'custom';
+                    if (icon === '🎭') sourceType = 'playbook';
+                    else if (icon === '⭐') sourceType = 'advancement';
+                    
+                    moves.push({ name, source: sourceType, description });
+                }
+            });
+            
+            // Extract darkest self
+            const darkestSelfMatch = characterSheet.match(/\|\s*\*\*Darkest Self\*\*\s*\|\s*\|\s*\n\s*\|\s*([^|]+)\s*\|/);
+            const darkestSelf = darkestSelfMatch ? darkestSelfMatch[1].trim() : '';
+            
             // Fill form fields
             if (nameMatch) document.getElementById('name').value = nameMatch[1].trim();
             if (apparentAgeMatch) document.getElementById('apparentAge').value = apparentAgeMatch[1].trim();
@@ -534,6 +730,35 @@
                         if (levelInput) levelInput.value = skill.level;
                     }
                 });
+            }
+            
+            // Load moves
+            if (moves.length > 0) {
+                const container = document.getElementById('movesContainer');
+                container.innerHTML = ''; // Clear existing moves
+                
+                moves.forEach(move => {
+                    const moveItem = document.createElement('div');
+                    moveItem.className = 'move-item';
+                    moveItem.innerHTML = `
+                        <div class="move-header">
+                            <input type="text" placeholder="Move name" class="move-name" value="${move.name}">
+                            <select class="move-source">
+                                <option value="playbook" ${move.source === 'playbook' ? 'selected' : ''}>Playbook Move</option>
+                                <option value="advancement" ${move.source === 'advancement' ? 'selected' : ''}>Advancement Move</option>
+                                <option value="custom" ${move.source === 'custom' ? 'selected' : ''}>Custom Move</option>
+                            </select>
+                            <button type="button" class="btn btn-small btn-outline" onclick="removeMove(this)">×</button>
+                        </div>
+                        <textarea placeholder="Move description and mechanics..." class="move-description" rows="3">${move.description}</textarea>
+                    `;
+                    container.appendChild(moveItem);
+                });
+            }
+            
+            // Load darkest self
+            if (darkestSelf) {
+                document.getElementById('darkestSelf').value = darkestSelf;
             }
         }
         

@@ -27,6 +27,23 @@
             transition: all 0.3s ease;
         }
         
+        .character-card.approved {
+            border-color: #4CAF50;
+        }
+        
+        .character-card.approved::before {
+            content: "✅ APPROVED";
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #4CAF50;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+        
         .character-card:hover {
             border-color: #ff6b35;
             transform: translateY(-2px);
@@ -150,7 +167,54 @@
     <script>
         let allCharacters = [];
         
-        // Load characters from GitHub issues
+        // Load approved characters from API
+        async function loadApprovedCharacters() {
+            try {
+                // Load from approved characters API
+                const response = await fetch('../data/approved-characters.json');
+                const approvedData = await response.json();
+                
+                // Convert to character format
+                const approvedCharacters = Object.values(approvedData).map(item => ({
+                    id: item.submission_id,
+                    name: item.character.name,
+                    playbook: item.character.playbook,
+                    classification: item.character.classification,
+                    bio: item.character.bio,
+                    apparentAge: item.character.apparentAge,
+                    actualAge: item.character.actualAge,
+                    subtype: item.character.subtype,
+                    skills: item.character.skills,
+                    moves: item.character.moves,
+                    darkestSelf: item.character.darkestSelf,
+                    approved: true,
+                    approvedAt: item.approved_at,
+                    source: 'approved'
+                }));
+                
+                // Combine with existing characters (if any)
+                allCharacters = [...approvedCharacters];
+                displayCharacters(allCharacters);
+                
+            } catch (error) {
+                console.error('Failed to load approved characters:', error);
+                // Fallback to existing characters
+                loadExistingCharacters();
+            }
+        }
+        
+        // Load existing characters (fallback)
+        function loadExistingCharacters() {
+            // This would load any existing character files
+            // For now, show empty state
+            allCharacters = [];
+            displayCharacters(allCharacters);
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', loadApprovedCharacters);
+        
+        // Load characters from GitHub issues (existing function)
         async function loadCharacters() {
             try {
                 const response = await fetch('https://api.github.com/repos/Kit-Basher/dark-city-game/issues?labels=character-sheet&state=all');
@@ -206,23 +270,24 @@
             const grid = document.getElementById('characterGrid');
             
             if (characters.length === 0) {
-                grid.innerHTML = '<p style="color: white; text-align: center; grid-column: 1/-1;">No characters found.</p>';
+                grid.innerHTML = '<p style="color: white; text-align: center; grid-column: 1/-1;">No characters found. Submit your character for approval!</p>';
                 return;
             }
             
             grid.innerHTML = characters.map(character => `
-                <div class="character-card" data-playbook="${character.playbook.toLowerCase()}">
+                <div class="character-card ${character.approved ? 'approved' : ''}" style="position: relative;" data-playbook="${character.playbook.toLowerCase()}">
                     <div class="character-name">${character.name}</div>
                     <div class="character-info">
                         <p><strong>Playbook:</strong> ${character.playbook || 'Unknown'}</p>
                         <p><strong>Classification:</strong> ${character.classification || 'Unknown'}</p>
                         <p><strong>Subtype:</strong> ${character.subtype || 'None'}</p>
                         <p><strong>Age:</strong> ${character.apparentAge || 'Unknown'}${character.actualAge ? ` (${character.actualAge})` : ''}</p>
-                        <p><strong>Status:</strong> ${character.state === 'open' ? 'Active' : 'Closed'}</p>
+                        ${character.approvedAt ? `<p><strong>Approved:</strong> ${new Date(character.approvedAt).toLocaleDateString()}</p>` : ''}
+                        <p><strong>Status:</strong> ${character.approved ? '✅ Approved' : character.state === 'open' ? 'Active' : 'Closed'}</p>
                     </div>
                     <div class="character-actions">
-                        <button class="btn btn-primary btn-small" onclick="editCharacter(${character.id})">✏️ Edit</button>
-                        <a href="${character.url}" target="_blank" class="btn btn-outline btn-small">📋 View Issue</a>
+                        <button class="btn btn-primary btn-small" onclick="editCharacter('${character.id}')">✏️ Edit</button>
+                        ${character.url ? `<a href="${character.url}" target="_blank" class="btn btn-outline btn-small">📋 View Issue</a>` : ''}
                     </div>
                 </div>
             `).join('');

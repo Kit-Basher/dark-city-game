@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moderator Panel - Character Review</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .moderator-panel {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .submission-card {
+            background: #2a2a2a;
+            border: 1px solid #4a5568;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .submission-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .submission-title {
+            color: #ff6b35;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        .submission-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        .status-pending { background: #FF9800; color: white; }
+        .status-approved { background: #4CAF50; color: white; }
+        .status-rejected { background: #f44336; color: white; }
+        .character-preview {
+            background: #1a1a1a;
+            padding: 1rem;
+            border-radius: 5px;
+            margin: 1rem 0;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 0.8rem;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .moderator-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .feedback-section {
+            background: #333;
+            padding: 1rem;
+            border-radius: 5px;
+            margin: 1rem 0;
+        }
+        .feedback-section textarea {
+            width: 100%;
+            background: #2a2a2a;
+            border: 1px solid #4a5568;
+            color: white;
+            padding: 0.5rem;
+            border-radius: 4px;
+            resize: vertical;
+            min-height: 100px;
+        }
+        .filter-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #4a5568;
+        }
+        .filter-tab {
+            padding: 0.75rem 1.5rem;
+            background: transparent;
+            border: none;
+            color: white;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        .filter-tab.active {
+            border-bottom-color: #ff6b35;
+            color: #ff6b35;
+        }
+        .filter-tab:hover {
+            color: #ff6b35;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .stat-card {
+            background: #2a2a2a;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ff6b35;
+        }
+        .stat-label {
+            color: white;
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="moderator-panel">
+        <h1>🛡️ Moderator Panel</h1>
+        <p>Review and approve character submissions</p>
+        
+        <!-- Statistics -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number" id="pendingCount">0</div>
+                <div class="stat-label">Pending Review</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="approvedCount">0</div>
+                <div class="stat-label">Approved Today</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="rejectedCount">0</div>
+                <div class="stat-label">Rejected Today</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalCount">0</div>
+                <div class="stat-label">Total Submissions</div>
+            </div>
+        </div>
+        
+        <!-- Filter Tabs -->
+        <div class="filter-tabs">
+            <button class="filter-tab active" onclick="filterSubmissions('pending')">🕐 Pending Review</button>
+            <button class="filter-tab" onclick="filterSubmissions('approved')">✅ Approved</button>
+            <button class="filter-tab" onclick="filterSubmissions('rejected')">❌ Rejected</button>
+            <button class="filter-tab" onclick="filterSubmissions('all')">📋 All Submissions</button>
+        </div>
+        
+        <!-- Submissions List -->
+        <div id="submissionsList">
+            <!-- Submissions will be loaded here -->
+        </div>
+    </div>
+
+    <script>
+        let currentFilter = 'pending';
+        let allSubmissions = [];
+
+        // Load submissions from data file
+        async function loadSubmissions() {
+            try {
+                const response = await fetch('../data/pending-submissions.json');
+                const data = await response.json();
+                allSubmissions = Object.values(data);
+                updateStats();
+                displaySubmissions();
+            } catch (error) {
+                console.error('Failed to load submissions:', error);
+                document.getElementById('submissionsList').innerHTML = '<p>No submissions found or failed to load data.</p>';
+            }
+        }
+
+        // Update statistics
+        function updateStats() {
+            const today = new Date().toDateString();
+            const pending = allSubmissions.filter(s => s.status === 'pending').length;
+            const approvedToday = allSubmissions.filter(s => s.status === 'approved' && new Date(s.updated_at || s.submitted_at).toDateString() === today).length;
+            const rejectedToday = allSubmissions.filter(s => s.status === 'rejected' && new Date(s.updated_at || s.submitted_at).toDateString() === today).length;
+            
+            document.getElementById('pendingCount').textContent = pending;
+            document.getElementById('approvedCount').textContent = approvedToday;
+            document.getElementById('rejectedCount').textContent = rejectedToday;
+            document.getElementById('totalCount').textContent = allSubmissions.length;
+        }
+
+        // Filter submissions
+        function filterSubmissions(filter) {
+            currentFilter = filter;
+            
+            // Update tab styles
+            document.querySelectorAll('.filter-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            displaySubmissions();
+        }
+
+        // Display submissions
+        function displaySubmissions() {
+            const container = document.getElementById('submissionsList');
+            
+            let filtered = allSubmissions;
+            if (currentFilter !== 'all') {
+                filtered = allSubmissions.filter(s => s.status === currentFilter);
+            }
+            
+            if (filtered.length === 0) {
+                container.innerHTML = '<p>No submissions found for this filter.</p>';
+                return;
+            }
+            
+            // Sort by submission date (newest first)
+            filtered.sort((a, b) => new Date(b.submitted_at) - new Date(a.submitted_at));
+            
+            container.innerHTML = filtered.map(submission => {
+                const character = submission.character;
+                return `
+                    <div class="submission-card" data-id="${submission.id}">
+                        <div class="submission-header">
+                            <div>
+                                <div class="submission-title">${character.name || 'Unnamed Character'}</div>
+                                <div style="color: #ccc; font-size: 0.9rem;">
+                                    ${character.playbook || 'Unknown Playbook'} • ${character.classification || 'Unknown Classification'} • 
+                                    Submitted: ${new Date(submission.submitted_at).toLocaleString()}
+                                </div>
+                            </div>
+                            <span class="submission-status status-${submission.status}">${submission.status.toUpperCase()}</span>
+                        </div>
+                        
+                        <div class="character-preview">${formatCharacterSheet(character)}</div>
+                        
+                        ${submission.status === 'pending' ? `
+                            <div class="feedback-section">
+                                <h4>Moderator Feedback (optional):</h4>
+                                <textarea id="feedback-${submission.id}" placeholder="Enter feedback for the player..."></textarea>
+                            </div>
+                            <div class="moderator-actions">
+                                <button class="btn btn-primary" onclick="approveSubmission('${submission.id}')">✅ Approve</button>
+                                <button class="btn btn-outline" onclick="requestChanges('${submission.id}')">📝 Request Changes</button>
+                                <button class="btn btn-secondary" onclick="rejectSubmission('${submission.id}')">❌ Reject</button>
+                            </div>
+                        ` : submission.feedback ? `
+                            <div class="feedback-section">
+                                <h4>Moderator Feedback:</h4>
+                                <div style="color: white; white-space: pre-wrap;">${submission.feedback}</div>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Format character sheet for display
+        function formatCharacterSheet(character) {
+            let sheet = `# ${character.name || 'Unnamed Character'}`;
+            
+            if (character.apparentAge) sheet += `\n**Apparent Age:** ${character.apparentAge}`;
+            if (character.actualAge) sheet += `\n**Actual Age:** ${character.actualAge}`;
+            if (character.classification) sheet += `\n**Classification:** ${character.classification}`;
+            if (character.playbook) sheet += `\n**Playbook:** ${character.playbook}`;
+            if (character.subtype) sheet += `\n**Subtype:** ${character.subtype}`;
+            
+            if (character.bio) {
+                sheet += `\n\n## Character Bio\n${character.bio}`;
+            }
+            
+            if (character.skills && character.skills.length > 0) {
+                sheet += `\n\n## Skills`;
+                character.skills.forEach(skill => {
+                    sheet += `\n+${skill.level} ${skill.name}`;
+                });
+            }
+            
+            if (character.moves && character.moves.length > 0) {
+                sheet += `\n\n## Moves`;
+                character.moves.forEach(move => {
+                    sheet += `\n**${move.name}** (${move.source})\n${move.description}`;
+                });
+            }
+            
+            return sheet;
+        }
+
+        // Approve submission
+        async function approveSubmission(submissionId) {
+            const feedback = document.getElementById(`feedback-${submissionId}`).value;
+            
+            try {
+                // Update submission status
+                const response = await fetch('../api/update-submission.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        id: submissionId,
+                        status: 'approved',
+                        feedback: feedback
+                    })
+                });
+                
+                if (response.ok) {
+                    // Add to approved characters
+                    await addToApprovedCharacters(submissionId);
+                    
+                    // Send Discord notification
+                    await sendDiscordNotification(submissionId, 'approved', feedback);
+                    
+                    alert('Character approved and added to the character list!');
+                    loadSubmissions(); // Refresh the list
+                } else {
+                    alert('Failed to approve submission. Please try again.');
+                }
+            } catch (error) {
+                console.error('Approval error:', error);
+                alert('Error approving submission. Please try again.');
+            }
+        }
+
+        // Request changes
+        async function requestChanges(submissionId) {
+            const feedback = document.getElementById(`feedback-${submissionId}`).value;
+            
+            if (!feedback.trim()) {
+                alert('Please provide feedback explaining what changes are needed.');
+                return;
+            }
+            
+            try {
+                const response = await fetch('../api/update-submission.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        id: submissionId,
+                        status: 'changes_requested',
+                        feedback: feedback
+                    })
+                });
+                
+                if (response.ok) {
+                    // Send Discord notification
+                    await sendDiscordNotification(submissionId, 'changes_requested', feedback);
+                    
+                    alert('Change request sent to player with your feedback!');
+                    loadSubmissions(); // Refresh the list
+                } else {
+                    alert('Failed to send change request. Please try again.');
+                }
+            } catch (error) {
+                console.error('Change request error:', error);
+                alert('Error sending change request. Please try again.');
+            }
+        }
+
+        // Reject submission
+        async function rejectSubmission(submissionId) {
+            const feedback = document.getElementById(`feedback-${submissionId}`).value;
+            
+            if (!feedback.trim()) {
+                alert('Please provide feedback explaining why the character is rejected.');
+                return;
+            }
+            
+            if (!confirm('Are you sure you want to reject this character?')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch('../api/update-submission.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        id: submissionId,
+                        status: 'rejected',
+                        feedback: feedback
+                    })
+                });
+                
+                if (response.ok) {
+                    // Send Discord notification
+                    await sendDiscordNotification(submissionId, 'rejected', feedback);
+                    
+                    alert('Character rejected with feedback sent to player.');
+                    loadSubmissions(); // Refresh the list
+                } else {
+                    alert('Failed to reject submission. Please try again.');
+                }
+            } catch (error) {
+                console.error('Rejection error:', error);
+                alert('Error rejecting submission. Please try again.');
+            }
+        }
+
+        // Add to approved characters
+        async function addToApprovedCharacters(submissionId) {
+            const submission = allSubmissions.find(s => s.id === submissionId);
+            if (!submission) return;
+            
+            try {
+                const response = await fetch('../api/approve-character.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        character: submission.character,
+                        submission_id: submissionId
+                    })
+                });
+                
+                return response.ok;
+            } catch (error) {
+                console.error('Error adding to approved characters:', error);
+                return false;
+            }
+        }
+
+        // Send Discord notification
+        async function sendDiscordNotification(submissionId, status, feedback) {
+            const submission = allSubmissions.find(s => s.id === submissionId);
+            if (!submission) return;
+            
+            const character = submission.character;
+            const statusMessages = {
+                approved: '✅ **Character Approved!**',
+                changes_requested: '📝 **Changes Requested**',
+                rejected: '❌ **Character Rejected**'
+            };
+            
+            const message = {
+                content: `${statusMessages[status]}\n\n**Character:** ${character.name}\n**Playbook:** ${character.playbook}\n**Status:** ${status.replace('_', ' ').toUpperCase()}\n\n${feedback ? '**Moderator Feedback:**\n' + feedback : ''}`,
+                embeds: [
+                    {
+                        title: 'Character: ' + character.name,
+                        description: character.bio ? character.bio.substring(0, 500) : 'No bio provided',
+                        fields: [
+                            { name: 'Classification', value: character.classification || 'Unknown', inline: true },
+                            { name: 'Playbook', value: character.playbook || 'Unknown', inline: true },
+                            { name: 'Submission ID', value: submissionId, inline: true }
+                        ],
+                        color: status === 'approved' ? 6732650 : status === 'changes_requested' ? 16755200 : 16711680
+                    }
+                ]
+            };
+            
+            // Send to Discord (you'll need to configure the webhook)
+            try {
+                const response = await fetch('../api/send-discord-notification.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(message)
+                });
+            } catch (error) {
+                console.error('Failed to send Discord notification:', error);
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', loadSubmissions);
+    </script>
+</body>
+</html>

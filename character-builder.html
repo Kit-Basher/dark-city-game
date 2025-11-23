@@ -713,10 +713,16 @@
             <!-- Submission Options Modal -->
             <div id="submissionModal" class="modal" style="display: none;">
                 <div class="modal-content">
-                    <h3>Choose Your Submission Method</h3>
-                    <p style="color: white;">Select how you'd like to submit your character sheet:</p>
+                    <h3>Submit Character for Review</h3>
+                    <p style="color: white;">Choose how you'd like to submit your character sheet:</p>
                     
                     <div class="submission-options">
+                        <div class="submission-option" onclick="submitForReview()">
+                            <h4>🎮 Submit for Review</h4>
+                            <p>Submit your character to the moderators for approval. You'll be notified on Discord when it's approved or if changes are needed.</p>
+                            <button class="btn btn-primary">Submit for Review</button>
+                        </div>
+                        
                         <div class="submission-option" onclick="copyToClipboard()">
                             <h4>📋 Copy to Clipboard</h4>
                             <p>Copy your character sheet and paste it in Discord or send to a moderator</p>
@@ -1427,6 +1433,60 @@
         
         function closeModal() {
             document.getElementById('submissionModal').style.display = 'none';
+        }
+        
+        // Submit for review function
+        async function submitForReview() {
+            const characterData = getCharacterData();
+            
+            if (!characterData.name) {
+                alert('Please enter a character name before submitting.');
+                return;
+            }
+            
+            if (!characterData.playbook) {
+                alert('Please select a playbook before submitting.');
+                return;
+            }
+            
+            try {
+                // Show loading state
+                const submitButton = event.target;
+                const originalText = submitButton.textContent;
+                submitButton.textContent = 'Submitting...';
+                submitButton.disabled = true;
+                
+                // Submit to API
+                const response = await fetch('api/submit-character.html', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(characterData)
+                });
+                
+                if (response.ok) {
+                    // Save character locally as backup
+                    saveCharacterWithRedundancy(characterData);
+                    
+                    // Show success message
+                    alert('✅ Character submitted successfully!\n\nYour character has been sent to the moderators for review. You will be notified on Discord when it\'s approved or if changes are needed.\n\nSubmission ID will be shown on the next page.');
+                    
+                    // Redirect to submission confirmation page
+                    window.open('api/submit-character.html', '_blank');
+                    closeModal();
+                } else {
+                    throw new Error('Submission failed');
+                }
+                
+            } catch (error) {
+                console.error('Submission error:', error);
+                alert('❌ Failed to submit character. Please try again or use an alternative submission method.');
+            } finally {
+                // Reset button state
+                submitButton.textContent = originalText;
+                submitButton.disabled = false;
+            }
         }
         
         // Copy to clipboard function

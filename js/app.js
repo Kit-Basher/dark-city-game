@@ -275,8 +275,15 @@ class ContentLoader {
     }
 
     static async loadScenes() {
-        const issues = await GitHubAPI.getIssues('scene');
         const scenesList = document.getElementById('scenesList');
+        
+        // Check if scenesList element exists
+        if (!scenesList) {
+            console.log('Scenes section not found on this page - skipping scenes loading');
+            return;
+        }
+        
+        const issues = await GitHubAPI.getIssues('scene');
         
         if (issues.length === 0) {
             scenesList.innerHTML = '<p>No scenes submitted yet.</p>';

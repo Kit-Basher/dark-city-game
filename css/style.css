@@ -243,7 +243,8 @@ header {
 }
 
 .character-actions,
-.scene-actions {
+.scene-actions,
+.playbook-actions {
     display: flex;
     gap: 1rem;
     justify-content: center;

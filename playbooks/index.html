@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Playbooks - Dark City RPG</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .playbooks-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .playbook-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .playbook-card {
+            background: #1a1a1a;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #4a5568;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .playbook-card:hover {
+            transform: translateY(-5px);
+            border-color: #ff6b35;
+            box-shadow: 0 10px 30px rgba(255, 107, 53, 0.3);
+        }
+        
+        .playbook-header {
+            background: linear-gradient(135deg, #ff6b35 0%, #e55a2b 100%);
+            padding: 1.5rem;
+            text-align: center;
+        }
+        
+        .playbook-header h3 {
+            color: white;
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .playbook-subtypes {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+        
+        .playbook-content {
+            padding: 1.5rem;
+        }
+        
+        .playbook-description {
+            color: #ccc;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+        
+        .playbook-features {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .playbook-features li {
+            background: #2a2a2a;
+            padding: 0.5rem;
+            margin: 0.5rem 0;
+            border-radius: 5px;
+            border-left: 3px solid #ff6b35;
+            font-size: 0.9rem;
+        }
+        
+        .back-link {
+            color: #ff6b35;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .back-link:hover {
+            color: #e55a2b;
+        }
+        
+        .intro-section {
+            background: #1a1a1a;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            border: 1px solid #4a5568;
+        }
+        
+        .intro-section h2 {
+            color: #ff6b35;
+            margin-bottom: 1rem;
+        }
+        
+        .intro-section p {
+            color: #ccc;
+            line-height: 1.6;
+        }
+        
+        .filter-buttons {
+            display: flex;
+            gap: 1rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            background: #2a2a2a;
+            color: #ff6b35;
+            border: 1px solid #ff6b35;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: #ff6b35;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="../index.html#rules" class="back-link">← Back to Rules</a>
+        
+        <div class="playbooks-container">
+            <h1>🎭 Playbooks</h1>
+            
+            <div class="intro-section">
+                <h2>Choose Your Path</h2>
+                <p>Playbooks are your character classes in Dark City. Each playbook represents a different type of supernatural being or extraordinary individual. When you create a character, you choose one playbook and gain access to its main moves plus one subtype specialization.</p>
+                <p>Each playbook contains multiple moves - choose three from your main playbook and/or your chosen subtype to start your character's journey.</p>
+            </div>
+            
+            <div class="filter-buttons">
+                <button class="filter-btn active" onclick="filterPlaybooks('all')">All Playbooks</button>
+                <button class="filter-btn" onclick="filterPlaybooks('immortal')">Immortal</button>
+                <button class="filter-btn" onclick="filterPlaybooks('magical')">Magical</button>
+                <button class="filter-btn" onclick="filterPlaybooks('physical')">Physical</button>
+                <button class="filter-btn" onclick="filterPlaybooks('social')">Social</button>
+                <button class="filter-btn" onclick="filterPlaybooks('dark')">Dark</button>
+            </div>
+            
+            <div class="playbook-grid" id="playbookGrid">
+                <!-- Playbooks will be loaded here -->
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const playbooks = [
+            {
+                name: "Ageless",
+                subtypes: "Immortal, Phoenix, Gargoyle",
+                description: "You've seen generations pass, seen eras come and go. You really have been around and got a chance to witness the human animal in its home environment.",
+                features: ["Ancient wisdom", "Timeless perspective", "Supernatural resilience"],
+                category: "immortal",
+                file: "ageless.html"
+            },
+            {
+                name: "Ancient",
+                subtypes: "Dragon, Mummy, Serpentine",
+                description: "Primordial beings from the dawn of time, ancient beyond human comprehension and wielding powers that shaped civilizations.",
+                features: ["Primordial power", "Ancient knowledge", "Elemental control"],
+                category: "immortal",
+                file: "ancient.html"
+            },
+            {
+                name: "Aquatic",
+                subtypes: "Nymph, Mermaid, Creature",
+                description: "Beings of water and tide, connected to the mysterious depths and the ancient secrets they hold.",
+                features: ["Water manipulation", "Underwater adaptation", "Siren's call"],
+                category: "magical",
+                file: "aquatic.html"
+            },
+            {
+                name: "Aware",
+                subtypes: "Reaper, Psychic, Oracle",
+                description: "Those who perceive beyond the veil, touching the supernatural realms and seeing what others cannot.",
+                features: ["Supernatural perception", "Psychic abilities", "Death insight"],
+                category: "magical",
+                file: "aware.html"
+            },
+            {
+                name: "Champion",
+                subtypes: "Chosen, Cassandra, Guardian",
+                description: "Heroes chosen by fate or destiny, blessed with extraordinary abilities to protect the innocent and fight darkness.",
+                features: ["Destined power", "Protective instincts", "Heroic destiny"],
+                category: "physical",
+                file: "champion.html"
+            },
+            {
+                name: "Construct",
+                subtypes: "Galatea, Clockwork, Homunculus",
+                description: "Artificial beings given life through magic or science, struggling with their nature and purpose.",
+                features: ["Artificial body", "Enhanced attributes", "Purpose-driven"],
+                category: "physical",
+                file: "construct.html"
+            },
+            {
+                name: "Covert",
+                subtypes: "Anansi, Hobgoblin, Cuckoo",
+                description: "Masters of deception and infiltration, these beings thrive in shadows and secrets.",
+                features: ["Stealth mastery", "Deception arts", "Shadow manipulation"],
+                category: "social",
+                file: "covert.html"
+            },
+            {
+                name: "Darkling",
+                subtypes: "Infernal, Proxy, Condemned",
+                description: "Beings touched by darkness, walking the line between damnation and redemption.",
+                features: ["Dark powers", "Moral conflict", "Infernal connections"],
+                category: "dark",
+                file: "darkling.html"
+            },
+            {
+                name: "Fae",
+                subtypes: "Fairy, Dryad, Pan",
+                description: "Beings of ancient magic and nature, connected to the wild places and the old ways.",
+                features: ["Nature magic", "Fae enchantments", "Wild freedom"],
+                category: "magical",
+                file: "fae.html"
+            },
+            {
+                name: "Giant",
+                subtypes: "Sasquatch, Minotaur, Hercules",
+                description: "Beings of immense size and strength, towering over mortals and carrying the weight of their power.",
+                features: ["Immense strength", "Giant stature", "Raw power"],
+                category: "physical",
+                file: "giant.html"
+            },
+            {
+                name: "Gifted",
+                subtypes: "Artist, Siren, Prometheus",
+                description: "Those blessed with extraordinary talents that border on supernatural, their gifts both blessing and curse.",
+                features: ["Exceptional talent", "Inspired creativity", "Supernatural artistry"],
+                category: "social",
+                file: "gifted.html"
+            },
+            {
+                name: "Incarnation",
+                subtypes: "Chrysalis, Calaca, Ghost",
+                description: "Beings who embody concepts or exist between states, neither fully alive nor dead.",
+                features: ["Conceptual power", "Between states", "Transformation mastery"],
+                category: "magical",
+                file: "incarnation.html"
+            },
+            {
+                name: "Legend",
+                subtypes: "Sphinx, Fallen Angel, Kitsune+",
+                description: "Mythic beings of immense power and renown, whose very names inspire awe and fear.",
+                features: ["Legendary status", "Mythic powers", "Ancient renown"],
+                category: "immortal",
+                file: "legend.html"
+            },
+            {
+                name: "Mad",
+                subtypes: "Hydra, Jekyll, Fury",
+                description: "Beings struggling with fractured minds and dual natures, walking the fine line between genius and insanity.",
+                features: ["Split personality", "Unpredictable power", "Mad insight"],
+                category: "dark",
+                file: "mad.html"
+            },
+            {
+                name: "Mage",
+                subtypes: "Wizard, Witch, Warlock",
+                description: "Masters of arcane arts, wielding the fundamental forces of reality through study and will.",
+                features: ["Arcane mastery", "Spell casting", "Magical knowledge"],
+                category: "magical",
+                file: "mage.html"
+            },
+            {
+                name: "Mortal",
+                subtypes: "Smitten, Neighbour, Sighted",
+                description: "Ordinary humans touched by the supernatural world, maintaining their humanity while facing the impossible.",
+                features: ["Human resilience", "Adaptability", "Mortal perspective"],
+                category: "social",
+                file: "mortal.html"
+            },
+            {
+                name: "Patron",
+                subtypes: "Muse, Djinn, Devil",
+                description: "Beings who grant power and make deals, their bargains always coming at a price.",
+                features: ["Deal making", "Power granting", "Contract magic"],
+                category: "dark",
+                file: "patron.html"
+            },
+            {
+                name: "Unsated",
+                subtypes: "Vampire, Ghoul, Succubus",
+                description: "Beings driven by eternal hunger, their existence defined by what they must consume to survive.",
+                features: ["Life drain", "Eternal hunger", "Predatory nature"],
+                category: "dark",
+                file: "unsated.html"
+            },
+            {
+                name: "Wild",
+                subtypes: "Werewolf, Werebeast, Shifter",
+                description: "Beings who walk between worlds, part human and part beast, embracing their primal nature.",
+                features: ["Shapeshifting", "Primal rage", "Beast mastery"],
+                category: "physical",
+                file: "wild.html"
+            }
+        ];
+        
+        function renderPlaybooks(filter = 'all') {
+            const grid = document.getElementById('playbookGrid');
+            grid.innerHTML = '';
+            
+            const filteredPlaybooks = filter === 'all' 
+                ? playbooks 
+                : playbooks.filter(p => p.category === filter);
+            
+            filteredPlaybooks.forEach(playbook => {
+                const card = document.createElement('div');
+                card.className = 'playbook-card';
+                card.onclick = () => window.location.href = playbook.file;
+                
+                card.innerHTML = `
+                    <div class="playbook-header">
+                        <h3>${playbook.name}</h3>
+                        <div class="playbook-subtypes">${playbook.subtypes}</div>
+                    </div>
+                    <div class="playbook-content">
+                        <p class="playbook-description">${playbook.description}</p>
+                        <ul class="playbook-features">
+                            ${playbook.features.map(f => `<li>${f}</li>`).join('')}
+                        </ul>
+                    </div>
+                `;
+                
+                grid.appendChild(card);
+            });
+        }
+        
+        function filterPlaybooks(category) {
+            // Update active button
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Render filtered playbooks
+            renderPlaybooks(category);
+        }
+        
+        // Initial render
+        renderPlaybooks();
+    </script>
+</body>
+</html>

@@ -190,6 +190,76 @@
             padding: 0.25rem 0.5rem;
             font-size: 0.8rem;
         }
+        
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            background: #2a2a2a;
+            border: 2px solid #ff6b35;
+            border-radius: 10px;
+            padding: 2rem;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .modal-content h3 {
+            color: #ff6b35;
+            margin-bottom: 1rem;
+        }
+        
+        .submission-options {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        
+        .submission-option {
+            background: #1a1a1a;
+            border: 1px solid #4a5568;
+            border-radius: 8px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .submission-option:hover {
+            border-color: #ff6b35;
+            transform: translateY(-2px);
+        }
+        
+        .submission-option h4 {
+            color: #ff6b35;
+            margin-bottom: 0.5rem;
+        }
+        
+        .submission-option p {
+            color: white;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+        
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid #4a5568;
+        }
     </style>
 </head>
 <body>
@@ -571,9 +641,41 @@
                 <!-- Action Buttons -->
                 <div class="action-buttons">
                     <button type="button" class="btn btn-secondary" onclick="updatePreview()">Update Preview</button>
-                    <button type="submit" class="btn btn-primary">Submit Character Sheet</button>
+                    <button type="button" class="btn btn-primary" onclick="showSubmissionOptions()">Submit Character Sheet</button>
                 </div>
             </form>
+            
+            <!-- Submission Options Modal -->
+            <div id="submissionModal" class="modal" style="display: none;">
+                <div class="modal-content">
+                    <h3>Choose Your Submission Method</h3>
+                    <p style="color: white;">Select how you'd like to submit your character sheet:</p>
+                    
+                    <div class="submission-options">
+                        <div class="submission-option" onclick="copyToClipboard()">
+                            <h4>📋 Copy to Clipboard</h4>
+                            <p>Copy your character sheet and paste it in Discord or send to a moderator</p>
+                            <button class="btn btn-secondary">Copy Character Sheet</button>
+                        </div>
+                        
+                        <div class="submission-option" onclick="downloadCharacter()">
+                            <h4>💾 Download as File</h4>
+                            <p>Save your character sheet as a text file to share later</p>
+                            <button class="btn btn-secondary">Download Character</button>
+                        </div>
+                        
+                        <div class="submission-option" onclick="submitViaGitHub()">
+                            <h4>🐙 Submit via GitHub</h4>
+                            <p>Submit directly to the game repository (requires GitHub account)</p>
+                            <button class="btn btn-outline">Submit to GitHub</button>
+                        </div>
+                    </div>
+                    
+                    <div class="modal-actions">
+                        <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     
@@ -737,15 +839,67 @@
             document.getElementById('preview').innerHTML = `<pre style="white-space: pre-wrap; font-family: monospace; font-size: 0.9rem;">${preview}</pre>`;
         }
         
-        // Handle form submission
-        document.getElementById('characterForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            // Generate the final character sheet
+        // Modal functions
+        function showSubmissionOptions() {
+            // Generate preview first
             updatePreview();
+            document.getElementById('submissionModal').style.display = 'flex';
+        }
+        
+        function closeModal() {
+            document.getElementById('submissionModal').style.display = 'none';
+        }
+        
+        // Copy to clipboard function
+        function copyToClipboard() {
             const characterSheet = document.getElementById('preview').textContent;
             
-            // Create GitHub issue
+            // Create temporary textarea to copy text
+            const textarea = document.createElement('textarea');
+            textarea.value = characterSheet;
+            document.body.appendChild(textarea);
+            textarea.select();
+            
+            try {
+                document.execCommand('copy');
+                alert('Character sheet copied to clipboard! You can now paste it in Discord or send it to a moderator.');
+                closeModal();
+            } catch (err) {
+                // Fallback for modern browsers
+                navigator.clipboard.writeText(characterSheet).then(() => {
+                    alert('Character sheet copied to clipboard! You can now paste it in Discord or send it to a moderator.');
+                    closeModal();
+                }).catch(() => {
+                    alert('Failed to copy to clipboard. Please try the download option instead.');
+                });
+            }
+            
+            document.body.removeChild(textarea);
+        }
+        
+        // Download character sheet function
+        function downloadCharacter() {
+            const characterSheet = document.getElementById('preview').textContent;
+            const characterName = document.getElementById('name').value || 'character';
+            
+            // Create blob and download link
+            const blob = new Blob([characterSheet], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${characterName.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_character_sheet.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+            
+            alert('Character sheet downloaded! You can share this file with moderators or other players.');
+            closeModal();
+        }
+        
+        // GitHub submission function (original method)
+        function submitViaGitHub() {
+            const characterSheet = document.getElementById('preview').textContent;
             const title = `[Character] ${document.getElementById('name').value}`;
             const body = characterSheet;
             
@@ -754,8 +908,14 @@
             // Open GitHub issue creation page
             window.open(issueUrl, '_blank');
             
-            // Show success message
-            alert('Character sheet prepared! A new tab will open where you can submit it to GitHub.');
+            alert('Opening GitHub for submission. You will need to log in to GitHub to complete this process.');
+            closeModal();
+        }
+        
+        // Handle form submission (now shows modal instead of direct GitHub)
+        document.getElementById('characterForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            showSubmissionOptions();
         });
         
         // Auto-update preview on input change

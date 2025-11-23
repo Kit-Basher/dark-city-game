@@ -8,8 +8,27 @@
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     line-height: 1.6;
-    color: #333;
+    color: white;
     background-color: #1a1a1a;
+}
+
+/* Ensure all text elements inherit proper color */
+p, span, div, td, th, li, a:not(.btn), label, input, textarea, select {
+    color: inherit;
+}
+
+/* Specific fixes for common text elements */
+h1, h2, h3, h4, h5, h6 {
+    color: white;
+}
+
+a {
+    color: #ff6b35;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #e55a2b;
 }
 
 .container {

@@ -164,42 +164,46 @@
         </div>
     </div>
     
+    <script src="../api/submit-character.js"></script>
     <script>
         let allCharacters = [];
         
-        // Load approved characters from API
+        // Load approved characters from JavaScript system
         async function loadApprovedCharacters() {
             try {
-                // Load from approved characters API
-                const response = await fetch('../data/approved-characters.json');
-                const approvedData = await response.json();
+                // Initialize submission system
+                const submissionSystem = new CharacterSubmission();
+                
+                // Get approved submissions
+                const approvedSubmissions = submissionSystem.getApprovedSubmissions();
                 
                 // Convert to character format
-                const approvedCharacters = Object.values(approvedData).map(item => ({
-                    id: item.submission_id,
-                    name: item.character.name,
-                    playbook: item.character.playbook,
-                    classification: item.character.classification,
-                    bio: item.character.bio,
-                    apparentAge: item.character.apparentAge,
-                    actualAge: item.character.actualAge,
-                    subtype: item.character.subtype,
-                    skills: item.character.skills,
-                    moves: item.character.moves,
-                    darkestSelf: item.character.darkestSelf,
+                const approvedCharacters = approvedSubmissions.map(submission => ({
+                    id: submission.id,
+                    name: submission.character.name,
+                    playbook: submission.character.playbook,
+                    classification: submission.character.classification,
+                    bio: submission.character.bio,
+                    apparentAge: submission.character.apparentAge,
+                    actualAge: submission.character.actualAge,
+                    subtype: submission.character.subtype,
+                    skills: submission.character.skills,
+                    moves: submission.character.moves,
+                    darkestSelf: submission.character.darkestSelf,
                     approved: true,
-                    approvedAt: item.approved_at,
+                    approvedAt: submission.updated_at || submission.submitted_at,
                     source: 'approved'
                 }));
                 
-                // Combine with existing characters (if any)
-                allCharacters = [...approvedCharacters];
+                // Combine with any existing characters
+                allCharacters = approvedCharacters;
                 displayCharacters(allCharacters);
                 
             } catch (error) {
                 console.error('Failed to load approved characters:', error);
-                // Fallback to existing characters
-                loadExistingCharacters();
+                // Fallback to empty state
+                allCharacters = [];
+                displayCharacters(allCharacters);
             }
         }
         

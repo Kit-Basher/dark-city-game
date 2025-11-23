@@ -142,10 +142,10 @@
         
         <!-- Filter Tabs -->
         <div class="filter-tabs">
-            <button class="filter-tab active" onclick="filterSubmissions('pending')">🕐 Pending Review</button>
-            <button class="filter-tab" onclick="filterSubmissions('approved')">✅ Approved</button>
-            <button class="filter-tab" onclick="filterSubmissions('rejected')">❌ Rejected</button>
-            <button class="filter-tab" onclick="filterSubmissions('all')">📋 All Submissions</button>
+            <button class="filter-tab active" data-filter="pending">🕐 Pending Review</button>
+            <button class="filter-tab" data-filter="approved">✅ Approved</button>
+            <button class="filter-tab" data-filter="rejected">❌ Rejected</button>
+            <button class="filter-tab" data-filter="all">📋 All Submissions</button>
         </div>
         
         <!-- Submissions List -->
@@ -154,6 +154,8 @@
         </div>
     </div>
 
+    <script src="../api/submit-character.js"></script>
+    <script src="moderator.js"></script>
     <script>
         let currentFilter = 'pending';
         let allSubmissions = [];

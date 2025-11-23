@@ -7,7 +7,13 @@ class ModeratorPanel {
     }
 
     init() {
-        // Check for sessionStorage imports first
+        // Check for URL parameters first
+        this.checkUrlParameters();
+        
+        // Check for cross-page notifications
+        this.checkCrossPageNotifications();
+        
+        // Check for sessionStorage imports
         const hasImported = this.submissionSystem.checkSessionStorageImports();
         if (hasImported) {
             console.log('🔄 Imported pending submission from sessionStorage');
@@ -18,6 +24,116 @@ class ModeratorPanel {
         this.setupStorageListener();
         this.setupAutoRefresh();
         this.setupMessageListener();
+        this.setupPostMessageListener();
+    }
+
+    // Check URL parameters for submission data
+    checkUrlParameters() {
+        try {
+            const urlParams = new URLSearchParams(window.location.search);
+            const submissionData = urlParams.get('submission');
+            
+            if (submissionData) {
+                console.log('🔍 Found submission in URL parameters');
+                
+                try {
+                    const submission = JSON.parse(atob(submissionData));
+                    console.log('📥 Imported submission from URL:', submission);
+                    
+                    // Save to localStorage
+                    this.submissionSystem.saveSubmission(submission);
+                    
+                    // Clear URL parameters
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                    
+                    // Show success message
+                    alert('✅ Character submission imported from URL!');
+                    
+                    return true;
+                } catch (error) {
+                    console.error('❌ Failed to parse URL submission data:', error);
+                }
+            }
+        } catch (error) {
+            console.error('❌ Error checking URL parameters:', error);
+        }
+        
+        return false;
+    }
+
+    // Check for cross-page notifications
+    checkCrossPageNotifications() {
+        try {
+            const storageKey = 'crossPageSubmission';
+            
+            // Check localStorage
+            const localData = localStorage.getItem(storageKey);
+            if (localData) {
+                const data = JSON.parse(localData);
+                const age = Date.now() - data.timestamp;
+                
+                if (age < 300000) { // 5 minutes
+                    console.log('📥 Found cross-page notification in localStorage:', data);
+                    this.submissionSystem.saveSubmission(data.submission);
+                    localStorage.removeItem(storageKey);
+                    return true;
+                }
+            }
+            
+            // Check sessionStorage
+            const sessionData = sessionStorage.getItem(storageKey);
+            if (sessionData) {
+                const data = JSON.parse(sessionData);
+                const age = Date.now() - data.timestamp;
+                
+                if (age < 300000) { // 5 minutes
+                    console.log('📥 Found cross-page notification in sessionStorage:', data);
+                    this.submissionSystem.saveSubmission(data.submission);
+                    sessionStorage.removeItem(storageKey);
+                    return true;
+                }
+            }
+        } catch (error) {
+            console.error('❌ Error checking cross-page notifications:', error);
+        }
+        
+        return false;
+    }
+
+    // Setup postMessage listener
+    setupPostMessageListener() {
+        window.addEventListener('message', (event) => {
+            if (event.data.type === 'characterSubmission' && event.data.action === 'newSubmission') {
+                console.log('📨 Received postMessage notification:', event.data);
+                
+                const submission = event.data.data.submission;
+                this.submissionSystem.saveSubmission(submission);
+                
+                // Refresh the display
+                this.loadSubmissions();
+                
+                // Show notification
+                this.showNotification('📥 New character submission received!');
+            }
+        });
+    }
+
+    // Show notification
+    showNotification(message) {
+        const notification = document.createElement('div');
+        notification.style.cssText = `
+            position: fixed; top: 20px; right: 20px; 
+            background: #4CAF50; color: white; 
+            padding: 1rem; border-radius: 5px; 
+            z-index: 1000; animation: slideIn 0.3s ease;
+        `;
+        notification.textContent = message;
+        
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.remove();
+        }, 3000);
     }
 
     setupMessageListener() {

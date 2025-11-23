@@ -152,21 +152,52 @@ class CharacterSubmission {
     // Create shareable URL for moderator panel
     createShareableUrl(submission) {
         try {
-            // Compress the submission data
-            const compressed = btoa(JSON.stringify(submission)).substring(0, 1000); // Limit URL length
+            console.log('CharacterSubmission: Creating shareable URL for cross-page sync...');
             
-            // Create a shareable URL
-            const shareUrl = `${window.location.origin}/moderator/?import=${compressed}`;
+            // Store the latest submission in sessionStorage with timestamp
+            sessionStorage.setItem('latestSubmission', JSON.stringify(submission));
+            sessionStorage.setItem('latestSubmissionTimestamp', Date.now().toString());
+            
+            // Create a URL with the submission data as a parameter
+            const submissionData = btoa(JSON.stringify(submission)).substring(0, 800); // Limit URL length
+            const shareUrl = `${window.location.origin}/moderator/?submission=${submissionData}`;
+            
             console.log('CharacterSubmission: Shareable URL created:', shareUrl);
             
-            // Store in sessionStorage for moderator panel to find
-            sessionStorage.setItem('pendingSubmission', JSON.stringify(submission));
-            sessionStorage.setItem('pendingSubmissionTimestamp', Date.now().toString());
-            
-            console.log('CharacterSubmission: Stored in sessionStorage for moderator panel');
+            // Also try to create a simple notification system
+            this.createCrossPageNotification(submission);
             
         } catch (error) {
             console.log('CharacterSubmission: Could not create shareable URL:', error);
+        }
+    }
+
+    // Create cross-page notification system
+    createCrossPageNotification(submission) {
+        try {
+            // Store in multiple locations for redundancy
+            const storageKey = 'crossPageSubmission';
+            const data = {
+                submission: submission,
+                timestamp: Date.now(),
+                source: 'character-builder'
+            };
+            
+            // Try different storage methods
+            localStorage.setItem(storageKey, JSON.stringify(data));
+            sessionStorage.setItem(storageKey, JSON.stringify(data));
+            
+            // Create a global event that other pages can listen for
+            window.parent.postMessage({
+                type: 'characterSubmission',
+                action: 'newSubmission',
+                data: data
+            }, '*');
+            
+            console.log('CharacterSubmission: Cross-page notification created');
+            
+        } catch (error) {
+            console.log('CharacterSubmission: Cross-page notification failed:', error);
         }
     }
 

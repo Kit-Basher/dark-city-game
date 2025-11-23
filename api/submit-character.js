@@ -72,10 +72,28 @@ class CharacterSubmission {
         }
     }
 
-    // Get all submissions
+    // Get all submissions (with fallback to backup)
     getSubmissions() {
-        const stored = localStorage.getItem(this.storageKey);
-        return stored ? JSON.parse(stored) : {};
+        let stored = localStorage.getItem(this.storageKey);
+        
+        // Try backup key if primary is empty
+        if (!stored) {
+            stored = localStorage.getItem('darkCitySubmissions_backup');
+        }
+        
+        // Try both keys and merge
+        const primary = stored ? JSON.parse(stored) : {};
+        const backup = localStorage.getItem('darkCitySubmissions_backup');
+        const backupData = backup ? JSON.parse(backup) : {};
+        
+        // Merge both sources
+        const merged = { ...backupData, ...primary };
+        
+        // Update storage with merged data
+        localStorage.setItem(this.storageKey, JSON.stringify(merged));
+        localStorage.setItem('darkCitySubmissions_backup', JSON.stringify(merged));
+        
+        return merged;
     }
 
     // Get pending submissions
@@ -90,11 +108,20 @@ class CharacterSubmission {
         return Object.values(submissions).filter(s => s.status === 'approved');
     }
 
-    // Save submission to localStorage
+    // Save submission to localStorage with cross-page sharing
     saveSubmission(submission) {
         const submissions = this.getSubmissions();
         submissions[submission.id] = submission;
         localStorage.setItem(this.storageKey, JSON.stringify(submissions));
+        
+        // Also save to a backup key for cross-page access
+        const backupKey = 'darkCitySubmissions_backup';
+        localStorage.setItem(backupKey, JSON.stringify(submissions));
+        
+        // Dispatch custom event to notify other pages
+        window.dispatchEvent(new CustomEvent('characterSubmission', {
+            detail: { action: 'saved', submission: submission }
+        }));
     }
 
     // Generate unique submission ID

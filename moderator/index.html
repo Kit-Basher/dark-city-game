@@ -120,6 +120,11 @@
         <h1>🛡️ Moderator Panel</h1>
         <p>Review and approve character submissions</p>
         
+        <div style="margin-bottom: 1rem;">
+            <button class="btn btn-outline" onclick="moderatorPanel.loadSubmissions()">🔄 Refresh Submissions</button>
+            <span id="lastRefresh" style="color: #ccc; margin-left: 1rem;">Last refresh: Never</span>
+        </div>
+        
         <!-- Statistics -->
         <div class="stats-grid">
             <div class="stat-card">

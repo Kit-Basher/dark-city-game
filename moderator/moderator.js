@@ -9,6 +9,33 @@ class ModeratorPanel {
     init() {
         this.loadSubmissions();
         this.setupEventListeners();
+        this.setupStorageListener();
+        this.setupAutoRefresh();
+    }
+
+    setupStorageListener() {
+        // Listen for storage changes from other pages
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'darkCitySubmissions' || e.key === 'darkCitySubmissions_backup') {
+                console.log('Storage changed, refreshing submissions...');
+                this.loadSubmissions();
+            }
+        });
+
+        // Listen for custom events from same page
+        window.addEventListener('characterSubmission', (e) => {
+            console.log('Character submission event:', e.detail);
+            if (e.detail.action === 'saved') {
+                this.loadSubmissions();
+            }
+        });
+    }
+
+    setupAutoRefresh() {
+        // Refresh every 30 seconds to catch new submissions
+        setInterval(() => {
+            this.loadSubmissions();
+        }, 30000);
     }
 
     setupEventListeners() {
@@ -23,13 +50,20 @@ class ModeratorPanel {
     // Load submissions from localStorage
     async loadSubmissions() {
         try {
+            console.log('Loading submissions...');
             const submissions = this.submissionSystem.getSubmissions();
+            console.log('Loaded submissions:', submissions);
             this.allSubmissions = Object.values(submissions);
+            console.log('Submission array:', this.allSubmissions);
             this.updateStats();
             this.displaySubmissions();
+            
+            // Update last refresh time
+            document.getElementById('lastRefresh').textContent = 'Last refresh: ' + new Date().toLocaleTimeString();
+            
         } catch (error) {
             console.error('Failed to load submissions:', error);
-            this.showError('Failed to load submissions');
+            this.showError('Failed to load submissions: ' + error.message);
         }
     }
 

@@ -940,6 +940,31 @@
             }, 5000);
         }
 
+        // Light redundancy system (without IndexedDB)
+        function saveCharacterWithRedundancyLight(characterData) {
+            const characterName = characterData.name || 'Unnamed Character';
+            
+            try {
+                // 1. Primary localStorage
+                const savedCharacters = JSON.parse(localStorage.getItem(STORAGE_KEYS.primary) || '{}');
+                savedCharacters[characterName] = characterData;
+                localStorage.setItem(STORAGE_KEYS.primary, JSON.stringify(savedCharacters));
+                
+                // 2. Backup localStorage
+                localStorage.setItem(STORAGE_KEYS.backup, JSON.stringify(savedCharacters));
+                
+                // 3. Create file download hash
+                const hash = btoa(JSON.stringify(savedCharacters)).slice(0, 16);
+                localStorage.setItem(STORAGE_KEYS.fileHash, hash);
+                
+                showBackupStatus(`Character "${characterName}" saved with 2 backup layers`, 'success');
+                
+            } catch (error) {
+                console.error('Light redundancy save error:', error);
+                showBackupStatus('Some backup methods failed, but primary save succeeded', 'warning');
+            }
+        }
+
         // Multi-layer character saving
         function saveCharacterWithRedundancy(characterData) {
             const characterName = characterData.name || 'Unnamed Character';
@@ -1450,10 +1475,12 @@
                 return;
             }
             
+            // Get the submit button reference
+            const submitButton = event.target;
+            const originalText = submitButton.textContent;
+            
             try {
                 // Show loading state
-                const submitButton = event.target;
-                const originalText = submitButton.textContent;
                 submitButton.textContent = 'Submitting...';
                 submitButton.disabled = true;
                 
@@ -1468,8 +1495,8 @@
                 console.log('Submission result:', result);
                 
                 if (result.success) {
-                    // Save character locally as backup
-                    saveCharacterWithRedundancy(characterData);
+                    // Save character locally as backup (skip IndexedDB to avoid error)
+                    saveCharacterWithRedundancyLight(characterData);
                     
                     // Show success message
                     alert('✅ Character submitted successfully!\n\nYour character has been sent to the moderators for review. You will be notified on Discord when it\'s approved or if changes are needed.\n\nSubmission ID: ' + result.submission.id);

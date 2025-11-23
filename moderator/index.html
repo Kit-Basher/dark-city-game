@@ -165,18 +165,10 @@
         let currentFilter = 'pending';
         let allSubmissions = [];
 
-        // Load submissions from data file
+        // Load submissions from JavaScript system (handled by moderator.js)
         async function loadSubmissions() {
-            try {
-                const response = await fetch('../data/pending-submissions.json');
-                const data = await response.json();
-                allSubmissions = Object.values(data);
-                updateStats();
-                displaySubmissions();
-            } catch (error) {
-                console.error('Failed to load submissions:', error);
-                document.getElementById('submissionsList').innerHTML = '<p>No submissions found or failed to load data.</p>';
-            }
+            // This function is handled by moderator.js - keeping to prevent errors
+            console.log('Legacy loadSubmissions called - should be handled by moderator.js');
         }
 
         // Update statistics

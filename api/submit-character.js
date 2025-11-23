@@ -8,6 +8,8 @@ class CharacterSubmission {
     // Submit character for review
     async submitCharacter(characterData) {
         try {
+            console.log('CharacterSubmission: Starting submission for', characterData.name);
+            
             // Create submission record
             const submission = {
                 id: this.generateId(),
@@ -16,12 +18,18 @@ class CharacterSubmission {
                 submitted_at: new Date().toISOString(),
                 submitted_by: this.getClientId()
             };
+            
+            console.log('CharacterSubmission: Created submission', submission);
 
             // Save to localStorage (fallback for GitHub Pages)
             this.saveSubmission(submission);
+            
+            console.log('CharacterSubmission: Saved to localStorage');
 
             // Send Discord notification
             await this.sendDiscordNotification(submission, 'new_submission');
+            
+            console.log('CharacterSubmission: Discord notification sent');
 
             return {
                 success: true,
@@ -29,7 +37,7 @@ class CharacterSubmission {
             };
 
         } catch (error) {
-            console.error('Submission error:', error);
+            console.error('CharacterSubmission: Submission error:', error);
             return {
                 success: false,
                 error: error.message
@@ -110,18 +118,32 @@ class CharacterSubmission {
 
     // Save submission to localStorage with cross-page sharing
     saveSubmission(submission) {
+        console.log('CharacterSubmission: Saving submission', submission.id);
+        
         const submissions = this.getSubmissions();
         submissions[submission.id] = submission;
-        localStorage.setItem(this.storageKey, JSON.stringify(submissions));
+        
+        const dataString = JSON.stringify(submissions);
+        console.log('CharacterSubmission: Data to save:', dataString);
+        
+        localStorage.setItem(this.storageKey, dataString);
         
         // Also save to a backup key for cross-page access
         const backupKey = 'darkCitySubmissions_backup';
-        localStorage.setItem(backupKey, JSON.stringify(submissions));
+        localStorage.setItem(backupKey, dataString);
+        
+        console.log('CharacterSubmission: Saved to both localStorage keys');
+        
+        // Verify it was saved
+        const verify = localStorage.getItem(this.storageKey);
+        console.log('CharacterSubmission: Verification - stored data length:', verify ? verify.length : 'null');
         
         // Dispatch custom event to notify other pages
         window.dispatchEvent(new CustomEvent('characterSubmission', {
             detail: { action: 'saved', submission: submission }
         }));
+        
+        console.log('CharacterSubmission: Dispatched custom event');
     }
 
     // Generate unique submission ID

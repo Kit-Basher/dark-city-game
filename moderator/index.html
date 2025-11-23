@@ -120,11 +120,11 @@
         <h1>🛡️ Moderator Panel</h1>
         <p>Review and approve character submissions</p>
         
-        <div style="margin-bottom: 1rem;">
+        <div style="margin-bottom: 1rem; display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
             <button class="btn btn-outline" onclick="moderatorPanel.loadSubmissions()">🔄 Refresh Submissions</button>
             <button class="btn btn-outline" onclick="moderatorPanel.checkSessionStorage()">📥 Check Session Storage</button>
             <button class="btn btn-outline" onclick="moderatorPanel.showDataImport()">📋 Import Data</button>
-            <span id="lastRefresh" style="color: #ccc; margin-left: 1rem;">Last refresh: Never</span>
+            <span id="lastRefresh" style="color: #ccc; margin-left: 1rem; font-size: 0.9rem;">Last refresh: Never</span>
         </div>
         
         <!-- Statistics -->

@@ -195,24 +195,63 @@ class GitHubAPI {
 
     static async parseIssueBody(body) {
         try {
-            // Parse YAML front matter from issue body
-            const yamlMatch = body.match(/^---\n([\s\S]*?)\n---/);
-            if (yamlMatch) {
-                const yaml = yamlMatch[1];
-                // Simple YAML parsing (you might want to use a proper YAML parser)
-                const data = {};
-                yaml.split('\n').forEach(line => {
-                    const [key, ...valueParts] = line.split(':');
-                    if (key && valueParts.length > 0) {
-                        data[key.trim()] = valueParts.join(':').trim();
-                    }
-                });
-                return data;
+            // Parse Dark City character sheet format
+            const characterData = {};
+            
+            // Extract basic info from the first table
+            const nameMatch = body.match(/\|\s*Name:\s*([^|]+)\s*\|/);
+            if (nameMatch) characterData.name = nameMatch[1].trim();
+            
+            const ageMatch = body.match(/\|\s*Apparent Age:\s*([^|]+)\s*\|/);
+            if (ageMatch) characterData.apparentAge = ageMatch[1].trim();
+            
+            const actualAgeMatch = body.match(/\|\s*Actual Age:\s*([^|]+)\s*\|/);
+            if (actualAgeMatch) characterData.actualAge = actualAgeMatch[1].trim();
+            
+            const classificationMatch = body.match(/\|\*\*Classification:\*\*\s*([^|]+)\s*\|/);
+            if (classificationMatch) characterData.classification = classificationMatch[1].trim();
+            
+            const playbookMatch = body.match(/\|\*\*Playbook:\*\*\s*([^|]+)\s*\|/);
+            if (playbookMatch) characterData.playbook = playbookMatch[1].trim();
+            
+            const subtypeMatch = body.match(/\|\*\*Subtype:\*\*\s*([^|]+)\s*\|/);
+            if (subtypeMatch) characterData.subtype = subtypeMatch[1].trim();
+            
+            // Extract character bio
+            const bioMatch = body.match(/\|\s*-Character Bio-\s*\|\s*\n\|\s*:?----\s*\|\s*\n\|\s*([^|]+)\s*\|/);
+            if (bioMatch) characterData.bio = bioMatch[1].trim();
+            
+            // Extract skills
+            characterData.skills = {};
+            const skillMatches = body.matchAll(/\|\s*\+(\d+)\s*\|\s*\?\s*\|\s*([^|]*)\s*\|/g);
+            for (const match of skillMatches) {
+                const level = match[1];
+                const skillName = match[2].trim();
+                if (skillName) {
+                    characterData.skills[skillName] = `+${level}`;
+                }
             }
+            
+            // Extract fate points
+            const fateMatch = body.match(/\|\s*Fate Points\s*\|\s*(\d+)\/\d+\s*\|/);
+            if (fateMatch) characterData.fatePoints = fateMatch[1];
+            
+            // Extract scene archive for calendar
+            characterData.scenes = [];
+            const sceneMatches = body.matchAll(/\|\s*\*\*\[([^\]]+)\]\*\*\s*([^|]+)\s*\|\s*([^|]*)\s*\|/g);
+            for (const match of sceneMatches) {
+                characterData.scenes.push({
+                    title: match[1],
+                    summary: match[2].trim(),
+                    characters: match[3].trim()
+                });
+            }
+            
+            return characterData;
         } catch (error) {
             console.error('Error parsing issue body:', error);
+            return {};
         }
-        return {};
     }
 }
 
@@ -255,11 +294,28 @@ class ContentLoader {
     static createCharacterCard(characterData, issue) {
         const card = document.createElement('div');
         card.className = 'character-card';
+        
+        // Create skills display
+        let skillsHtml = '';
+        if (characterData.skills && Object.keys(characterData.skills).length > 0) {
+            skillsHtml = '<div class="character-skills"><strong>Skills:</strong><ul>';
+            Object.entries(characterData.skills).forEach(([skill, level]) => {
+                skillsHtml += `<li>${skill}: ${level}</li>`;
+            });
+            skillsHtml += '</ul></div>';
+        }
+        
         card.innerHTML = `
             <h3>${characterData.name || 'Unknown Character'}</h3>
-            <p><strong>Class:</strong> ${characterData.class || 'Not specified'}</p>
-            <p><strong>Level:</strong> ${characterData.level || '1'}</p>
-            <p><strong>Description:</strong> ${characterData.description || 'No description available'}</p>
+            <div class="character-info">
+                <p><strong>Classification:</strong> ${characterData.classification || 'Not specified'}</p>
+                <p><strong>Playbook:</strong> ${characterData.playbook || 'Not specified'}</p>
+                <p><strong>Apparent Age:</strong> ${characterData.apparentAge || 'Not specified'}</p>
+                <p><strong>Actual Age:</strong> ${characterData.actualAge || 'Not specified'}</p>
+                ${characterData.fatePoints ? `<p><strong>Fate Points:</strong> ${characterData.fatePoints}/5</p>` : ''}
+            </div>
+            ${characterData.bio ? `<div class="character-bio"><p><strong>Bio:</strong> ${characterData.bio}</p></div>` : ''}
+            ${skillsHtml}
             <a href="${issue.html_url}" class="btn btn-outline" target="_blank">View Full Sheet</a>
         `;
         return card;

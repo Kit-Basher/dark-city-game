@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Character Advancements - Dark City RPG</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .advancements-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .advancements-header {
+            background: linear-gradient(135deg, #ff6b35 0%, #e55a2b 100%);
+            padding: 3rem;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .advancements-header h1 {
+            color: white;
+            font-size: 3rem;
+            margin: 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .advancements-subtitle {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.2rem;
+            margin-top: 1rem;
+        }
+        
+        .section {
+            background: #1a1a1a;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            border: 1px solid #4a5568;
+        }
+        
+        .section h2 {
+            color: #ff6b35;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #ff6b35;
+            padding-bottom: 0.5rem;
+        }
+        
+        .advancement-card {
+            background: #2a2a2a;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border-left: 4px solid #ff6b35;
+        }
+        
+        .advancement-card h3 {
+            color: #ff6b35;
+            margin-bottom: 0.5rem;
+        }
+        
+        .advancement-card p {
+            margin-bottom: 0;
+            line-height: 1.6;
+        }
+        
+        .pdf-download {
+            background: linear-gradient(135deg, #e55a2b 0%, #ff6b35 100%);
+            color: white;
+            padding: 1rem 2rem;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            display: inline-block;
+            margin: 1rem 0;
+            transition: all 0.3s ease;
+        }
+        
+        .pdf-download:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+        }
+        
+        .back-link {
+            color: #ff6b35;
+            text-decoration: none;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            display: inline-block;
+        }
+        
+        .back-link:hover {
+            color: #e55a2b;
+        }
+        
+        .advancement-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .category-section {
+            background: #252525;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+        
+        .category-section h3 {
+            color: #e55a2b;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">← Back to Playbooks</a>
+        
+        <div class="advancements-container">
+            <div class="advancements-header">
+                <h1>Character Advancements</h1>
+                <div class="advancements-subtitle">Choose new moves and abilities as your character grows in power</div>
+            </div>
+            
+            <div class="section">
+                <h2>📖 Advancement Overview</h2>
+                <p>As your characters gain experience and level up, they can choose new moves from the Advancements list. These are specially balanced versions of playbook moves that any character can take, regardless of their original playbook.</p>
+                
+                <div style="text-align: center; margin: 2rem 0;">
+                    <a href="../documents/Advancements Handout.pdf" class="pdf-download" target="_blank">
+                        📄 Download Complete Advancements PDF
+                    </a>
+                </div>
+                
+                <p><strong>How to Use Advancements:</strong></p>
+                <ul>
+                    <li>When your character levels up, choose one new advancement move</li>
+                    <li>These moves are balanced for any character to take</li>
+                    <li>Some advancements have prerequisites or special conditions</li>
+                    <li>Refer to the complete PDF for detailed mechanics and costs</li>
+                </ul>
+            </div>
+            
+            <div class="section">
+                <h2>🎯 Advancement Categories</h2>
+                <p>The Advancements Handout is organized into several categories to help you find the right move for your character:</p>
+                
+                <div class="advancement-grid">
+                    <div class="category-section">
+                        <h3>⚔️ Combat & Physical</h3>
+                        <p>Moves that enhance fighting skills, physical abilities, and combat effectiveness.</p>
+                    </div>
+                    
+                    <div class="category-section">
+                        <h3>🔮 Magic & Supernatural</h3>
+                        <p>Moves that grant magical abilities, supernatural powers, and arcane knowledge.</p>
+                    </div>
+                    
+                    <div class="category-section">
+                        <h3>🧠 Mental & Social</h3>
+                        <p>Moves that improve mental skills, social manipulation, and emotional control.</p>
+                    </div>
+                    
+                    <div class="category-section">
+                        <h3>🦸 Special Abilities</h3>
+                        <p>Unique powers and special abilities that don't fit into other categories.</p>
+                    </div>
+                    
+                    <div class="category-section">
+                        <h3>🛡️ Defensive & Support</h3>
+                        <p>Moves focused on protection, healing, and supporting other characters.</p>
+                    </div>
+                    
+                    <div class="category-section">
+                        <h3>🌟 Unique Powers</h3>
+                        <p>One-of-a-kind abilities and signature moves for advanced characters.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>📋 Advancement Examples</h2>
+                <p>Here are a few examples of the types of moves available in the Advancements Handout:</p>
+                
+                <div class="advancement-card">
+                    <h3>Enhanced Senses</h3>
+                    <p>You gain heightened senses that allow you to perceive things others miss. Take +2 on Notice rolls when using your enhanced senses.</p>
+                </div>
+                
+                <div class="advancement-card">
+                    <h3>Quick Reflexes</h3>
+                    <p>Your reflexes are supernaturally fast. Once per scene, you can automatically succeed on a defense roll against a physical attack.</p>
+                </div>
+                
+                <div class="advancement-card">
+                    <h3>Social Charm</h3>
+                    <p>You have an innate charm that makes people like you. Take +2 on Rapport rolls when trying to persuade or influence others.</p>
+                </div>
+                
+                <div class="advancement-card">
+                    <h3>Minor Magic</h3>
+                    <p>You can perform minor magical effects. Choose one type of minor magic (illusions, telekinesis, elemental control, etc.).</p>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>🎲 Using Advancements in Play</h2>
+                <p><strong>Integration with Playbooks:</strong></p>
+                <ul>
+                    <li>Advancements complement your existing playbook moves</li>
+                    <li>They allow characters to diversify beyond their original playbook</li>
+                    <li>Some advancements work especially well with certain playbook combinations</li>
+                    <li>They provide options for characters who want to branch out</li>
+                </ul>
+                
+                <p><strong>Character Development:</strong></p>
+                <ul>
+                    <li>Choose advancements that reflect your character's growth and experiences</li>
+                    <li>Consider how new abilities fit your character's story arc</li>
+                    <li>Work with your GM to integrate advancements into the narrative</li>
+                    <li>Use advancements to create unique character builds</li>
+                </ul>
+            </div>
+            
+            <div class="section">
+                <h2>📚 Complete Reference</h2>
+                <p>For the complete list of all advancement moves, detailed mechanics, Fate Point costs, and special conditions, please refer to the official Advancements Handout PDF:</p>
+                
+                <div style="text-align: center; margin: 2rem 0;">
+                    <a href="../documents/Advancements Handout.pdf" class="pdf-download" target="_blank">
+                        📄 Download Complete Advancements Handout
+                    </a>
+                </div>
+                
+                <p><em>The PDF contains all available advancement moves with full descriptions, mechanics, and guidelines for character level progression.</em></p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

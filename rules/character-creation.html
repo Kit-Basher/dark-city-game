@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Character Creation - Dark City RPG</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .rules-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .rules-section {
+            background: #1a1a1a;
+            padding: 2rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            border: 1px solid #4a5568;
+        }
+        
+        .rules-section h2 {
+            color: #ff6b35;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #ff6b35;
+            padding-bottom: 0.5rem;
+        }
+        
+        .rules-section h3 {
+            color: #ff6b35;
+            margin: 2rem 0 1rem 0;
+        }
+        
+        .back-link {
+            color: #ff6b35;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .back-link:hover {
+            color: #e55a2b;
+        }
+        
+        .step-number {
+            background: #ff6b35;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-right: 1rem;
+        }
+        
+        .creation-step {
+            display: flex;
+            align-items: flex-start;
+            margin: 2rem 0;
+            background: #2a2a2a;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid #ff6b35;
+        }
+        
+        .skill-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        
+        .skill-item {
+            background: #333;
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid #4a5568;
+        }
+        
+        .skill-item h4 {
+            color: #ff6b35;
+            margin-bottom: 0.5rem;
+        }
+        
+        .skill-distribution {
+            background: #2a2a2a;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+        
+        .stress-box {
+            background: #3a3a3a;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border: 1px solid #ff6b35;
+        }
+        
+        .info-box {
+            background: #2a2a2a;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border-left: 4px solid #4a5568;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background: #ff6b35;
+            color: white;
+            padding: 1rem 2rem;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            margin: 2rem 0;
+            transition: all 0.3s ease;
+        }
+        
+        .cta-button:hover {
+            background: #e55a2b;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="../index.html#rules" class="back-link">← Back to Rules</a>
+        
+        <div class="rules-container">
+            <h1>Character Creation</h1>
+            
+            <div class="rules-section">
+                <h2>🎭 Creating Your Dark City Character</h2>
+                
+                <div class="info-box">
+                    <h3>🎨 Reflavouring</h3>
+                    <p>You're allowed and encouraged to <strong>re-flavour</strong> whatever you like when it comes to creating your character. This allows you to substitute almost any details, although remember that everything must stay mechanically the same.</p>
+                    <p><em>Ex. for a werewolf your character could turn into a bear instead of a wolf, but they have to be some kind of were-animal.</em> Your character only has the abilities conferred by their physical form and their moves, so you can only do the things that you have moves for or just the physical ability to do.</p>
+                </div>
+                
+                <div class="creation-step">
+                    <div class="step-number">1</div>
+                    <div>
+                        <h3>📋 Get Started</h3>
+                        <p>Use our <strong>Character Builder</strong> to create your character sheet. The builder will guide you through all the steps and format everything properly for submission.</p>
+                        <a href="../character-builder.html" class="cta-button">Launch Character Builder</a>
+                    </div>
+                </div>
+                
+                <div class="creation-step">
+                    <div class="step-number">2</div>
+                    <div>
+                        <h3>📚 Choose Your Playbook</h3>
+                        <p>Playbooks are basically character classes, each one has a general theme or feeling. Take a quick look at the playbook names and choose a couple that really jump out at you to look into.</p>
+                        <p>Inside of each playbook are 4 sections:</p>
+                        <ul>
+                            <li><strong>Main</strong> - Information and moves available to any characters of that playbook</li>
+                            <li><strong>3 Subtypes</strong> - Different specializations (choose only one)</li>
+                        </ul>
+                        <p>Your character does not have to be the kind of creature described in the playbook, you may choose to be whatever you wish, though you only get the abilities that your moves give you.</p>
+                    </div>
+                </div>
+                
+                <div class="creation-step">
+                    <div class="step-number">3</div>
+                    <div>
+                        <h3>🧠 Develop Your Character</h3>
+                        <p>Take some time and come up with your character. They can be any age, race, religion. Fill in their name, look, and origin/bio. Next, choose what <strong>3</strong> moves from your playbook/sub-book you'll start with.</p>
+                    </div>
+                </div>
+                
+                <div class="creation-step">
+                    <div class="step-number">4</div>
+                    <div>
+                        <h3>📸 Add Visual Elements</h3>
+                        <p>Choose "at least" one "human form" profile picture to represent what others would see when noticing you. Feel free to elaborate with more info/images.</p>
+                        <p><em>Remember, no porn, please.</em></p>
+                    </div>
+                </div>
+                
+                <div class="creation-step">
+                    <div class="step-number">5</div>
+                    <div>
+                        <h3>⚡ Set Your Stats</h3>
+                        <p>Fill out the rest of your sheet, choose 2 Aspects that best describe your character, choose their skills from the list below and add their stress and Consequence limits.</p>
+                        <p><em>(only Physique/Will 3 and up get extra)</em></p>
+                    </div>
+                </div>
+                
+                <div class="creation-step">
+                    <div class="step-number">6</div>
+                    <div>
+                        <h3>🤝 Add Connections</h3>
+                        <p>Make sure to add any important relationships they already have as connections, people that they could potentially have as NPCs in their story. You can get extra connections by checking out the city and its inhabitants, before you start and/or while you play.</p>
+                    </div>
+                </div>
+                
+                <div class="creation-step">
+                    <div class="step-number">7</div>
+                    <div>
+                        <h3>✅ Submit Your Character</h3>
+                        <p>Once you're done, submit your character sheet through the Character Builder. It will be automatically formatted and submitted to the game repository for approval.</p>
+                        <p><em>If you want some help, feel free to ask the community or the Mods.</em></p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="rules-section">
+                <h2>🎯 Character Skills</h2>
+                <p><strong>Choose, rate, and add your skills from the list below to your character sheet.</strong></p>
+                
+                <div class="skill-distribution">
+                    <h3>📊 Skill Distribution</h3>
+                    <p>Each character starts with:</p>
+                    <ul>
+                        <li>One skill at <strong>+4</strong></li>
+                        <li>Two skills at <strong>+3</strong></li>
+                        <li>Three skills at <strong>+2</strong></li>
+                        <li>Four skills at <strong>+1</strong></li>
+                    </ul>
+                    <p><strong>+0</strong> is the default for any skills you did not take, i.e You still roll only with no bonuses, if it makes sense for your character to be able to do so.</p>
+                </div>
+                
+                <h3>🎭 Character Aspects</h3>
+                <p>Remember to add 2 Aspects to your character sheet. Try to get the essence of the character but not the super obvious. Just because they are a Huge guy or a Sexy lady doesn't mean you need "huge" or "sexy" as Aspects.</p>
+            </div>
+            
+            <div class="rules-section">
+                <h2>💪 Stress and Consequences</h2>
+                <p>These are your conflict stats and represent how well you can take abuse. By default all characters start with the ability to take 3 points of Mental Stress and 3 points of Physical Stress, as well as 1 Mental Consequence and 1 Physical Consequence.</p>
+                
+                <div class="stress-box">
+                    <h4>🏋️ Physique Bonus</h4>
+                    <p>'Physique' +3 or higher adds +2 stress and a consequence, changing your totals to Physical stress cap of 5 and 2 Physical consequences.</p>
+                </div>
+                
+                <div class="stress-box">
+                    <h4>🧠 Will Bonus</h4>
+                    <p>'Will' +3 or higher adds +2 stress and a consequence, changing your totals to Mental stress cap of 5 and 2 Mental consequences.</p>
+                </div>
+            </div>
+            
+            <div class="rules-section">
+                <h2>🛠️ Skill List</h2>
+                <p>Each skill describes a general ability that your character has an understanding of. Higher numbers represent greater skill.</p>
+                
+                <div class="skill-grid">
+                    <div class="skill-item">
+                        <h4>🏃 Athletics</h4>
+                        <p>Physical fitness, flexibility, reflexes and endurance.</p>
+                    </div>
+                    
+                    <div class="skill-item">
+                        <h4>🔓 Burglary</h4>
+                        <p>Stealing things and getting into places.</p>
+                    </div>
+                    
+                    <div class="skill-item">
+                        <h4>🤝 Contacts</h4>
+                        <p>Making connections with people and networking.</p>
+                    </div>
+                    
+                    <div class="skill-item">
+                        <h4>🔨 Crafting</h4>
+                        <p>Make or repair specific types of things. Pick a vocation.</p>
+                    </div>
+                    
+                    <div class="skill-item">
+                        <h4>🎭 Deceive</h4>
+                        <p>Make others believe lies and half-truths, words or body language.</p>
+                    </div>
+                    
+                    <div class="skill-item">
+                        <h4>🚗 Drive</h4>
+                        <p>Operating vehicles and things that go fast. Pick what kinds of vehicles.</p>
+                    </div>
+                    
+                    <div class="skill-item">
+                        <h4>💝 Empathy</h4>
+                        <p>Being able to spot changes in a person's mood/ bearing or emotion.</p>
+                    </div>
+                    
+                    <div class="skill-item">
+                        <h4>⚔️ Fight</h4>
+                        <p>Close-quarters combat, unarmed and with melee weapons.</p>
+                    </div>
+                    
+                    <div class="skill-item">
+                        <h4>🔍 Investigate</h4>
+                        <p>Deduce information using concentrated effort and in-depth scrutiny.</p>
+                    </div>
+                    
+                    <div class="skill-item">
+                        <h4>📚 Lore</h4>
+                        <p>Knowledge and education, books and study.</p>
+                    </div>
+                    
+                    <div class="skill-item">
+                        <h4>👀 Notice</h4>
+                        <p>Perception, the ability to pick out details at a glance.</p>
+                    </div>
+                    
+                    <div class="skill-item">
+                        <h4>💪 Physique</h4>
+                        <p>Natural physical aptitude, such as lift and grip strength.</p>
+                    </div>
+                    
+                    <div class="skill-item">
+                        <h4>🔥 Provoke</h4>
+                        <p>Eliciting emotional responses, fear, anger, shame, excitement etc.</p>
+                    </div>
+                    
+                    <div class="skill-item">
+                        <h4>🗣️ Rapport</h4>
+                        <p>Making connections to people, being liked and trusted.</p>
+                    </div>
+                    
+                    <div class="skill-item">
+                        <h4>💰 Wealth</h4>
+                        <p>Access to resources in the game and ability to leverage it.</p>
+                    </div>
+                    
+                    <div class="skill-item">
+                        <h4>🏹 Shoot</h4>
+                        <p>Ranged weaponry use, bows, guns etc.</p>
+                    </div>
+                    
+                    <div class="skill-item">
+                        <h4>🥷 Stealth</h4>
+                        <p>Avoid detection, hiding in place and moving about.</p>
+                    </div>
+                    
+                    <div class="skill-item">
+                        <h4>🛡️ Will</h4>
+                        <p>Mental fortitude and ability to resist social pressure.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="rules-section">
+                <h2>🚀 Ready to Start?</h2>
+                <p>Now that you understand the character creation process, it's time to bring your character to life!</p>
+                <div style="text-align: center;">
+                    <a href="../character-builder.html" class="cta-button">Create Your Character Now</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

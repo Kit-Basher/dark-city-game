@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How It Works - Dark City RPG</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .rules-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .rules-section {
+            background: #1a1a1a;
+            padding: 2rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            border: 1px solid #4a5568;
+        }
+        
+        .rules-section h2 {
+            color: #ff6b35;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #ff6b35;
+            padding-bottom: 0.5rem;
+        }
+        
+        .rules-section h3 {
+            color: #ff6b35;
+            margin: 2rem 0 1rem 0;
+        }
+        
+        .back-link {
+            color: #ff6b35;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .back-link:hover {
+            color: #e55a2b;
+        }
+        
+        .roll-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            background: #2a2a2a;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .roll-table th,
+        .roll-table td {
+            padding: 1rem;
+            text-align: center;
+            border: 1px solid #4a5568;
+        }
+        
+        .roll-table th {
+            background: #ff6b35;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .mechanic-box {
+            background: #2a2a2a;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border-left: 4px solid #ff6b35;
+        }
+        
+        .aspect-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+        
+        .aspect-item {
+            background: #333;
+            padding: 0.5rem;
+            border-radius: 5px;
+            text-align: center;
+            border: 1px solid #4a5568;
+        }
+        
+        .damage-scale {
+            background: linear-gradient(to right, #ff3333, #ff9933, #33ff33);
+            height: 30px;
+            border-radius: 15px;
+            margin: 1rem 0;
+            position: relative;
+        }
+        
+        .conflict-type {
+            background: #3a3a3a;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+        
+        .conflict-type h4 {
+            color: #ff6b35;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="../index.html#rules" class="back-link">← Back to Rules</a>
+        
+        <div class="rules-container">
+            <h1>How It Works</h1>
+            
+            <div class="rules-section">
+                <h2>🎲 Story Mechanics</h2>
+                <p>Any time there is a chance for things to go one way or another during gameplay, you should roll the dice to determine the outcome. <em>If your character is actively trying to do something, you can add their skill in that area to the roll</em>. Decide which skill makes most sense for them to be applied to the situation and add it to the result of our roll. This is your character's "skill bonus" so if they don't have a skill that makes sense they just don't get a bonus for this roll.</p>
+                
+                <h3>🎯 Rolling</h3>
+                <p>The success of an action will be determined by a roll. A "Roll" is the result of 2 six-sided dice (d6) added together, plus any bonuses. The roll determines whether that action is a success or failure.</p>
+                
+                <table class="roll-table">
+                    <thead>
+                        <tr>
+                            <th>-6</th>
+                            <th>6 & under</th>
+                            <th>7</th>
+                            <th>8</th>
+                            <th>9</th>
+                            <th>+10</th>
+                            <th>10 & over</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Failure</td>
+                            <td>Mild Success</td>
+                            <td>Success</td>
+                            <td>Good Success</td>
+                            <td>Total Success</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <p>5 would be a little failure, 4 a pretty bad event, 3 a really bad event, 2 is the absolute worst case scenario.</p>
+                <p><em>In the case of an opposed roll, i.e you vs another player competing, whoever rolls higher wins.</em></p>
+            </div>
+            
+            <div class="rules-section">
+                <h2>🎭 Character Aspects</h2>
+                <p>Aspects confer your character's personality into bonuses, in situations it would impact the outcome of a dice roll. Every character gets only <strong>two</strong> (semi-permanent) Aspects at the start, these can be any character-trait-adjectives you feel suitably describes your character.</p>
+                
+                <div class="aspect-list">
+                    <div class="aspect-item">Resolute</div>
+                    <div class="aspect-item">Excitable</div>
+                    <div class="aspect-item">Independent</div>
+                    <div class="aspect-item">Studious</div>
+                    <div class="aspect-item">Cunning</div>
+                    <div class="aspect-item">Charismatic</div>
+                    <div class="aspect-item">Mature</div>
+                    <div class="aspect-item">Compassionate</div>
+                    <div class="aspect-item">Mysterious</div>
+                    <div class="aspect-item">Vengeful</div>
+                    <div class="aspect-item">Curious</div>
+                    <div class="aspect-item">Silent</div>
+                </div>
+                
+                <h3>🔄 Temporary Aspects</h3>
+                <p>These can be added to your character anytime a move or something relevant happens to them that would cause an aspect to be added, (i.e Exhausted, Wet, Scared). In the same way aspects can also be removed when something relevant happens through gameplay, (i.e Overcoming your arachnophobia, Drying off, cleaning up a mess etc).</p>
+                
+                <h3>⚡ Invoking Aspects</h3>
+                <p>Aspects can be "invoked" during gameplay, to get bonuses on rolls. For example a "Jacked" character trying to lift a heavy object could invoke their "Jacked" aspect by paying one Fate Point to get an extra +2 points for the roll. You can also Invoke your Aspect to get a Fate Point, when doing so creates a new problem for yourself.</p>
+                
+                <p>You can also suggest invokes to other players, when their character aspects would cause them a new problem. For example the "Jacked" character ignoring an obvious challenge to their strength could be told "ya but you're jacked" and if they choose to take up the challenge they receive a Fate Point.</p>
+            </div>
+            
+            <div class="rules-section">
+                <h2>⚔️ Injuries and Damage</h2>
+                <p>Injuries and damage to your character (both physical and mental) persist and take real time to heal. Your injuries are represented by Temporary Negative Aspects and the more long term Aspects "Consequences". The greater injuries, (Consequences, both physical and mental) take a lot longer to heal but can be slowly downgraded.</p>
+                
+                <p>Remember to mark down the dates you received the negative Aspects, minor injuries, and Consequences so you can accurately gauge the time it takes to heal.</p>
+                
+                <h3>⭐ Leveling/Advancements</h3>
+                <p>Every level (up to 5) you get an Advancement, giving you the choice of:</p>
+                <ul>
+                    <li>A new move (from your original playbook, main/sub, or the advancements handout)</li>
+                    <li>OR, you can add 1 to any one skill, even a new one</li>
+                </ul>
+                <p>At level 5 (your last advancement) you get a double advancement and, by the time you reach level 6, MUST prepare to retire your character to NPC status, move them away, or kill them off.</p>
+                
+                <h3>🔄 Playbook Changes</h3>
+                <p>Remember you can change your character's playbook when it makes sense story wise (mortal into ghost, ghoul into calaca etc). Your XP remains the same, but you may take a different playbook's "Darkest Self" and you must re-pick your moves according to the character creation and advancement rules.</p>
+                
+                <h3>💰 Inventory and Money</h3>
+                <p>Your character only has (and has access to) items that would make sense for them to have. Your Wealth Skill represents how much financial sway your character has.</p>
+            </div>
+            
+            <div class="rules-section">
+                <h2>🎯 System Mechanics</h2>
+                
+                <h3>💫 Fate Points</h3>
+                <div class="mechanic-box">
+                    <p>Fate points are your character's influence over fate, it's their social currency, keep track of it during your scenes. Fate can be used and gained in multiple ways.</p>
+                    <ul>
+                        <li>If a character starts the scene with no Fate Points, they gain 1 Fate Point</li>
+                        <li>You can only ever have a max of 5 Fate Points, but they carry over scene to scene</li>
+                        <li>You can only ever use one Fate Point on each roll, whether that is for rerolling or invoking is your choice</li>
+                    </ul>
+                </div>
+                
+                <h3>🔄 FP Rerolls</h3>
+                <div class="mechanic-box">
+                    <p>Fate points can be used to reroll one of your rolls. When rerolling a roll, you get the choice of which roll to use.</p>
+                </div>
+                
+                <h3>⚡ Invoking Aspects</h3>
+                <div class="mechanic-box">
+                    <p>Aspects are both in character sheets and in game. You can 'Invoke' Aspects by explaining how the Aspect is substantially affecting the situation.</p>
+                    <ul>
+                        <li>When you "Invoke an Aspect" to benefit yourself, you get a +2 to that related roll</li>
+                        <li>Alternatively, you can Invoke an Aspect negatively against anyone to get -2 to their roll</li>
+                        <li>Problems can lead to some of the most interesting stories. If invoking a character's Aspect would cause them a new problem, it grants them a Fate Point if they choose to do it</li>
+                    </ul>
+                </div>
+                
+                <h3>🎯 Creating an Advantage</h3>
+                <div class="mechanic-box">
+                    <p>"Creating an advantage" by changing something in the scene can make Temporary Aspects appear (i.e your character drinks heavily, giving you the 'Drunk' Aspect, or kick over a bucket of water, giving the floor the 'Wet' Aspect). Any Temporary Aspects you actively create in this way can be Invoked by you once for free (without paying a Fate Point) for the +2 or -2.</p>
+                </div>
+            </div>
+            
+            <div class="rules-section">
+                <h2>⚔️ Conflict</h2>
+                <p>There are both Mental and Physical conflicts in this game. Mental conflicts can include any kind of non-physical aggression. Bullying in all its forms, even posturing or posing can be a kind of mental conflict and deal harm in the form of mental wear and tear.</p>
+                
+                <div class="conflict-type">
+                    <h4>🤖 VS NPCs</h4>
+                    <p>In conflict with NPCs, simply subtract that character's skill bonus (if applicable) from your roll+bonus total and compare against the standard +10, 7-9, 6- scale.</p>
+                    <p>Nameless characters only get one or two +1 or +2 skills, based on their role in the scene.</p>
+                </div>
+                
+                <div class="conflict-type">
+                    <h4>👥 VS Player Characters</h4>
+                    <p>Any scenario where two or more characters are working against each other for some purpose.</p>
+                    <ul>
+                        <li><strong>Races, chases and competitions</strong> should proceed with players taking turns making appropriate skill rolls</li>
+                        <li><strong>Confrontations</strong> - When someone begins an attack, they roll and add a related skill, then the defender rolls to react</li>
+                    </ul>
+                </div>
+                
+                <h3>💥 Damage System</h3>
+                <p>The Overlapping Damage amount tells you how much damage is done, but what kind of damage they receive depends on the attack.</p>
+                <ul>
+                    <li>If overlapping damage is under the defender's stress total, it does only minimal damage</li>
+                    <li>If overlapping damage is higher than the defenders stress cap, they take a more serious hit and are forced to take a Consequence</li>
+                    <li>Characters can take multiple small injuries, but only one or two really damaging attacks before succumbing</li>
+                </ul>
+            </div>
+            
+            <div class="rules-section">
+                <h2>🌑 Darkest Self & "Taken Out"</h2>
+                <p><strong>Your character CANNOT die without your Out-Of-Character consent</strong></p>
+                <p>When your character can't take another Consequence but is faced with one, you're presented with two options:</p>
+                
+                <div class="mechanic-box">
+                    <h4>🌑 Darkest Self</h4>
+                    <p>When you enter your Darkest Self, temporarily double your Consequence caps. You can follow what would narratively make sense, and react to injuries according to their state of mind.</p>
+                </div>
+                
+                <div class="mechanic-box">
+                    <h4>💀 Taken Out</h4>
+                    <p>You describe the sustaining extreme damage that would require some time to heal, rendering them incapable of continuing. The winner now has total narrative control.</p>
+                </div>
+                
+                <h3>💀 PC Death</h3>
+                <p>Characters die, but any character deaths ABSOLUTELY have to be fully discussed and agreed upon by all involved parties. We recommend that you save that possibility for conflicts that are extremely pivotal, dramatic, and meaningful.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

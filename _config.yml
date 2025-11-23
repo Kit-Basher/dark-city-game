@@ -1,0 +1,51 @@
+# Jekyll configuration for GitHub Pages
+# This prevents Jekyll from processing our template files
+
+# Set the markdown processor
+markdown: kramdown
+
+# Exclude template files from Jekyll processing
+exclude:
+  - characters/template.md
+  - scenes/template.md
+  - README.md
+  - .git/
+  - .github/
+  - node_modules/
+  - vendor/
+  - Gemfile
+  - Gemfile.lock
+
+# Include our assets
+include:
+  - _redirects
+
+# Site settings
+title: "Dark City RPG"
+description: "A modern RPG game hub built with GitHub Pages"
+
+# Base URL (if needed)
+# baseurl: "/dark-city-game"
+
+# Build settings
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+  - jekyll-seo-tag
+
+# Markdown processing
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
+
+# Sass configuration
+sass:
+  style: compressed
+
+# Front matter defaults
+defaults:
+  - scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: "default"

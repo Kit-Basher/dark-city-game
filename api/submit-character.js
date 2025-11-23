@@ -144,6 +144,65 @@ class CharacterSubmission {
         }));
         
         console.log('CharacterSubmission: Dispatched custom event');
+        
+        // NEW: Create shareable URL for cross-page sync
+        this.createShareableUrl(submission);
+    }
+
+    // Create shareable URL for moderator panel
+    createShareableUrl(submission) {
+        try {
+            // Compress the submission data
+            const compressed = btoa(JSON.stringify(submission)).substring(0, 1000); // Limit URL length
+            
+            // Create a shareable URL
+            const shareUrl = `${window.location.origin}/moderator/?import=${compressed}`;
+            console.log('CharacterSubmission: Shareable URL created:', shareUrl);
+            
+            // Store in sessionStorage for moderator panel to find
+            sessionStorage.setItem('pendingSubmission', JSON.stringify(submission));
+            sessionStorage.setItem('pendingSubmissionTimestamp', Date.now().toString());
+            
+            console.log('CharacterSubmission: Stored in sessionStorage for moderator panel');
+            
+        } catch (error) {
+            console.log('CharacterSubmission: Could not create shareable URL:', error);
+        }
+    }
+
+    // Check for sessionStorage imports
+    checkSessionStorageImports() {
+        try {
+            const pending = sessionStorage.getItem('pendingSubmission');
+            const timestamp = sessionStorage.getItem('pendingSubmissionTimestamp');
+            
+            if (pending && timestamp) {
+                const age = Date.now() - parseInt(timestamp);
+                
+                // Only import if less than 5 minutes old
+                if (age < 300000) {
+                    const submission = JSON.parse(pending);
+                    console.log('CharacterSubmission: Found pending submission in sessionStorage:', submission);
+                    
+                    // Import to localStorage
+                    this.saveSubmission(submission);
+                    
+                    // Clear sessionStorage
+                    sessionStorage.removeItem('pendingSubmission');
+                    sessionStorage.removeItem('pendingSubmissionTimestamp');
+                    
+                    return true;
+                } else {
+                    // Clear old data
+                    sessionStorage.removeItem('pendingSubmission');
+                    sessionStorage.removeItem('pendingSubmissionTimestamp');
+                }
+            }
+        } catch (error) {
+            console.log('CharacterSubmission: Error checking sessionStorage imports:', error);
+        }
+        
+        return false;
     }
 
     // Generate unique submission ID

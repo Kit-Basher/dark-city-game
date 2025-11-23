@@ -7,6 +7,12 @@ class ModeratorPanel {
     }
 
     init() {
+        // Check for sessionStorage imports first
+        const hasImported = this.submissionSystem.checkSessionStorageImports();
+        if (hasImported) {
+            console.log('🔄 Imported pending submission from sessionStorage');
+        }
+        
         this.loadSubmissions();
         this.setupEventListeners();
         this.setupStorageListener();

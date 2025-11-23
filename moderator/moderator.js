@@ -11,6 +11,38 @@ class ModeratorPanel {
         this.setupEventListeners();
         this.setupStorageListener();
         this.setupAutoRefresh();
+        this.setupMessageListener();
+    }
+
+    setupMessageListener() {
+        // Listen for messages from test script
+        window.addEventListener('message', (event) => {
+            if (event.data.action === 'checkSubmissions') {
+                console.log('📨 Received test results from character builder:', event.data.testResults);
+                
+                // Load submissions and check for test data
+                this.loadSubmissions();
+                
+                // Report back to character builder
+                const submissions = this.submissionSystem.getSubmissions();
+                const testSubmissions = Object.values(submissions).filter(s => 
+                    s.character.name && s.character.name.includes('Test Character') ||
+                    s.character.name && s.character.name.includes('Auto Bot') ||
+                    s.character.name && s.character.name.includes('Debug Hero')
+                );
+                
+                console.log(`🔍 Moderator panel found ${testSubmissions.length} test submissions`);
+                
+                if (event.source) {
+                    event.source.postMessage({
+                        action: 'moderatorPanelStatus',
+                        foundSubmissions: testSubmissions.length,
+                        totalSubmissions: Object.keys(submissions).length,
+                        pendingCount: Object.values(submissions).filter(s => s.status === 'pending').length
+                    }, '*');
+                }
+            }
+        });
     }
 
     setupStorageListener() {

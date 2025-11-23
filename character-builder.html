@@ -78,10 +78,22 @@
             border: 1px solid #4a5568;
         }
         
-        .skill-item input[type="text"] {
+        .skill-item input[type="text"],
+        .skill-item select {
             flex: 1;
-            background: transparent;
-            border: none;
+            background: #2a2a2a;
+            border: 1px solid #4a5568;
+            color: white;
+            padding: 0.5rem;
+            border-radius: 4px;
+        }
+        
+        .skill-item select {
+            cursor: pointer;
+        }
+        
+        .skill-item select option {
+            background: #2a2a2a;
             color: white;
         }
         
@@ -255,35 +267,217 @@
                 <!-- Skills -->
                 <div class="form-section">
                     <h3>Skills</h3>
-                    <p style="color: white;">Assign your skill levels (you get one +4, one +3, two +2, and three +1 skills)</p>
+                    <p style="color: white;">Assign your skill levels (you get one +4, two +3, three +2, and four +1 skills)</p>
                     <div class="skills-grid" id="skillsContainer">
                         <div class="skill-item">
-                            <input type="text" placeholder="Skill name" class="skill-name">
-                            <input type="number" min="1" max="4" value="4" class="skill-level">
+                            <select class="skill-name" placeholder="Choose a skill">
+                                <option value="">Select a +4 skill...</option>
+                                <option value="Athletics">🏃 Athletics</option>
+                                <option value="Burglary">🔓 Burglary</option>
+                                <option value="Contacts">🤝 Contacts</option>
+                                <option value="Crafting">🔨 Crafting</option>
+                                <option value="Deceive">🎭 Deceive</option>
+                                <option value="Drive">🚗 Drive</option>
+                                <option value="Empathy">💝 Empathy</option>
+                                <option value="Fight">⚔️ Fight</option>
+                                <option value="Investigate">🔍 Investigate</option>
+                                <option value="Lore">📚 Lore</option>
+                                <option value="Notice">👀 Notice</option>
+                                <option value="Physique">💪 Physique</option>
+                                <option value="Provoke">🔥 Provoke</option>
+                                <option value="Rapport">🗣️ Rapport</option>
+                                <option value="Wealth">💰 Wealth</option>
+                            </select>
+                            <input type="number" min="1" max="4" value="4" class="skill-level" readonly>
                         </div>
                         <div class="skill-item">
-                            <input type="text" placeholder="Skill name" class="skill-name">
-                            <input type="number" min="1" max="4" value="3" class="skill-level">
+                            <select class="skill-name" placeholder="Choose a skill">
+                                <option value="">Select a +3 skill...</option>
+                                <option value="Athletics">🏃 Athletics</option>
+                                <option value="Burglary">🔓 Burglary</option>
+                                <option value="Contacts">🤝 Contacts</option>
+                                <option value="Crafting">🔨 Crafting</option>
+                                <option value="Deceive">🎭 Deceive</option>
+                                <option value="Drive">🚗 Drive</option>
+                                <option value="Empathy">💝 Empathy</option>
+                                <option value="Fight">⚔️ Fight</option>
+                                <option value="Investigate">🔍 Investigate</option>
+                                <option value="Lore">📚 Lore</option>
+                                <option value="Notice">👀 Notice</option>
+                                <option value="Physique">💪 Physique</option>
+                                <option value="Provoke">🔥 Provoke</option>
+                                <option value="Rapport">🗣️ Rapport</option>
+                                <option value="Wealth">💰 Wealth</option>
+                            </select>
+                            <input type="number" min="1" max="4" value="3" class="skill-level" readonly>
                         </div>
                         <div class="skill-item">
-                            <input type="text" placeholder="Skill name" class="skill-name">
-                            <input type="number" min="1" max="4" value="2" class="skill-level">
+                            <select class="skill-name" placeholder="Choose a skill">
+                                <option value="">Select a +3 skill...</option>
+                                <option value="Athletics">🏃 Athletics</option>
+                                <option value="Burglary">🔓 Burglary</option>
+                                <option value="Contacts">🤝 Contacts</option>
+                                <option value="Crafting">🔨 Crafting</option>
+                                <option value="Deceive">🎭 Deceive</option>
+                                <option value="Drive">🚗 Drive</option>
+                                <option value="Empathy">💝 Empathy</option>
+                                <option value="Fight">⚔️ Fight</option>
+                                <option value="Investigate">🔍 Investigate</option>
+                                <option value="Lore">📚 Lore</option>
+                                <option value="Notice">👀 Notice</option>
+                                <option value="Physique">💪 Physique</option>
+                                <option value="Provoke">🔥 Provoke</option>
+                                <option value="Rapport">🗣️ Rapport</option>
+                                <option value="Wealth">💰 Wealth</option>
+                            </select>
+                            <input type="number" min="1" max="4" value="3" class="skill-level" readonly>
                         </div>
                         <div class="skill-item">
-                            <input type="text" placeholder="Skill name" class="skill-name">
-                            <input type="number" min="1" max="4" value="2" class="skill-level">
+                            <select class="skill-name" placeholder="Choose a skill">
+                                <option value="">Select a +2 skill...</option>
+                                <option value="Athletics">🏃 Athletics</option>
+                                <option value="Burglary">🔓 Burglary</option>
+                                <option value="Contacts">🤝 Contacts</option>
+                                <option value="Crafting">🔨 Crafting</option>
+                                <option value="Deceive">🎭 Deceive</option>
+                                <option value="Drive">🚗 Drive</option>
+                                <option value="Empathy">💝 Empathy</option>
+                                <option value="Fight">⚔️ Fight</option>
+                                <option value="Investigate">🔍 Investigate</option>
+                                <option value="Lore">📚 Lore</option>
+                                <option value="Notice">👀 Notice</option>
+                                <option value="Physique">💪 Physique</option>
+                                <option value="Provoke">🔥 Provoke</option>
+                                <option value="Rapport">🗣️ Rapport</option>
+                                <option value="Wealth">💰 Wealth</option>
+                            </select>
+                            <input type="number" min="1" max="4" value="2" class="skill-level" readonly>
                         </div>
                         <div class="skill-item">
-                            <input type="text" placeholder="Skill name" class="skill-name">
-                            <input type="number" min="1" max="4" value="1" class="skill-level">
+                            <select class="skill-name" placeholder="Choose a skill">
+                                <option value="">Select a +2 skill...</option>
+                                <option value="Athletics">🏃 Athletics</option>
+                                <option value="Burglary">🔓 Burglary</option>
+                                <option value="Contacts">🤝 Contacts</option>
+                                <option value="Crafting">🔨 Crafting</option>
+                                <option value="Deceive">🎭 Deceive</option>
+                                <option value="Drive">🚗 Drive</option>
+                                <option value="Empathy">💝 Empathy</option>
+                                <option value="Fight">⚔️ Fight</option>
+                                <option value="Investigate">🔍 Investigate</option>
+                                <option value="Lore">📚 Lore</option>
+                                <option value="Notice">👀 Notice</option>
+                                <option value="Physique">💪 Physique</option>
+                                <option value="Provoke">🔥 Provoke</option>
+                                <option value="Rapport">🗣️ Rapport</option>
+                                <option value="Wealth">💰 Wealth</option>
+                            </select>
+                            <input type="number" min="1" max="4" value="2" class="skill-level" readonly>
                         </div>
                         <div class="skill-item">
-                            <input type="text" placeholder="Skill name" class="skill-name">
-                            <input type="number" min="1" max="4" value="1" class="skill-level">
+                            <select class="skill-name" placeholder="Choose a skill">
+                                <option value="">Select a +2 skill...</option>
+                                <option value="Athletics">🏃 Athletics</option>
+                                <option value="Burglary">🔓 Burglary</option>
+                                <option value="Contacts">🤝 Contacts</option>
+                                <option value="Crafting">🔨 Crafting</option>
+                                <option value="Deceive">🎭 Deceive</option>
+                                <option value="Drive">🚗 Drive</option>
+                                <option value="Empathy">💝 Empathy</option>
+                                <option value="Fight">⚔️ Fight</option>
+                                <option value="Investigate">🔍 Investigate</option>
+                                <option value="Lore">📚 Lore</option>
+                                <option value="Notice">👀 Notice</option>
+                                <option value="Physique">💪 Physique</option>
+                                <option value="Provoke">🔥 Provoke</option>
+                                <option value="Rapport">🗣️ Rapport</option>
+                                <option value="Wealth">💰 Wealth</option>
+                            </select>
+                            <input type="number" min="1" max="4" value="2" class="skill-level" readonly>
                         </div>
                         <div class="skill-item">
-                            <input type="text" placeholder="Skill name" class="skill-name">
-                            <input type="number" min="1" max="4" value="1" class="skill-level">
+                            <select class="skill-name" placeholder="Choose a skill">
+                                <option value="">Select a +1 skill...</option>
+                                <option value="Athletics">🏃 Athletics</option>
+                                <option value="Burglary">🔓 Burglary</option>
+                                <option value="Contacts">🤝 Contacts</option>
+                                <option value="Crafting">🔨 Crafting</option>
+                                <option value="Deceive">🎭 Deceive</option>
+                                <option value="Drive">🚗 Drive</option>
+                                <option value="Empathy">💝 Empathy</option>
+                                <option value="Fight">⚔️ Fight</option>
+                                <option value="Investigate">🔍 Investigate</option>
+                                <option value="Lore">📚 Lore</option>
+                                <option value="Notice">👀 Notice</option>
+                                <option value="Physique">💪 Physique</option>
+                                <option value="Provoke">🔥 Provoke</option>
+                                <option value="Rapport">🗣️ Rapport</option>
+                                <option value="Wealth">💰 Wealth</option>
+                            </select>
+                            <input type="number" min="1" max="4" value="1" class="skill-level" readonly>
+                        </div>
+                        <div class="skill-item">
+                            <select class="skill-name" placeholder="Choose a skill">
+                                <option value="">Select a +1 skill...</option>
+                                <option value="Athletics">🏃 Athletics</option>
+                                <option value="Burglary">🔓 Burglary</option>
+                                <option value="Contacts">🤝 Contacts</option>
+                                <option value="Crafting">🔨 Crafting</option>
+                                <option value="Deceive">🎭 Deceive</option>
+                                <option value="Drive">🚗 Drive</option>
+                                <option value="Empathy">💝 Empathy</option>
+                                <option value="Fight">⚔️ Fight</option>
+                                <option value="Investigate">🔍 Investigate</option>
+                                <option value="Lore">📚 Lore</option>
+                                <option value="Notice">👀 Notice</option>
+                                <option value="Physique">💪 Physique</option>
+                                <option value="Provoke">🔥 Provoke</option>
+                                <option value="Rapport">🗣️ Rapport</option>
+                                <option value="Wealth">💰 Wealth</option>
+                            </select>
+                            <input type="number" min="1" max="4" value="1" class="skill-level" readonly>
+                        </div>
+                        <div class="skill-item">
+                            <select class="skill-name" placeholder="Choose a skill">
+                                <option value="">Select a +1 skill...</option>
+                                <option value="Athletics">🏃 Athletics</option>
+                                <option value="Burglary">🔓 Burglary</option>
+                                <option value="Contacts">🤝 Contacts</option>
+                                <option value="Crafting">🔨 Crafting</option>
+                                <option value="Deceive">🎭 Deceive</option>
+                                <option value="Drive">🚗 Drive</option>
+                                <option value="Empathy">💝 Empathy</option>
+                                <option value="Fight">⚔️ Fight</option>
+                                <option value="Investigate">🔍 Investigate</option>
+                                <option value="Lore">📚 Lore</option>
+                                <option value="Notice">👀 Notice</option>
+                                <option value="Physique">💪 Physique</option>
+                                <option value="Provoke">🔥 Provoke</option>
+                                <option value="Rapport">🗣️ Rapport</option>
+                                <option value="Wealth">💰 Wealth</option>
+                            </select>
+                            <input type="number" min="1" max="4" value="1" class="skill-level" readonly>
+                        </div>
+                        <div class="skill-item">
+                            <select class="skill-name" placeholder="Choose a skill">
+                                <option value="">Select a +1 skill...</option>
+                                <option value="Athletics">🏃 Athletics</option>
+                                <option value="Burglary">🔓 Burglary</option>
+                                <option value="Contacts">🤝 Contacts</option>
+                                <option value="Crafting">🔨 Crafting</option>
+                                <option value="Deceive">🎭 Deceive</option>
+                                <option value="Drive">🚗 Drive</option>
+                                <option value="Empathy">💝 Empathy</option>
+                                <option value="Fight">⚔️ Fight</option>
+                                <option value="Investigate">🔍 Investigate</option>
+                                <option value="Lore">📚 Lore</option>
+                                <option value="Notice">👀 Notice</option>
+                                <option value="Physique">💪 Physique</option>
+                                <option value="Provoke">🔥 Provoke</option>
+                                <option value="Rapport">🗣️ Rapport</option>
+                                <option value="Wealth">💰 Wealth</option>
+                            </select>
+                            <input type="number" min="1" max="4" value="1" class="skill-level" readonly>
                         </div>
                     </div>
                 </div>

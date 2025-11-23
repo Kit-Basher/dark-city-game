@@ -51,10 +51,17 @@ class ModeratorPanel {
     async loadSubmissions() {
         try {
             console.log('Loading submissions...');
+            console.log('Available localStorage keys:', Object.keys(localStorage));
+            
             const submissions = this.submissionSystem.getSubmissions();
-            console.log('Loaded submissions:', submissions);
+            console.log('Raw submissions object:', submissions);
+            console.log('Submission keys:', Object.keys(submissions));
+            
             this.allSubmissions = Object.values(submissions);
             console.log('Submission array:', this.allSubmissions);
+            console.log('Pending submissions:', this.allSubmissions.filter(s => s.status === 'pending'));
+            console.log('Approved submissions:', this.allSubmissions.filter(s => s.status === 'approved'));
+            
             this.updateStats();
             this.displaySubmissions();
             
@@ -248,6 +255,82 @@ class ModeratorPanel {
             console.error('Rejection error:', error);
             alert('Error rejecting submission. Please try again.');
         }
+    }
+
+    // Show data import dialog
+    showDataImport() {
+        const dialog = document.createElement('div');
+        dialog.style.cssText = `
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.8); display: flex; align-items: center; 
+            justify-content: center; z-index: 1000;
+        `;
+        
+        dialog.innerHTML = `
+            <div style="background: #2a2a2a; border: 2px solid #ff6b35; border-radius: 10px; padding: 2rem; max-width: 600px; width: 90%;">
+                <h3 style="color: #ff6b35; margin-bottom: 1rem;">📥 Import Character Data</h3>
+                <p style="color: white; margin-bottom: 1rem;">
+                    If the moderator panel isn't showing new submissions, you can manually import the data.
+                </p>
+                <div style="margin-bottom: 1rem;">
+                    <label style="color: white; display: block; margin-bottom: 0.5rem;">Paste submission data:</label>
+                    <textarea id="importData" style="width: 100%; height: 200px; background: #1a1a1a; color: white; border: 1px solid #4a5568; border-radius: 5px; padding: 0.5rem;" placeholder="Paste the JSON data from localStorage..."></textarea>
+                </div>
+                <div style="margin-bottom: 1rem;">
+                    <button onclick="moderatorPanel.importFromClipboard()" style="background: #ff6b35; color: white; border: none; padding: 0.5rem 1rem; border-radius: 5px; margin-right: 0.5rem;">📋 Import from Clipboard</button>
+                    <button onclick="moderatorPanel.exportCurrentData()" style="background: #4a5568; color: white; border: none; padding: 0.5rem 1rem; border-radius: 5px; margin-right: 0.5rem;">💾 Export Current</button>
+                    <button onclick="this.parentElement.parentElement.parentElement.remove()" style="background: #666; color: white; border: none; padding: 0.5rem 1rem; border-radius: 5px;">Cancel</button>
+                </div>
+                <div style="font-size: 0.8rem; color: #ccc;">
+                    <strong>Instructions:</strong><br>
+                    1. Go to character builder page<br>
+                    2. Open F12 → Application → Local Storage<br>
+                    3. Copy the value of 'darkCitySubmissions' key<br>
+                    4. Paste it here and click Import
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(dialog);
+    }
+
+    // Import data from clipboard
+    importFromClipboard() {
+        const textarea = document.getElementById('importData');
+        const data = textarea.value.trim();
+        
+        if (!data) {
+            alert('Please paste data first');
+            return;
+        }
+        
+        try {
+            const submissions = JSON.parse(data);
+            
+            // Save to localStorage
+            localStorage.setItem('darkCitySubmissions', JSON.stringify(submissions));
+            localStorage.setItem('darkCitySubmissions_backup', JSON.stringify(submissions));
+            
+            alert('Data imported successfully! Refreshing submissions...');
+            
+            // Close dialog and refresh
+            document.getElementById('importData').closest('div[style*="position: fixed"]').remove();
+            this.loadSubmissions();
+            
+        } catch (error) {
+            alert('Invalid JSON data: ' + error.message);
+        }
+    }
+
+    // Export current data
+    exportCurrentData() {
+        const submissions = this.submissionSystem.getSubmissions();
+        const dataStr = JSON.stringify(submissions, null, 2);
+        
+        const textarea = document.getElementById('importData');
+        textarea.value = dataStr;
+        
+        alert('Current data exported to textarea. You can copy this and save it as backup.');
     }
 
     // Show error message

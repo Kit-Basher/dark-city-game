@@ -24,7 +24,7 @@ if (!$input) {
 }
 
 // Discord webhook URL
-$discordWebhook = 'https://discordapp.com/api/webhooks/1442228498629525586/6mJC4zV2BvAkOSt_7EiGmOc4Yaj8vGtJupDOQwlzVr_-D-muR_aSRnorqsX_a3yTDxWr';
+$discordWebhook = 'https://discordapp.com/api/webhooks/1442233189795106896/iIyJHwZ-V02DiX08e_3i8vYLpCUX-F2SXUzNRpmp2hJrDEOiIXzL-w6y5wE9Gh1O4G38';
 
 // Send to Discord
 $ch = curl_init($discordWebhook);

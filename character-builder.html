@@ -1456,6 +1456,8 @@
                 submitButton.textContent = 'Submitting...';
                 submitButton.disabled = true;
                 
+                console.log('Submitting character:', characterData);
+                
                 // Submit to API
                 const response = await fetch('api/submit-character.html', {
                     method: 'POST',
@@ -1464,6 +1466,9 @@
                     },
                     body: JSON.stringify(characterData)
                 });
+                
+                console.log('Response status:', response.status);
+                console.log('Response headers:', response.headers);
                 
                 if (response.ok) {
                     // Save character locally as backup
@@ -1476,12 +1481,15 @@
                     window.open('api/submit-character.html', '_blank');
                     closeModal();
                 } else {
-                    throw new Error('Submission failed');
+                    // Get error details
+                    const errorText = await response.text();
+                    console.error('Submission failed:', response.status, errorText);
+                    throw new Error(`Submission failed: ${response.status} - ${errorText}`);
                 }
                 
             } catch (error) {
                 console.error('Submission error:', error);
-                alert('❌ Failed to submit character. Please try again or use an alternative submission method.');
+                alert('❌ Failed to submit character. Error details: ' + error.message + '\n\nPlease check the browser console (F12) for more details and try again.');
             } finally {
                 // Reset button state
                 submitButton.textContent = originalText;

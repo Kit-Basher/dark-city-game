@@ -295,6 +295,55 @@ class ModeratorPanel {
         }
     }
 
+    // Manual sessionStorage check
+    checkSessionStorage() {
+        console.log('🔍 Manually checking sessionStorage...');
+        
+        try {
+            const pending = sessionStorage.getItem('pendingSubmission');
+            const timestamp = sessionStorage.getItem('pendingSubmissionTimestamp');
+            
+            console.log('SessionStorage data:', {
+                pending: pending ? 'EXISTS' : 'EMPTY',
+                timestamp: timestamp ? new Date(parseInt(timestamp)).toLocaleString() : 'NONE',
+                age: timestamp ? Date.now() - parseInt(timestamp) : 'N/A'
+            });
+            
+            if (pending && timestamp) {
+                const age = Date.now() - parseInt(timestamp);
+                console.log(`SessionStorage age: ${age}ms (${Math.round(age/1000)}s)`);
+                
+                if (age < 300000) { // 5 minutes
+                    const submission = JSON.parse(pending);
+                    console.log('🎯 Found pending submission in sessionStorage:', submission);
+                    
+                    // Import to localStorage
+                    this.submissionSystem.saveSubmission(submission);
+                    
+                    // Clear sessionStorage
+                    sessionStorage.removeItem('pendingSubmission');
+                    sessionStorage.removeItem('pendingSubmissionTimestamp');
+                    
+                    // Refresh the display
+                    this.loadSubmissions();
+                    
+                    alert('✅ Successfully imported pending submission from sessionStorage!');
+                } else {
+                    console.log('❌ SessionStorage data too old, clearing...');
+                    sessionStorage.removeItem('pendingSubmission');
+                    sessionStorage.removeItem('pendingSubmissionTimestamp');
+                    alert('❌ SessionStorage data was too old and has been cleared.');
+                }
+            } else {
+                console.log('❌ No pending submission found in sessionStorage');
+                alert('❌ No pending submission found in sessionStorage');
+            }
+        } catch (error) {
+            console.error('Error checking sessionStorage:', error);
+            alert('❌ Error checking sessionStorage: ' + error.message);
+        }
+    }
+
     // Show data import dialog
     showDataImport() {
         const dialog = document.createElement('div');

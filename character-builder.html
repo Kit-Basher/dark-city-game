@@ -260,6 +260,53 @@
             padding-top: 1rem;
             border-top: 1px solid #4a5568;
         }
+        
+        .character-actions {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+        
+        .saved-characters-list {
+            background: #1a1a1a;
+            border: 1px solid #4a5568;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .saved-character-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            border-bottom: 1px solid #4a5568;
+        }
+        
+        .saved-character-item:last-child {
+            border-bottom: none;
+        }
+        
+        .saved-character-info {
+            flex: 1;
+        }
+        
+        .saved-character-name {
+            color: #ff6b35;
+            font-weight: bold;
+            margin-bottom: 0.25rem;
+        }
+        
+        .saved-character-details {
+            color: white;
+            font-size: 0.9rem;
+        }
+        
+        .saved-character-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
     </style>
 </head>
 <body>
@@ -638,6 +685,19 @@
                     </div>
                 </div>
                 
+                <!-- Character Management -->
+                <div class="form-section">
+                    <h3>Character Management</h3>
+                    <div class="character-actions">
+                        <button type="button" class="btn btn-outline" onclick="loadLocalCharacter()">📂 Load Saved Character</button>
+                        <button type="button" class="btn btn-outline" onclick="saveLocalCharacter()">💾 Save Character Locally</button>
+                        <button type="button" class="btn btn-outline" onclick="showSavedCharacters()">📋 View All Saved Characters</button>
+                    </div>
+                    <div id="savedCharactersList" style="display: none;">
+                        <!-- Saved characters will be listed here -->
+                    </div>
+                </div>
+                
                 <!-- Action Buttons -->
                 <div class="action-buttons">
                     <button type="button" class="btn btn-secondary" onclick="updatePreview()">Update Preview</button>
@@ -839,7 +899,191 @@
             document.getElementById('preview').innerHTML = `<pre style="white-space: pre-wrap; font-family: monospace; font-size: 0.9rem;">${preview}</pre>`;
         }
         
-        // Modal functions
+        // Local character management functions
+        function getCharacterData() {
+            const formData = new FormData(document.getElementById('characterForm'));
+            const data = Object.fromEntries(formData);
+            
+            // Get skills
+            const skills = [];
+            document.querySelectorAll('.skill-item').forEach(item => {
+                const name = item.querySelector('.skill-name').value;
+                const level = item.querySelector('.skill-level').value;
+                if (name) {
+                    skills.push({ name, level });
+                }
+            });
+            
+            // Get moves
+            const moves = getMovesData();
+            
+            // Get darkest self
+            const darkestSelf = getDarkestSelf();
+            
+            return {
+                ...data,
+                skills,
+                moves,
+                darkestSelf,
+                savedAt: new Date().toISOString()
+            };
+        }
+        
+        function saveLocalCharacter() {
+            const characterData = getCharacterData();
+            const characterName = characterData.name || 'Unnamed Character';
+            
+            // Get existing saved characters
+            const savedCharacters = JSON.parse(localStorage.getItem('darkCityCharacters') || '{}');
+            
+            // Save or update character
+            savedCharacters[characterName] = characterData;
+            localStorage.setItem('darkCityCharacters', JSON.stringify(savedCharacters));
+            
+            alert(`Character "${characterName}" saved locally! You can load and edit it anytime.`);
+        }
+        
+        function loadLocalCharacter() {
+            const savedCharacters = JSON.parse(localStorage.getItem('darkCityCharacters') || '{}');
+            const characterNames = Object.keys(savedCharacters);
+            
+            if (characterNames.length === 0) {
+                alert('No saved characters found. Create and save a character first!');
+                return;
+            }
+            
+            // Create simple selection dialog
+            const characterName = prompt(`Enter character name to load:\n\nAvailable characters:\n${characterNames.join('\n')}`);
+            
+            if (characterName && savedCharacters[characterName]) {
+                loadCharacterData(savedCharacters[characterName]);
+                alert(`Character "${characterName}" loaded successfully!`);
+            } else if (characterName) {
+                alert(`Character "${characterName}" not found. Available characters: ${characterNames.join(', ')}`);
+            }
+        }
+        
+        function showSavedCharacters() {
+            const savedCharacters = JSON.parse(localStorage.getItem('darkCityCharacters') || '{}');
+            const characterNames = Object.keys(savedCharacters);
+            
+            if (characterNames.length === 0) {
+                alert('No saved characters found. Create and save a character first!');
+                return;
+            }
+            
+            const listElement = document.getElementById('savedCharactersList');
+            
+            if (listElement.style.display === 'none') {
+                // Show list
+                listElement.innerHTML = `
+                    <div class="saved-characters-list">
+                        <h4 style="color: #ff6b35; margin-bottom: 1rem;">Saved Characters (${characterNames.length})</h4>
+                        ${characterNames.map(name => {
+                            const char = savedCharacters[name];
+                            const savedDate = new Date(char.savedAt).toLocaleDateString();
+                            return `
+                                <div class="saved-character-item">
+                                    <div class="saved-character-info">
+                                        <div class="saved-character-name">${name}</div>
+                                        <div class="saved-character-details">
+                                            ${char.playbook || 'Unknown Playbook'} • ${char.classification || 'Unknown Classification'} • Saved ${savedDate}
+                                        </div>
+                                    </div>
+                                    <div class="saved-character-actions">
+                                        <button class="btn btn-small btn-secondary" onclick="loadSpecificCharacter('${name}')">Load</button>
+                                        <button class="btn btn-small btn-outline" onclick="deleteCharacter('${name}')">Delete</button>
+                                    </div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                `;
+                listElement.style.display = 'block';
+            } else {
+                // Hide list
+                listElement.style.display = 'none';
+            }
+        }
+        
+        function loadSpecificCharacter(characterName) {
+            const savedCharacters = JSON.parse(localStorage.getItem('darkCityCharacters') || '{}');
+            
+            if (savedCharacters[characterName]) {
+                loadCharacterData(savedCharacters[characterName]);
+                alert(`Character "${characterName}" loaded successfully!`);
+                document.getElementById('savedCharactersList').style.display = 'none';
+            }
+        }
+        
+        function deleteCharacter(characterName) {
+            if (confirm(`Are you sure you want to delete "${characterName}"? This cannot be undone.`)) {
+                const savedCharacters = JSON.parse(localStorage.getItem('darkCityCharacters') || '{}');
+                delete savedCharacters[characterName];
+                localStorage.setItem('darkCityCharacters', JSON.stringify(savedCharacters));
+                showSavedCharacters(); // Refresh the list
+                alert(`Character "${characterName}" deleted.`);
+            }
+        }
+        
+        function loadCharacterData(characterData) {
+            // Update UI for editing mode
+            document.getElementById('builderTitle').textContent = 'Edit Character';
+            document.getElementById('builderDescription').textContent = 'Update your character sheet and submit changes to the game repository.';
+            
+            // Fill basic form fields
+            Object.keys(characterData).forEach(key => {
+                const element = document.getElementById(key);
+                if (element && characterData[key]) {
+                    element.value = characterData[key];
+                }
+            });
+            
+            // Load skills
+            if (characterData.skills && characterData.skills.length > 0) {
+                const skillInputs = document.querySelectorAll('.skill-item');
+                characterData.skills.forEach((skill, index) => {
+                    if (skillInputs[index]) {
+                        const nameInput = skillInputs[index].querySelector('.skill-name');
+                        const levelInput = skillInputs[index].querySelector('.skill-level');
+                        if (nameInput) nameInput.value = skill.name;
+                        if (levelInput) levelInput.value = skill.level;
+                    }
+                });
+            }
+            
+            // Load moves
+            if (characterData.moves && characterData.moves.length > 0) {
+                const container = document.getElementById('movesContainer');
+                container.innerHTML = ''; // Clear existing moves
+                
+                characterData.moves.forEach(move => {
+                    const moveItem = document.createElement('div');
+                    moveItem.className = 'move-item';
+                    moveItem.innerHTML = `
+                        <div class="move-header">
+                            <input type="text" placeholder="Move name" class="move-name" value="${move.name}">
+                            <select class="move-source">
+                                <option value="playbook" ${move.source === 'playbook' ? 'selected' : ''}>Playbook Move</option>
+                                <option value="advancement" ${move.source === 'advancement' ? 'selected' : ''}>Advancement Move</option>
+                                <option value="custom" ${move.source === 'custom' ? 'selected' : ''}>Custom Move</option>
+                            </select>
+                            <button type="button" class="btn btn-small btn-outline" onclick="removeMove(this)">×</button>
+                        </div>
+                        <textarea placeholder="Move description and mechanics..." class="move-description" rows="3">${move.description}</textarea>
+                    `;
+                    container.appendChild(moveItem);
+                });
+            }
+            
+            // Load darkest self
+            if (characterData.darkestSelf) {
+                document.getElementById('darkestSelf').value = characterData.darkestSelf;
+            }
+            
+            // Update preview
+            updatePreview();
+        }
         function showSubmissionOptions() {
             // Generate preview first
             updatePreview();

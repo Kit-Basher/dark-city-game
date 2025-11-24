@@ -752,7 +752,7 @@
     
     <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
     <script src="js/server-api.js?v=20251124"></script>
-    <script src="api/submit-character.js?v=20251124"></script>
+    <script src="js/simple-submit.js?v=20251124"></script>
     <script src="test-submission.js"></script>
     <script>
         // Generate character sheet preview
@@ -1487,19 +1487,15 @@
                 submitButton.textContent = 'Submitting...';
                 submitButton.disabled = true;
                 
-                console.log('Submitting character:', characterData);
+                console.log('🚀 Submitting character with SIMPLE system:', characterData);
                 
-                // Initialize submission system
-                const submissionSystem = new CharacterSubmission();
+                // Use the new simple server-only submission
+                const result = await window.submitCharacterSimple(characterData);
                 
-                // Submit character
-                const result = await submissionSystem.submitCharacter(characterData);
-                
-                console.log('Submission result:', result);
+                console.log('📊 Submission result:', result);
                 
                 if (result.success) {
-                    // Success is handled by the CharacterSubmission.showSuccessMessage() method
-                    console.log('Character submitted successfully to server');
+                    console.log('✅ Character submitted successfully to server');
                     closeModal();
                 } else {
                     throw new Error(result.error || 'Submission failed');

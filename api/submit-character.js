@@ -74,11 +74,7 @@ class CharacterSubmission {
         `;
         document.body.appendChild(successDiv);
         
-        // Clear form
-        setTimeout(() => {
-            document.getElementById('characterForm').reset();
-            document.getElementById('preview').innerHTML = '';
-        }, 1000);
+        // Don't auto-clear form - let user decide if they want to submit another character
     }
 
     // Show error message

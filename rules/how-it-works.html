@@ -67,6 +67,113 @@
             font-weight: bold;
         }
         
+        .probability-visual {
+            margin: 2rem 0;
+            padding: 2rem;
+            background: #2a2a2a;
+            border-radius: 10px;
+            border: 1px solid #4a5568;
+        }
+        
+        .dice-distribution {
+            display: flex;
+            align-items: end;
+            justify-content: space-between;
+            height: 200px;
+            margin: 2rem 0;
+            gap: 0.5rem;
+        }
+        
+        .dice-bar {
+            flex: 1;
+            background: linear-gradient(to top, #ff6b35, #e55a2b);
+            border-radius: 4px 4px 0 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: end;
+            padding-bottom: 0.5rem;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .dice-bar:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.3);
+        }
+        
+        .dice-bar-label {
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        .dice-bar-percent {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.9rem;
+            margin-top: 0.25rem;
+        }
+        
+        .dice-bar-rolls {
+            position: absolute;
+            bottom: -30px;
+            color: #ff6b35;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .success-levels {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        
+        .success-level {
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+            border: 2px solid;
+        }
+        
+        .success-failure {
+            background: rgba(220, 53, 69, 0.1);
+            border-color: #dc3545;
+            color: #dc3545;
+        }
+        
+        .success-mild {
+            background: rgba(255, 193, 7, 0.1);
+            border-color: #ffc107;
+            color: #ffc107;
+        }
+        
+        .success-normal {
+            background: rgba(40, 167, 69, 0.1);
+            border-color: #28a745;
+            color: #28a745;
+        }
+        
+        .success-good {
+            background: rgba(23, 162, 184, 0.1);
+            border-color: #17a2b8;
+            color: #17a2b8;
+        }
+        
+        .success-total {
+            background: rgba(102, 16, 242, 0.1);
+            border-color: #6610f2;
+            color: #6610f2;
+        }
+        
+        .roll-explanation {
+            background: #1a1a1a;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid #ff6b35;
+            margin: 2rem 0;
+        }
+        
         .mechanic-box {
             background: #2a2a2a;
             padding: 1.5rem;
@@ -125,28 +232,114 @@
                 <h3>🎯 Rolling</h3>
                 <p>The success of an action will be determined by a roll. A "Roll" is the result of 2 six-sided dice (d6) added together, plus any bonuses. The roll determines whether that action is a success or failure.</p>
                 
-                <table class="roll-table">
-                    <thead>
-                        <tr>
-                            <th>-6</th>
-                            <th>6 & under</th>
-                            <th>7</th>
-                            <th>8</th>
-                            <th>9</th>
-                            <th>+10</th>
-                            <th>10 & over</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Failure</td>
-                            <td>Mild Success</td>
-                            <td>Success</td>
-                            <td>Good Success</td>
-                            <td>Total Success</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="probability-visual">
+                    <h3>🎲 2d6 Roll Probability Distribution</h3>
+                    <p>When you roll 2 six-sided dice, some results are more likely than others. Here's how the probabilities break down:</p>
+                    
+                    <div class="dice-distribution">
+                        <div class="dice-bar" style="height: 16.7%;">
+                            <div class="dice-bar-label">2</div>
+                            <div class="dice-bar-percent">2.8%</div>
+                            <div class="dice-bar-rolls">1+1</div>
+                        </div>
+                        <div class="dice-bar" style="height: 33.3%;">
+                            <div class="dice-bar-label">3</div>
+                            <div class="dice-bar-percent">5.6%</div>
+                            <div class="dice-bar-rolls">1+2, 2+1</div>
+                        </div>
+                        <div class="dice-bar" style="height: 50%;">
+                            <div class="dice-bar-label">4</div>
+                            <div class="dice-bar-percent">8.3%</div>
+                            <div class="dice-bar-rolls">1+3, 2+2, 3+1</div>
+                        </div>
+                        <div class="dice-bar" style="height: 66.7%;">
+                            <div class="dice-bar-label">5</div>
+                            <div class="dice-bar-percent">11.1%</div>
+                            <div class="dice-bar-rolls">1+4, 2+3, 3+2, 4+1</div>
+                        </div>
+                        <div class="dice-bar" style="height: 83.3%;">
+                            <div class="dice-bar-label">6</div>
+                            <div class="dice-bar-percent">13.9%</div>
+                            <div class="dice-bar-rolls">1+5, 2+4, 3+3, 4+2, 5+1</div>
+                        </div>
+                        <div class="dice-bar" style="height: 100%;">
+                            <div class="dice-bar-label">7</div>
+                            <div class="dice-bar-percent">16.7%</div>
+                            <div class="dice-bar-rolls">1+6, 2+5, 3+4, 4+3, 5+2, 6+1</div>
+                        </div>
+                        <div class="dice-bar" style="height: 83.3%;">
+                            <div class="dice-bar-label">8</div>
+                            <div class="dice-bar-percent">13.9%</div>
+                            <div class="dice-bar-rolls">2+6, 3+5, 4+4, 5+3, 6+2</div>
+                        </div>
+                        <div class="dice-bar" style="height: 66.7%;">
+                            <div class="dice-bar-label">9</div>
+                            <div class="dice-bar-percent">11.1%</div>
+                            <div class="dice-bar-rolls">3+6, 4+5, 5+4, 6+3</div>
+                        </div>
+                        <div class="dice-bar" style="height: 50%;">
+                            <div class="dice-bar-label">10</div>
+                            <div class="dice-bar-percent">8.3%</div>
+                            <div class="dice-bar-rolls">4+6, 5+5, 6+4</div>
+                        </div>
+                        <div class="dice-bar" style="height: 33.3%;">
+                            <div class="dice-bar-label">11</div>
+                            <div class="dice-bar-percent">5.6%</div>
+                            <div class="dice-bar-rolls">5+6, 6+5</div>
+                        </div>
+                        <div class="dice-bar" style="height: 16.7%;">
+                            <div class="dice-bar-label">12</div>
+                            <div class="dice-bar-percent">2.8%</div>
+                            <div class="dice-bar-rolls">6+6</div>
+                        </div>
+                    </div>
+                    
+                    <div class="roll-explanation">
+                        <strong>🎯 Key Insight:</strong> Rolling a 7 is the most common result (16.7% chance), while 2 and 12 are the rarest (2.8% each). This means most rolls will be around the middle, with extreme results being uncommon.
+                    </div>
+                </div>
+                
+                <h3>📊 Success Levels</h3>
+                <div class="success-levels">
+                    <div class="success-level success-failure">
+                        <h4>❌ Failure</h4>
+                        <p><strong>6 or less</strong></p>
+                        <p>28% chance</p>
+                        <small>Something goes wrong</small>
+                    </div>
+                    
+                    <div class="success-level success-mild">
+                        <h4>⭐ Mild Success</h4>
+                        <p><strong>7</strong></p>
+                        <p>16.7% chance</p>
+                        <small>It works, but with complications</small>
+                    </div>
+                    
+                    <div class="success-level success-normal">
+                        <h4>✅ Success</h4>
+                        <p><strong>8</strong></p>
+                        <p>13.9% chance</p>
+                        <small>You accomplish what you wanted</small>
+                    </div>
+                    
+                    <div class="success-level success-good">
+                        <h4>🌟 Good Success</h4>
+                        <p><strong>9</strong></p>
+                        <p>11.1% chance</p>
+                        <small>You succeed with style</small>
+                    </div>
+                    
+                    <div class="success-level success-total">
+                        <h4>🔥 Total Success</h4>
+                        <p><strong>10+</strong></p>
+                        <p>30.6% chance</p>
+                        <small>Exceptional results!</small>
+                    </div>
+                </div>
+                
+                <div class="roll-explanation">
+                    <strong>💡 Strategy Tip:</strong> With skill bonuses, most characters will succeed more often than fail. A +1 bonus shifts the odds dramatically - that "Failure" range becomes much smaller!
+                </div>
                 
                 <p>5 would be a little failure, 4 a pretty bad event, 3 a really bad event, 2 is the absolute worst case scenario.</p>
                 <p><em>In the case of an opposed roll, i.e you vs another player competing, whoever rolls higher wins.</em></p>

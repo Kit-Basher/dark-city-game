@@ -66,7 +66,7 @@ class CharacterSubmission {
             <h2>✅ Character Submitted Successfully!</h2>
             <p>Your character has been sent to the moderator for review.</p>
             <p style="font-size: 0.9rem; opacity: 0.8;">You will be notified when it's approved.</p>
-            <button onclick="this.parentElement.remove(); window.location.reload();" style="
+            <button onclick="this.parentElement.remove();" style="
                 background: white; color: #4CAF50; border: none; 
                 padding: 0.5rem 1rem; border-radius: 5px; cursor: pointer;
                 margin-top: 1rem;

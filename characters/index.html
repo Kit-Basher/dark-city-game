@@ -129,10 +129,24 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <a href="index.html#characters" class="back-link">← Back to Characters</a>
-        
-        <div class="character-management">
+    <header>
+        <nav class="navbar">
+            <div class="container">
+                <a href="../index.html" class="nav-logo">Dark City RPG</a>
+                <ul class="nav-links">
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="../index.html#rules">Rules</a></li>
+                    <li><a href="../index.html#playbooks">Playbooks</a></li>
+                    <li><a href="../index.html#characters" class="active">Characters</a></li>
+                    <li><a href="../index.html#calendar">Calendar</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    
+    <main>
+        <div class="container">
+            <div class="character-management">
             <h2>Character Management</h2>
             <p style="color: white;">View and manage all Dark City characters. Click "Edit" to modify any character.</p>
             
@@ -339,7 +353,10 @@
         });
         
         // Load characters when page loads
-        document.addEventListener('DOMContentLoaded', loadCharacters);
+        document.addEventListener('DOMContentLoaded', loadApprovedCharacters);
     </script>
+    </div>
+    </div>
+    </main>
 </body>
 </html>

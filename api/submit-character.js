@@ -5,44 +5,80 @@ class CharacterSubmission {
         this.storageKey = 'darkCitySubmissions';
     }
 
-    // Submit character for review
+    // Submit character using server API
     async submitCharacter(characterData) {
+        console.log('CharacterSubmission: Starting submission for', characterData.name);
+        
         try {
-            console.log('CharacterSubmission: Starting submission for', characterData.name);
+            // Submit to server
+            const result = await window.serverAPI.submitCharacter(characterData);
             
-            // Create submission record
-            const submission = {
-                id: this.generateId(),
-                character: characterData,
-                status: 'pending',
-                submitted_at: new Date().toISOString(),
-                submitted_by: this.getClientId()
-            };
+            console.log('CharacterSubmission: Server submission successful:', result);
             
-            console.log('CharacterSubmission: Created submission', submission);
-
-            // Save to localStorage (fallback for GitHub Pages)
-            this.saveSubmission(submission);
+            // Show success message
+            this.showSuccessMessage();
             
-            console.log('CharacterSubmission: Saved to localStorage');
-
-            // Send Discord notification
-            await this.sendDiscordNotification(submission, 'new_submission');
+            // Send Discord notification (server handles this automatically)
+            console.log('CharacterSubmission: Discord notification handled by server');
             
-            console.log('CharacterSubmission: Discord notification sent');
-
-            return {
-                success: true,
-                submission: submission
-            };
-
+            return { success: true, submission: result };
+            
         } catch (error) {
-            console.error('CharacterSubmission: Submission error:', error);
-            return {
-                success: false,
-                error: error.message
-            };
+            console.error('CharacterSubmission: Server submission failed:', error);
+            
+            // Fallback to localStorage if server is down
+            console.log('CharacterSubmission: Falling back to localStorage');
+            return this.submitCharacterLocalStorage(characterData);
         }
+    }
+
+    // Fallback localStorage submission
+    async submitCharacterLocalStorage(characterData) {
+        const submission = {
+            id: this.generateId(),
+            character: characterData,
+            status: 'pending',
+            submitted_at: new Date().toISOString(),
+            submitted_by: this.getClientId()
+        };
+        
+        console.log('CharacterSubmission: Created submission', submission);
+        
+        // Save to localStorage
+        this.saveSubmission(submission);
+        
+        // Send Discord notification
+        await this.sendDiscordNotification(submission);
+        
+        console.log('CharacterSubmission: Saved to localStorage');
+        
+        return { success: true, submission };
+    }
+
+    // Show success message
+    showSuccessMessage() {
+        const successDiv = document.createElement('div');
+        successDiv.style.cssText = `
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: #4CAF50; color: white; padding: 2rem; border-radius: 10px;
+            z-index: 10000; font-size: 1.2rem; text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        `;
+        successDiv.innerHTML = `
+            <h2>✅ Character Submitted Successfully!</h2>
+            <p>Your character has been sent to the moderator for review.</p>
+            <p style="font-size: 0.9rem; opacity: 0.8;">You will be notified when it's approved.</p>
+            <button onclick="this.parentElement.remove(); window.location.reload();" style="
+                background: white; color: #4CAF50; border: none; 
+                padding: 0.5rem 1rem; border-radius: 5px; cursor: pointer;
+                margin-top: 1rem;
+            ">Close</button>
+        `;
+        document.body.appendChild(successDiv);
+        
+        // Clear form
+        document.getElementById('characterForm').reset();
+        document.getElementById('preview').innerHTML = '';
     }
 
     // Update submission status

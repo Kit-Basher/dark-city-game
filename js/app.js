@@ -257,42 +257,12 @@ class GitHubAPI {
 
 // Character and Scene loading
 class ContentLoader {
-    static async loadCharacters() {
-        const charactersList = document.getElementById('charactersList');
-        
-        // Check if charactersList element exists
-        if (!charactersList) {
-            console.log('Characters section not found on this page - skipping characters loading');
-            return;
-        }
-        
-        // Try to load from new JavaScript-based system first
-        try {
-            if (typeof CharacterSubmission !== 'undefined') {
-                const submissionSystem = new CharacterSubmission();
-                const approvedCharacters = submissionSystem.getApprovedSubmissions();
-                
-                if (approvedCharacters.length > 0) {
-                    charactersList.innerHTML = '';
-                    approvedCharacters.forEach(submission => {
-                        const character = submission.character;
-                        const card = this.createCharacterCardFromSubmission(character, submission);
-                        charactersList.appendChild(card);
-                    });
-                    console.log(`Loaded ${approvedCharacters.length} approved characters from localStorage`);
-                    return;
-                }
-            }
-        } catch (error) {
-            console.log('Failed to load from localStorage, falling back to GitHub API:', error);
-        }
-        
         // Fallback to GitHub API system
         try {
             const issues = await GitHubAPI.getIssues('character-sheet');
             
             if (issues.length === 0) {
-                charactersList.innerHTML = '<p>No character sheets submitted yet.</p>';
+                this.displayCharacters([]);
                 return;
             }
             

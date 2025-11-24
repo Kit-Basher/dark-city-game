@@ -1,121 +1,72 @@
-// Moderator Panel - JavaScript-based system for GitHub Pages
+// Moderator Panel - Server-based system for real-time character submissions
 class ModeratorPanel {
     constructor() {
-        this.submissionSystem = new CharacterSubmission();
+        this.serverAPI = window.serverAPI;
         this.currentFilter = 'pending';
+        this.allSubmissions = [];
         this.init();
     }
 
     init() {
-        // Check for URL parameters first
-        this.checkUrlParameters();
+        // Initialize WebSocket connection
+        this.serverAPI.initSocket();
         
-        // Check for cross-page notifications
-        this.checkCrossPageNotifications();
+        // Join moderator room for real-time notifications
+        this.serverAPI.joinModerator();
         
-        // Check for sessionStorage imports
-        const hasImported = this.submissionSystem.checkSessionStorageImports();
-        if (hasImported) {
-            console.log('🔄 Imported pending submission from sessionStorage');
-        }
-        
-        this.loadSubmissions();
+        // Setup event listeners
         this.setupEventListeners();
-        this.setupStorageListener();
-        this.setupAutoRefresh();
-        this.setupMessageListener();
-        this.setupPostMessageListener();
-    }
-
-    // Check URL parameters for submission data
-    checkUrlParameters() {
-        try {
-            const urlParams = new URLSearchParams(window.location.search);
-            const submissionData = urlParams.get('submission');
-            
-            if (submissionData) {
-                console.log('🔍 Found submission in URL parameters');
-                
-                try {
-                    const submission = JSON.parse(atob(submissionData));
-                    console.log('📥 Imported submission from URL:', submission);
-                    
-                    // Save to localStorage
-                    this.submissionSystem.saveSubmission(submission);
-                    
-                    // Clear URL parameters
-                    window.history.replaceState({}, document.title, window.location.pathname);
-                    
-                    // Show success message
-                    alert('✅ Character submission imported from URL!');
-                    
-                    return true;
-                } catch (error) {
-                    console.error('❌ Failed to parse URL submission data:', error);
-                }
-            }
-        } catch (error) {
-            console.error('❌ Error checking URL parameters:', error);
-        }
+        this.setupSocketListeners();
         
-        return false;
+        // Load initial data
+        this.loadSubmissions();
     }
 
-    // Check for cross-page notifications
-    checkCrossPageNotifications() {
-        try {
-            const storageKey = 'crossPageSubmission';
-            
-            // Check localStorage
-            const localData = localStorage.getItem(storageKey);
-            if (localData) {
-                const data = JSON.parse(localData);
-                const age = Date.now() - data.timestamp;
-                
-                if (age < 300000) { // 5 minutes
-                    console.log('📥 Found cross-page notification in localStorage:', data);
-                    this.submissionSystem.saveSubmission(data.submission);
-                    localStorage.removeItem(storageKey);
-                    return true;
-                }
-            }
-            
-            // Check sessionStorage
-            const sessionData = sessionStorage.getItem(storageKey);
-            if (sessionData) {
-                const data = JSON.parse(sessionData);
-                const age = Date.now() - data.timestamp;
-                
-                if (age < 300000) { // 5 minutes
-                    console.log('📥 Found cross-page notification in sessionStorage:', data);
-                    this.submissionSystem.saveSubmission(data.submission);
-                    sessionStorage.removeItem(storageKey);
-                    return true;
-                }
-            }
-        } catch (error) {
-            console.error('❌ Error checking cross-page notifications:', error);
-        }
-        
-        return false;
-    }
-
-    // Setup postMessage listener
-    setupPostMessageListener() {
-        window.addEventListener('message', (event) => {
-            if (event.data.type === 'characterSubmission' && event.data.action === 'newSubmission') {
-                console.log('📨 Received postMessage notification:', event.data);
-                
-                const submission = event.data.data.submission;
-                this.submissionSystem.saveSubmission(submission);
-                
-                // Refresh the display
-                this.loadSubmissions();
-                
-                // Show notification
-                this.showNotification('📥 New character submission received!');
-            }
+    setupSocketListeners() {
+        // Listen for new submissions
+        this.serverAPI.onNewSubmission((submission) => {
+            console.log(' New submission received:', submission.name);
+            this.showNotification(` New submission: ${submission.name}`);
+            this.loadSubmissions(); // Refresh the list
         });
+
+        // Listen for character approvals
+        this.serverAPI.onCharacterApproved((character) => {
+            console.log(' Character approved:', character.name);
+            this.showNotification(` Approved: ${character.name}`);
+            this.loadSubmissions(); // Refresh the list
+        });
+
+        // Listen for character rejections
+        this.serverAPI.onCharacterRejected((character) => {
+            console.log(' Character rejected:', character.name);
+            this.showNotification(` Rejected: ${character.name}`);
+            this.loadSubmissions(); // Refresh the list
+        });
+
+        // Listen for character deletions
+        this.serverAPI.onCharacterDeleted((character) => {
+            console.log(' Character deleted:', character.name);
+            this.showNotification(` Deleted: ${character.name}`);
+            this.loadSubmissions(); // Refresh the list
+        });
+    }
+
+    // Load submissions from server
+    async loadSubmissions() {
+        console.log('Loading submissions from server...');
+        
+        try {
+            this.allSubmissions = await this.serverAPI.getAllSubmissions();
+            console.log(`Loaded ${this.allSubmissions.length} submissions from server`);
+            
+            this.updateStatistics();
+            this.renderSubmissions();
+            this.updateLastRefresh();
+        } catch (error) {
+            console.error('Error loading submissions:', error);
+            this.showError('Failed to load submissions from server');
+        }
     }
 
     // Show notification
@@ -136,62 +87,6 @@ class ModeratorPanel {
         }, 3000);
     }
 
-    setupMessageListener() {
-        // Listen for messages from test script
-        window.addEventListener('message', (event) => {
-            if (event.data.action === 'checkSubmissions') {
-                console.log('📨 Received test results from character builder:', event.data.testResults);
-                
-                // Load submissions and check for test data
-                this.loadSubmissions();
-                
-                // Report back to character builder
-                const submissions = this.submissionSystem.getSubmissions();
-                const testSubmissions = Object.values(submissions).filter(s => 
-                    s.character.name && s.character.name.includes('Test Character') ||
-                    s.character.name && s.character.name.includes('Auto Bot') ||
-                    s.character.name && s.character.name.includes('Debug Hero')
-                );
-                
-                console.log(`🔍 Moderator panel found ${testSubmissions.length} test submissions`);
-                
-                if (event.source) {
-                    event.source.postMessage({
-                        action: 'moderatorPanelStatus',
-                        foundSubmissions: testSubmissions.length,
-                        totalSubmissions: Object.keys(submissions).length,
-                        pendingCount: Object.values(submissions).filter(s => s.status === 'pending').length
-                    }, '*');
-                }
-            }
-        });
-    }
-
-    setupStorageListener() {
-        // Listen for storage changes from other pages
-        window.addEventListener('storage', (e) => {
-            if (e.key === 'darkCitySubmissions' || e.key === 'darkCitySubmissions_backup') {
-                console.log('Storage changed, refreshing submissions...');
-                this.loadSubmissions();
-            }
-        });
-
-        // Listen for custom events from same page
-        window.addEventListener('characterSubmission', (e) => {
-            console.log('Character submission event:', e.detail);
-            if (e.detail.action === 'saved') {
-                this.loadSubmissions();
-            }
-        });
-    }
-
-    setupAutoRefresh() {
-        // Refresh every 30 seconds to catch new submissions
-        setInterval(() => {
-            this.loadSubmissions();
-        }, 30000);
-    }
-
     setupEventListeners() {
         // Filter tabs
         document.querySelectorAll('.filter-tab').forEach(tab => {
@@ -201,16 +96,6 @@ class ModeratorPanel {
         });
     }
 
-    // Load submissions from localStorage
-    async loadSubmissions() {
-        try {
-            console.log('Loading submissions...');
-            console.log('Available localStorage keys:', Object.keys(localStorage));
-            
-            const submissions = this.submissionSystem.getSubmissions();
-            console.log('Raw submissions object:', submissions);
-            console.log('Submission keys:', Object.keys(submissions));
-            
             this.allSubmissions = Object.values(submissions);
             console.log('Submission array:', this.allSubmissions);
             console.log('Pending submissions:', this.allSubmissions.filter(s => s.status === 'pending'));
@@ -345,23 +230,93 @@ class ModeratorPanel {
         const feedback = document.getElementById(`feedback-${submissionId}`).value;
         
         try {
-            const result = await this.submissionSystem.updateSubmission(submissionId, 'approved', feedback);
+            const result = await this.serverAPI.approveCharacter(submissionId, feedback, 'moderator');
             
-            if (result.success) {
-                alert('Character approved and added to the character list!');
-                this.loadSubmissions(); // Refresh the list
-            } else {
-                alert('Failed to approve submission. Please try again.');
-            }
+            console.log('Character approved successfully:', result);
+            this.showNotification(`✅ Approved: ${result.name}`);
+            
+            // List will refresh automatically via WebSocket event
         } catch (error) {
             console.error('Approval error:', error);
-            alert('Error approving submission. Please try again.');
+            this.showError('Failed to approve submission. Please try again.');
         }
     }
 
-    // Request changes
+    // Request changes (reject with feedback)
     async requestChanges(submissionId) {
         const feedback = document.getElementById(`feedback-${submissionId}`).value;
+        
+        if (!feedback.trim()) {
+            alert('Please provide feedback for the requested changes.');
+            return;
+        }
+        
+        try {
+            const result = await this.serverAPI.rejectCharacter(submissionId, feedback, 'moderator');
+            
+            console.log('Changes requested successfully:', result);
+            this.showNotification(`📝 Changes requested: ${result.name}`);
+            
+            // List will refresh automatically via WebSocket event
+        } catch (error) {
+            console.error('Request changes error:', error);
+            this.showError('Failed to request changes. Please try again.');
+        }
+    }
+
+    // Reject submission
+    async rejectSubmission(submissionId) {
+        const feedback = document.getElementById(`feedback-${submissionId}`).value || 'Rejected by moderator';
+        
+        if (confirm('Are you sure you want to reject this submission?')) {
+            try {
+                const result = await this.serverAPI.rejectCharacter(submissionId, feedback, 'moderator');
+                
+                console.log('Submission rejected successfully:', result);
+                this.showNotification(`❌ Rejected: ${result.name}`);
+                
+                // List will refresh automatically via WebSocket event
+            } catch (error) {
+                console.error('Rejection error:', error);
+                this.showError('Failed to reject submission. Please try again.');
+            }
+        }
+    }
+
+    // Delete submission
+    async deleteSubmission(submissionId) {
+        if (confirm('Are you sure you want to delete this submission? This cannot be undone.')) {
+            try {
+                const result = await this.serverAPI.deleteCharacter(submissionId);
+                
+                console.log('Submission deleted successfully:', result);
+                this.showNotification(`🗑️ Submission deleted`);
+                
+                // List will refresh automatically via WebSocket event
+            } catch (error) {
+                console.error('Deletion error:', error);
+                this.showError('Failed to delete submission. Please try again.');
+            }
+        }
+    }
+
+    // Show error message
+    showError(message) {
+        const errorDiv = document.createElement('div');
+        errorDiv.style.cssText = `
+            position: fixed; top: 20px; right: 20px; 
+            background: #f44336; color: white; 
+            padding: 1rem; border-radius: 5px; 
+            z-index: 1000; animation: slideIn 0.3s ease;
+        `;
+        errorDiv.textContent = message;
+        
+        document.body.appendChild(errorDiv);
+        
+        setTimeout(() => {
+            errorDiv.remove();
+        }, 5000);
+    }
         
         if (!feedback.trim()) {
             alert('Please provide feedback explaining what changes are needed.');

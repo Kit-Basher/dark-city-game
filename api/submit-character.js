@@ -202,57 +202,10 @@ class CharacterSubmission {
         
         console.log('CharacterSubmission: Dispatched custom event');
         
-        // NEW: Create shareable URL for cross-page sync
-        this.createShareableUrl(submission);
+        // No longer needed - using server API instead of cross-page sync
     }
 
-    // Create shareable URL for moderator panel
-    createShareableUrl(submission) {
-        try {
-            console.log('CharacterSubmission: Creating shareable URL for cross-page sync...');
-            
-            // Create a URL with the submission data as a parameter
-            const submissionData = btoa(JSON.stringify(submission)).substring(0, 800); // Limit URL length
-            const shareUrl = `${window.location.origin}/moderator/?submission=${submissionData}`;
-            
-            console.log('CharacterSubmission: Shareable URL created:', shareUrl);
-            
-            // Store backup in case redirect fails
-            sessionStorage.setItem('latestSubmission', JSON.stringify(submission));
-            sessionStorage.setItem('latestSubmissionTimestamp', Date.now().toString());
-            
-            // Auto-redirect to moderator panel with the data
-            console.log('CharacterSubmission: Redirecting to moderator panel with submission data...');
-            
-            // Show brief success message before redirect
-            const successDiv = document.createElement('div');
-            successDiv.style.cssText = `
-                position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-                background: #4CAF50; color: white; padding: 2rem; border-radius: 10px;
-                z-index: 10000; font-size: 1.2rem; text-align: center;
-                box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-            `;
-            successDiv.innerHTML = `
-                <h2>✅ Character Submitted Successfully!</h2>
-                <p>Redirecting to moderator panel for review...</p>
-                <p style="font-size: 0.9rem; opacity: 0.8;">This happens automatically for all submissions</p>
-            `;
-            document.body.appendChild(successDiv);
-            
-            // Redirect after 2 seconds
-            setTimeout(() => {
-                window.location.href = shareUrl;
-            }, 2000);
-            
-        } catch (error) {
-            console.log('CharacterSubmission: Could not create shareable URL:', error);
-            
-            // Fallback: Show manual instructions
-            this.showManualInstructions(submission);
-        }
-    }
-
-    // Show manual instructions if auto-redirect fails
+    // Show error message
     showManualInstructions(submission) {
         const instructionsDiv = document.createElement('div');
         instructionsDiv.style.cssText = `

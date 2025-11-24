@@ -20,3 +20,6 @@ nohup: ignoring input
 127.0.0.1 - - [24/Nov/2025:01:24:59 +0000] "POST /api/characters/6923ab5f1868c75dec83e262/approve HTTP/1.1" 404 187 "-" "curl/8.5.0"
 127.0.0.1 - - [24/Nov/2025:01:25:05 +0000] "PUT /api/characters/6923ab5f1868c75dec83e262/approve HTTP/1.1" 200 775 "-" "curl/8.5.0"
 127.0.0.1 - - [24/Nov/2025:01:25:10 +0000] "GET /api/characters HTTP/1.1" 200 777 "-" "curl/8.5.0"
+127.0.0.1 - - [24/Nov/2025:01:50:22 +0000] "GET /health HTTP/1.1" 200 78 "-" "curl/8.5.0"
+127.0.0.1 - - [24/Nov/2025:01:50:27 +0000] "POST /api/characters/submit HTTP/1.1" 400 77 "-" "curl/8.5.0"
+127.0.0.1 - - [24/Nov/2025:01:50:29 +0000] "POST /api/characters/submit HTTP/1.1" 201 692 "-" "curl/8.5.0"

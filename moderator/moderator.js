@@ -296,6 +296,71 @@ class ModeratorPanel {
         }
     }
 
+    // Delete ALL approved characters (for cleanup)
+    async deleteAllApproved() {
+        const approvedCount = this.allSubmissions.filter(s => s.status === 'approved').length;
+        
+        if (approvedCount === 0) {
+            alert('No approved characters to delete.');
+            return;
+        }
+        
+        if (confirm(`Are you sure you want to delete ALL ${approvedCount} approved characters? This cannot be undone!`)) {
+            try {
+                const approvedSubmissions = this.allSubmissions.filter(s => s.status === 'approved');
+                let deletedCount = 0;
+                
+                for (const submission of approvedSubmissions) {
+                    try {
+                        await this.serverAPI.deleteCharacter(submission._id || submission.id);
+                        deletedCount++;
+                    } catch (error) {
+                        console.error('Failed to delete character:', submission.name, error);
+                    }
+                }
+                
+                this.showNotification(`🗑️ Deleted ${deletedCount} approved characters`);
+                this.loadSubmissions(); // Refresh the list
+            } catch (error) {
+                console.error('Mass deletion error:', error);
+                this.showError('Failed to delete some characters. Please try again.');
+            }
+        }
+    }
+
+    // Delete ALL test characters (characters with "Test" in name)
+    async deleteTestCharacters() {
+        const testCharacters = this.allSubmissions.filter(s => 
+            s.name && s.name.toLowerCase().includes('test')
+        );
+        
+        if (testCharacters.length === 0) {
+            alert('No test characters found.');
+            return;
+        }
+        
+        if (confirm(`Are you sure you want to delete ${testCharacters.length} test characters? This cannot be undone!`)) {
+            try {
+                let deletedCount = 0;
+                
+                for (const character of testCharacters) {
+                    try {
+                        await this.serverAPI.deleteCharacter(character._id || character.id);
+                        deletedCount++;
+                    } catch (error) {
+                        console.error('Failed to delete test character:', character.name, error);
+                    }
+                }
+                
+                this.showNotification(`🗑️ Deleted ${deletedCount} test characters`);
+                this.loadSubmissions(); // Refresh the list
+            } catch (error) {
+                console.error('Test deletion error:', error);
+                this.showError('Failed to delete some test characters. Please try again.');
+            }
+        }
+    }
+
     // Setup event listeners
     setupEventListeners() {
         // Filter tabs

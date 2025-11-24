@@ -1498,14 +1498,8 @@
                 console.log('Submission result:', result);
                 
                 if (result.success) {
-                    // Save character locally as backup (skip IndexedDB to avoid error)
-                    saveCharacterWithRedundancyLight(characterData);
-                    
-                    // Show success message
-                    alert('✅ Character submitted successfully!\n\nYour character has been sent to the moderators for review. You will be notified on Discord when it\'s approved or if changes are needed.\n\nSubmission ID: ' + result.submission.id);
-                    
-                    // Show submission confirmation
-                    showSubmissionConfirmation(result.submission);
+                    // Success is handled by the CharacterSubmission.showSuccessMessage() method
+                    console.log('Character submitted successfully to server');
                     closeModal();
                 } else {
                     throw new Error(result.error || 'Submission failed');

@@ -113,38 +113,58 @@
             color: white;
             margin-top: 0.5rem;
         }
+        
+        .cleanup-controls {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .cleanup-controls h3 {
+            color: white;
+            margin-bottom: 1rem;
+        }
+        
+        .cleanup-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .cleanup-warning {
+            color: #ff9800;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+            margin-bottom: 0;
+        }
     </style>
 </head>
 <body>
     <div class="moderator-panel">
         <h1>🛡️ Moderator Panel</h1>
         <p>Review and approve character submissions</p>
-        
-        <div style="margin-bottom: 1rem; display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
-            <button class="btn btn-outline" onclick="moderatorPanel.loadSubmissions()">🔄 Refresh Submissions</button>
-            <button class="btn btn-outline" onclick="moderatorPanel.checkSessionStorage()">📥 Check Session Storage</button>
-            <button class="btn btn-outline" onclick="moderatorPanel.showDataImport()">📋 Import Data</button>
-            <span id="lastRefresh" style="color: #ccc; margin-left: 1rem; font-size: 0.9rem;">Last refresh: Never</span>
+            </div>
+            <div class="controls">
+                <button class="btn btn-primary" onclick="moderatorPanel.loadSubmissions()">🔄 Refresh</button>
+                <span id="lastRefresh">Last refresh: Never</span>
+            </div>
         </div>
         
-        <!-- Statistics -->
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-number" id="pendingCount">0</div>
-                <div class="stat-label">Pending Review</div>
+        <!-- Cleanup Controls -->
+        <div class="cleanup-controls">
+            <h3>🧹 Cleanup Tools</h3>
+            <div class="cleanup-buttons">
+                <button class="btn btn-warning" onclick="moderatorPanel.deleteTestCharacters()">
+                    🗑️ Delete All Test Characters
+                </button>
+                <button class="btn btn-danger" onclick="moderatorPanel.deleteAllApproved()">
+                    🗑️ Delete All Approved Characters
+                </button>
             </div>
-            <div class="stat-card">
-                <div class="stat-number" id="approvedCount">0</div>
-                <div class="stat-label">Approved Today</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" id="rejectedCount">0</div>
-                <div class="stat-label">Rejected Today</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" id="totalCount">0</div>
-                <div class="stat-label">Total Submissions</div>
-            </div>
+            <p class="cleanup-warning">⚠️ These actions cannot be undone!</p>
         </div>
         
         <!-- Filter Tabs -->

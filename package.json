@@ -1,0 +1,17 @@
+{
+  "name": "dark-city-game",
+  "version": "1.0.0",
+  "description": "Dark City RPG Game",
+  "main": "server/server.js",
+  "scripts": {
+    "start": "cd server && npm start",
+    "install": "cd server && npm install",
+    "build": "cd server && npm install"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": ["rpg", "game", "dark-city"],
+  "author": "Your Name",
+  "license": "MIT"
+}

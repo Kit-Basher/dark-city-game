@@ -181,62 +181,6 @@
                 file: "ageless.html"
             },
             {
-                name: "Ancient",
-                subtypes: "Dragon, Mummy, Serpentine",
-                description: "Primordial beings from the dawn of time, ancient beyond human comprehension and wielding powers that shaped civilizations.",
-                features: ["Primordial power", "Ancient knowledge", "Elemental control"],
-                category: "immortal",
-                file: "ancient.html"
-            },
-            {
-                name: "Aquatic",
-                subtypes: "Nymph, Mermaid, Creature",
-                description: "Beings of water and tide, connected to the mysterious depths and the ancient secrets they hold.",
-                features: ["Water manipulation", "Underwater adaptation", "Siren's call"],
-                category: "magical",
-                file: "aquatic.html"
-            },
-            {
-                name: "Aware",
-                subtypes: "Reaper, Psychic, Oracle",
-                description: "Those who perceive beyond the veil, touching the supernatural realms and seeing what others cannot.",
-                features: ["Supernatural perception", "Psychic abilities", "Death insight"],
-                category: "magical",
-                file: "aware.html"
-            },
-            {
-                name: "Champion",
-                subtypes: "Chosen, Cassandra, Guardian",
-                description: "Heroes chosen by fate or destiny, blessed with extraordinary abilities to protect the innocent and fight darkness.",
-                features: ["Destined power", "Protective instincts", "Heroic destiny"],
-                category: "physical",
-                file: "champion.html"
-            },
-            {
-                name: "Construct",
-                subtypes: "Galatea, Clockwork, Homunculus",
-                description: "Artificial beings given life through magic or science, struggling with their nature and purpose.",
-                features: ["Artificial body", "Enhanced attributes", "Purpose-driven"],
-                category: "physical",
-                file: "construct.html"
-            },
-            {
-                name: "Covert",
-                subtypes: "Anansi, Hobgoblin, Cuckoo",
-                description: "Masters of deception and infiltration, these beings thrive in shadows and secrets.",
-                features: ["Stealth mastery", "Deception arts", "Shadow manipulation"],
-                category: "social",
-                file: "covert.html"
-            },
-            {
-                name: "Darkling",
-                subtypes: "Infernal, Proxy, Condemned",
-                description: "Beings touched by darkness, walking the line between damnation and redemption.",
-                features: ["Dark powers", "Moral conflict", "Infernal connections"],
-                category: "dark",
-                file: "darkling.html"
-            },
-            {
                 name: "Fae",
                 subtypes: "Fairy, Dryad, Pan",
                 description: "Beings of ancient magic and nature, connected to the wild places and the old ways.",
@@ -245,8 +189,38 @@
                 file: "fae.html"
             },
             {
-                name: "Giant",
-                subtypes: "Sasquatch, Minotaur, Hercules",
+                name: "Mage",
+                subtypes: "Wizard, Warlock, Sorcerer",
+                description: "Masters of arcane arts, wielding the fundamental forces of reality through study and innate talent.",
+                features: ["Arcane power", "Spell casting", "Magical knowledge"],
+                category: "magical",
+                file: "mage.html"
+            },
+            {
+                name: "Mortal",
+                subtypes: "Human, Blessed, Cursed",
+                description: "Ordinary humans caught in extraordinary circumstances, rising to meet supernatural challenges.",
+                features: ["Human resilience", "Adaptability", "Determination"],
+                category: "physical",
+                file: "mortal.html"
+            },
+            {
+                name: "Unsated",
+                subtypes: "Vampire, Succubus, Wendigo",
+                description: "Beings driven by eternal hunger, walking a fine line between predator and person.",
+                features: ["Supernatural hunger", "Predatory instincts", "Dark charm"],
+                category: "dark",
+                file: "unsated.html"
+            },
+            {
+                name: "Wild",
+                subtypes: "Werewolf, Werebeast, Shifter",
+                description: "Beings who walk between worlds, bridging the gap between civilization and wilderness.",
+                features: ["Shape shifting", "Animal connection", "Primal power"],
+                category: "physical",
+                file: "wild.html"
+            }
+        ];
                 description: "Beings of immense size and strength, towering over mortals and carrying the weight of their power.",
                 features: ["Immense strength", "Giant stature", "Raw power"],
                 category: "physical",
@@ -326,13 +300,11 @@
             }
         ];
         
-        function renderPlaybooks(filter = 'all') {
+        function displayPlaybooks(playbooksToShow = playbooks) {
             const grid = document.getElementById('playbookGrid');
             grid.innerHTML = '';
             
-            const filteredPlaybooks = filter === 'all' 
-                ? playbooks 
-                : playbooks.filter(p => p.category === filter);
+            const filteredPlaybooks = playbooksToShow;
             
             filteredPlaybooks.forEach(playbook => {
                 const card = document.createElement('div');

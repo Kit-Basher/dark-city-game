@@ -1,7 +1,7 @@
 // GitHub API configuration
 const GITHUB_API_BASE = 'https://api.github.com/repos';
-const REPO_OWNER = window.CONFIG?.REPO_OWNER || process.env.REPO_OWNER || 'Kit-Basher'; // Replace with your GitHub username
-const REPO_NAME = window.CONFIG?.REPO_NAME || process.env.REPO_NAME || 'dark-city-game';
+const REPO_OWNER = window.CONFIG?.REPO_OWNER || 'Kit-Basher'; // Replace with your GitHub username
+const REPO_NAME = window.CONFIG?.REPO_NAME || 'dark-city-game';
 
 // Calendar functionality
 class Calendar {

@@ -168,9 +168,7 @@ app.use(requestLogger);
 app.use(express.static('../'));
 
 // Specific route for character builder
-app.get('/character-builder.html', (req, res) => {
-  res.sendFile(require('path').join(__dirname, '../character-builder.html'));
-});
+// Character builder page removed - route deleted
 
 // Specific route for test submission script
 app.get('/test-submission.js', (req, res) => {

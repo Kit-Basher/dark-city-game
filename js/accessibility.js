@@ -35,7 +35,7 @@ class AccessibilityManager {
         });
 
         // Handle arrow keys for calendar navigation
-        this.setupCalendarKeyboardNavigation();
+        // this.setupCalendarKeyboardNavigation(); // TODO: Implement this method
     }
 
     // Screen reader announcements

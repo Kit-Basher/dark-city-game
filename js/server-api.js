@@ -1,15 +1,15 @@
 // Server API Client for Dark City RPG
 class ServerAPI {
     constructor() {
-        // Use relative URL to avoid exposing server location
-        this.baseURL = '/api';
+        // Use configuration based on environment
+        this.baseURL = window.APP_CONFIG ? window.APP_CONFIG.apiURL : '/api';
         this.socket = null;
     }
 
     // Initialize WebSocket connection
     initSocket() {
-        // Use relative URL for WebSocket
-        const socketURL = window.location.origin;
+        // Use configured socket URL
+        const socketURL = window.APP_CONFIG ? window.APP_CONFIG.socketURL : window.location.origin;
         this.socket = io(socketURL);
         
         this.socket.on('connect', () => {
@@ -46,7 +46,7 @@ class ServerAPI {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': 'Bearer dark-city-dev-key'
+                    'Authorization': `Bearer ${window.CONFIG?.API_KEY || process.env.API_KEY || 'dark-city-dev-key'}`
                 },
                 body: JSON.stringify(characterData)
             });
@@ -85,7 +85,7 @@ class ServerAPI {
         try {
             const response = await fetch(`${this.baseURL}/characters/submissions`, {
                 headers: {
-                    'Authorization': 'Bearer dark-city-dev-key'
+                    'Authorization': `Bearer ${window.CONFIG?.API_KEY || process.env.API_KEY || 'dark-city-dev-key'}`
                 }
             });
             if (!response.ok) {

@@ -25,29 +25,29 @@ class ModeratorPanel {
     setupSocketListeners() {
         // Listen for new submissions
         this.serverAPI.onNewSubmission((submission) => {
-            console.log(' New submission received:', submission.name);
-            this.showNotification(` New submission: ${submission.name}`);
+            console.log('📨 New submission received:', submission.name);
+            this.showNotification(`📝 New submission: ${submission.name}`);
             this.loadSubmissions(); // Refresh the list
         });
 
         // Listen for character approvals
         this.serverAPI.onCharacterApproved((character) => {
-            console.log(' Character approved:', character.name);
-            this.showNotification(` Approved: ${character.name}`);
+            console.log('✅ Character approved:', character.name);
+            this.showNotification(`✅ Approved: ${character.name}`);
             this.loadSubmissions(); // Refresh the list
         });
 
         // Listen for character rejections
         this.serverAPI.onCharacterRejected((character) => {
-            console.log(' Character rejected:', character.name);
-            this.showNotification(` Rejected: ${character.name}`);
+            console.log('❌ Character rejected:', character.name);
+            this.showNotification(`❌ Rejected: ${character.name}`);
             this.loadSubmissions(); // Refresh the list
         });
 
         // Listen for character deletions
         this.serverAPI.onCharacterDeleted((character) => {
-            console.log(' Character deleted:', character.name);
-            this.showNotification(` Deleted: ${character.name}`);
+            console.log('🗑️ Character deleted:', character.name);
+            this.showNotification(`🗑️ Deleted: ${character.name}`);
             this.loadSubmissions(); // Refresh the list
         });
     }
@@ -69,160 +69,156 @@ class ModeratorPanel {
         }
     }
 
-    // Show notification
-    showNotification(message) {
-        const notification = document.createElement('div');
-        notification.style.cssText = `
-            position: fixed; top: 20px; right: 20px; 
-            background: #4CAF50; color: white; 
-            padding: 1rem; border-radius: 5px; 
-            z-index: 1000; animation: slideIn 0.3s ease;
-        `;
-        notification.textContent = message;
-        
-        document.body.appendChild(notification);
-        
-        setTimeout(() => {
-            notification.remove();
-        }, 3000);
+    // Update statistics
+    updateStatistics() {
+        const pending = this.allSubmissions.filter(s => s.status === 'pending');
+        const approved = this.allSubmissions.filter(s => s.status === 'approved');
+        const rejected = this.allSubmissions.filter(s => s.status === 'rejected');
+
+        document.getElementById('pendingCount').textContent = pending.length;
+        document.getElementById('approvedCount').textContent = approved.length;
+        document.getElementById('rejectedCount').textContent = rejected.length;
     }
 
-    setupEventListeners() {
-        // Filter tabs
-        document.querySelectorAll('.filter-tab').forEach(tab => {
-            tab.addEventListener('click', (e) => {
-                this.filterSubmissions(e.target.dataset.filter);
-            });
-        });
-    }
-
-            this.allSubmissions = Object.values(submissions);
-            console.log('Submission array:', this.allSubmissions);
-            console.log('Pending submissions:', this.allSubmissions.filter(s => s.status === 'pending'));
-            console.log('Approved submissions:', this.allSubmissions.filter(s => s.status === 'approved'));
-            
-            this.updateStats();
-            this.displaySubmissions();
-            
-            // Update last refresh time
-            document.getElementById('lastRefresh').textContent = 'Last refresh: ' + new Date().toLocaleTimeString();
-            
-        } catch (error) {
-            console.error('Failed to load submissions:', error);
-            this.showError('Failed to load submissions: ' + error.message);
+    // Update last refresh time
+    updateLastRefresh() {
+        const now = new Date().toLocaleTimeString();
+        const lastRefreshElement = document.getElementById('lastRefresh');
+        if (lastRefreshElement) {
+            lastRefreshElement.textContent = `Last refresh: ${now}`;
         }
     }
 
-    // Update statistics
-    updateStats() {
-        const today = new Date().toDateString();
-        const pending = this.allSubmissions.filter(s => s.status === 'pending').length;
-        const approvedToday = this.allSubmissions.filter(s => s.status === 'approved' && new Date(s.updated_at || s.submitted_at).toDateString() === today).length;
-        const rejectedToday = this.allSubmissions.filter(s => s.status === 'rejected' && new Date(s.updated_at || s.submitted_at).toDateString() === today).length;
-        
-        document.getElementById('pendingCount').textContent = pending;
-        document.getElementById('approvedCount').textContent = approvedToday;
-        document.getElementById('rejectedCount').textContent = rejectedToday;
-        document.getElementById('totalCount').textContent = this.allSubmissions.length;
+    // Render submissions based on current filter
+    renderSubmissions() {
+        const submissionsList = document.getElementById('submissionsList');
+        if (!submissionsList) return;
+
+        const filtered = this.allSubmissions.filter(submission => {
+            if (this.currentFilter === 'all') return true;
+            return submission.status === this.currentFilter;
+        });
+
+        if (filtered.length === 0) {
+            submissionsList.innerHTML = `
+                <div class="no-submissions">
+                    <p>No ${this.currentFilter === 'pending' ? 'pending' : this.currentFilter === 'approved' ? 'approved' : 'rejected'} submissions found.</p>
+                </div>
+            `;
+            return;
+        }
+
+        submissionsList.innerHTML = filtered.map(submission => this.createSubmissionCard(submission)).join('');
+    }
+
+    // Create submission card HTML
+    createSubmissionCard(submission) {
+        const character = submission.character || submission;
+        const statusColor = {
+            pending: '#ff9800',
+            approved: '#4CAF50',
+            rejected: '#f44336'
+        };
+
+        return `
+            <div class="submission-card" data-status="${submission.status}">
+                <div class="submission-header">
+                    <h3>${character.name || 'Unknown Character'}</h3>
+                    <span class="status-badge" style="background: ${statusColor[submission.status]}">
+                        ${submission.status.toUpperCase()}
+                    </span>
+                </div>
+                
+                <div class="submission-details">
+                    <div class="character-info">
+                        <p><strong>Classification:</strong> ${character.classification || 'N/A'}</p>
+                        <p><strong>Playbook:</strong> ${character.playbook || 'N/A'}</p>
+                        <p><strong>Submitted:</strong> ${new Date(submission.submittedAt || submission.submitted_at).toLocaleString()}</p>
+                        <p><strong>Submitted By:</strong> ${submission.submittedBy || submission.submitted_by || 'Anonymous'}</p>
+                    </div>
+                    
+                    <div class="character-bio">
+                        <h4>Character Bio</h4>
+                        <p>${character.bio || 'No bio provided'}</p>
+                    </div>
+                    
+                    ${character.skills && character.skills.length > 0 ? `
+                        <div class="character-skills">
+                            <h4>Skills</h4>
+                            <div class="skills-list">
+                                ${character.skills.map(skill => `
+                                    <div class="skill-item">
+                                        <span class="skill-name">${skill.name}</span>
+                                        <span class="skill-level">+${skill.level}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
+                    
+                    ${character.moves && character.moves.length > 0 ? `
+                        <div class="character-moves">
+                            <h4>Moves</h4>
+                            <div class="moves-list">
+                                ${character.moves.map(move => `
+                                    <div class="move-item">
+                                        <strong>${move.name}</strong> (${move.source || 'Custom'})
+                                        <p>${move.description}</p>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
+                </div>
+                
+                ${submission.status === 'pending' ? `
+                    <div class="submission-actions">
+                        <textarea id="feedback-${submission._id || submission.id}" 
+                                  placeholder="Add feedback (optional)" 
+                                  rows="3"></textarea>
+                        <div class="action-buttons">
+                            <button class="btn btn-success" onclick="moderatorPanel.approveSubmission('${submission._id || submission.id}')">
+                                ✅ Approve
+                            </button>
+                            <button class="btn btn-warning" onclick="moderatorPanel.requestChanges('${submission._id || submission.id}')">
+                                📝 Request Changes
+                            </button>
+                            <button class="btn btn-danger" onclick="moderatorPanel.rejectSubmission('${submission._id || submission.id}')">
+                                ❌ Reject
+                            </button>
+                        </div>
+                    </div>
+                ` : `
+                    <div class="submission-result">
+                        ${submission.feedback ? `
+                            <div class="feedback-section">
+                                <h4>Feedback</h4>
+                                <p>${submission.feedback}</p>
+                            </div>
+                        ` : ''}
+                        <div class="result-info">
+                            <p><strong>Reviewed By:</strong> ${submission.reviewedBy || 'Moderator'}</p>
+                            <p><strong>Reviewed At:</strong> ${new Date(submission.reviewedAt).toLocaleString()}</p>
+                        </div>
+                        <button class="btn btn-danger" onclick="moderatorPanel.deleteSubmission('${submission._id || submission.id}')">
+                            🗑️ Delete
+                        </button>
+                    </div>
+                `}
+            </div>
+        `;
     }
 
     // Filter submissions
     filterSubmissions(filter) {
         this.currentFilter = filter;
         
-        // Update tab styles
+        // Update filter tabs
         document.querySelectorAll('.filter-tab').forEach(tab => {
-            tab.classList.remove('active');
+            tab.classList.toggle('active', tab.dataset.filter === filter);
         });
-        document.querySelector(`[data-filter="${filter}"]`).classList.add('active');
         
-        this.displaySubmissions();
-    }
-
-    // Display submissions
-    displaySubmissions() {
-        const container = document.getElementById('submissionsList');
-        
-        let filtered = this.allSubmissions;
-        if (this.currentFilter !== 'all') {
-            filtered = this.allSubmissions.filter(s => s.status === this.currentFilter);
-        }
-        
-        if (filtered.length === 0) {
-            container.innerHTML = '<p style="color: white; text-align: center;">No submissions found for this filter.</p>';
-            return;
-        }
-        
-        // Sort by submission date (newest first)
-        filtered.sort((a, b) => new Date(b.submitted_at) - new Date(a.submitted_at));
-        
-        container.innerHTML = filtered.map(submission => {
-            const character = submission.character;
-            return `
-                <div class="submission-card" data-id="${submission.id}">
-                    <div class="submission-header">
-                        <div>
-                            <div class="submission-title">${character.name || 'Unnamed Character'}</div>
-                            <div style="color: #ccc; font-size: 0.9rem;">
-                                ${character.playbook || 'Unknown Playbook'} • ${character.classification || 'Unknown Classification'} • 
-                                Submitted: ${new Date(submission.submitted_at).toLocaleString()}
-                            </div>
-                        </div>
-                        <span class="submission-status status-${submission.status}">${submission.status.toUpperCase().replace('_', ' ')}</span>
-                    </div>
-                    
-                    <div class="character-preview">${this.formatCharacterSheet(character)}</div>
-                    
-                    ${submission.status === 'pending' ? `
-                        <div class="feedback-section">
-                            <h4>Moderator Feedback (optional):</h4>
-                            <textarea id="feedback-${submission.id}" placeholder="Enter feedback for the player..."></textarea>
-                        </div>
-                        <div class="moderator-actions">
-                            <button class="btn btn-primary" onclick="moderatorPanel.approveSubmission('${submission.id}')">✅ Approve</button>
-                            <button class="btn btn-outline" onclick="moderatorPanel.requestChanges('${submission.id}')">📝 Request Changes</button>
-                            <button class="btn btn-secondary" onclick="moderatorPanel.rejectSubmission('${submission.id}')">❌ Reject</button>
-                        </div>
-                    ` : submission.feedback ? `
-                        <div class="feedback-section">
-                            <h4>Moderator Feedback:</h4>
-                            <div style="color: white; white-space: pre-wrap;">${submission.feedback}</div>
-                        </div>
-                    ` : ''}
-                </div>
-            `;
-        }).join('');
-    }
-
-    // Format character sheet for display
-    formatCharacterSheet(character) {
-        let sheet = `# ${character.name || 'Unnamed Character'}`;
-        
-        if (character.apparentAge) sheet += `\n**Apparent Age:** ${character.apparentAge}`;
-        if (character.actualAge) sheet += `\n**Actual Age:** ${character.actualAge}`;
-        if (character.classification) sheet += `\n**Classification:** ${character.classification}`;
-        if (character.playbook) sheet += `\n**Playbook:** ${character.playbook}`;
-        if (character.subtype) sheet += `\n**Subtype:** ${character.subtype}`;
-        
-        if (character.bio) {
-            sheet += `\n\n## Character Bio\n${character.bio}`;
-        }
-        
-        if (character.skills && character.skills.length > 0) {
-            sheet += `\n\n## Skills`;
-            character.skills.forEach(skill => {
-                sheet += `\n+${skill.level} ${skill.name}`;
-            });
-        }
-        
-        if (character.moves && character.moves.length > 0) {
-            sheet += `\n\n## Moves`;
-            character.moves.forEach(move => {
-                sheet += `\n**${move.name}** (${move.source})\n${move.description}`;
-            });
-        }
-        
-        return sheet;
+        this.renderSubmissions();
     }
 
     // Approve submission
@@ -300,6 +296,34 @@ class ModeratorPanel {
         }
     }
 
+    // Setup event listeners
+    setupEventListeners() {
+        // Filter tabs
+        document.querySelectorAll('.filter-tab').forEach(tab => {
+            tab.addEventListener('click', (e) => {
+                this.filterSubmissions(e.target.dataset.filter);
+            });
+        });
+    }
+
+    // Show notification
+    showNotification(message) {
+        const notification = document.createElement('div');
+        notification.style.cssText = `
+            position: fixed; top: 20px; right: 20px; 
+            background: #4CAF50; color: white; 
+            padding: 1rem; border-radius: 5px; 
+            z-index: 1000; animation: slideIn 0.3s ease;
+        `;
+        notification.textContent = message;
+        
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.remove();
+        }, 3000);
+    }
+
     // Show error message
     showError(message) {
         const errorDiv = document.createElement('div');
@@ -317,188 +341,9 @@ class ModeratorPanel {
             errorDiv.remove();
         }, 5000);
     }
-        
-        if (!feedback.trim()) {
-            alert('Please provide feedback explaining what changes are needed.');
-            return;
-        }
-        
-        try {
-            const result = await this.submissionSystem.updateSubmission(submissionId, 'changes_requested', feedback);
-            
-            if (result.success) {
-                alert('Change request sent to player with your feedback!');
-                this.loadSubmissions(); // Refresh the list
-            } else {
-                alert('Failed to send change request. Please try again.');
-            }
-        } catch (error) {
-            console.error('Change request error:', error);
-            alert('Error sending change request. Please try again.');
-        }
-    }
-
-    // Reject submission
-    async rejectSubmission(submissionId) {
-        const feedback = document.getElementById(`feedback-${submissionId}`).value;
-        
-        if (!feedback.trim()) {
-            alert('Please provide feedback explaining why the character is rejected.');
-            return;
-        }
-        
-        if (!confirm('Are you sure you want to reject this character?')) {
-            return;
-        }
-        
-        try {
-            const result = await this.submissionSystem.updateSubmission(submissionId, 'rejected', feedback);
-            
-            if (result.success) {
-                alert('Character rejected with feedback sent to player.');
-                this.loadSubmissions(); // Refresh the list
-            } else {
-                alert('Failed to reject submission. Please try again.');
-            }
-        } catch (error) {
-            console.error('Rejection error:', error);
-            alert('Error rejecting submission. Please try again.');
-        }
-    }
-
-    // Manual sessionStorage check
-    checkSessionStorage() {
-        console.log('🔍 Manually checking sessionStorage...');
-        
-        try {
-            const pending = sessionStorage.getItem('pendingSubmission');
-            const timestamp = sessionStorage.getItem('pendingSubmissionTimestamp');
-            
-            console.log('SessionStorage data:', {
-                pending: pending ? 'EXISTS' : 'EMPTY',
-                timestamp: timestamp ? new Date(parseInt(timestamp)).toLocaleString() : 'NONE',
-                age: timestamp ? Date.now() - parseInt(timestamp) : 'N/A'
-            });
-            
-            if (pending && timestamp) {
-                const age = Date.now() - parseInt(timestamp);
-                console.log(`SessionStorage age: ${age}ms (${Math.round(age/1000)}s)`);
-                
-                if (age < 300000) { // 5 minutes
-                    const submission = JSON.parse(pending);
-                    console.log('🎯 Found pending submission in sessionStorage:', submission);
-                    
-                    // Import to localStorage
-                    this.submissionSystem.saveSubmission(submission);
-                    
-                    // Clear sessionStorage
-                    sessionStorage.removeItem('pendingSubmission');
-                    sessionStorage.removeItem('pendingSubmissionTimestamp');
-                    
-                    // Refresh the display
-                    this.loadSubmissions();
-                    
-                    alert('✅ Successfully imported pending submission from sessionStorage!');
-                } else {
-                    console.log('❌ SessionStorage data too old, clearing...');
-                    sessionStorage.removeItem('pendingSubmission');
-                    sessionStorage.removeItem('pendingSubmissionTimestamp');
-                    alert('❌ SessionStorage data was too old and has been cleared.');
-                }
-            } else {
-                console.log('❌ No pending submission found in sessionStorage');
-                alert('❌ No pending submission found in sessionStorage');
-            }
-        } catch (error) {
-            console.error('Error checking sessionStorage:', error);
-            alert('❌ Error checking sessionStorage: ' + error.message);
-        }
-    }
-
-    // Show data import dialog
-    showDataImport() {
-        const dialog = document.createElement('div');
-        dialog.style.cssText = `
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(0,0,0,0.8); display: flex; align-items: center; 
-            justify-content: center; z-index: 1000;
-        `;
-        
-        dialog.innerHTML = `
-            <div style="background: #2a2a2a; border: 2px solid #ff6b35; border-radius: 10px; padding: 2rem; max-width: 600px; width: 90%;">
-                <h3 style="color: #ff6b35; margin-bottom: 1rem;">📥 Import Character Data</h3>
-                <p style="color: white; margin-bottom: 1rem;">
-                    If the moderator panel isn't showing new submissions, you can manually import the data.
-                </p>
-                <div style="margin-bottom: 1rem;">
-                    <label style="color: white; display: block; margin-bottom: 0.5rem;">Paste submission data:</label>
-                    <textarea id="importData" style="width: 100%; height: 200px; background: #1a1a1a; color: white; border: 1px solid #4a5568; border-radius: 5px; padding: 0.5rem;" placeholder="Paste the JSON data from localStorage..."></textarea>
-                </div>
-                <div style="margin-bottom: 1rem;">
-                    <button onclick="moderatorPanel.importFromClipboard()" style="background: #ff6b35; color: white; border: none; padding: 0.5rem 1rem; border-radius: 5px; margin-right: 0.5rem;">📋 Import from Clipboard</button>
-                    <button onclick="moderatorPanel.exportCurrentData()" style="background: #4a5568; color: white; border: none; padding: 0.5rem 1rem; border-radius: 5px; margin-right: 0.5rem;">💾 Export Current</button>
-                    <button onclick="this.parentElement.parentElement.parentElement.remove()" style="background: #666; color: white; border: none; padding: 0.5rem 1rem; border-radius: 5px;">Cancel</button>
-                </div>
-                <div style="font-size: 0.8rem; color: #ccc;">
-                    <strong>Instructions:</strong><br>
-                    1. Go to character builder page<br>
-                    2. Open F12 → Application → Local Storage<br>
-                    3. Copy the value of 'darkCitySubmissions' key<br>
-                    4. Paste it here and click Import
-                </div>
-            </div>
-        `;
-        
-        document.body.appendChild(dialog);
-    }
-
-    // Import data from clipboard
-    importFromClipboard() {
-        const textarea = document.getElementById('importData');
-        const data = textarea.value.trim();
-        
-        if (!data) {
-            alert('Please paste data first');
-            return;
-        }
-        
-        try {
-            const submissions = JSON.parse(data);
-            
-            // Save to localStorage
-            localStorage.setItem('darkCitySubmissions', JSON.stringify(submissions));
-            localStorage.setItem('darkCitySubmissions_backup', JSON.stringify(submissions));
-            
-            alert('Data imported successfully! Refreshing submissions...');
-            
-            // Close dialog and refresh
-            document.getElementById('importData').closest('div[style*="position: fixed"]').remove();
-            this.loadSubmissions();
-            
-        } catch (error) {
-            alert('Invalid JSON data: ' + error.message);
-        }
-    }
-
-    // Export current data
-    exportCurrentData() {
-        const submissions = this.submissionSystem.getSubmissions();
-        const dataStr = JSON.stringify(submissions, null, 2);
-        
-        const textarea = document.getElementById('importData');
-        textarea.value = dataStr;
-        
-        alert('Current data exported to textarea. You can copy this and save it as backup.');
-    }
-
-    // Show error message
-    showError(message) {
-        const container = document.getElementById('submissionsList');
-        container.innerHTML = `<p style="color: #f44336; text-align: center;">${message}</p>`;
-    }
 }
 
-// Initialize moderator panel when page loads
+// Initialize the moderator panel when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     window.moderatorPanel = new ModeratorPanel();
 });

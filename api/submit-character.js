@@ -25,10 +25,8 @@ class CharacterSubmission {
             
         } catch (error) {
             console.error('CharacterSubmission: Server submission failed:', error);
-            
-            // Fallback to localStorage if server is down
-            console.log('CharacterSubmission: Falling back to localStorage');
-            return this.submitCharacterLocalStorage(characterData);
+            this.showError('Failed to submit character to server. Please try again.');
+            return { success: false, error: error.message };
         }
     }
 
@@ -77,8 +75,31 @@ class CharacterSubmission {
         document.body.appendChild(successDiv);
         
         // Clear form
-        document.getElementById('characterForm').reset();
-        document.getElementById('preview').innerHTML = '';
+        setTimeout(() => {
+            document.getElementById('characterForm').reset();
+            document.getElementById('preview').innerHTML = '';
+        }, 1000);
+    }
+
+    // Show error message
+    showError(message) {
+        const errorDiv = document.createElement('div');
+        errorDiv.style.cssText = `
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: #f44336; color: white; padding: 2rem; border-radius: 10px;
+            z-index: 10000; font-size: 1.2rem; text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        `;
+        errorDiv.innerHTML = `
+            <h2>❌ Submission Failed</h2>
+            <p>${message}</p>
+            <button onclick="this.parentElement.remove();" style="
+                background: white; color: #f44336; border: none; 
+                padding: 0.5rem 1rem; border-radius: 5px; cursor: pointer;
+                margin-top: 1rem;
+            ">Close</button>
+        `;
+        document.body.appendChild(errorDiv);
     }
 
     // Update submission status

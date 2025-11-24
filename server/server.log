@@ -9,3 +9,5 @@ nohup: ignoring input
 📊 Health check: http://0.0.0.0:3000/health
 ✅ MongoDB Connected: localhost
 127.0.0.1 - - [24/Nov/2025:00:26:30 +0000] "GET /health HTTP/1.1" 200 76 "-" "curl/8.5.0"
+127.0.0.1 - - [24/Nov/2025:00:36:36 +0000] "GET /api/characters HTTP/1.1" 200 2 "-" "curl/8.5.0"
+127.0.0.1 - - [24/Nov/2025:00:36:39 +0000] "GET /health HTTP/1.1" 200 77 "-" "curl/8.5.0"

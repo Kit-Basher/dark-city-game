@@ -217,5 +217,5 @@ class ServerAPI {
     }
 }
 
-// Global instance
+// Instantiate the server API for global use
 window.serverAPI = new ServerAPI();

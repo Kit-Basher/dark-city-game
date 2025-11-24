@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Character Management - Dark City RPG</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="../css/style.css">
     <style>
         .character-management {
             max-width: 1200px;
@@ -164,46 +164,44 @@
         </div>
     </div>
     
-    <script src="../api/submit-character.js"></script>
+    <script src="../js/config.js"></script>
     <script>
         let allCharacters = [];
         
-        // Load approved characters from JavaScript system
+        // Load approved characters from GitHub API
         async function loadApprovedCharacters() {
             try {
-                // Initialize submission system
-                const submissionSystem = new CharacterSubmission();
+                // Use GitHub API to load characters (same as main page)
+                const response = await fetch(`https://api.github.com/repos/${window.CONFIG?.REPO_OWNER || 'Kit-Basher'}/${window.CONFIG?.REPO_NAME || 'dark-city-game'}/contents/characters?ref=main`);
                 
-                // Get approved submissions
-                const approvedSubmissions = submissionSystem.getApprovedSubmissions();
+                if (!response.ok) {
+                    throw new Error('Failed to load characters from GitHub');
+                }
                 
-                // Convert to character format
-                const approvedCharacters = approvedSubmissions.map(submission => ({
-                    id: submission.id,
-                    name: submission.character.name,
-                    playbook: submission.character.playbook,
-                    classification: submission.character.classification,
-                    bio: submission.character.bio,
-                    apparentAge: submission.character.apparentAge,
-                    actualAge: submission.character.actualAge,
-                    subtype: submission.character.subtype,
-                    skills: submission.character.skills,
-                    moves: submission.character.moves,
-                    darkestSelf: submission.character.darkestSelf,
-                    approved: true,
-                    approvedAt: submission.updated_at || submission.submitted_at,
-                    source: 'approved'
-                }));
+                const files = await response.json();
+                const characterFiles = files.filter(file => file.name.endsWith('.json'));
                 
-                // Combine with any existing characters
-                allCharacters = approvedCharacters;
+                const characters = [];
+                for (const file of characterFiles) {
+                    try {
+                        const fileResponse = await fetch(file.download_url);
+                        const character = await fileResponse.json();
+                        characters.push({
+                            ...character,
+                            id: file.name.replace('.json', ''),
+                            source: 'github'
+                        });
+                    } catch (error) {
+                        console.warn('Failed to load character file:', file.name);
+                    }
+                }
+                
+                allCharacters = characters;
                 displayCharacters(allCharacters);
                 
             } catch (error) {
-                console.error('Failed to load approved characters:', error);
-                // Fallback to empty state
-                allCharacters = [];
-                displayCharacters(allCharacters);
+                console.error('Error loading characters:', error);
+                showError('Failed to load characters. Please try again later.');
             }
         }
         

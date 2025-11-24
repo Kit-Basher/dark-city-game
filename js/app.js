@@ -23,7 +23,7 @@ class Calendar {
         const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
             'July', 'August', 'September', 'October', 'November', 'December'];
         
-        const monthYearElement = document.getElementById('monthYear');
+        const monthYearElement = document.getElementById('currentMonth');
         if (monthYearElement) {
             monthYearElement.textContent = `${monthNames[this.currentMonth]} ${this.currentYear}`;
         }

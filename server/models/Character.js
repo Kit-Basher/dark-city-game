@@ -102,8 +102,17 @@ const characterSchema = new mongoose.Schema({
   timestamps: true,
 });
 
-// Index for faster queries
-characterSchema.index({ status: 1, submittedAt: -1 });
-characterSchema.index({ submittedBy: 1 });
+// Character schema indexes for performance
+characterSchema.index({ status: 1, submittedAt: -1 }); // For fetching pending/approved characters
+characterSchema.index({ submittedBy: 1, submittedAt: -1 }); // For user's submission history
+characterSchema.index({ name: 'text', bio: 'text' }); // For text search
+characterSchema.index({ classification: 1, playbook: 1 }); // For filtering by type
+characterSchema.index({ reviewedAt: -1 }); // For recent approvals
+characterSchema.index({ status: 1, reviewedAt: -1 }); // For moderation queue
+characterSchema.index({ submittedAt: -1 }); // For timeline views
+
+// Compound indexes for common queries
+characterSchema.index({ status: 1, classification: 1, submittedAt: -1 });
+characterSchema.index({ status: 1, playbook: 1, submittedAt: -1 });
 
 module.exports = mongoose.model('Character', characterSchema);

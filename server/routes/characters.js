@@ -1,13 +1,45 @@
 const express = require('express');
 const router = express.Router();
-const Character = require('../models/Character');
+const CharacterService = require('../services/characterService');
+const { validate, characterSchema } = require('../middleware/validation');
 
-// GET all characters (public - approved only)
+/**
+ * @swagger
+ * /characters:
+ *   get:
+ *     summary: Get all approved characters
+ *     description: Retrieve a list of all characters that have been approved by moderators
+ *     tags: [Characters]
+ *     responses:
+ *       200:
+ *         description: List of approved characters
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Character'
+ *       500:
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
 router.get('/', async (req, res) => {
   try {
-    const characters = await Character.find({ status: 'approved' })
-      .sort({ reviewedAt: -1 });
-    res.json(characters);
+    const options = {
+      page: parseInt(req.query.page) || 1,
+      limit: parseInt(req.query.limit) || 12,
+      classification: req.query.classification,
+      playbook: req.query.playbook,
+      search: req.query.search,
+      sortBy: req.query.sortBy || 'submittedAt',
+      sortOrder: req.query.sortOrder === 'asc' ? 1 : -1
+    };
+
+    const result = await CharacterService.getCharacters(options);
+    res.json(result);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -35,8 +67,42 @@ router.get('/pending', async (req, res) => {
   }
 });
 
-// POST new character submission
-router.post('/submit', async (req, res) => {
+/**
+ * @swagger
+ * /characters/submit:
+ *   post:
+ *     summary: Submit a new character for approval
+ *     description: Submit a new character that will be reviewed by moderators before being made public
+ *     tags: [Characters]
+ *     security:
+ *       - ApiKeyAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Character'
+ *     responses:
+ *       201:
+ *         description: Character submitted successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Character'
+ *       400:
+ *         description: Validation error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       401:
+ *         description: Unauthorized - Invalid API key
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
+router.post('/submit', validate(characterSchema), async (req, res) => {
   try {
     const character = new Character({
       ...req.body,

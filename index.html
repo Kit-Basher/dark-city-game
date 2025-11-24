@@ -4,30 +4,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dark City - RPG Game Hub</title>
+    <meta name="description" content="A mysterious urban fantasy RPG where shadows hold secrets and every choice matters.">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/accessibility.css">
+    <link rel="stylesheet" href="css/mobile.css">
 </head>
 <body>
-    <header>
-        <nav>
+    <a href="#main-content" class="skip-to-main">Skip to main content</a>
+    <div class="aria-live" aria-live="polite" aria-atomic="true"></div>
+    
+    <header role="banner">
+        <nav role="navigation" aria-label="Main navigation">
             <div class="nav-container">
                 <h1>Dark City</h1>
-                <ul class="nav-links">
-                    <li><a href="#home">Home</a></li>
-                    <li><a href="#rules">Rules</a></li>
-                    <li><a href="#playbooks">Playbooks</a></li>
-                    <li><a href="#characters">Characters</a></li>
-                    <li><a href="#calendar">Calendar</a></li>
+                <button class="mobile-menu-toggle" aria-label="Toggle mobile menu" aria-expanded="false">
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                </button>
+                <ul class="nav-links" role="menubar">
+                    <li role="none"><a href="#home" role="menuitem">Home</a></li>
+                    <li role="none"><a href="#rules" role="menuitem">Rules</a></li>
+                    <li role="none"><a href="#playbooks" role="menuitem">Playbooks</a></li>
+                    <li role="none"><a href="#characters" role="menuitem">Characters</a></li>
+                    <li role="none"><a href="#calendar" role="menuitem">Calendar</a></li>
                 </ul>
             </div>
         </nav>
     </header>
 
-    <main>
-        <section id="home" class="hero">
+    <main role="main" id="main-content">
+        <section id="home" class="hero" aria-labelledby="hero-title">
             <div class="hero-content">
-                <h2>Welcome to Dark City</h2>
+                <h2 id="hero-title">Welcome to Dark City</h2>
                 <p>A mysterious urban fantasy RPG where shadows hold secrets and every choice matters.</p>
-                <div class="hero-buttons">
+                <div class="hero-buttons" role="group" aria-label="Hero actions">
                     <a href="#rules" class="btn btn-primary">Read Rules</a>
                     <a href="character-builder.html" class="btn btn-secondary">Create Character</a>
                     <a href="rules/world-setting.html" class="btn btn-outline">World Setting</a>
@@ -35,19 +46,21 @@
             </div>
         </section>
 
-        <section id="rules" class="section">
+        <section id="rules" class="section" aria-labelledby="rules-title">
             <div class="container">
-                <h2>Game Rules</h2>
-                <div class="rules-grid">
-                    <div class="rule-card">
+                <h2 id="rules-title">Game Rules</h2>
+                <div class="rules-grid" role="grid" aria-label="Rules categories">
+                    <div class="rule-card" role="gridcell">
                         <h3>Server Rules</h3>
                         <p>Community guidelines and content standards for Dark City.</p>
-                        <a href="rules/server-rules.html" class="btn btn-outline">View Details</a>
+                        <a href="rules/server-rules.html" class="btn btn-outline" aria-describedby="server-rules-desc">View Details</a>
+                        <p id="server-rules-desc" class="sr-only">Click to view server rules and community guidelines</p>
                     </div>
-                    <div class="rule-card">
+                    <div class="rule-card" role="gridcell">
                         <h3>How It Works</h3>
                         <p>Core mechanics, dice rolling, and gameplay systems.</p>
-                        <a href="rules/how-it-works.html" class="btn btn-outline">View Details</a>
+                        <a href="rules/how-it-works.html" class="btn btn-outline" aria-describedby="how-it-works-desc">View Details</a>
+                        <p id="how-it-works-desc" class="sr-only">Click to view game mechanics and systems</p>
                     </div>
                     <div class="rule-card">
                         <h3>Character Creation</h3>
@@ -141,7 +154,11 @@
     </footer>
 
     <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/error-handler.js"></script>
+    <script src="js/safe-dom.js"></script>
     <script src="js/server-api.js"></script>
+    <script src="js/accessibility.js"></script>
     <script src="js/app.js"></script>
 </body>
 </html>

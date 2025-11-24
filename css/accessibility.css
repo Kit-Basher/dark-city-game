@@ -1,0 +1,320 @@
+/* Accessibility CSS - Screen reader only content */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Focus indicators */
+*:focus {
+    outline: 2px solid #ff6b35;
+    outline-offset: 2px;
+}
+
+/* Skip to main content link */
+.skip-to-main {
+    position: absolute;
+    top: -40px;
+    left: 6px;
+    background: #ff6b35;
+    color: white;
+    padding: 8px;
+    text-decoration: none;
+    border-radius: 4px;
+    z-index: 1000;
+    transition: top 0.3s;
+}
+
+.skip-to-main:focus {
+    top: 6px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    :root {
+        --primary-color: #000000;
+        --secondary-color: #ffffff;
+        --accent-color: #ffff00;
+        --text-color: #000000;
+        --bg-color: #ffffff;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* Enhanced focus for keyboard navigation */
+.keyboard-nav *:focus {
+    outline: 3px solid #ff6b35;
+    outline-offset: 3px;
+    box-shadow: 0 0 0 2px rgba(255, 107, 53, 0.3);
+}
+
+/* Mobile menu accessibility */
+.mobile-menu-toggle:focus {
+    outline: 2px solid #ff6b35;
+    outline-offset: 2px;
+}
+
+.mobile-menu-toggle[aria-expanded="true"] {
+    background: #ff6b35;
+}
+
+/* ARIA live regions */
+.aria-live {
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}
+
+/* Form accessibility improvements */
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+    color: #e0e0e0;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid #444;
+    border-radius: 4px;
+    background: #333;
+    color: #fff;
+    font-size: 1rem;
+    transition: border-color 0.2s;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    border-color: #ff6b35;
+    outline: none;
+}
+
+.form-group .error-message {
+    color: #ff6b35;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+.form-group .required {
+    color: #ff6b35;
+}
+
+/* Button accessibility */
+.btn:focus {
+    outline: 2px solid #ff6b35;
+    outline-offset: 2px;
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.btn[aria-pressed="true"] {
+    background: #ff6b35;
+    color: #000;
+}
+
+/* Table accessibility */
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th,
+td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid #444;
+}
+
+th {
+    background: #333;
+    font-weight: bold;
+    color: #fff;
+}
+
+tr:hover {
+    background: rgba(255, 107, 53, 0.1);
+}
+
+/* Calendar accessibility */
+.calendar-day {
+    position: relative;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.calendar-day:focus {
+    outline: 2px solid #ff6b35;
+    outline-offset: 2px;
+    z-index: 10;
+}
+
+.calendar-day[aria-current="date"] {
+    background: #ff6b35;
+    color: #000;
+    font-weight: bold;
+}
+
+.calendar-day[aria-selected="true"] {
+    background: #ff6b35;
+    color: #000;
+}
+
+/* Character card accessibility */
+.character-card:focus {
+    outline: 2px solid #ff6b35;
+    outline-offset: 2px;
+}
+
+.character-card[tabindex="0"] {
+    cursor: pointer;
+}
+
+/* Modal accessibility */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 1000;
+}
+
+.modal[aria-hidden="false"] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background: #1a1a1a;
+    padding: 2rem;
+    border-radius: 8px;
+    max-width: 90%;
+    max-height: 90%;
+    overflow: auto;
+    position: relative;
+}
+
+.modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: #ff6b35;
+    color: #000;
+    border: none;
+    padding: 0.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.modal-close:focus {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+}
+
+/* Loading state accessibility */
+.loading[aria-busy="true"] {
+    position: relative;
+    pointer-events: none;
+}
+
+.loading[aria-busy="true"]::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid #ff6b35;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Error message accessibility */
+.error-message {
+    color: #ff6b35;
+    background: rgba(255, 107, 53, 0.1);
+    border: 1px solid #ff6b35;
+    padding: 0.75rem;
+    border-radius: 4px;
+    margin: 0.5rem 0;
+}
+
+.error-message[role="alert"] {
+    font-weight: bold;
+}
+
+/* Success message accessibility */
+.success-message {
+    color: #4caf50;
+    background: rgba(76, 175, 80, 0.1);
+    border: 1px solid #4caf50;
+    padding: 0.75rem;
+    border-radius: 4px;
+    margin: 0.5rem 0;
+}
+
+.success-message[role="status"] {
+    font-weight: bold;
+}
+
+/* Tooltip accessibility */
+.tooltip {
+    position: relative;
+}
+
+.tooltip[aria-label]:hover::after,
+.tooltip[aria-label]:focus::after {
+    content: attr(aria-label);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #333;
+    color: #fff;
+    padding: 0.5rem;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    white-space: nowrap;
+    z-index: 1000;
+}

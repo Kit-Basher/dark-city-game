@@ -16,7 +16,7 @@ class SimpleCharacterSubmission {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': 'Bearer dark-city-dev-key'
+                    'Authorization': `Bearer ${window.CONFIG?.API_KEY || process.env.API_KEY || 'dark-city-dev-key'}`
                 },
                 body: JSON.stringify(characterData)
             });

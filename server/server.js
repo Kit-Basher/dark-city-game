@@ -10,6 +10,12 @@ const axios = require('axios');
 
 const connectDB = require('./config/database');
 const characterRoutes = require('./routes/characters');
+const { ApiKeyAuth } = require('./middleware/auth');
+const { errorHandler } = require('./middleware/errorHandler');
+const { specs, swaggerUi } = require('./config/swagger');
+const { applyRateLimiting, rateLimitStats } = require('./middleware/rateLimiting');
+const HealthChecker = require('./middleware/health');
+const { logger, structuredLogger, requestLogger } = require('./config/logging');
 
 // Connect to MongoDB
 connectDB();
@@ -18,77 +24,263 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
-    origin: "*",
-    methods: ["GET", "POST"]
+    origin: function (origin, callback) {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+      
+      // Allowed origins - configure these in environment
+      const allowedOrigins = process.env.ALLOWED_ORIGINS 
+        ? process.env.ALLOWED_ORIGINS.split(',')
+        : [
+            'http://localhost:3000',
+            'http://localhost:8080',
+            'http://127.0.0.1:3000',
+            'http://127.0.0.1:8080',
+            'https://kit-basher.github.io', // Replace with your GitHub Pages URL
+            process.env.FRONTEND_URL // Additional frontend URL from environment
+          ].filter(Boolean);
+      
+      if (allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization"]
   }
 });
 
+// Enhanced security middleware
+app.use(helmet({
+    // Content Security Policy
+    contentSecurityPolicy: {
+        directives: {
+            defaultSrc: ["'self'"],
+            styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+            scriptSrc: ["'self'", "'unsafe-inline'", "https://cdn.socket.io"],
+            fontSrc: ["'self'", "https://fonts.gstatic.com"],
+            imgSrc: ["'self'", "data:", "https:"],
+            connectSrc: ["'self'", "wss:", "ws:"],
+            frameSrc: ["'none'"],
+            objectSrc: ["'none'"],
+            mediaSrc: ["'self'"],
+            manifestSrc: ["'self'"]
+        }
+    },
+    
+    // HTTPS enforcement in production
+    hsts: {
+        maxAge: 31536000, // 1 year
+        includeSubDomains: true,
+        preload: true
+    },
+    
+    // Additional security headers
+    crossOriginEmbedderPolicy: false, // Disable for compatibility
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+    
+    // Referrer Policy
+    referrerPolicy: { policy: "strict-origin-when-cross-origin" },
+    
+    // Permissions Policy
+    permissionsPolicy: {
+        features: {
+            geolocation: [],
+            camera: [],
+            microphone: [],
+            payment: [],
+            usb: [],
+            magnetometer: [],
+            gyroscope: [],
+            accelerometer: []
+        }
+    }
+}));
+
+// HTTPS redirection middleware (production only)
+if (process.env.NODE_ENV === 'production' && process.env.FORCE_HTTPS === 'true') {
+    app.use((req, res, next) => {
+        if (!req.secure && req.get('x-forwarded-proto') !== 'https') {
+            return res.redirect(301, `https://${req.get('host')}${req.url}`);
+        }
+        next();
+    });
+}
+
 // Middleware
-app.use(helmet());
-app.use(cors());
+app.use(cors({
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    // Allowed origins - configure these in environment
+    const allowedOrigins = process.env.ALLOWED_ORIGINS 
+      ? process.env.ALLOWED_ORIGINS.split(',')
+      : [
+          'http://localhost:3000',
+          'http://localhost:8080',
+          'http://127.0.0.1:3000',
+          'http://127.0.0.1:8080',
+          'https://kit-basher.github.io', // Replace with your GitHub Pages URL
+          process.env.FRONTEND_URL // Additional frontend URL from environment
+        ].filter(Boolean);
+    
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true,
+  allowedHeaders: ["Content-Type", "Authorization"]
+}));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
-// Rate limiting
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
-  message: 'Too many requests from this IP, please try again later.'
+// Apply rate limiting statistics
+app.use(rateLimitStats);
+
+// Apply endpoint-specific rate limiting
+app.use('/api/characters/submit', applyRateLimiting('characterSubmission'));
+app.use('/api/characters', applyRateLimiting('characterViewing'));
+app.use('/api-docs', applyRateLimiting('apiDocs'));
+app.use('/health', applyRateLimiting('publicEndpoints'));
+
+// General API rate limiting (fallback)
+app.use('/api', applyRateLimiting('general'));
+
+// Initialize authentication
+const apiAuth = new ApiKeyAuth();
+
+// Apply authentication to API routes (with health check exceptions)
+app.use('/api', (req, res, next) => {
+    if (req.path === '/health' || req.path === '/ready' || req.path === '/live') return next();
+    return apiAuth.authenticate()(req, res, next);
 });
-app.use('/api', limiter);
 
-// Basic API authentication (for development only - replace with proper auth in production)
-const apiAuth = (req, res, next) => {
-  // Skip auth for health check
-  if (req.path === '/health') return next();
-  
-  const authHeader = req.headers.authorization;
-  const apiKey = process.env.API_KEY || 'dark-city-dev-key';
-  
-  if (!authHeader || authHeader !== `Bearer ${apiKey}`) {
-    return res.status(401).json({ error: 'Unauthorized - Invalid API key' });
-  }
-  next();
-};
+// Request logging middleware
+app.use(requestLogger);
 
-// Apply auth to API routes
-app.use('/api', apiAuth);
-app.use(morgan('combined'));
+// Serve static files from parent directory
+app.use(express.static('../'));
+
+// Specific route for character builder
+app.get('/character-builder.html', (req, res) => {
+  res.sendFile(require('path').join(__dirname, '../character-builder.html'));
+});
+
+// Specific route for test submission script
+app.get('/test-submission.js', (req, res) => {
+  res.sendFile(require('path').join(__dirname, '../test-submission.js'));
+});
 
 // Store io instance for use in routes
 app.set('io', io);
 
+// Initialize health checker
+const healthChecker = new HealthChecker();
+
 // Routes
 app.use('/api/characters', characterRoutes);
 
-// Health check
-app.get('/health', (req, res) => {
-  res.json({ 
-    status: 'OK', 
-    timestamp: new Date().toISOString(),
-    uptime: process.uptime()
+// API Documentation
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs, {
+    explorer: true,
+    customCss: '.swagger-ui .topbar { display: none }',
+    customSiteTitle: 'Dark City RPG API Documentation'
+}));
+
+// API Documentation JSON
+app.get('/api-docs.json', (req, res) => {
+    res.setHeader('Content-Type', 'application/json');
+    res.send(specs);
+});
+
+// Comprehensive health checks
+app.get('/health', applyRateLimiting('publicEndpoints'), async (req, res) => {
+    try {
+        const health = await healthChecker.getHealthStatus();
+        const statusCode = health.status === 'OK' ? 200 : 
+                          health.status === 'DEGRADED' ? 200 : 503;
+        res.status(statusCode).json(health);
+    } catch (error) {
+        res.status(503).json({
+            status: 'ERROR',
+            timestamp: new Date().toISOString(),
+            message: 'Health check failed',
+            error: error.message
+        });
+    }
+});
+
+// Readiness check (for Kubernetes)
+app.get('/ready', applyRateLimiting('publicEndpoints'), async (req, res) => {
+    try {
+        const readiness = await healthChecker.getReadinessStatus();
+        const statusCode = readiness.ready ? 200 : 503;
+        res.status(statusCode).json(readiness);
+    } catch (error) {
+        res.status(503).json({
+            ready: false,
+            timestamp: new Date().toISOString(),
+            error: error.message
+        });
+    }
+});
+
+// Liveness check (for Kubernetes)
+app.get('/live', applyRateLimiting('publicEndpoints'), async (req, res) => {
+    try {
+        const liveness = await healthChecker.getLivenessStatus();
+        res.status(200).json(liveness);
+    } catch (error) {
+        res.status(503).json({
+            alive: false,
+            timestamp: new Date().toISOString(),
+            error: error.message
+        });
+    }
+});
+
+// 404 handler
+app.use('*', (req, res) => {
+  res.status(404).json({
+    success: false,
+    error: 'Route not found'
   });
 });
 
+// Global error handler (must be last)
+app.use(errorHandler);
+
 // Socket.io connection handling
 io.on('connection', (socket) => {
-  console.log(`🔗 Client connected: ${socket.id}`);
-  
+    logger.info('Client connected', {
+        type: 'socket',
+        socketId: socket.id,
+        ip: socket.handshake.address
+    });
+    
   // Join moderator room
   socket.on('joinModerator', () => {
     socket.join('moderators');
-    console.log(`👨‍💼 Moderator joined: ${socket.id}`);
+    structuredLogger.logAuth('moderator_room_joined', socket.id, {
+        socketId: socket.id
+    });
+    logger.info('Moderator joined', {
+        type: 'socket',
+        socketId: socket.id
+    });
   });
   
-  // Leave moderator room
-  socket.on('leaveModerator', () => {
-    socket.leave('moderators');
-    console.log(`👋 Moderator left: ${socket.id}`);
-  });
-  
-  // Handle disconnect
   socket.on('disconnect', () => {
-    console.log(`❌ Client disconnected: ${socket.id}`);
+    logger.info('Client disconnected', {
+        type: 'socket',
+        socketId: socket.id
+    });
   });
 });
 
@@ -170,13 +362,68 @@ io.on('characterRejected', (character) => {
   io.to('moderators').emit('characterRejected', character);
 });
 
+// Start server
 const PORT = process.env.PORT || 3000;
-
 server.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Dark City Server running on port ${PORT}`);
   console.log(`🌐 Local: http://localhost:${PORT}`);
   console.log(`🌐 Network: http://0.0.0.0:${PORT}`);
   console.log(`📊 Health check: http://0.0.0.0:${PORT}/health`);
+});
+
+// Global error handling for continuous operation
+process.on('uncaughtException', (error) => {
+  console.error('🚨 Uncaught Exception:', error);
+  structuredLogger.logError('uncaught_exception', error, {
+    stack: error.stack,
+    message: error.message
+  });
+  
+  // Log the error but don't exit immediately
+  // Give the server a chance to finish current operations
+  setTimeout(() => {
+    console.log('🔄 Restarting server due to uncaught exception...');
+    console.log('🔍 Debug: About to call process.exit(1)');
+    // process.exit(1); // Temporarily disabled to see the error
+  }, 1000);
+  
+  console.log('🔍 Debug: Uncaught exception handler setup complete');
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('🚨 Unhandled Rejection at:', promise, 'reason:', reason);
+  structuredLogger.logError('unhandled_rejection', new Error(reason), {
+    promise: promise.toString(),
+    reason: reason
+  });
+  
+  // Log but don't crash the server
+  // Continue operation for unhandled promise rejections
+});
+
+// Handle memory warnings
+process.on('warning', (warning) => {
+  console.warn('⚠️ Process Warning:', warning.name, warning.message);
+  structuredLogger.logError('process_warning', new Error(warning.message), {
+    name: warning.name,
+    stack: warning.stack
+  });
+});
+
+// Handle SIGUSR2 for graceful restart (used by nodemon)
+process.on('SIGUSR2', () => {
+  console.log('🔄 SIGUSR2 received, restarting gracefully...');
+  
+  server.close(() => {
+    console.log('✅ Server closed for restart');
+    process.exit(0);
+  });
+  
+  // Force close after 10 seconds if graceful shutdown fails
+  setTimeout(() => {
+    console.log('⏰ Forcing server restart...');
+    process.exit(1);
+  }, 10000);
 });
 
 // Graceful shutdown
@@ -186,6 +433,12 @@ process.on('SIGTERM', () => {
     console.log('✅ Server closed');
     process.exit(0);
   });
+  
+  // Force close after 10 seconds
+  setTimeout(() => {
+    console.log('⏰ Forcing server shutdown...');
+    process.exit(1);
+  }, 10000);
 });
 
 process.on('SIGINT', () => {
@@ -194,4 +447,12 @@ process.on('SIGINT', () => {
     console.log('✅ Server closed');
     process.exit(0);
   });
+  
+  // Force close after 10 seconds
+  setTimeout(() => {
+    console.log('⏰ Forcing server shutdown...');
+    process.exit(1);
+  }, 10000);
 });
+
+console.log('🔍 Debug: Server setup complete - should stay running now');

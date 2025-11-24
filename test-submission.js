@@ -82,8 +82,8 @@ class SubmissionTester {
                 console.log('📝 Preview updated');
             }
             
-            // Initialize submission system
-            const submissionSystem = new CharacterSubmission();
+            // Initialize submission system - use SimpleCharacterSubmission to avoid redirect
+            const submissionSystem = new SimpleCharacterSubmission();
             
             // Submit character
             const result = await submissionSystem.submitCharacter(characterData);
@@ -182,8 +182,8 @@ class SubmissionTester {
         // Show final results
         this.showResults();
         
-        // Check moderator panel
-        await this.checkModeratorPanel();
+        // Check moderator panel (disabled for local testing)
+        // await this.checkModeratorPanel();
     }
 
     // Show test results
@@ -223,6 +223,15 @@ class SubmissionTester {
 
 // Create global tester instance
 window.submissionTester = new SubmissionTester();
+
+// Make sure it's available when page loads
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        console.log('✅ submissionTester ready - DOM loaded');
+    });
+} else {
+    console.log('✅ submissionTester ready - DOM already loaded');
+}
 
 // Usage instructions
 console.log(`

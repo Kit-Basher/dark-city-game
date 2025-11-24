@@ -1,7 +1,7 @@
 // GitHub API configuration
 const GITHUB_API_BASE = 'https://api.github.com/repos';
-const REPO_OWNER = 'Kit-Basher'; // Replace with your GitHub username
-const REPO_NAME = 'dark-city-game';
+const REPO_OWNER = window.CONFIG?.REPO_OWNER || process.env.REPO_OWNER || 'Kit-Basher'; // Replace with your GitHub username
+const REPO_NAME = window.CONFIG?.REPO_NAME || process.env.REPO_NAME || 'dark-city-game';
 
 // Calendar functionality
 class Calendar {
@@ -19,143 +19,186 @@ class Calendar {
         this.loadEvents();
     }
 
-    setupEventListeners() {
-        document.getElementById('prevMonth').addEventListener('click', () => this.previousMonth());
-        document.getElementById('nextMonth').addEventListener('click', () => this.nextMonth());
-    }
-
-    previousMonth() {
-        this.currentMonth--;
-        if (this.currentMonth < 0) {
-            this.currentMonth = 11;
-            this.currentYear--;
-        }
-        this.renderCalendar();
-    }
-
-    nextMonth() {
-        this.currentMonth++;
-        if (this.currentMonth > 11) {
-            this.currentMonth = 0;
-            this.currentYear++;
-        }
-        this.renderCalendar();
-    }
-
     renderCalendar() {
         const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
-                          'July', 'August', 'September', 'October', 'November', 'December'];
+            'July', 'August', 'September', 'October', 'November', 'December'];
         
-        document.getElementById('currentMonth').textContent = `${monthNames[this.currentMonth]} ${this.currentYear}`;
+        const monthYearElement = document.getElementById('monthYear');
+        if (monthYearElement) {
+            monthYearElement.textContent = `${monthNames[this.currentMonth]} ${this.currentYear}`;
+        }
+        
+        const calendarGrid = document.getElementById('calendarGrid');
+        if (!calendarGrid) return;
+        
+        // Clear existing content safely
+        while (calendarGrid.firstChild) {
+            calendarGrid.removeChild(calendarGrid.firstChild);
+        }
         
         const firstDay = new Date(this.currentYear, this.currentMonth, 1).getDay();
         const daysInMonth = new Date(this.currentYear, this.currentMonth + 1, 0).getDate();
         
-        const calendarGrid = document.getElementById('calendarGrid');
-        calendarGrid.innerHTML = '';
-        
         // Add day headers
         const dayHeaders = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
         dayHeaders.forEach(day => {
-            const dayHeader = document.createElement('div');
-            dayHeader.className = 'calendar-day header';
-            dayHeader.textContent = day;
+            const dayHeader = SafeDOM.createElement('div', {
+                className: 'calendar-day header'
+            }, day);
             calendarGrid.appendChild(dayHeader);
         });
         
         // Add empty cells for days before month starts
         for (let i = 0; i < firstDay; i++) {
-            const emptyDay = document.createElement('div');
-            emptyDay.className = 'calendar-day';
+            const emptyDay = SafeDOM.createElement('div', {
+                className: 'calendar-day'
+            });
             calendarGrid.appendChild(emptyDay);
         }
         
         // Add days of the month
         const today = new Date();
         for (let day = 1; day <= daysInMonth; day++) {
-            const dayElement = document.createElement('div');
-            dayElement.className = 'calendar-day';
-            dayElement.textContent = day;
+            const dayElement = SafeDOM.createElement('div', {
+                className: 'calendar-day'
+            }, String(day));
             
-            // Check if this is today
-            if (this.currentYear === today.getFullYear() && 
-                this.currentMonth === today.getMonth() && 
-                day === today.getDate()) {
+            // Highlight today
+            if (today.getDate() === day && 
+                today.getMonth() === this.currentMonth && 
+                today.getFullYear() === this.currentYear) {
                 dayElement.classList.add('today');
             }
             
-            // Check if there are events for this day
-            const dayEvents = this.getEventsForDay(day);
+            // Add events for this day
+            const dayEvents = this.events.filter(event => {
+                const eventDate = new Date(event.date);
+                return eventDate.getDate() === day &&
+                       eventDate.getMonth() === this.currentMonth &&
+                       eventDate.getFullYear() === this.currentYear;
+            });
+            
             if (dayEvents.length > 0) {
                 dayElement.classList.add('has-events');
-                const eventDot = document.createElement('div');
-                eventDot.className = 'event-dot';
-                dayElement.appendChild(eventDot);
-                
-                // Add tooltip with event info
-                dayElement.title = dayEvents.map(event => event.title).join(', ');
+                const eventIndicator = SafeDOM.createElement('span', {
+                    className: 'event-indicator'
+                }, `${dayEvents.length} event${dayEvents.length > 1 ? 's' : ''}`);
+                dayElement.appendChild(eventIndicator);
             }
             
+            dayElement.addEventListener('click', () => this.showDayEvents(day));
             calendarGrid.appendChild(dayElement);
         }
     }
 
-    getEventsForDay(day) {
-        return this.events.filter(event => {
-            const eventDate = new Date(event.date);
-            return eventDate.getFullYear() === this.currentYear &&
-                   eventDate.getMonth() === this.currentMonth &&
-                   eventDate.getDate() === day;
-        });
+    attachEventListeners() {
+        const prevMonthBtn = document.getElementById('prevMonth');
+        const nextMonthBtn = document.getElementById('nextMonth');
+        
+        if (prevMonthBtn) {
+            prevMonthBtn.addEventListener('click', () => this.changeMonth(-1));
+        }
+        if (nextMonthBtn) {
+            nextMonthBtn.addEventListener('click', () => this.changeMonth(1));
+        }
+    }
+
+    changeMonth(direction) {
+        this.currentMonth += direction;
+        
+        if (this.currentMonth < 0) {
+            this.currentMonth = 11;
+            this.currentYear--;
+        } else if (this.currentMonth > 11) {
+            this.currentMonth = 0;
+            this.currentYear++;
+        }
+        
+        this.renderCalendar();
     }
 
     async loadEvents() {
         try {
-            // Load events from scenes and characters
-            const scenes = await this.loadScenes();
-            const characters = await this.loadCharacters();
-            
-            // Process scenes as events
-            scenes.forEach(scene => {
-                if (scene.date) {
-                    this.events.push({
-                        title: `Scene: ${scene.title}`,
-                        date: scene.date,
-                        type: 'scene',
-                        characters: scene.characters || []
-                    });
-                }
-            });
-            
-            // Process character activities as events
-            characters.forEach(character => {
-                if (character.activities) {
-                    character.activities.forEach(activity => {
-                        if (activity.date) {
-                            this.events.push({
-                                title: `${character.name}: ${activity.description}`,
-                                date: activity.date,
-                                type: 'character',
-                                character: character.name
-                            });
-                        }
-                    });
-                }
-            });
-            
+            // Load events from server API or GitHub Issues
+            const events = await this.fetchCalendarEvents();
+            this.events = events;
             this.renderCalendar();
         } catch (error) {
             console.error('Error loading events:', error);
+            // Fallback to mock data if API fails
+            this.events = [
+                { date: new Date(this.currentYear, this.currentMonth, 15), title: 'Game Session' },
+                { date: new Date(this.currentYear, this.currentMonth, 22), title: 'Character Workshop' }
+            ];
+            this.renderCalendar();
         }
     }
 
-    async loadScenes() {
-        // This would load from GitHub Issues or a JSON file
-        // For now, return mock data
-        return [
-            { title: 'The Alley Meeting', date: '2024-01-15', characters: ['John', 'Sarah'] },
-            { title: 'Rooftop Chase', date: '2024-01-18', characters: ['Mike', 'Alex'] }
-        ];
+    async fetchCalendarEvents() {
+        try {
+            // Try to fetch from server API first
+            const response = await fetch('/api/events');
+            if (response.ok) {
+                return await response.json();
+            }
+        } catch (error) {
+            console.log('Server API not available, trying GitHub...');
+        }
+
+        // Fallback to GitHub Issues
+        try {
+            const githubApi = new GitHubAPI();
+            const issues = await githubApi.fetchIssues();
+            return issues
+                .filter(issue => issue.labels.some(label => label.name === 'event'))
+                .map(issue => ({
+                    title: issue.title,
+                    date: new Date(issue.created_at),
+                    description: issue.body || '',
+                    url: issue.html_url
+                }));
+        } catch (error) {
+            console.error('Failed to load events from GitHub:', error);
+            return [];
+        }
+    }
+
+    showDayEvents(day) {
+        const date = new Date(this.currentYear, this.currentMonth, day);
+        const dayEvents = this.events.filter(event => {
+            const eventDate = new Date(event.date);
+            return eventDate.getDate() === day &&
+                   eventDate.getMonth() === this.currentMonth &&
+                   eventDate.getFullYear() === this.currentYear;
+        });
+        
+        const eventList = document.getElementById('eventList');
+        if (!eventList) return;
+        
+        // Clear existing content safely
+        while (eventList.firstChild) {
+            eventList.removeChild(eventList.firstChild);
+        }
+        
+        if (dayEvents.length === 0) {
+            const noEvents = SafeDOM.createElement('p', {}, 'No events scheduled for this day.');
+            eventList.appendChild(noEvents);
+        } else {
+            dayEvents.forEach(event => {
+                const eventItem = SafeDOM.createElement('div', {
+                    className: 'event-item'
+                });
+                
+                const eventTitle = SafeDOM.createElement('h4', {}, event.title);
+                const eventDate = SafeDOM.createElement('small', {}, 
+                    date.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
+                );
+                
+                eventItem.appendChild(eventTitle);
+                eventItem.appendChild(eventDate);
+                eventList.appendChild(eventItem);
+            });
+        }
     }
 
     async loadCharacters() {
@@ -278,39 +321,105 @@ class ContentLoader {
         const charactersList = document.getElementById('charactersList');
         if (!charactersList) return;
 
+        // Clear existing content safely
+        while (charactersList.firstChild) {
+            charactersList.removeChild(charactersList.firstChild);
+        }
+
         if (characters.length === 0) {
-            charactersList.innerHTML = '<p>No characters submitted yet.</p>';
+            const message = SafeDOM.createElement('p', {}, 'No characters submitted yet.');
+            charactersList.appendChild(message);
             return;
         }
 
-        charactersList.innerHTML = characters.map(character => this.createCharacterCard(character)).join('');
+        characters.forEach(character => {
+            const characterCard = this.createCharacterCard(character);
+            if (characterCard instanceof Node) {
+                charactersList.appendChild(characterCard);
+            }
+        });
     }
 
     // Create character card HTML
     static createCharacterCard(character) {
-        return `
-            <div class="character-card">
-                <div class="character-header">
-                    <h3>${character.name}</h3>
-                    <span class="character-type">${character.classification || 'Unknown'}</span>
-                </div>
-                <div class="character-details">
-                    <p><strong>Playbook:</strong> ${character.playbook || 'N/A'}</p>
-                    <p><strong>Apparent Age:</strong> ${character.apparentAge || 'N/A'}</p>
-                    ${character.bio ? `<p><strong>Bio:</strong> ${character.bio.substring(0, 150)}${character.bio.length > 150 ? '...' : ''}</p>` : ''}
-                    ${character.skills && character.skills.length > 0 ? `
-                        <div class="character-skills">
-                            <strong>Skills:</strong>
-                            ${character.skills.slice(0, 3).map(skill => `<span class="skill-tag">+${skill.level} ${skill.name}</span>`).join('')}
-                            ${character.skills.length > 3 ? `<span class="skill-more">+${character.skills.length - 3} more</span>` : ''}
-                        </div>
-                    ` : ''}
-                </div>
-                <div class="character-footer">
-                    <small>Submitted: ${new Date(character.submittedAt || character.submitted_at).toLocaleDateString()}</small>
-                </div>
-            </div>
-        `;
+        const card = SafeDOM.createElement('div', {
+            className: 'character-card'
+        });
+        
+        const header = SafeDOM.createElement('div', {
+            className: 'character-header'
+        });
+        
+        const title = SafeDOM.createElement('h3', {}, character.name || 'Unnamed Character');
+        header.appendChild(title);
+        
+        const type = SafeDOM.createElement('span', {
+            className: 'character-type'
+        }, character.classification || 'Unknown');
+        header.appendChild(type);
+        
+        card.appendChild(header);
+        
+        const details = SafeDOM.createElement('div', {
+            className: 'character-details'
+        });
+        
+        const playbook = SafeDOM.createElement('p', {}, 
+            `Playbook: ${character.playbook || 'N/A'}`
+        );
+        details.appendChild(playbook);
+        
+        const age = SafeDOM.createElement('p', {}, 
+            `Apparent Age: ${character.apparentAge || 'N/A'}`
+        );
+        details.appendChild(age);
+        
+        if (character.bio) {
+            const bio = SafeDOM.createElement('p', {}, 
+                `Bio: ${character.bio.substring(0, 150)}${character.bio.length > 150 ? '...' : ''}`
+            );
+            details.appendChild(bio);
+        }
+        
+        if (character.skills && character.skills.length > 0) {
+            const skillsContainer = SafeDOM.createElement('div', {
+                className: 'character-skills'
+            });
+            
+            const skillsLabel = SafeDOM.createElement('strong', {}, 'Skills: ');
+            skillsContainer.appendChild(skillsLabel);
+            
+            character.skills.slice(0, 3).forEach(skill => {
+                const skillTag = SafeDOM.createElement('span', {
+                    className: 'skill-tag'
+                }, `+${skill.level} ${skill.name}`);
+                skillsContainer.appendChild(skillTag);
+            });
+            
+            if (character.skills.length > 3) {
+                const moreSkills = SafeDOM.createElement('span', {
+                    className: 'skill-more'
+                }, `+${character.skills.length - 3} more`);
+                skillsContainer.appendChild(moreSkills);
+            }
+            
+            details.appendChild(skillsContainer);
+        }
+        
+        card.appendChild(details);
+        
+        const footer = SafeDOM.createElement('div', {
+            className: 'character-footer'
+        });
+        
+        const submittedDate = SafeDOM.createElement('small', {}, 
+            `Submitted: ${new Date(character.submittedAt || character.submitted_at).toLocaleDateString()}`
+        );
+        footer.appendChild(submittedDate);
+        
+        card.appendChild(footer);
+        
+        return card;
     }
 
     static async loadScenes() {

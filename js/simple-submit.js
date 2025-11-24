@@ -3,7 +3,8 @@
 
 class SimpleCharacterSubmission {
     constructor() {
-        this.baseURL = 'http://localhost:3000/api';
+        // Use relative URL to avoid exposing server location
+        this.baseURL = '/api';
     }
 
     // Submit character directly to server
@@ -15,6 +16,7 @@ class SimpleCharacterSubmission {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': 'Bearer dark-city-dev-key'
                 },
                 body: JSON.stringify(characterData)
             });

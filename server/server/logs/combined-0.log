@@ -4,3 +4,11 @@
 2025-11-23T20:37:12: 🌐 Network: http://0.0.0.0:3000
 2025-11-23T20:37:12: 📊 Health check: http://0.0.0.0:3000/health
 2025-11-23T20:37:19: 127.0.0.1 - - [24/Nov/2025:02:37:19 +0000] "GET /health HTTP/1.1" 200 75 "-" "curl/8.5.0"
+2025-11-23T20:57:08: 🔄 SIGINT received, shutting down gracefully
+2025-11-23T20:57:09: 🚀 Dark City Server running on port 3000
+2025-11-23T20:57:09: 🌐 Local: http://localhost:3000
+2025-11-23T20:57:09: 🌐 Network: http://0.0.0.0:3000
+2025-11-23T20:57:09: 📊 Health check: http://0.0.0.0:3000/health
+2025-11-23T20:57:09: ✅ MongoDB Connected: localhost
+2025-11-23T20:57:12: 127.0.0.1 - - [24/Nov/2025:02:57:12 +0000] "GET /health HTTP/1.1" 200 75 "-" "curl/8.5.0"
+2025-11-23T20:57:16: 127.0.0.1 - - [24/Nov/2025:02:57:16 +0000] "GET /api/characters HTTP/1.1" 200 777 "-" "curl/8.5.0"

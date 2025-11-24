@@ -1,14 +1,15 @@
 // Server API Client for Dark City RPG
 class ServerAPI {
     constructor() {
-        // Always use localhost since we're running the server locally
-        this.baseURL = 'http://localhost:3000/api';
+        // Use relative URL to avoid exposing server location
+        this.baseURL = '/api';
         this.socket = null;
     }
 
     // Initialize WebSocket connection
     initSocket() {
-        const socketURL = 'http://localhost:3000';
+        // Use relative URL for WebSocket
+        const socketURL = window.location.origin;
         this.socket = io(socketURL);
         
         this.socket.on('connect', () => {
@@ -45,11 +46,9 @@ class ServerAPI {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': 'Bearer dark-city-dev-key'
                 },
-                body: JSON.stringify({
-                    ...characterData,
-                    submittedBy: this.getClientId()
-                })
+                body: JSON.stringify(characterData)
             });
             
             if (!response.ok) {
@@ -81,10 +80,14 @@ class ServerAPI {
         }
     }
 
-    // Get all submissions (moderator)
+    // Get all submissions (moderator only)
     async getAllSubmissions() {
         try {
-            const response = await fetch(`${this.baseURL}/characters/submissions`);
+            const response = await fetch(`${this.baseURL}/characters/submissions`, {
+                headers: {
+                    'Authorization': 'Bearer dark-city-dev-key'
+                }
+            });
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }

@@ -28,14 +28,32 @@ app.use(helmet());
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
-app.use(morgan('combined'));
 
 // Rate limiting
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100 // limit each IP to 100 requests per windowMs
+  max: 100, // limit each IP to 100 requests per windowMs
+  message: 'Too many requests from this IP, please try again later.'
 });
-app.use('/api/', limiter);
+app.use('/api', limiter);
+
+// Basic API authentication (for development only - replace with proper auth in production)
+const apiAuth = (req, res, next) => {
+  // Skip auth for health check
+  if (req.path === '/health') return next();
+  
+  const authHeader = req.headers.authorization;
+  const apiKey = process.env.API_KEY || 'dark-city-dev-key';
+  
+  if (!authHeader || authHeader !== `Bearer ${apiKey}`) {
+    return res.status(401).json({ error: 'Unauthorized - Invalid API key' });
+  }
+  next();
+};
+
+// Apply auth to API routes
+app.use('/api', apiAuth);
+app.use(morgan('combined'));
 
 // Store io instance for use in routes
 app.set('io', io);

@@ -257,26 +257,60 @@ class GitHubAPI {
 
 // Character and Scene loading
 class ContentLoader {
-        // Fallback to GitHub API system
+    // Load characters from server
+    static async loadCharacters() {
+        console.log('Loading approved characters from server...');
+        
         try {
-            const issues = await GitHubAPI.getIssues('character-sheet');
+            const characters = await window.serverAPI.getApprovedCharacters();
+            console.log(`Loaded ${characters.length} approved characters from server`);
             
-            if (issues.length === 0) {
-                this.displayCharacters([]);
-                return;
-            }
-            
-            charactersList.innerHTML = '';
-            issues.forEach(issue => {
-                const characterData = GitHubAPI.parseIssueBody(issue.body);
-                const card = this.createCharacterCard(characterData, issue);
-                charactersList.appendChild(card);
-            });
-            console.log(`Loaded ${issues.length} characters from GitHub API`);
+            this.displayCharacters(characters);
         } catch (error) {
-            console.error('Failed to load characters from GitHub API:', error);
-            charactersList.innerHTML = '<p>Unable to load characters at this time.</p>';
+            console.error('Error loading characters from server:', error);
+            // Fallback to empty display
+            this.displayCharacters([]);
         }
+    }
+
+    // Display characters on the main page
+    static displayCharacters(characters) {
+        const charactersList = document.getElementById('charactersList');
+        if (!charactersList) return;
+
+        if (characters.length === 0) {
+            charactersList.innerHTML = '<p>No characters submitted yet.</p>';
+            return;
+        }
+
+        charactersList.innerHTML = characters.map(character => this.createCharacterCard(character)).join('');
+    }
+
+    // Create character card HTML
+    static createCharacterCard(character) {
+        return `
+            <div class="character-card">
+                <div class="character-header">
+                    <h3>${character.name}</h3>
+                    <span class="character-type">${character.classification || 'Unknown'}</span>
+                </div>
+                <div class="character-details">
+                    <p><strong>Playbook:</strong> ${character.playbook || 'N/A'}</p>
+                    <p><strong>Apparent Age:</strong> ${character.apparentAge || 'N/A'}</p>
+                    ${character.bio ? `<p><strong>Bio:</strong> ${character.bio.substring(0, 150)}${character.bio.length > 150 ? '...' : ''}</p>` : ''}
+                    ${character.skills && character.skills.length > 0 ? `
+                        <div class="character-skills">
+                            <strong>Skills:</strong>
+                            ${character.skills.slice(0, 3).map(skill => `<span class="skill-tag">+${skill.level} ${skill.name}</span>`).join('')}
+                            ${character.skills.length > 3 ? `<span class="skill-more">+${character.skills.length - 3} more</span>` : ''}
+                        </div>
+                    ` : ''}
+                </div>
+                <div class="character-footer">
+                    <small>Submitted: ${new Date(character.submittedAt || character.submitted_at).toLocaleDateString()}</small>
+                </div>
+            </div>
+        `;
     }
 
     static async loadScenes() {

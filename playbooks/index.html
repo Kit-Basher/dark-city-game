@@ -186,7 +186,7 @@
                 description: "Primordial beings from the dawn of time, ancient beyond human comprehension and wielding powers that shaped civilizations.",
                 features: ["Primordial power", "Ancient knowledge", "Elemental control"],
                 category: "immortal",
-                file: "#"
+                file: "ancient.html"
             },
             {
                 name: "Aquatic",
@@ -194,7 +194,7 @@
                 description: "Beings of water and tide, connected to the mysterious depths and the ancient secrets they hold.",
                 features: ["Water manipulation", "Underwater adaptation", "Siren's call"],
                 category: "magical",
-                file: "#"
+                file: "aquatic.html"
             },
             {
                 name: "Aware",
@@ -202,7 +202,7 @@
                 description: "Those who perceive beyond the veil, touching the supernatural realms and seeing what others cannot.",
                 features: ["Supernatural perception", "Psychic abilities", "Death insight"],
                 category: "magical",
-                file: "#"
+                file: "aware.html"
             },
             {
                 name: "Champion",
@@ -210,7 +210,7 @@
                 description: "Heroes chosen by fate or destiny, blessed with extraordinary abilities to protect the innocent and fight darkness.",
                 features: ["Destined power", "Protective instincts", "Heroic destiny"],
                 category: "physical",
-                file: "#"
+                file: "champion.html"
             },
             {
                 name: "Construct",
@@ -218,7 +218,7 @@
                 description: "Artificial beings given life through magic or science, struggling with their nature and purpose.",
                 features: ["Artificial body", "Enhanced attributes", "Purpose-driven"],
                 category: "physical",
-                file: "#"
+                file: "construct.html"
             },
             {
                 name: "Covert",
@@ -226,7 +226,7 @@
                 description: "Masters of deception and infiltration, these beings thrive in shadows and secrets.",
                 features: ["Stealth mastery", "Deception arts", "Shadow manipulation"],
                 category: "social",
-                file: "#"
+                file: "covert.html"
             },
             {
                 name: "Darkling",
@@ -234,7 +234,7 @@
                 description: "Beings touched by darkness, walking the line between damnation and redemption.",
                 features: ["Dark powers", "Moral conflict", "Infernal connections"],
                 category: "dark",
-                file: "#"
+                file: "darkling.html"
             },
             {
                 name: "Fae",
@@ -250,7 +250,7 @@
                 description: "Beings of immense size and strength, towering over mortals and carrying the weight of their power.",
                 features: ["Immense strength", "Giant stature", "Raw power"],
                 category: "physical",
-                file: "#"
+                file: "giant.html"
             },
             {
                 name: "Gifted",
@@ -258,7 +258,7 @@
                 description: "Those blessed with extraordinary talents that border on supernatural, their gifts both blessing and curse.",
                 features: ["Exceptional talent", "Inspired creativity", "Supernatural artistry"],
                 category: "social",
-                file: "#"
+                file: "gifted.html"
             },
             {
                 name: "Incarnation",
@@ -266,7 +266,7 @@
                 description: "Beings who embody concepts or exist between states, neither fully alive nor dead.",
                 features: ["Conceptual power", "Between states", "Transformation mastery"],
                 category: "magical",
-                file: "#"
+                file: "incarnation.html"
             },
             {
                 name: "Legend",
@@ -274,7 +274,7 @@
                 description: "Mythic beings of immense power and renown, whose very names inspire awe and fear.",
                 features: ["Legendary status", "Mythic powers", "Ancient renown"],
                 category: "immortal",
-                file: "#"
+                file: "legend.html"
             },
             {
                 name: "Mad",
@@ -282,7 +282,7 @@
                 description: "Beings touched by madness, walking the fine line between genius and insanity.",
                 features: ["Unpredictable power", "Mad insight", "Chaotic nature"],
                 category: "dark",
-                file: "#"
+                file: "mad.html"
             },
             {
                 name: "Mage",
@@ -306,7 +306,7 @@
                 description: "Beings who grant power and make deals, walking between worlds as benefactors and manipulators.",
                 features: ["Power granting", "Deal making", "Otherworldly connections"],
                 category: "social",
-                file: "#"
+                file: "patron.html"
             },
             {
                 name: "Unsated",
@@ -336,12 +336,7 @@
                 const card = document.createElement('div');
                 card.className = 'playbook-card';
                 card.onclick = () => {
-                if (playbook.file === "#") {
-                    // For playbooks without HTML files, show a message or do nothing
-                    alert(`Detailed page for ${playbook.name} coming soon! The playbook exists but the detailed page is still being built.`);
-                } else {
-                    window.location.href = playbook.file;
-                }
+                window.location.href = playbook.file;
             };
                 
                 card.innerHTML = `

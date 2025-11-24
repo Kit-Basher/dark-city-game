@@ -1,18 +1,14 @@
 // Server API Client for Dark City RPG
 class ServerAPI {
     constructor() {
-        this.baseURL = window.location.hostname === 'localhost' 
-            ? 'http://localhost:3000/api'
-            : 'http://0.0.0.0:3000/api';
+        // Always use localhost since we're running the server locally
+        this.baseURL = 'http://localhost:3000/api';
         this.socket = null;
     }
 
     // Initialize WebSocket connection
     initSocket() {
-        const socketURL = window.location.hostname === 'localhost'
-            ? 'http://localhost:3000'
-            : 'http://0.0.0.0:3000';
-            
+        const socketURL = 'http://localhost:3000';
         this.socket = io(socketURL);
         
         this.socket.on('connect', () => {

@@ -6,12 +6,22 @@
   "scripts": {
     "start": "cd server && npm start",
     "install": "cd server && npm install",
-    "build": "cd server && npm install"
+    "build": "cd server && npm install",
+    "lint": "eslint . --ext .js,.html",
+    "lint:fix": "eslint . --ext .js,.html --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "engines": {
     "node": ">=18.0.0"
   },
   "keywords": ["rpg", "game", "dark-city"],
   "author": "Your Name",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-html": "^7.1.0",
+    "prettier": "^3.2.5"
+  }
 }

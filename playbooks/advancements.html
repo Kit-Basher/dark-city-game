@@ -1280,6 +1280,7 @@
                 <p>Each advancement move is carefully balanced to work with any character build while maintaining the unique flavor of the original playbook. Use the search function and table of contents to find exactly what you need for character progression.</p>
             </div>
     
+    <script src="../js/safe-dom.js"></script>
     <script>
         // Generate table of contents
         function generateTOC() {
@@ -1290,7 +1291,7 @@
                 const id = section.id;
                 const title = section.querySelector('h2').textContent;
                 const li = document.createElement('li');
-                li.innerHTML = `<a href="#${id}">${title}</a>`;
+                SafeDOM.setContent(li, SafeDOM.createLink(title, `#${id}`));
                 tocList.appendChild(li);
             });
         }

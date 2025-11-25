@@ -434,11 +434,11 @@ class ContentLoader {
         const issues = await GitHubAPI.getIssues('scene');
         
         if (issues.length === 0) {
-            scenesList.innerHTML = '<p>No scenes submitted yet.</p>';
+            SafeDOM.setContent(scenesList, SafeDOM.createElement('p', {}, 'No scenes submitted yet.'));
             return;
         }
         
-        scenesList.innerHTML = '';
+        SafeDOM.setContent(scenesList, '');
         issues.forEach(issue => {
             const sceneData = GitHubAPI.parseIssueBody(issue.body);
             const card = this.createSceneCard(sceneData, issue);
@@ -447,85 +447,127 @@ class ContentLoader {
     }
 
     static createCharacterCardFromSubmission(character, submission) {
-        const card = document.createElement('div');
-        card.className = 'character-card';
-        card.style.cssText = `
-            background: #2a2a2a;
-            border: 2px solid #4CAF50;
-            border-radius: 10px;
-            padding: 1.5rem;
-            margin-bottom: 1rem;
-            transition: all 0.3s ease;
-        `;
+        const card = SafeDOM.createElement('div', {
+            className: 'character-card',
+            style: {
+                background: '#2a2a2a',
+                border: '2px solid #4CAF50',
+                borderRadius: '10px',
+                padding: '1.5rem',
+                marginBottom: '1rem',
+                transition: 'all 0.3s ease'
+            }
+        });
         
         const approvedDate = new Date(submission.updated_at || submission.submitted_at).toLocaleDateString();
         
-        card.innerHTML = `
-            <div style="position: relative;">
-                <div style="position: absolute; top: 10px; right: 10px; background: #4CAF50; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.7rem; font-weight: bold;">
-                    ✅ APPROVED
-                </div>
-                <h3 style="color: #ff6b35; margin-bottom: 0.5rem;">${character.name || 'Unnamed Character'}</h3>
-                <div style="color: #ccc; font-size: 0.9rem; margin-bottom: 1rem;">
-                    <p><strong>Playbook:</strong> ${character.playbook || 'Unknown'}</p>
-                    <p><strong>Classification:</strong> ${character.classification || 'Unknown'}</p>
-                    <p><strong>Subtype:</strong> ${character.subtype || 'None'}</p>
-                    <p><strong>Age:</strong> ${character.apparentAge || 'Unknown'}${character.actualAge ? ` (${character.actualAge})` : ''}</p>
-                    <p><strong>Approved:</strong> ${approvedDate}</p>
-                </div>
-                <div style="color: white; margin-bottom: 1rem;">
-                    ${character.bio ? `<p><strong>Bio:</strong> ${character.bio.substring(0, 150)}${character.bio.length > 150 ? '...' : ''}</p>` : ''}
-                </div>
-                <div style="margin-top: 1rem;">
-                    <a href="characters/index.html" class="btn btn-primary" style="font-size: 0.8rem; padding: 0.5rem 1rem;">View Details</a>
-                </div>
-            </div>
-        `;
+        const content = SafeDOM.createHTML('div', {
+            style: 'position: relative;'
+        }, [
+            SafeDOM.createHTML('div', {
+                style: 'position: absolute; top: 10px; right: 10px; background: #4CAF50; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.7rem; font-weight: bold;'
+            }, ['✅ APPROVED']),
+            SafeDOM.createHTML('h3', {
+                style: 'color: #ff6b35; margin-bottom: 0.5rem;'
+            }, [character.name || 'Unnamed Character']),
+            SafeDOM.createHTML('div', {
+                style: 'color: #ccc; font-size: 0.9rem; margin-bottom: 1rem;'
+            }, [
+                SafeDOM.createHTML('p', {}, [`Playbook: ${character.playbook || 'Unknown'}`]),
+                SafeDOM.createHTML('p', {}, [`Classification: ${character.classification || 'Unknown'}`]),
+                SafeDOM.createHTML('p', {}, [`Subtype: ${character.subtype || 'None'}`]),
+                SafeDOM.createHTML('p', {}, [`Age: ${character.apparentAge || 'Unknown'}${character.actualAge ? ` (${character.actualAge})` : ''}`]),
+                SafeDOM.createHTML('p', {}, [`Approved: ${approvedDate}`])
+            ]),
+            SafeDOM.createHTML('div', {
+                style: 'color: white; margin-bottom: 1rem;'
+            }, character.bio ? [
+                SafeDOM.createHTML('p', {}, [`Bio: ${character.bio.substring(0, 150)}${character.bio.length > 150 ? '...' : ''}`])
+            ] : []),
+            SafeDOM.createHTML('div', {
+                style: 'margin-top: 1rem;'
+            }, [
+                SafeDOM.createLink('View Details', 'characters/index.html', {
+                    className: 'btn btn-primary',
+                    style: 'font-size: 0.8rem; padding: 0.5rem 1rem;'
+                })
+            ])
+        ]);
         
+        card.appendChild(content);
         return card;
     }
 
     static createCharacterCard(characterData, issue) {
-        const card = document.createElement('div');
-        card.className = 'character-card';
+        const card = SafeDOM.createElement('div', {
+            className: 'character-card'
+        });
         
         // Create skills display
-        let skillsHtml = '';
+        let skillsElements = [];
         if (characterData.skills && Object.keys(characterData.skills).length > 0) {
-            skillsHtml = '<div class="character-skills"><strong>Skills:</strong><ul>';
-            Object.entries(characterData.skills).forEach(([skill, level]) => {
-                skillsHtml += `<li>${skill}: ${level}</li>`;
-            });
-            skillsHtml += '</ul></div>';
+            const skillsList = Object.entries(characterData.skills).map(([skill, level]) => 
+                SafeDOM.createHTML('li', {}, [`${skill}: ${level}`])
+            );
+            skillsElements = [
+                SafeDOM.createHTML('div', {
+                    className: 'character-skills'
+                }, [
+                    SafeDOM.createElement('strong', {}, 'Skills:'),
+                    SafeDOM.createHTML('ul', {}, skillsList)
+                ])
+            ];
         }
         
-        card.innerHTML = `
-            <h3>${characterData.name || 'Unknown Character'}</h3>
-            <div class="character-info">
-                <p><strong>Classification:</strong> ${characterData.classification || 'Not specified'}</p>
-                <p><strong>Playbook:</strong> ${characterData.playbook || 'Not specified'}</p>
-                <p><strong>Apparent Age:</strong> ${characterData.apparentAge || 'Not specified'}</p>
-                <p><strong>Actual Age:</strong> ${characterData.actualAge || 'Not specified'}</p>
-                ${characterData.fatePoints ? `<p><strong>Fate Points:</strong> ${characterData.fatePoints}/5</p>` : ''}
-            </div>
-            ${characterData.bio ? `<div class="character-bio"><p><strong>Bio:</strong> ${characterData.bio}</p></div>` : ''}
-            ${skillsHtml}
-            <a href="${issue.html_url}" class="btn btn-outline" target="_blank">View Full Sheet</a>
-        `;
+        const content = SafeDOM.createHTML('div', {}, [
+            SafeDOM.createHTML('h3', {}, [characterData.name || 'Unknown Character']),
+            SafeDOM.createHTML('div', {
+                className: 'character-info'
+            }, [
+                SafeDOM.createHTML('p', {}, [`Classification: ${characterData.classification || 'Not specified'}`]),
+                SafeDOM.createHTML('p', {}, [`Playbook: ${characterData.playbook || 'Not specified'}`]),
+                SafeDOM.createHTML('p', {}, [`Apparent Age: ${characterData.apparentAge || 'Not specified'}`]),
+                SafeDOM.createHTML('p', {}, [`Actual Age: ${characterData.actualAge || 'Not specified'}`]),
+                ...(characterData.fatePoints ? [
+                    SafeDOM.createHTML('p', {}, [`Fate Points: ${characterData.fatePoints}/5`])
+                ] : [])
+            ]),
+            ...(characterData.bio ? [
+                SafeDOM.createHTML('div', {
+                    className: 'character-bio'
+                }, [
+                    SafeDOM.createHTML('p', {}, [`Bio: ${characterData.bio}`])
+                ])
+            ] : []),
+            ...skillsElements,
+            SafeDOM.createLink('View Full Sheet', issue.html_url, {
+                className: 'btn btn-outline',
+                target: '_blank'
+            })
+        ]);
+        
+        card.appendChild(content);
         return card;
     }
 
     static createSceneCard(sceneData, issue) {
-        const card = document.createElement('div');
-        card.className = 'scene-card';
-        card.innerHTML = `
-            <h3>${sceneData.title || 'Untitled Scene'}</h3>
-            <p><strong>Date:</strong> ${sceneData.date || 'Not specified'}</p>
-            <p><strong>Location:</strong> ${sceneData.location || 'Not specified'}</p>
-            <p><strong>Characters:</strong> ${sceneData.characters || 'Not specified'}</p>
-            <p><strong>Description:</strong> ${sceneData.description || 'No description available'}</p>
-            <a href="${issue.html_url}" class="btn btn-outline" target="_blank">View Full Scene</a>
-        `;
+        const card = SafeDOM.createElement('div', {
+            className: 'scene-card'
+        });
+        
+        const content = SafeDOM.createHTML('div', {}, [
+            SafeDOM.createHTML('h3', {}, [sceneData.title || 'Untitled Scene']),
+            SafeDOM.createHTML('p', {}, [`Date: ${sceneData.date || 'Not specified'}`]),
+            SafeDOM.createHTML('p', {}, [`Location: ${sceneData.location || 'Not specified'}`]),
+            SafeDOM.createHTML('p', {}, [`Characters: ${sceneData.characters || 'Not specified'}`]),
+            SafeDOM.createHTML('p', {}, [`Description: ${sceneData.description || 'No description available'}`]),
+            SafeDOM.createLink('View Full Scene', issue.html_url, {
+                className: 'btn btn-outline',
+                target: '_blank'
+            })
+        ]);
+        
+        card.appendChild(content);
         return card;
     }
 }
@@ -560,17 +602,17 @@ const createMobileMenu = () => {
     const navLinks = document.querySelector('.nav-links');
     
     // Create mobile menu button
-    const mobileMenuBtn = document.createElement('button');
-    mobileMenuBtn.className = 'mobile-menu-btn';
-    mobileMenuBtn.innerHTML = '☰';
-    mobileMenuBtn.style.cssText = `
-        display: none;
-        background: none;
-        border: none;
-        color: white;
-        font-size: 1.5rem;
-        cursor: pointer;
-    `;
+    const mobileMenuBtn = SafeDOM.createElement('button', {
+        className: 'mobile-menu-btn',
+        style: {
+            display: 'none',
+            background: 'none',
+            border: 'none',
+            color: 'white',
+            fontSize: '1.5rem',
+            cursor: 'pointer'
+        }
+    }, '☰');
     
     nav.insertBefore(mobileMenuBtn, navLinks);
     

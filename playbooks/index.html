@@ -170,6 +170,7 @@
         </div>
     </div>
     
+    <script src="../js/safe-dom.js"></script>
     <script>
         const playbooks = [
             {
@@ -328,7 +329,7 @@
         
         function displayPlaybooks(category = null) {
             const grid = document.getElementById('playbookGrid');
-            grid.innerHTML = '';
+            SafeDOM.setContent(grid, '');
             
             let filteredPlaybooks = playbooks;
             

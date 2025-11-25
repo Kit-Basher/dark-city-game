@@ -165,6 +165,7 @@
     </div>
     
     <script src="../js/config.js"></script>
+    <script src="../js/safe-dom.js"></script>
     <script>
         let allCharacters = [];
         
@@ -272,7 +273,9 @@
             const grid = document.getElementById('characterGrid');
             
             if (characters.length === 0) {
-                grid.innerHTML = '<p style="color: white; text-align: center; grid-column: 1/-1;">No characters found. Submit your character for approval!</p>';
+                SafeDOM.setContent(grid, SafeDOM.createElement('p', {
+                    style: 'color: white; text-align: center; grid-column: 1/-1;'
+                }, 'No characters found. Submit your character for approval!'));
                 return;
             }
             

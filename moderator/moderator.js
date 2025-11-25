@@ -100,15 +100,16 @@ class ModeratorPanel {
         });
 
         if (filtered.length === 0) {
-            submissionsList.innerHTML = `
-                <div class="no-submissions">
-                    <p>No ${this.currentFilter === 'pending' ? 'pending' : this.currentFilter === 'approved' ? 'approved' : 'rejected'} submissions found.</p>
-                </div>
-            `;
+            const noSubmissions = SafeDOM.createHTML('div', {
+                className: 'no-submissions'
+            }, [
+                SafeDOM.createElement('p', {}, `No ${this.currentFilter === 'pending' ? 'pending' : this.currentFilter === 'approved' ? 'approved' : 'rejected'} submissions found.`)
+            ]);
+            SafeDOM.setContent(submissionsList, noSubmissions);
             return;
         }
 
-        submissionsList.innerHTML = filtered.map(submission => this.createSubmissionCard(submission)).join('');
+        SafeDOM.setContent(submissionsList, filtered.map(submission => this.createSubmissionCard(submission)).join(''));
     }
 
     // Create submission card HTML

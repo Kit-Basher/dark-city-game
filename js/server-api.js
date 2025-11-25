@@ -13,11 +13,11 @@ class ServerAPI {
         this.socket = io(socketURL);
         
         this.socket.on('connect', () => {
-            console.log('🔗 Connected to server');
+            // Connected to server
         });
         
         this.socket.on('disconnect', () => {
-            console.log('❌ Disconnected from server');
+            // Disconnected from server
         });
         
         return this.socket;
@@ -27,7 +27,7 @@ class ServerAPI {
     joinModerator() {
         if (this.socket) {
             this.socket.emit('joinModerator');
-            console.log('👨‍💼 Joined moderator room');
+            // Joined moderator room
         }
     }
 
@@ -35,7 +35,7 @@ class ServerAPI {
     leaveModerator() {
         if (this.socket) {
             this.socket.emit('leaveModerator');
-            console.log('👋 Left moderator room');
+            // Left moderator room
         }
     }
 
@@ -56,10 +56,10 @@ class ServerAPI {
             }
             
             const result = await response.json();
-            console.log('✅ Character submitted to server:', result);
+            // Character submitted to server: result
             return result;
         } catch (error) {
-            console.error('❌ Error submitting character:', error);
+            // Error submitting character: error
             throw error;
         }
     }
@@ -72,10 +72,10 @@ class ServerAPI {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             const characters = await response.json();
-            console.log(`📚 Loaded ${characters.length} approved characters from server`);
+            // Loaded ${characters.length} approved characters from server
             return characters;
         } catch (error) {
-            console.error('❌ Error loading approved characters:', error);
+            // Error loading approved characters: error
             return [];
         }
     }
@@ -92,10 +92,10 @@ class ServerAPI {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             const submissions = await response.json();
-            console.log(`📋 Loaded ${submissions.length} submissions from server`);
+            // Loaded ${submissions.length} submissions from server
             return submissions;
         } catch (error) {
-            console.error('❌ Error loading submissions:', error);
+            // Error loading submissions: error
             return [];
         }
     }
@@ -108,10 +108,10 @@ class ServerAPI {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             const pending = await response.json();
-            console.log(`⏳ Loaded ${pending.length} pending submissions from server`);
+            // Loaded ${pending.length} pending submissions from server
             return pending;
         } catch (error) {
-            console.error('❌ Error loading pending submissions:', error);
+            // Error loading pending submissions: error
             return [];
         }
     }
@@ -132,10 +132,10 @@ class ServerAPI {
             }
             
             const result = await response.json();
-            console.log('✅ Character approved:', result.name);
+            // Character approved: result.name
             return result;
         } catch (error) {
-            console.error('❌ Error approving character:', error);
+            // Error approving character: error
             throw error;
         }
     }
@@ -156,10 +156,10 @@ class ServerAPI {
             }
             
             const result = await response.json();
-            console.log('❌ Character rejected:', result.name);
+            // Character rejected: result.name
             return result;
         } catch (error) {
-            console.error('❌ Error rejecting character:', error);
+            // Error rejecting character: error
             throw error;
         }
     }
@@ -176,10 +176,10 @@ class ServerAPI {
             }
             
             const result = await response.json();
-            console.log('🗑️ Character deleted:', result.message);
+            // Character deleted: result.message
             return result;
         } catch (error) {
-            console.error('❌ Error deleting character:', error);
+            // Error deleting character: error
             throw error;
         }
     }

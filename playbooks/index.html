@@ -326,11 +326,15 @@
             }
         ];
         
-        function displayPlaybooks(playbooksToShow = playbooks) {
+        function displayPlaybooks(category = null) {
             const grid = document.getElementById('playbookGrid');
             grid.innerHTML = '';
             
-            const filteredPlaybooks = playbooksToShow;
+            let filteredPlaybooks = playbooks;
+            
+            if (category) {
+                filteredPlaybooks = playbooks.filter(playbook => playbook.category === category);
+            }
             
             filteredPlaybooks.forEach(playbook => {
                 const card = document.createElement('div');
@@ -364,11 +368,11 @@
             event.target.classList.add('active');
             
             // Render filtered playbooks
-            renderPlaybooks(category);
+            displayPlaybooks(category);
         }
         
         // Initial render
-        renderPlaybooks();
+        displayPlaybooks();
     </script>
 </body>
 </html>

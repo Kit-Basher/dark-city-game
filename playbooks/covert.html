@@ -533,5 +533,44 @@
             </div>
         </div>
     </div>
+    
+    <!-- Modal for full-size images -->
+    <div id="imageModal" class="modal">
+        <span class="modal-close">&times;</span>
+        <img class="modal-content" id="modalImage">
+    </div>
+    
+    <script>
+        // Modal functionality
+        const modal = document.getElementById('imageModal');
+        const modalImg = document.getElementById('modalImage');
+        const modalClose = document.getElementsByClassName('modal-close')[0];
+        
+        // Add click event to all clickable images
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('clickable-image')) {
+                modal.style.display = 'block';
+                modalImg.src = e.target.src;
+                modalImg.alt = e.target.alt;
+            }
+        });
+        
+        // Close modal when clicking the X
+        modalClose.onclick = function() {
+            modal.style.display = 'none';
+        }
+        
+        // Close modal when clicking the image or background
+        modal.onclick = function() {
+            modal.style.display = 'none';
+        }
+        
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                modal.style.display = 'none';
+            }
+        });
+    </script>
 </body>
 </html>

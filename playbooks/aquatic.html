@@ -14,28 +14,21 @@
         
         .playbook-header {
             background: linear-gradient(135deg, #00CED1 0%, #4682B4 100%);
-            padding: 3rem;
+            padding: 2rem;
             border-radius: 15px;
             text-align: center;
             margin-bottom: 2rem;
-            position: relative;
-            overflow: hidden;
         }
         
-        .playbook-header img {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+        .playbook-icon {
+            width: 180px;
+            height: 180px;
+            border-radius: 10px;
+            margin: 0 auto 1.5rem auto;
+            display: block;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
             object-fit: cover;
-            opacity: 0.3;
-            z-index: 1;
-        }
-        
-        .playbook-header-content {
-            position: relative;
-            z-index: 2;
         }
         
         .playbook-header h1 {
@@ -60,10 +53,130 @@
         }
         
         .section h2 {
-            color: #006994;
+            color: #00CED1;
             margin-bottom: 1.5rem;
-            border-bottom: 2px solid #006994;
+            border-bottom: 2px solid #00CED1;
             padding-bottom: 0.5rem;
+        }
+        
+        .move {
+            background: #2a2a2a;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border-left: 4px solid #00CED1;
+        }
+        
+        .move h3 {
+            color: #00CED1;
+            margin-bottom: 0.5rem;
+        }
+        
+        .back-link {
+            color: #00CED1;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .back-link:hover {
+            color: #00CED1;
+            text-decoration: underline;
+        }
+        
+        .subtype-note {
+            background: rgba(0, 206, 209, 0.1);
+            border: 1px solid #00CED1;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-style: italic;
+        }
+        
+        .playing-guide {
+            background: #2a2a2a;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border-left: 4px solid #00CED1;
+        }
+        
+        .playing-guide h3 {
+            color: #00CED1;
+            margin: 0 0 0.5rem 0;
+        }
+        
+        .subtype-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .subtype-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 3px solid rgba(0, 206, 209, 0.5);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+            object-fit: cover;
+        }
+        
+        .subtype-title {
+            color: #00CED1;
+            font-size: 2rem;
+            margin: 0;
+        }
+        
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            cursor: pointer;
+        }
+        
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 10px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            border: 3px solid #00CED1;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 35px;
+            color: #00CED1;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        }
+        
+        .modal-close:hover {
+            color: #fff;
+        }
+        
+        .clickable-image {
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        
+        .clickable-image:hover {
+            transform: scale(1.05);
         }
         
         .move {
@@ -98,30 +211,32 @@
         
         <div class="playbook-container">
             <div class="playbook-header">
-                <img src="../images/Playbook Mains/The Aquatic.png" alt="Aquatic Playbook">
-                <div class="playbook-header-content">
-                    <h1>The Aquatic</h1>
-                    <div class="playbook-subtypes">Nymph, Mermaid, Creature</div>
-                </div>
+                <img src="../images/Playbook Mains/The Aquatic.png" alt="Aquatic Playbook" class="playbook-icon clickable-image">
+                <h1>The Aquatic</h1>
+                <div class="playbook-subtypes">Nymph • Mermaid • Creature</div>
             </div>
             
             <div class="section">
-                <h2>Playing an Aquatic</h2>
+                <h2>🌊 Playing an Aquatic</h2>
                 <p>All Aquatics are at home in the water, you live very different lives than the drylanders. They think so differently than you do but something about them keeps you here living amongst them, what is it?</p>
+                
+                <p>As an Aquatic being, you carry the wisdom and mysteries of the deep waters within you. The surface world is strange and fascinating to you, with its dry lands and strange customs. Yet something draws you to stay among the humans, even as you long for the comfort of your watery home.</p>
             </div>
             
-            <div class="section">
-                <h2>Darkest Self</h2>
+            <div class="darkest-self">
+                <h3>🌑 Darkest Self</h3>
                 <p>As a last resort to being taken out, (when you're out of consequences) you can become your darkest self. Lose yourself in your monstrous urges and temporarily double your consequence caps. Everything sucks and you'll never change it, so just stop trying. Grab the person you care about the most and retreat to a safe place. Defend your little nest against all intruders and ignore everything else - it's not like you were making a difference anyway. You can only return from your Darkest Self when someone shows you that you've changed things for the better.</p>
             </div>
             
             <div class="section">
                 <h2>Moves for all Aquatics</h2>
-                <p>Choose three from this playbook and/or a subtype below:</p>
+                <p><strong>Choose three from this playbook and/or a subtype below:</strong></p>
                 
                 <div class="move">
                     <h3>Frog Kiss</h3>
-                    <p>You are a creature of the deep and even in your human form you can easily breathe underwater and withstand the pressures of deeper waters. When you kiss someone while you are both underwater, roll Empathy or Rapport. 7+ they can breathe normally for as long as they stay close by. 6 or less they have to resurface immediately.</p>
+                    <p><strong>-x You are a creature of the deep</strong> and even in your human form you can easily breathe underwater and withstand the pressures of deeper waters. When you kiss someone while you are both underwater, roll Empathy or Rapport.</p>
+                    <p><strong>7+:</strong> They can breathe normally for as long as they stay close by</p>
+                    <p><strong>6 or less:</strong> They have to resurface immediately</p>
                 </div>
                 
                 <div class="move">
@@ -131,12 +246,131 @@
                 
                 <div class="move">
                     <h3>Apothecary</h3>
-                    <p>You have a deep knowledge of plants from one specific kind of area (choose biome). With your knowledge you can use them for everything, food, medicine, materials ect ect.</p>
+                    <p>You have a deep knowledge of plants from one specific kind of area (choose biome). With your knowledge you can use them for everything, food, medicine, materials etc.</p>
                 </div>
                 
                 <div class="move">
                     <h3>Animal Friend</h3>
                     <p>You understand how animals communicate and while you can't fully understand them in human form you can still communicate.</p>
+                </div>
+            </div>
+            
+            <div class="section">
+                <div class="subtype-header">
+                    <img src="../images/Dark City Subtypes/Aquatic - Nymph.png" alt="Nymph" class="subtype-icon clickable-image">
+                    <h2 class="subtype-title">Nymph</h2>
+                </div>
+                <p><em>Moves only for Nymphs:</em></p>
+                
+                <div class="move">
+                    <h3>Puddle Jumper</h3>
+                    <p><strong>-x As long as you can be completely submerged</strong> in a body of water you can appear or disappear from view. In your liquid form you can travel anywhere the water in that body can travel. Even in liquid form you can only move about as fast as you can run.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Nature's Bounty</h3>
+                    <p>When deeply homesick you can pray for help, roll Empathy.</p>
+                    <p><strong>10+:</strong> Choose one:</p>
+                    <ul>
+                        <li>The wilds brings something it thinks will make you feel better</li>
+                        <li>The wilds take away something that it thinks is bothering you</li>
+                    </ul>
+                    <p><strong>7-9:</strong> Choose as above, the wilds don't understand the human world very well and so cause serious or unexplainable damage.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Tears</h3>
+                    <p>Alone in your wilds and deeply emotional? Roll Empathy:</p>
+                    <p><strong>10+:</strong> Choose someone you want to see. Your song reaches their subconsciousness and they feel a draw to come to you.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Reprieve</h3>
+                    <p>When you spend too much time in the concrete of the city and neglect the reinvigoration of open water, you gain the adjective 'taxed'. Whenever you are in water and can meditate for a while, you can heal your injuries and stress much faster.</p>
+                </div>
+                
+                <div class="subtype-note">
+                    <p><em>This is a subtype. Subtypes are mutually exclusive. You can choose a subtype without picking a move. When listing your playbook on your character sheet, list the subtype, if chosen.</em></p>
+                </div>
+                
+                <div class="playing-guide">
+                    <h3>Playing a Nymph:</h3>
+                    <p>Spirits of the water, one with the water, as pure water a Nymph can travel through any unobstructed stretch of water given enough time but they tend to prefer to play with whatever stumbles by. They can go where water goes and take form in any body of water big enough to hold their solid form. Nymphs can take any kind of form and are curious about anything going on in their realms as they have likely seen everything there is to see. They like to play games and be mischievous by appearing as beautiful people lost but they usually mean no real harm.</p>
+                </div>
+            </div>
+            
+            <div class="section">
+                <div class="subtype-header">
+                    <img src="../images/Dark City Subtypes/Aquatic - Mermaid.png" alt="Mermaid" class="subtype-icon clickable-image">
+                    <h2 class="subtype-title">Mermaid</h2>
+                </div>
+                <p><em>Moves only for Mermaids:</em></p>
+                
+                <div class="move">
+                    <h3>Came Up Tails</h3>
+                    <p><strong>-x While not in human form on land,</strong> you are mostly immobile and cannot run away. In water, you swim at blinding speed and can instantly run away as if you had rolled 10. Anyone who sees you in this form for the first time and accepts you, gains an FP.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Hot And Wet</h3>
+                    <p><strong>-x When you are soaking wet</strong> and showing plenty of skin roll Empathy +1 or Physique +1 instead of Rapport to turn someone on or manipulate an NPC. If you spend extended time out of water, gain the adjective 'dehydrated' until you spend substantial time submerged again.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Bewildered</h3>
+                    <p>If during any scene you become completely confused or have no idea what someone means, gain the adjective 'bewildered'. If you invoke it creating a new troubling situation for yourself, change your Aspect to a new fitting one and 2 Fate Points.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Gadgets and Gizmos</h3>
+                    <p>You have a collection of all sorts of weird little objects you've "recovered" from various locations both above and below the water. You can always find something you think may help. It may or may not, but you roll Notice+2 instead of Wealth for it.</p>
+                </div>
+                
+                <div class="subtype-note">
+                    <p><em>This is a subtype. Subtypes are mutually exclusive. You can choose a subtype without picking a move. When listing your playbook on your character sheet, list the subtype, if chosen.</em></p>
+                </div>
+                
+                <div class="playing-guide">
+                    <h3>Playing a Mermaid:</h3>
+                    <p>The human world is enchanting, so many new and amazing things up there. Let your legs dry and they turn into legs, it's like you were meant to see this wonderful new world. Under the waves your people would not approve of you spending time with them and the kingdoms of the deep are heavily ordered and law abiding. If you go back they may not ever let you leave again, but you sometimes miss it anyway.</p>
+                </div>
+            </div>
+            
+            <div class="section">
+                <div class="subtype-header">
+                    <img src="../images/Dark City Subtypes/Aquatic - Creature.png" alt="Creature" class="subtype-icon clickable-image">
+                    <h2 class="subtype-title">Creature</h2>
+                </div>
+                <p><em>Moves only for Creatures:</em></p>
+                
+                <div class="move">
+                    <h3>Squamous</h3>
+                    <p><strong>-x You can become a slimy/scaly monstrosity.</strong> In this form, any physical attack roll against you is reduced by 2, and your claws allow you to add +2 to physical attack rolls. Anyone who sees you in this form for the first time and accepts you, gains an FP.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Frog Song</h3>
+                    <p><strong>-x When you speak passionately about a cause,</strong> roll Empathy or Rapport:</p>
+                    <p><strong>10+:</strong> Listeners gain a Fate Point if they choose to help you. You get +1 ongoing to all actions taken to further your cause, but every time you use that bonus, give yourself the aspect "fanatic" if you don't already have it.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>My Job</h3>
+                    <p>When you do something that is serious/extreme in the service of your cause, add +1 to all your Athletics and Physique rolls for the scene. Anytime you roll 6 or less you leave some kind of evidence behind. (create a story hook for each)</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Why?</h3>
+                    <p>Humans are so weird. When confusion caused you to wildly act out, creating a new problem for yourself, add 1 to your next 2 rolls.</p>
+                </div>
+                
+                <div class="subtype-note">
+                    <p><em>This is a subtype. Subtypes are mutually exclusive. You can choose a subtype without picking a move. When listing your playbook on your character sheet, list the subtype, if chosen.</em></p>
+                </div>
+                
+                <div class="playing-guide">
+                    <h3>Playing a Creature:</h3>
+                    <p>The light of the surface world is always too bright but at least in human shape it's a little better. Being basically a blob makes it hard to get around in society but at least in human shape it's a little better, however figuring out why they act the way they do and how to act like that too will take work. They are so weird and unpredictable, possibly dangerous, running the planet… it was all so much more simple at the bottom of the ocean. No one will take that from me! I'll fight!</p>
                 </div>
             </div>
             
@@ -150,5 +384,44 @@
             </div>
         </div>
     </div>
+    
+    <!-- Modal for full-size images -->
+    <div id="imageModal" class="modal">
+        <span class="modal-close">&times;</span>
+        <img class="modal-content" id="modalImage">
+    </div>
+    
+    <script>
+        // Modal functionality
+        const modal = document.getElementById('imageModal');
+        const modalImg = document.getElementById('modalImage');
+        const modalClose = document.getElementsByClassName('modal-close')[0];
+        
+        // Add click event to all clickable images
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('clickable-image')) {
+                modal.style.display = 'block';
+                modalImg.src = e.target.src;
+                modalImg.alt = e.target.alt;
+            }
+        });
+        
+        // Close modal when clicking the X
+        modalClose.onclick = function() {
+            modal.style.display = 'none';
+        }
+        
+        // Close modal when clicking the image or background
+        modal.onclick = function() {
+            modal.style.display = 'none';
+        }
+        
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                modal.style.display = 'none';
+            }
+        });
+    </script>
 </body>
 </html>

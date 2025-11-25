@@ -14,10 +14,21 @@
         
         .playbook-header {
             background: linear-gradient(135deg, #E6E6FA 0%, #B0C4DE 100%);
-            padding: 3rem;
+            padding: 2rem;
             border-radius: 15px;
             text-align: center;
             margin-bottom: 2rem;
+        }
+        
+        .playbook-icon {
+            width: 180px;
+            height: 180px;
+            border-radius: 10px;
+            margin: 0 auto 1.5rem auto;
+            display: block;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            object-fit: cover;
         }
         
         .playbook-header h1 {
@@ -28,6 +39,393 @@
         }
         
         .playbook-subtypes {
+            color: rgba(51, 51, 51, 0.9);
+            font-size: 1.2rem;
+            margin-top: 1rem;
+        }
+        
+        .section {
+            background: #1a1a1a;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            border: 1px solid #4a5568;
+        }
+        
+        .section h2 {
+            color: #E6E6FA;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #E6E6FA;
+            padding-bottom: 0.5rem;
+        }
+        
+        .move {
+            background: #2a2a2a;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border-left: 4px solid #E6E6FA;
+        }
+        
+        .move h3 {
+            color: #E6E6FA;
+            margin-bottom: 0.5rem;
+        }
+        
+        .back-link {
+            color: #E6E6FA;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .back-link:hover {
+            color: #E6E6FA;
+            text-decoration: underline;
+        }
+        
+        .subtype-note {
+            background: rgba(230, 230, 250, 0.1);
+            border: 1px solid #E6E6FA;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-style: italic;
+        }
+        
+        .playing-guide {
+            background: #2a2a2a;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border-left: 4px solid #E6E6FA;
+        }
+        
+        .playing-guide h3 {
+            color: #E6E6FA;
+            margin: 0 0 0.5rem 0;
+        }
+        
+        .subtype-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .subtype-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 3px solid rgba(230, 230, 250, 0.5);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+            object-fit: cover;
+        }
+        
+        .subtype-title {
+            color: #E6E6FA;
+            font-size: 2rem;
+            margin: 0;
+        }
+        
+        .darkest-self {
+            background: #3a1a1a;
+            border: 2px solid #ff3333;
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+        }
+        
+        .darkest-self h3 {
+            color: #ff3333;
+            margin-bottom: 1rem;
+        }
+        
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            cursor: pointer;
+        }
+        
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 10px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            border: 3px solid #E6E6FA;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 35px;
+            color: #E6E6FA;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        }
+        
+        .modal-close:hover {
+            color: #fff;
+        }
+        
+        .clickable-image {
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        
+        .clickable-image:hover {
+            transform: scale(1.05);
+        }
+        
+        .character-creation-btn {
+            display: inline-block;
+            background: #E6E6FA;
+            color: #333;
+            padding: 1rem 2rem;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            margin: 2rem 0;
+            transition: all 0.3s ease;
+        }
+        
+        .character-creation-btn:hover {
+            background: #B0C4DE;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">← Back to Playbooks</a>
+        
+        <div class="playbook-container">
+            <div class="playbook-header">
+                <img src="../images/Playbook Mains/The Incarnation.png" alt="Incarnation Playbook" class="playbook-icon clickable-image">
+                <h1>The Incarnation</h1>
+                <div class="playbook-subtypes">Chrysalis • Calaca • Ghost</div>
+            </div>
+            
+            <div class="section">
+                <h2>👻 Playing an Incarnation</h2>
+                <p>Death isn't always the end, sometimes it's just the beginning. Of course dying isn't a pleasant experience either. You remember everything but become something totally new.</p>
+                
+                <p>As an Incarnation, you exist between worlds - neither fully alive nor completely gone. You carry the memories and experiences of your past life while navigating the strange new reality of your current form. Whether you're a being in transition, an animated skeleton, or a lingering spirit, you understand mortality in ways others can only imagine. This unique perspective grants you insights and abilities that transcend normal human limitations, but also comes with the burden of unfinished business and the weight of what you've lost.</p>
+            </div>
+            
+            <div class="darkest-self">
+                <h3>🌑 Darkest Self</h3>
+                <p>As a last resort to being taken out, (when you're out of consequences) you can become your darkest self. Lose yourself in your monstrous urges and temporarily double your consequence caps. You're tired of life as it is. What's the point of it all? There's no reason for anything! Make them see the unrelenting misery and futility of their lives. You escape your Darkest Self when loved ones risk their lives for yours.</p>
+            </div>
+            
+            <div class="section">
+                <h2>Moves for all Incarnations</h2>
+                <p><strong>Choose three from this playbook and/or a subtype below:</strong></p>
+                
+                <div class="move">
+                    <h3>Helpful Spirit</h3>
+                    <p>When you help someone accomplish a major goal, gain a Fate Point.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Linger</h3>
+                    <p>When you silently witness someone in one of their most private moments without them knowing, perhaps sleeping or putting on makeup, gain 1 Fate Point in your next scene alone with them.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Sage</h3>
+                    <p>The first time you offer a character wisdom, guidance, or advice on a particular subject roll Lore or Empathy:</p>
+                    <p><strong>10+:</strong> choose 2. <strong>7-9:</strong> choose only 1.</p>
+                    <ul>
+                        <li>You advise them of the future - Add +1 to their next 3 rolls for that goal</li>
+                        <li>You offer healing words; they may remove one negative mental aspect</li>
+                        <li>You see a deep part of their personality, add +1 to any Rapport rolls towards them for the rest of the scene</li>
+                    </ul>
+                </div>
+                
+                <div class="move">
+                    <h3>But You're</h3>
+                    <p>Once per scene, when you suggest invokes for other characters' Aspects and they choose to accept the new problem, you receive a Fate Point as well.</p>
+                </div>
+            </div>
+            
+            <div class="section">
+                <div class="subtype-header">
+                    <img src="../images/Dark City Subtypes/Incarnation - Chrysalis.png" alt="Chrysalis" class="subtype-icon clickable-image">
+                    <h2 class="subtype-title">Chrysalis</h2>
+                </div>
+                <p><em>Moves only for Chrysalises:</em></p>
+                
+                <div class="move">
+                    <h3>Foreshadowing</h3>
+                    <p><strong>-x Choose three other playbooks</strong> as your possible futures, these are your destinies. You have access to each playbook's moves for advancements. Mark the destiny each time you use a move associated with it, once a destiny is marked 10 times, become your Darkest Self until you die. When you die, you are reborn, do a playbook swap into your destiny.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Anomaly</h3>
+                    <p><strong>-x When you defy your Character Aspects,</strong> acting way out of character and causing a new problem for yourself, gain the Aspect 'Confused' and contact a staff member about changing your Character Aspects.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>What If?</h3>
+                    <p>When you headlessly pursue 2 conflicting goals, gain +1 to any rolls that conflict with the other goal.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Disillusion</h3>
+                    <p>When you have a mind-blowing epiphany about a character and realize that everything you knew about them was all wrong, take +2 to all Rapport or Provoke rolls towards them for the rest of the scene.</p>
+                </div>
+                
+                <div class="subtype-note">
+                    <p><em>This is a subtype. Subtypes are mutually exclusive. You can choose a subtype without picking a move. When listing your playbook on your character sheet, list the subtype, if chosen.</em></p>
+                </div>
+                
+                <div class="playing-guide">
+                    <h3>Playing a Chrysalis:</h3>
+                    <p>Who are you? What are you? Where do you belong? How will you survive? People struggle with these problems all the time, just not usually all at once. Forge your own destiny, find yourself.</p>
+                </div>
+            </div>
+            
+            <div class="section">
+                <div class="subtype-header">
+                    <img src="../images/Dark City Subtypes/Incarnation - Calaca.png" alt="Calaca" class="subtype-icon clickable-image">
+                    <h2 class="subtype-title">Calaca</h2>
+                </div>
+                <p><em>Moves only for Calacas:</em></p>
+                
+                <div class="move">
+                    <h3>Skin And Bones</h3>
+                    <p><strong>-x You can slip out of your skin</strong> and viscera at any time to reveal your true skeletal form, becoming immune to stabbing or slashing, strangling, etc. If your skin is lost or destroyed while you're out of it, you will have to obtain a replacement in order to pass for human again.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Sugar Skull</h3>
+                    <p><strong>-x In your true form,</strong> a slight blur over your bones helps retain some of the features of the living. You seem to have normal human features albeit one with skin like fine bone china.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Connected</h3>
+                    <p><strong>-x In your true form,</strong> you can disconnect and reconnect your bones at the joints, and retain full control over all your body parts regardless of whether they are connected. Only your skull can see, hear, or smell; your limbs and other bones are limited to a sense of touch. You can use this ability to be present and active in multiple simultaneous scenes.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Deadpan</h3>
+                    <p><strong>-x Your cheerful morbidity,</strong> gallows humor, and deathly aura are fascinating and off-putting. You gain +1 to Empathy or Rapport rolls if you use dark humor, +3 if you're in monster form.</p>
+                </div>
+                
+                <div class="subtype-note">
+                    <p><em>This is a subtype. Subtypes are mutually exclusive. You can choose a subtype without picking a move. When listing your playbook on your character sheet, list the subtype, if chosen.</em></p>
+                </div>
+                
+                <div class="playing-guide">
+                    <h3>Playing a Calaca:</h3>
+                    <p>You're alive! Or as alive as an animate skeleton can be. Beats being dead, plus immunity to stabbing, strangulation ect. Of course try waking around o'natural and people flip out, thankfully Your skin still fits. Take care of it and it should last a long long time.</p>
+                </div>
+            </div>
+            
+            <div class="section">
+                <div class="subtype-header">
+                    <img src="../images/Dark City Subtypes/Incarnation - Ghost.png" alt="Ghost" class="subtype-icon clickable-image">
+                    <h2 class="subtype-title">Ghost</h2>
+                </div>
+                <p><em>Moves only for Ghosts:</em></p>
+                
+                <div class="move">
+                    <h3>Limitless</h3>
+                    <p><strong>-x You can walk through walls</strong> and glide through the air. (not fly)</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Incorporeal</h3>
+                    <p><strong>-x Physical attacks can't hurt you</strong> if you see them coming. But anytime someone surpasses your defense roll with magical/energy based attacks, the overlapping damage is doubled.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Unresolved Trauma</h3>
+                    <p>You have unfinished business. From pain or purpose, there is something you need to take care of. Specify this goal on your character sheet. Gain +1 on any rolls in pursuit of your goal and -1 on all rolls that aren't. Because urgency makes you careless. Should you accomplish this goal, exchange this move for another move, other than "Unresolved Trauma".</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Transference</h3>
+                    <p>Whenever you spend time truly listening to someone else's struggles, you can heal as much of their Consequences and injuries as you want. Add them to your character instead and remove one consequence if you transferred more than one.</p>
+                </div>
+                
+                <div class="subtype-note">
+                    <p><em>This is a subtype. Subtypes are mutually exclusive. You can choose a subtype without picking a move. When listing your playbook on your character sheet, list the subtype, if chosen.</em></p>
+                </div>
+                
+                <div class="playing-guide">
+                    <h3>Playing a Ghost:</h3>
+                    <p>You used to have a future. Now you only have a past unfinished business to take care of before you can leave this world behind. Life is precious. You understand that, now that you've lost yours.</p>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>🎭 Character Creation</h2>
+                <p>Ready to create your Incarnation character? Choose your subtype, select your three moves, and embrace your existence between life and death in the Dark City!</p>
+                
+                <div style="text-align: center;">
+                    <a href="../characters/" class="character-creation-btn">View Character Gallery</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal for full-size images -->
+    <div id="imageModal" class="modal">
+        <span class="modal-close">&times;</span>
+        <img class="modal-content" id="modalImage">
+    </div>
+    
+    <script>
+        // Modal functionality
+        const modal = document.getElementById('imageModal');
+        const modalImg = document.getElementById('modalImage');
+        const modalClose = document.getElementsByClassName('modal-close')[0];
+        
+        // Add click event to all clickable images
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('clickable-image')) {
+                modal.style.display = 'block';
+                modalImg.src = e.target.src;
+                modalImg.alt = e.target.alt;
+            }
+        });
+        
+        // Close modal when clicking the X
+        modalClose.onclick = function() {
+            modal.style.display = 'none';
+        }
+        
+        // Close modal when clicking the image or background
+        modal.onclick = function() {
+            modal.style.display = 'none';
+        }
+        
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                modal.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
             color: rgba(51, 51, 51, 0.9);
             font-size: 1.2rem;
             margin-top: 1rem;

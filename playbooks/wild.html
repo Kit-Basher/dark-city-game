@@ -14,28 +14,21 @@
         
         .playbook-header {
             background: linear-gradient(135deg, #8B4513 0%, #D2691E 100%);
-            padding: 3rem;
+            padding: 2rem;
             border-radius: 15px;
             text-align: center;
             margin-bottom: 2rem;
-            position: relative;
-            overflow: hidden;
         }
         
-        .playbook-header img {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+        .playbook-icon {
+            width: 180px;
+            height: 180px;
+            border-radius: 10px;
+            margin: 0 auto 1.5rem auto;
+            display: block;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
             object-fit: cover;
-            opacity: 0.3;
-            z-index: 1;
-        }
-        
-        .playbook-header-content {
-            position: relative;
-            z-index: 2;
         }
         
         .playbook-header h1 {
@@ -60,10 +53,130 @@
         }
         
         .section h2 {
-            color: #ff6b35;
+            color: #D2691E;
             margin-bottom: 1.5rem;
-            border-bottom: 2px solid #ff6b35;
+            border-bottom: 2px solid #D2691E;
             padding-bottom: 0.5rem;
+        }
+        
+        .move {
+            background: #2a2a2a;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border-left: 4px solid #D2691E;
+        }
+        
+        .move h3 {
+            color: #D2691E;
+            margin-bottom: 0.5rem;
+        }
+        
+        .back-link {
+            color: #D2691E;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .back-link:hover {
+            color: #D2691E;
+            text-decoration: underline;
+        }
+        
+        .subtype-note {
+            background: rgba(210, 105, 30, 0.1);
+            border: 1px solid #D2691E;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-style: italic;
+        }
+        
+        .playing-guide {
+            background: #2a2a2a;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border-left: 4px solid #D2691E;
+        }
+        
+        .playing-guide h3 {
+            color: #D2691E;
+            margin: 0 0 0.5rem 0;
+        }
+        
+        .subtype-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .subtype-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 3px solid rgba(210, 105, 30, 0.5);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+            object-fit: cover;
+        }
+        
+        .subtype-title {
+            color: #D2691E;
+            font-size: 2rem;
+            margin: 0;
+        }
+        
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            cursor: pointer;
+        }
+        
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 10px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            border: 3px solid #D2691E;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 35px;
+            color: #D2691E;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        }
+        
+        .modal-close:hover {
+            color: #fff;
+        }
+        
+        .clickable-image {
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        
+        .clickable-image:hover {
+            transform: scale(1.05);
         }
         
         .section h3 {
@@ -149,11 +262,9 @@
         
         <div class="playbook-container">
             <div class="playbook-header">
-                <img src="../images/Playbook Mains/The Wild.png" alt="Wild Playbook">
-                <div class="playbook-header-content">
-                    <h1>The Wild</h1>
-                    <div class="playbook-subtypes">Werewolf • Werebeast • Shifter</div>
-                </div>
+                <img src="../images/Playbook Mains/The Wild.png" alt="Wild Playbook" class="playbook-icon clickable-image">
+                <h1>The Wild</h1>
+                <div class="playbook-subtypes">Werewolf • Werebeast • Shifter</div>
             </div>
             
             <div class="section">
@@ -172,23 +283,28 @@
                 <h2>⚡ Moves for all Wilds</h2>
                 <p><strong>Choose three from this playbook and/or a subtype below:</strong></p>
                 
-                <div class="move-card">
-                    <h4>Caged</h4>
-                    <p>-x- Faced with extreme lust, anger, or sadness your inner beast asserts itself. When overwhelmed, gain the aspect 'Feral', and one of the following: You mostly retain your human Shape. You mostly retain your human personality. You mostly retain self-control over your animal impulses.</p>
+                <div class="move">
+                    <h3>Caged</h3>
+                    <p><strong>-x Faced with extreme lust, anger, or sadness</strong> your inner beast asserts itself. When overwhelmed, gain the aspect 'Feral', and one of the following:</p>
+                    <ul>
+                        <li>You mostly retain your human Shape</li>
+                        <li>You mostly retain your human personality</li>
+                        <li>You mostly retain self-control over your animal impulses</li>
+                    </ul>
                 </div>
                 
-                <div class="move-card">
-                    <h4>Beauty And…</h4>
+                <div class="move">
+                    <h3>Beauty And…</h3>
                     <p>There is a duality to your personality. When you're friendly, you're also intimidating and vice versa. You can roll Provoke instead of Empathy or Physique outside of combat. However, when doing so and you roll 6 or less, they get +2 on their next roll against you.</p>
                 </div>
                 
-                <div class="move-card">
-                    <h4>Primal Dominance</h4>
+                <div class="move">
+                    <h3>Primal Dominance</h3>
                     <p>The first time in any scene you cause harm receive 1 Fate Point.</p>
                 </div>
                 
-                <div class="move-card">
-                    <h4>Call Of The Wild</h4>
+                <div class="move">
+                    <h3>Call Of The Wild</h3>
                     <p>All work and no play will drive anyone crazy, you are at your best running free and wild. Spend an entire day galavanting in your preferred stomping grounds and relieve yourself of some mental stress, -1 temp mental aspect.</p>
                 </div>
             </div>
@@ -198,83 +314,118 @@
                 <p><strong>This is a subtype. Subtypes are mutually exclusive. You can choose a subtype without picking a move. When listing your playbook on your character sheet, list the subtype, if chosen.</strong></p>
                 
                 <div class="section">
-                    <h3>🐺 The Werewolf</h3>
-                    <p><strong>Playing a Werewolf:</strong> Everyone around you seems so willing to play the roles they are handed, to quietly color within the lines. They've been tamed, domesticated. You're of a different stock, you're free.</p>
+                    <div class="subtype-header">
+                        <img src="../images/Dark City Subtypes/Wild - Werewolf.png" alt="Werewolf" class="subtype-icon clickable-image">
+                        <h2 class="subtype-title">Werewolf</h2>
+                    </div>
+                    <p><em>Moves only for Werewolves:</em></p>
                     
-                    <h4>Moves only for Werewolves:</h4>
-                    
-                    <div class="move-card">
-                        <h4>Heightened Senses</h4>
-                        <p>-x- When 'Feral' and you rely on heightened instincts to make sense of a charged situation, roll with Notice: 10 up, you can realize up to 3 things. 7-9, you can only notice 1: Where's my best escape route or way in? Which enemy is the most vulnerable? What's their weakness? What's the biggest threat to me? Who's in control here? Etc.</p>
+                    <div class="move">
+                        <h3>Heightened Senses</h3>
+                        <p><strong>-x When 'Feral' and you rely on heightened instincts</strong> to make sense of a charged situation, roll with Notice:</p>
+                        <p><strong>10+:</strong> You can realize up to 3 things</p>
+                        <p><strong>7-9:</strong> You can only notice 1:</p>
+                        <p><em>Where's my best escape route or way in? Which enemy is the most vulnerable? What's their weakness? What's the biggest threat to me? Who's in control here? Etc.</em></p>
                     </div>
                     
-                    <div class="move-card">
-                        <h4>Scent Of Blood</h4>
-                        <p>-x- When 'Feral', add 2 to all conflict rolls against bleeding opponents.</p>
+                    <div class="move">
+                        <h3>Scent Of Blood</h3>
+                        <p><strong>-x When 'Feral',</strong> add 2 to all conflict rolls against bleeding opponents.</p>
                     </div>
                     
-                    <div class="move-card">
-                        <h4>Predator And Prey</h4>
-                        <p>-x- If you are 'Feral' and have lost your impulse control, add 1 to any physical attack rolls towards characters you have a connection to. Take a Fate point the first time in any scene you lash out physically and cause a PC to take a consequence.</p>
+                    <div class="move">
+                        <h3>Predator And Prey</h3>
+                        <p><strong>-x If you are 'Feral' and have lost your impulse control,</strong> add 1 to any physical attack rolls towards characters you have a connection to. Take a Fate point the first time in any scene you lash out physically and cause a PC to take a consequence.</p>
                     </div>
                     
-                    <div class="move-card">
-                        <h4>Unstable</h4>
+                    <div class="move">
+                        <h3>Unstable</h3>
                         <p>When you become your Darkest Self, you go into a fugue state and don't remember anything. Very important people may seem familiar or interesting but nothing more. You are an animal. Get +2 to Notice, Physique, and Athletics but -2 to everything else.</p>
+                    </div>
+                    
+                    <div class="subtype-note">
+                        <p><em>This is a subtype. Subtypes are mutually exclusive. You can choose a subtype without picking a move. When listing your playbook on your character sheet, list the subtype, if chosen.</em></p>
+                    </div>
+                    
+                    <div class="playing-guide">
+                        <h3>Playing a Werewolf:</h3>
+                        <p>Everyone around you seems so willing to play the roles they are handed, to quietly color within the lines. They've been tamed, domesticated. You're of a different stock, you're free.</p>
                     </div>
                 </div>
                 
                 <div class="section">
-                    <h3>🐾 The Werebeast</h3>
-                    <p><strong>Playing a Werebeast:</strong> You're not limited to just one animal form. You can shift between various beast aspects, taking the best traits of each predator. Your versatility makes you unpredictable and adaptable in any situation.</p>
+                    <div class="subtype-header">
+                        <img src="../images/Dark City Subtypes/Wild - Werebeast.png" alt="Werebeast" class="subtype-icon clickable-image">
+                        <h2 class="subtype-title">Werebeast</h2>
+                    </div>
+                    <p><em>Moves only for Werebeasts:</em></p>
                     
-                    <h4>Moves only for Werebeasts:</h4>
-                    
-                    <div class="move-card">
-                        <h4>Fight Or Flight</h4>
-                        <p>-x- Anytime you have the 'Feral' aspect, physical combat rolls of 10+ grant you a second strike. Escape rolls get +1, and Will, Rapport and Deceive get -2.</p>
+                    <div class="move">
+                        <h3>Fight Or Flight</h3>
+                        <p><strong>-x Anytime you have the 'Feral' aspect,</strong> physical combat rolls of 10+ grant you a second strike. Escape rolls get +1, and Will, Rapport and Deceive get -2.</p>
                     </div>
                     
-                    <div class="move-card">
-                        <h4>Fetch</h4>
-                        <p>-x- While "Feral", your beast self will try to solve problems you are worried about as a human. If you try to accomplish such a goal as a feral beast, roll Will: 10+, you get +1 to Physique and Athletics rolls for the rest of the scene. 7-9, You get +1 to Physique rolls for the rest of the scene.</p>
+                    <div class="move">
+                        <h3>Fetch</h3>
+                        <p><strong>-x While "Feral",</strong> your beast self will try to solve problems you are worried about as a human. If you try to accomplish such a goal as a feral beast, roll Will:</p>
+                        <p><strong>10+:</strong> You get +1 to Physique and Athletics rolls for the rest of the scene</p>
+                        <p><strong>7-9:</strong> You get +1 to Physique rolls for the rest of the scene</p>
                     </div>
                     
-                    <div class="move-card">
-                        <h4>Howl At The Moon</h4>
+                    <div class="move">
+                        <h3>Howl At The Moon</h3>
                         <p>When basked in full moonlight, add 2 to all Physique or Athletics rolls, but take an automatic total of 6 on all Will rolls.</p>
                     </div>
                     
-                    <div class="move-card">
-                        <h4>Spirit Armor</h4>
+                    <div class="move">
+                        <h3>Spirit Armor</h3>
                         <p>When basked in full moonlight, subtract 1 from any damage you take.</p>
+                    </div>
+                    
+                    <div class="subtype-note">
+                        <p><em>This is a subtype. Subtypes are mutually exclusive. You can choose a subtype without picking a move. When listing your playbook on your character sheet, list the subtype, if chosen.</em></p>
+                    </div>
+                    
+                    <div class="playing-guide">
+                        <h3>Playing a Werebeast:</h3>
+                        <p>Your friends think you're just too uptight, and you'd be fine if you'd just loosen up a little, have some fun, let yourself be someone. But you know the truth, when you let go, you lose control.</p>
                     </div>
                 </div>
                 
                 <div class="section">
-                    <h3>🌊 The Shifter</h3>
-                    <p><strong>Playing a Shifter:</strong> Your shapeshifting is more refined, more controlled. You can shift parts of your body, taking animal traits while maintaining human form. This subtlety gives you advantages others lack.</p>
+                    <div class="subtype-header">
+                        <img src="../images/Dark City Subtypes/Wild - Shifter.png" alt="Shifter" class="subtype-icon clickable-image">
+                        <h2 class="subtype-title">Shifter</h2>
+                    </div>
+                    <p><em>Moves only for Shifters:</em></p>
                     
-                    <h4>Moves only for Shifters:</h4>
-                    
-                    <div class="move-card">
-                        <h4>Bear Claws</h4>
-                        <p>-x- At will, you can transform your arms into bestial paws with claws, or change them back. While transformed, gain +2 to any Fight rolls involving your arms, +3 if you are 'Feral'.</p>
+                    <div class="move">
+                        <h3>Bear Claws</h3>
+                        <p><strong>-x At will,</strong> you can transform your arms into bestial paws with claws, or change them back. While transformed, gain +2 to any Fight rolls involving your arms, +3 if you are 'Feral'.</p>
                     </div>
                     
-                    <div class="move-card">
-                        <h4>Leopard Legs</h4>
-                        <p>-x- At will, you can transform your legs into bestial ones, or change them back. While transformed, gain +2 to any Athletics rolls involving your legs, +3 if you are 'Feral'.</p>
+                    <div class="move">
+                        <h3>Leopard Legs</h3>
+                        <p><strong>-x At will,</strong> you can transform your legs into bestial ones, or change them back. While transformed, gain +2 to any Athletics rolls involving your legs, +3 if you are 'Feral'.</p>
                     </div>
                     
-                    <div class="move-card">
-                        <h4>Fennec Ears</h4>
-                        <p>-x- At will, you can transform any of your sensory organs into bestial ones, or change them back. While transformed, gain +1 to any Notice rolls involving those sensory organs, +2 if you are 'Feral'.</p>
+                    <div class="move">
+                        <h3>Fennec Ears</h3>
+                        <p><strong>-x At will,</strong> you can transform any of your sensory organs into bestial ones, or change them back. While transformed, gain +1 to any Notice rolls involving those sensory organs, +2 if you are 'Feral'.</p>
                     </div>
                     
-                    <div class="move-card">
-                        <h4>Eagle Wings</h4>
+                    <div class="move">
+                        <h3>Eagle Wings</h3>
                         <p>At will, you can sprout wings from your back and take flight, or get rid of them as well.</p>
+                    </div>
+                    
+                    <div class="subtype-note">
+                        <p><em>This is a subtype. Subtypes are mutually exclusive. You can choose a subtype without picking a move. When listing your playbook on your character sheet, list the subtype, if chosen.</em></p>
+                    </div>
+                    
+                    <div class="playing-guide">
+                        <h3>Playing a Shifter:</h3>
+                        <p>You can feel the world around you changing and so you change with it. What animal do you exist as when you can be anything? But choosing something in between, that tends to make a stir.</p>
                     </div>
                 </div>
             </div>
@@ -289,5 +440,44 @@
             </div>
         </div>
     </div>
+    
+    <!-- Modal for full-size images -->
+    <div id="imageModal" class="modal">
+        <span class="modal-close">&times;</span>
+        <img class="modal-content" id="modalImage">
+    </div>
+    
+    <script>
+        // Modal functionality
+        const modal = document.getElementById('imageModal');
+        const modalImg = document.getElementById('modalImage');
+        const modalClose = document.getElementsByClassName('modal-close')[0];
+        
+        // Add click event to all clickable images
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('clickable-image')) {
+                modal.style.display = 'block';
+                modalImg.src = e.target.src;
+                modalImg.alt = e.target.alt;
+            }
+        });
+        
+        // Close modal when clicking the X
+        modalClose.onclick = function() {
+            modal.style.display = 'none';
+        }
+        
+        // Close modal when clicking the image or background
+        modal.onclick = function() {
+            modal.style.display = 'none';
+        }
+        
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                modal.style.display = 'none';
+            }
+        });
+    </script>
 </body>
 </html>

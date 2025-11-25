@@ -127,6 +127,55 @@
             font-size: 2rem;
             margin: 0;
         }
+        
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            cursor: pointer;
+        }
+        
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 10px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            border: 3px solid #FFD700;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 35px;
+            color: #FFD700;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        }
+        
+        .modal-close:hover {
+            color: #fff;
+        }
+        
+        .clickable-image {
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        
+        .clickable-image:hover {
+            transform: scale(1.05);
+        }
     </style>
 </head>
 <body>
@@ -135,7 +184,7 @@
         
         <div class="playbook-container">
             <div class="playbook-header">
-                <img src="../images/Playbook Mains/The Legend.png" alt="Legend Playbook" class="playbook-icon">
+                <img src="../images/Playbook Mains/The Legend.png" alt="Legend Playbook" class="playbook-icon clickable-image">
                 <h1>Legend</h1>
                 <div class="playbook-subtypes">Sphinx, Fallen Angel, Kitsune+</div>
             </div>
@@ -186,7 +235,7 @@
             
             <div class="section">
                 <div class="subtype-header">
-                    <img src="../images/Dark City Subtypes/Legend - Sphinx.png" alt="Sphinx" class="subtype-icon">
+                    <img src="../images/Dark City Subtypes/Legend - Sphinx.png" alt="Sphinx" class="subtype-icon clickable-image">
                     <h2 class="subtype-title">Sphinx</h2>
                 </div>
                 <p><em>Moves only for Sphinxes:</em></p>
@@ -226,7 +275,7 @@
             
             <div class="section">
                 <div class="subtype-header">
-                    <img src="../images/Dark City Subtypes/Legend - Fallen Angel.png" alt="Fallen Angel" class="subtype-icon">
+                    <img src="../images/Dark City Subtypes/Legend - Fallen Angel.png" alt="Fallen Angel" class="subtype-icon clickable-image">
                     <h2 class="subtype-title">Fallen Angel</h2>
                 </div>
                 <p><em>Moves only for Fallen Angels:</em></p>
@@ -267,7 +316,7 @@
             
             <div class="section">
                 <div class="subtype-header">
-                    <img src="../images/Dark City Subtypes/Legend - Kitsune.png" alt="Kitsune" class="subtype-icon">
+                    <img src="../images/Dark City Subtypes/Legend - Kitsune.png" alt="Kitsune" class="subtype-icon clickable-image">
                     <h2 class="subtype-title">Kitsune</h2>
                 </div>
                 <p><em>Moves only for Kitsune:</em></p>
@@ -304,7 +353,7 @@
             
             <div class="section">
                 <div class="subtype-header">
-                    <img src="../images/Dark City Subtypes/Legend - Kitsune.png" alt="Kitsune Beholden" class="subtype-icon">
+                    <img src="../images/Dark City Subtypes/Legend - Kitsune.png" alt="Kitsune Beholden" class="subtype-icon clickable-image">
                     <h2 class="subtype-title">Moves for a Kitsune's Beholden</h2>
                 </div>
                 <p><em>This one is available to any Beholden:</em></p>
@@ -348,5 +397,44 @@
             </div>
         </div>
     </div>
+    
+    <!-- Modal for full-size images -->
+    <div id="imageModal" class="modal">
+        <span class="modal-close">&times;</span>
+        <img class="modal-content" id="modalImage">
+    </div>
+    
+    <script>
+        // Modal functionality
+        const modal = document.getElementById('imageModal');
+        const modalImg = document.getElementById('modalImage');
+        const modalClose = document.getElementsByClassName('modal-close')[0];
+        
+        // Add click event to all clickable images
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('clickable-image')) {
+                modal.style.display = 'block';
+                modalImg.src = e.target.src;
+                modalImg.alt = e.target.alt;
+            }
+        });
+        
+        // Close modal when clicking the X
+        modalClose.onclick = function() {
+            modal.style.display = 'none';
+        }
+        
+        // Close modal when clicking the image or background
+        modal.onclick = function() {
+            modal.style.display = 'none';
+        }
+        
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                modal.style.display = 'none';
+            }
+        });
+    </script>
 </body>
 </html>

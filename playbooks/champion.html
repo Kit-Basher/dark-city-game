@@ -14,10 +14,21 @@
         
         .playbook-header {
             background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
-            padding: 3rem;
+            padding: 2rem;
             border-radius: 15px;
             text-align: center;
             margin-bottom: 2rem;
+        }
+        
+        .playbook-icon {
+            width: 180px;
+            height: 180px;
+            border-radius: 10px;
+            margin: 0 auto 1.5rem auto;
+            display: block;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            object-fit: cover;
         }
         
         .playbook-header h1 {
@@ -52,25 +63,150 @@
             background: #2a2a2a;
             padding: 1.5rem;
             border-radius: 8px;
-            margin-bottom: 1rem;
+            margin: 1rem 0;
             border-left: 4px solid #FFD700;
         }
         
         .move h3 {
-            color: #FFA500;
-            margin: 0 0 0.5rem 0;
+            color: #FFD700;
+            margin-bottom: 0.5rem;
         }
         
         .back-link {
-            display: inline-block;
-            margin-bottom: 2rem;
-            color: #ff6b35;
+            color: #FFD700;
             text-decoration: none;
-            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
         }
         
         .back-link:hover {
+            color: #FFD700;
             text-decoration: underline;
+        }
+        
+        .subtype-note {
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid #FFD700;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-style: italic;
+        }
+        
+        .playing-guide {
+            background: #2a2a2a;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border-left: 4px solid #FFD700;
+        }
+        
+        .playing-guide h3 {
+            color: #FFD700;
+            margin: 0 0 0.5rem 0;
+        }
+        
+        .subtype-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .subtype-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 3px solid rgba(255, 215, 0, 0.5);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+            object-fit: cover;
+        }
+        
+        .subtype-title {
+            color: #FFD700;
+            font-size: 2rem;
+            margin: 0;
+        }
+        
+        .darkest-self {
+            background: #3a1a1a;
+            border: 2px solid #ff3333;
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+        }
+        
+        .darkest-self h3 {
+            color: #ff3333;
+            margin-bottom: 1rem;
+        }
+        
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            cursor: pointer;
+        }
+        
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 10px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            border: 3px solid #FFD700;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 35px;
+            color: #FFD700;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        }
+        
+        .modal-close:hover {
+            color: #fff;
+        }
+        
+        .clickable-image {
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        
+        .clickable-image:hover {
+            transform: scale(1.05);
+        }
+        
+        .character-creation-btn {
+            display: inline-block;
+            background: #FFD700;
+            color: #333;
+            padding: 1rem 2rem;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            margin: 2rem 0;
+            transition: all 0.3s ease;
+        }
+        
+        .character-creation-btn:hover {
+            background: #FFA500;
+            transform: translateY(-2px);
         }
     </style>
 </head>
@@ -80,27 +216,32 @@
         
         <div class="playbook-container">
             <div class="playbook-header">
+                <img src="../images/Playbook Mains/The Champion.png" alt="Champion Playbook" class="playbook-icon clickable-image">
                 <h1>The Champion</h1>
-                <div class="playbook-subtypes">Chosen, Cassandra, Guardian</div>
+                <div class="playbook-subtypes">Chosen • Cassandra • Guardian</div>
             </div>
             
             <div class="section">
-                <h2>Playing a Champion</h2>
+                <h2>🏆 Playing a Champion</h2>
                 <p>You have been chosen by fate, by the universe for some purpose bigger than yourself. You don't understand how you fit into the story, only that at some point you will play a major role in it.</p>
+                
+                <p>As a Champion, you carry the weight of destiny on your shoulders. Whether chosen by prophecy, divine intervention, or sheer circumstance, you are destined for greatness. The universe has plans for you, and though the path may be unclear, your role in the coming events will be pivotal.</p>
             </div>
             
-            <div class="section">
-                <h2>Darkest Self</h2>
+            <div class="darkest-self">
+                <h3>🌑 Darkest Self</h3>
                 <p>As a last resort to being taken out, (when you're out of consequences) you can become your darkest self. Lose yourself in your monstrous urges and temporarily double your consequence caps. None of your friends can help. Any challenges or dangers that you encounter must be faced head on, even if they might kill you. You escape your Darkest Self when someone who didn't believe you changes their mind and comes to your rescue.</p>
             </div>
             
             <div class="section">
                 <h2>Moves for all Champions</h2>
-                <p>Choose three from this playbook and/or a subtype below:</p>
+                <p><strong>Choose three from this playbook and/or a subtype below:</strong></p>
                 
                 <div class="move">
                     <h3>The End Is Nigh</h3>
-                    <p>If you see death approaching any character (just after the roll that would kill them, but before they die in the story) you can make a last-ditch attempt to intervene roll Will: 10+, You make it with time to intervene and escape. 7-9, you get there in time to intervene.</p>
+                    <p><strong>-x If you see death approaching</strong> any character (just after the roll that would kill them, but before they die in the story) you can make a last-ditch attempt to intervene roll Will:</p>
+                    <p><strong>10+:</strong> You make it with time to intervene and escape</p>
+                    <p><strong>7-9:</strong> You get there in time to intervene</p>
                 </div>
                 
                 <div class="move">
@@ -115,7 +256,128 @@
                 
                 <div class="move">
                     <h3>To The Books</h3>
-                    <p>When the chips are down, you can turn to your friends for research help. Roll 2d6 and add the number of PC's helping you to the roll. On a 10 up, choose two. On a 7-9, choose one: your enemy gains the Aspect 'secret weakness'. you learn of an interesting connection to your enemy. add 2 to your next roll against that enemy.</p>
+                    <p>When the chips are down, you can turn to your friends for research help. Roll 2d6 and add the number of PC's helping you to the roll.</p>
+                    <p><strong>On a 10+:</strong> Choose two. <strong>On a 7-9:</strong> Choose one:</p>
+                    <ul>
+                        <li>Your enemy gains the Aspect 'secret weakness'</li>
+                        <li>You learn of an interesting connection to your enemy</li>
+                        <li>Add 2 to your next roll against that enemy</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="section">
+                <div class="subtype-header">
+                    <img src="../images/Dark City Subtypes/Champion - Chosen.png" alt="Chosen" class="subtype-icon clickable-image">
+                    <h2 class="subtype-title">Chosen</h2>
+                </div>
+                <p><em>Moves only for Chosen:</em></p>
+                
+                <div class="move">
+                    <h3>Final Showdown</h3>
+                    <p><strong>-x In the final moments of an epic battle</strong> your character would willingly give their life to win. You have at least 5 Fate points and both the attacker and defender are in their darkest selves AND if both players agree, you can choose to sacrifice your character to deal the final strike to the enemy. Your character goes in for the final blow allowing themselves to take consecutive attacks at full force. You take as many consequences as you have left and your final attack deals enough damage to deal as many consequences they have left. Neither death can be circumvented by any means, you are both DEAD.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Light The Way</h3>
+                    <p><strong>-x Whenever your friends follow through</strong> on your commands or your lead, they add 1 to their roll. (If your friends are NPCs, +2 instead).</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Take The Blow</h3>
+                    <p>When you leap into the way of an attack with the intent of protecting them from receiving a consequence, roll with Will.</p>
+                    <p><strong>On a 10+:</strong> You take a minor injury instead of their consequence</p>
+                    <p><strong>On a 7-9:</strong> You take the consequence instead of them</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Prepared</h3>
+                    <p>You are always 2 steps ahead of your enemies, you always know where to find what you need for any challenge; +2 to any Contacts rolls when planning ahead for an encounter.</p>
+                </div>
+                
+                <div class="subtype-note">
+                    <p><em>This is a subtype. Subtypes are mutually exclusive. You can choose a subtype without picking a move. When listing your playbook on your character sheet, list the subtype, if chosen.</em></p>
+                </div>
+                
+                <div class="playing-guide">
+                    <h3>Playing a Chosen:</h3>
+                    <p>The world needs someone brave enough to walk blindly into the darkness, and to shine a light for all the lost souls out there. They need a champion, they can't save the world alone.</p>
+                </div>
+            </div>
+            
+            <div class="section">
+                <div class="subtype-header">
+                    <img src="../images/Dark City Subtypes/Champion - Cassandra.png" alt="Cassandra" class="subtype-icon clickable-image">
+                    <h2 class="subtype-title">Cassandra</h2>
+                </div>
+                <p><em>Moves only for Cassandras:</em></p>
+                
+                <div class="move">
+                    <h3>6th Sense</h3>
+                    <p><strong>-x You can sense when danger is approaching.</strong> Take +1 to all defensive rolls. While allied characters are near you, they get the 'prepared' Aspect for as long as they remain close.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>On It</h3>
+                    <p>You can predetermine what and how you need to move to be in the right place at the right time. Your reflexes seem superhuman as you start moving the instant they had the thought. Add 2 on any Physique rolls to dodge incoming attacks.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>How Could You?</h3>
+                    <p>The first time in a scene you take damage, you can play up pain to make enemies hesitate. Add +2 to the next roll to run away or retaliate.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Mind Tap</h3>
+                    <p>When in deep conversation with someone capable of organic thought, you can overhear some of their thoughts. Players of such characters in scenes with you must roll a dice every turn to see if they let some background thoughts slip through.</p>
+                </div>
+                
+                <div class="subtype-note">
+                    <p><em>This is a subtype. Subtypes are mutually exclusive. You can choose a subtype without picking a move. When listing your playbook on your character sheet, list the subtype, if chosen.</em></p>
+                </div>
+                
+                <div class="playing-guide">
+                    <h3>Playing a Cassandra:</h3>
+                    <p>Why do you know these things? You almost wish you didn't, secrets and truths that you can't or shouldn't do anything about. Who should you tell? Would they even believe you?</p>
+                </div>
+            </div>
+            
+            <div class="section">
+                <div class="subtype-header">
+                    <img src="../images/Dark City Subtypes/Champion - Guardian.png" alt="Guardian" class="subtype-icon clickable-image">
+                    <h2 class="subtype-title">Guardian</h2>
+                </div>
+                <p><em>Moves only for Guardians:</em></p>
+                
+                <div class="move">
+                    <h3>Duty Bound</h3>
+                    <p><strong>-x Anytime you narrowly miss an opportunity</strong> to step in and save someone, you get +1 to your Will, Fight and Provoke rolls for the rest of the scene.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Body Block</h3>
+                    <p>Whenever someone you wish to protect is within sprinting distance and becomes the target of an attack, roll Athletics in order to take the hit.</p>
+                    <p><strong>7+:</strong> You make it and become the target of the attack</p>
+                    <p><strong>10+:</strong> You make it and brace yourself, +2 on the Physique roll</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Infamous</h3>
+                    <p>People can invoke your name for a +1 on intimidation rolls. If they roll 7-9 you "hear" about it.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Come With Me</h3>
+                    <p>You're well known to be trustworthy, when those in trouble come to you for help, gain 1 FP and subtract 2 from opponents Provoke rolls, for the rest of the scene you're in.</p>
+                </div>
+                
+                <div class="subtype-note">
+                    <p><em>This is a subtype. Subtypes are mutually exclusive. You can choose a subtype without picking a move. When listing your playbook on your character sheet, list the subtype, if chosen.</em></p>
+                </div>
+                
+                <div class="playing-guide">
+                    <h3>Playing a Guardian:</h3>
+                    <p>Who will protect those who cannot protect themselves? No one, so you have to do it. There are so many bad things affecting innocent people and you're going to do something about it.</p>
                 </div>
             </div>
             
@@ -129,5 +391,44 @@
             </div>
         </div>
     </div>
+    
+    <!-- Modal for full-size images -->
+    <div id="imageModal" class="modal">
+        <span class="modal-close">&times;</span>
+        <img class="modal-content" id="modalImage">
+    </div>
+    
+    <script>
+        // Modal functionality
+        const modal = document.getElementById('imageModal');
+        const modalImg = document.getElementById('modalImage');
+        const modalClose = document.getElementsByClassName('modal-close')[0];
+        
+        // Add click event to all clickable images
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('clickable-image')) {
+                modal.style.display = 'block';
+                modalImg.src = e.target.src;
+                modalImg.alt = e.target.alt;
+            }
+        });
+        
+        // Close modal when clicking the X
+        modalClose.onclick = function() {
+            modal.style.display = 'none';
+        }
+        
+        // Close modal when clicking the image or background
+        modal.onclick = function() {
+            modal.style.display = 'none';
+        }
+        
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                modal.style.display = 'none';
+            }
+        });
+    </script>
 </body>
 </html>

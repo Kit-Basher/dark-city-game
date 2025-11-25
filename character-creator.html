@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Character Creator - Dark City RPG</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/accessibility.css">
+    <link rel="stylesheet" href="css/mobile.css">
+    <style>
+        .character-creator {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: #2a2a2a;
+            border-radius: 10px;
+            margin-top: 2rem;
+        }
+        
+        .form-section {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: #333;
+            border-radius: 8px;
+            border-left: 4px solid #ff6b35;
+        }
+        
+        .form-section h2 {
+            color: #ff6b35;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #ccc;
+            font-weight: 500;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            background: #1a1a1a;
+            border: 2px solid #444;
+            border-radius: 5px;
+            color: white;
+            font-family: inherit;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #ff6b35;
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .skills-grid {
+            display: grid;
+            grid-template-columns: 60px repeat(6, 1fr);
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+        
+        .skills-grid .skill-header {
+            font-weight: bold;
+            color: #ff6b35;
+            text-align: center;
+            padding: 0.5rem;
+            background: #444;
+            border-radius: 3px;
+        }
+        
+        .skills-grid input {
+            width: 100%;
+            padding: 0.5rem;
+            text-align: center;
+            background: #1a1a1a;
+            border: 1px solid #444;
+            border-radius: 3px;
+            color: white;
+        }
+        
+        .moves-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .btn-primary {
+            background: #ff6b35;
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: bold;
+            transition: background 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background: #e55a2b;
+        }
+        
+        .btn-secondary {
+            background: #666;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 1rem;
+            transition: background 0.3s ease;
+        }
+        
+        .btn-secondary:hover {
+            background: #555;
+        }
+        
+        .preview-section {
+            background: #1a1a1a;
+            padding: 2rem;
+            border-radius: 8px;
+            margin-top: 2rem;
+            border: 2px solid #444;
+        }
+        
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .consequences-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .inventory-grid {
+            display: grid;
+            grid-template-columns: 2fr 3fr;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .scene-archive-grid {
+            display: grid;
+            grid-template-columns: 3fr 2fr;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        @media (max-width: 768px) {
+            .character-creator {
+                padding: 1rem;
+                margin-top: 1rem;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .skills-grid {
+                grid-template-columns: 50px repeat(3, 1fr);
+            }
+            
+            .moves-grid,
+            .consequences-grid,
+            .inventory-grid,
+            .scene-archive-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="#main-content" class="skip-to-main">Skip to main content</a>
+    
+    <header role="banner">
+        <nav role="navigation" aria-label="Main navigation">
+            <div class="nav-container">
+                <h1>Dark City</h1>
+                <ul class="nav-links" role="menubar">
+                    <li role="none"><a href="index.html" role="menuitem">Home</a></li>
+                    <li role="none"><a href="character-creator.html" role="menuitem" class="active">Character Creator</a></li>
+                    <li role="none"><a href="characters/" role="menuitem">Characters</a></li>
+                    <li role="none"><a href="playbooks/" role="menuitem">Playbooks</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <main role="main" id="main-content">
+        <div class="character-creator">
+            <h1>Character Creator</h1>
+            <p style="color: #ccc; margin-bottom: 2rem;">Fill out your Dark City character sheet below. All fields marked with * are required.</p>
+            
+            <form id="characterForm">
+                <!-- Basic Information -->
+                <section class="form-section">
+                    <h2>🆔 Dark City Citizen ID</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="name">Name *</label>
+                            <input type="text" id="name" name="name" required placeholder="Enter character name">
+                        </div>
+                        <div class="form-group">
+                            <label for="apparentAge">Apparent Age *</label>
+                            <input type="text" id="apparentAge" name="apparentAge" required placeholder="e.g., 25">
+                        </div>
+                        <div class="form-group">
+                            <label for="actualAge">Actual Age</label>
+                            <input type="text" id="actualAge" name="actualAge" placeholder="e.g., 250">
+                        </div>
+                        <div class="form-group">
+                            <label for="classification">Classification *</label>
+                            <select id="classification" name="classification" required>
+                                <option value="">Select Classification</option>
+                                <option value="Mortal">Mortal</option>
+                                <option value="Supernatural">Supernatural</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="playbook">Playbook *</label>
+                            <select id="playbook" name="playbook" required>
+                                <option value="">Select Playbook</option>
+                                <option value="Ageless">Ageless</option>
+                                <option value="Ancient">Ancient</option>
+                                <option value="Aquatic">Aquatic</option>
+                                <option value="Aware">Aware</option>
+                                <option value="Champion">Champion</option>
+                                <option value="Covert">Covert</option>
+                                <option value="Construct">Construct</option>
+                                <option value="Darkling">Darkling</option>
+                                <option value="Fae">Fae</option>
+                                <option value="Gifted">Gifted</option>
+                                <option value="Giant">Giant</option>
+                                <option value="Incarnation">Incarnation</option>
+                                <option value="Legend">Legend</option>
+                                <option value="Mad">Mad</option>
+                                <option value="Mage">Mage</option>
+                                <option value="Mortal">Mortal</option>
+                                <option value="Patron">Patron</option>
+                                <option value="Unsated">Unsated</option>
+                                <option value="Wild">Wild</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="subtype">Subtype *</label>
+                            <input type="text" id="subtype" name="subtype" required placeholder="e.g., Vampire, Werewolf, Wizard">
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Character Bio -->
+                <section class="form-section">
+                    <h2>📖 Character Bio</h2>
+                    <div class="form-group">
+                        <label for="bio">Character Biography *</label>
+                        <textarea id="bio" name="bio" required placeholder="Describe your character's background, personality, and history..."></textarea>
+                    </div>
+                </section>
+
+                <!-- Physical Forms -->
+                <section class="form-section">
+                    <h2>👤 Physical Forms</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="humanHeight">Human Form - Height</label>
+                            <input type="text" id="humanHeight" name="humanHeight" placeholder="e.g., 5'10&quot;">
+                        </div>
+                        <div class="form-group">
+                            <label for="humanWeight">Human Form - Weight</label>
+                            <input type="text" id="humanWeight" name="humanWeight" placeholder="e.g., 180 lbs">
+                        </div>
+                        <div class="form-group">
+                            <label for="monsterHeight">Monster Form - Height</label>
+                            <input type="text" id="monsterHeight" name="monsterHeight" placeholder="e.g., 8' tall">
+                        </div>
+                        <div class="form-group">
+                            <label for="monsterWeight">Monster Form - Weight</label>
+                            <input type="text" id="monsterWeight" name="monsterWeight" placeholder="e.g., 400 lbs">
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Stats -->
+                <section class="form-section">
+                    <h2>⚡ Stats</h2>
+                    
+                    <h3>Character Aspects</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="aspect1">Aspect 1</label>
+                            <input type="text" id="aspect1" name="aspect1" placeholder="e.g., Quick Reflexes">
+                        </div>
+                        <div class="form-group">
+                            <label for="aspect2">Aspect 2</label>
+                            <input type="text" id="aspect2" name="aspect2" placeholder="e.g., Strong Willed">
+                        </div>
+                        <div class="form-group">
+                            <label for="aspect3">Aspect 3</label>
+                            <input type="text" id="aspect3" name="aspect3" placeholder="e.g., Street Smart">
+                        </div>
+                    </div>
+
+                    <h3>Stress & Consequences</h3>
+                    <div class="stats-row">
+                        <div class="form-group">
+                            <label for="physicalStress">Physical Stress</label>
+                            <input type="number" id="physicalStress" name="physicalStress" min="0" max="4" value="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="mentalStress">Mental Stress</label>
+                            <input type="number" id="mentalStress" name="mentalStress" min="0" max="4" value="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="physicalConsequences">Physical Consequences</label>
+                            <input type="number" id="physicalConsequences" name="physicalConsequences" min="0" max="6" value="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="mentalConsequences">Mental Consequences</label>
+                            <input type="number" id="mentalConsequences" name="mentalConsequences" min="0" max="6" value="0">
+                        </div>
+                    </div>
+
+                    <h3>Fate Points</h3>
+                    <div class="form-group">
+                        <label for="fatePoints">Fate Points</label>
+                        <input type="number" id="fatePoints" name="fatePoints" min="0" max="5" value="1">
+                    </div>
+                </section>
+
+                <!-- Skills -->
+                <section class="form-section">
+                    <h2>🎯 Skills</h2>
+                    <div class="skills-grid">
+                        <div class="skill-header">+4</div>
+                        <input type="text" name="skill4_1" placeholder="Skill name">
+                        <input type="text" name="skill4_2" placeholder="Skill name">
+                        <input type="text" name="skill4_3" placeholder="Skill name">
+                        <input type="text" name="skill4_4" placeholder="Skill name">
+                        <input type="text" name="skill4_5" placeholder="Skill name">
+                        <input type="text" name="skill4_6" placeholder="Skill name">
+                        
+                        <div class="skill-header">+3</div>
+                        <input type="text" name="skill3_1" placeholder="Skill name">
+                        <input type="text" name="skill3_2" placeholder="Skill name">
+                        <input type="text" name="skill3_3" placeholder="Skill name">
+                        <input type="text" name="skill3_4" placeholder="Skill name">
+                        <input type="text" name="skill3_5" placeholder="Skill name">
+                        <input type="text" name="skill3_6" placeholder="Skill name">
+                        
+                        <div class="skill-header">+2</div>
+                        <input type="text" name="skill2_1" placeholder="Skill name">
+                        <input type="text" name="skill2_2" placeholder="Skill name">
+                        <input type="text" name="skill2_3" placeholder="Skill name">
+                        <input type="text" name="skill2_4" placeholder="Skill name">
+                        <input type="text" name="skill2_5" placeholder="Skill name">
+                        <input type="text" name="skill2_6" placeholder="Skill name">
+                        
+                        <div class="skill-header">+1</div>
+                        <input type="text" name="skill1_1" placeholder="Skill name">
+                        <input type="text" name="skill1_2" placeholder="Skill name">
+                        <input type="text" name="skill1_3" placeholder="Skill name">
+                        <input type="text" name="skill1_4" placeholder="Skill name">
+                        <input type="text" name="skill1_5" placeholder="Skill name">
+                        <input type="text" name="skill1_6" placeholder="Skill name">
+                    </div>
+                </section>
+
+                <!-- Temporary Aspects -->
+                <section class="form-section">
+                    <h2>🔄 Temporary Aspects & Minor Injuries</h2>
+                    <div id="temporaryAspects">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="tempAspect1">Aspect/Injury 1</label>
+                                <input type="text" id="tempAspect1" name="tempAspect1">
+                            </div>
+                            <div class="form-group">
+                                <label for="tempDate1">Date of Infliction</label>
+                                <input type="date" id="tempDate1" name="tempDate1">
+                            </div>
+                            <div class="form-group">
+                                <label for="tempAspect2">Aspect/Injury 2</label>
+                                <input type="text" id="tempAspect2" name="tempAspect2">
+                            </div>
+                            <div class="form-group">
+                                <label for="tempDate2">Date of Infliction</label>
+                                <input type="date" id="tempDate2" name="tempDate2">
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-secondary" onclick="addTemporaryAspect()">+ Add More</button>
+                </section>
+
+                <!-- Special Resources -->
+                <section class="form-section">
+                    <h2>💎 Special Resources</h2>
+                    <div class="form-group">
+                        <label for="specialResources">Special Resources (FP, mechanic values, etc.)</label>
+                        <textarea id="specialResources" name="specialResources" placeholder="Describe any special resources, mechanics, or unique abilities..."></textarea>
+                    </div>
+                </section>
+
+                <!-- Consequences -->
+                <section class="form-section">
+                    <h2>⚠️ Consequences</h2>
+                    <div id="consequences">
+                        <div class="consequences-grid">
+                            <div class="form-group">
+                                <label for="consequence1">Consequence 1</label>
+                                <input type="text" id="consequence1" name="consequence1">
+                            </div>
+                            <div class="form-group">
+                                <label for="consequenceDate1">Date of Infliction</label>
+                                <input type="date" id="consequenceDate1" name="consequenceDate1">
+                            </div>
+                            <div class="form-group">
+                                <label for="consequence2">Consequence 2</label>
+                                <input type="text" id="consequence2" name="consequence2">
+                            </div>
+                            <div class="form-group">
+                                <label for="consequenceDate2">Date of Infliction</label>
+                                <input type="date" id="consequenceDate2" name="consequenceDate2">
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-secondary" onclick="addConsequence()">+ Add More</button>
+                </section>
+
+                <!-- Moves -->
+                <section class="form-section">
+                    <h2>🎭 Moves</h2>
+                    <div class="moves-grid">
+                        <div class="form-group">
+                            <label for="move1">Move 1</label>
+                            <input type="text" id="move1" name="move1" placeholder="Enter move name">
+                        </div>
+                        <div class="form-group">
+                            <label for="moveDesc1">Description</label>
+                            <input type="text" id="moveDesc1" name="moveDesc1" placeholder="Move description">
+                        </div>
+                        <div class="form-group">
+                            <label for="move2">Move 2</label>
+                            <input type="text" id="move2" name="move2" placeholder="Enter move name">
+                        </div>
+                        <div class="form-group">
+                            <label for="moveDesc2">Description</label>
+                            <input type="text" id="moveDesc2" name="moveDesc2" placeholder="Move description">
+                        </div>
+                        <div class="form-group">
+                            <label for="move3">Move 3</label>
+                            <input type="text" id="move3" name="move3" placeholder="Enter move name">
+                        </div>
+                        <div class="form-group">
+                            <label for="moveDesc3">Description</label>
+                            <input type="text" id="moveDesc3" name="moveDesc3" placeholder="Move description">
+                        </div>
+                        <div class="form-group">
+                            <label for="darkestSelf">Darkest Self</label>
+                            <input type="text" id="darkestSelf" name="darkestSelf" placeholder="Describe your character's darkest self">
+                        </div>
+                        <div class="form-group">
+                            <label for="darkestSelfDesc">Description</label>
+                            <input type="text" id="darkestSelfDesc" name="darkestSelfDesc" placeholder="Darkest self description">
+                        </div>
+                    </div>
+                    <button type="button" class="btn-secondary" onclick="addMove()">+ Add More Moves</button>
+                </section>
+
+                <!-- Connections -->
+                <section class="form-section">
+                    <h2>🔗 Connections</h2>
+                    <div class="form-group">
+                        <label for="connections">Character Connections</label>
+                        <textarea id="connections" name="connections" rows="8" placeholder="Describe your character's relationships, allies, enemies, and important connections..."></textarea>
+                    </div>
+                </section>
+
+                <!-- Inventory -->
+                <section class="form-section">
+                    <h2>🎒 Inventory</h2>
+                    <div id="inventory">
+                        <div class="inventory-grid">
+                            <div class="form-group">
+                                <label for="item1">Item 1</label>
+                                <input type="text" id="item1" name="item1" placeholder="Item name">
+                            </div>
+                            <div class="form-group">
+                                <label for="itemDesc1">Description</label>
+                                <input type="text" id="itemDesc1" name="itemDesc1" placeholder="Item description">
+                            </div>
+                            <div class="form-group">
+                                <label for="item2">Item 2</label>
+                                <input type="text" id="item2" name="item2" placeholder="Item name">
+                            </div>
+                            <div class="form-group">
+                                <label for="itemDesc2">Description</label>
+                                <input type="text" id="itemDesc2" name="itemDesc2" placeholder="Item description">
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-secondary" onclick="addInventoryItem()">+ Add More Items</button>
+                </section>
+
+                <!-- Scene Archive -->
+                <section class="form-section">
+                    <h2>📜 Scene Archive</h2>
+                    <div id="sceneArchive">
+                        <div class="scene-archive-grid">
+                            <div class="form-group">
+                                <label for="scene1">Scene 1 Summary</label>
+                                <textarea id="scene1" name="scene1" placeholder="Scene summary, date, location, stat changes, resources used..."></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="sceneChars1">Involved Characters</label>
+                                <input type="text" id="sceneChars1" name="sceneChars1" placeholder="Characters involved in this scene">
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-secondary" onclick="addScene()">+ Add More Scenes</button>
+                </section>
+
+                <!-- Form Actions -->
+                <div style="text-align: center; margin-top: 3rem;">
+                    <button type="submit" class="btn-primary">Save Character Sheet</button>
+                    <button type="button" class="btn-secondary" onclick="previewCharacter()">Preview</button>
+                    <button type="button" class="btn-secondary" onclick="resetForm()">Reset</button>
+                </div>
+            </form>
+
+            <!-- Preview Section (Hidden by default) -->
+            <div id="previewSection" class="preview-section" style="display: none;">
+                <h2>📋 Character Sheet Preview</h2>
+                <div id="previewContent">
+                    <!-- Preview will be generated here -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Dark City RPG. Built with GitHub Pages.</p>
+        </div>
+    </footer>
+
+    <script src="js/config.js"></script>
+    <script src="js/safe-dom.js"></script>
+    <script src="js/error-handler.js"></script>
+    <script>
+        // Dynamic form management
+        let tempAspectCount = 2;
+        let consequenceCount = 2;
+        let moveCount = 3;
+        let itemCount = 2;
+        let sceneCount = 1;
+
+        function addTemporaryAspect() {
+            tempAspectCount++;
+            const container = document.getElementById('temporaryAspects');
+            const formGrid = container.querySelector('.form-grid');
+            
+            const newAspect = SafeDOM.createHTML('div', { className: 'form-group' }, [
+                SafeDOM.createHTML('label', { for: `tempAspect${tempAspectCount}` }, [`Aspect/Injury ${tempAspectCount}`]),
+                SafeDOM.createElement('input', {
+                    type: 'text',
+                    id: `tempAspect${tempAspectCount}`,
+                    name: `tempAspect${tempAspectCount}`
+                })
+            ]);
+            
+            const newDate = SafeDOM.createHTML('div', { className: 'form-group' }, [
+                SafeDOM.createHTML('label', { for: `tempDate${tempAspectCount}` }, ['Date of Infliction']),
+                SafeDOM.createElement('input', {
+                    type: 'date',
+                    id: `tempDate${tempAspectCount}`,
+                    name: `tempDate${tempAspectCount}`
+                })
+            ]);
+            
+            formGrid.appendChild(newAspect);
+            formGrid.appendChild(newDate);
+        }
+
+        function addConsequence() {
+            consequenceCount++;
+            const container = document.getElementById('consequences');
+            const consequencesGrid = container.querySelector('.consequences-grid');
+            
+            const newConsequence = SafeDOM.createHTML('div', { className: 'form-group' }, [
+                SafeDOM.createHTML('label', { for: `consequence${consequenceCount}` }, [`Consequence ${consequenceCount}`]),
+                SafeDOM.createElement('input', {
+                    type: 'text',
+                    id: `consequence${consequenceCount}`,
+                    name: `consequence${consequenceCount}`
+                })
+            ]);
+            
+            const newDate = SafeDOM.createHTML('div', { className: 'form-group' }, [
+                SafeDOM.createHTML('label', { for: `consequenceDate${consequenceCount}` }, ['Date of Infliction']),
+                SafeDOM.createElement('input', {
+                    type: 'date',
+                    id: `consequenceDate${consequenceCount}`,
+                    name: `consequenceDate${consequenceCount}`
+                })
+            ]);
+            
+            consequencesGrid.appendChild(newConsequence);
+            consequencesGrid.appendChild(newDate);
+        }
+
+        function addMove() {
+            moveCount++;
+            const container = document.querySelector('.moves-grid');
+            
+            const newMove = SafeDOM.createHTML('div', { className: 'form-group' }, [
+                SafeDOM.createHTML('label', { for: `move${moveCount}` }, [`Move ${moveCount}`]),
+                SafeDOM.createElement('input', {
+                    type: 'text',
+                    id: `move${moveCount}`,
+                    name: `move${moveCount}`,
+                    placeholder: 'Enter move name'
+                })
+            ]);
+            
+            const newDesc = SafeDOM.createHTML('div', { className: 'form-group' }, [
+                SafeDOM.createHTML('label', { for: `moveDesc${moveCount}` }, ['Description']),
+                SafeDOM.createElement('input', {
+                    type: 'text',
+                    id: `moveDesc${moveCount}`,
+                    name: `moveDesc${moveCount}`,
+                    placeholder: 'Move description'
+                })
+            ]);
+            
+            container.appendChild(newMove);
+            container.appendChild(newDesc);
+        }
+
+        function addInventoryItem() {
+            itemCount++;
+            const container = document.getElementById('inventory');
+            const inventoryGrid = container.querySelector('.inventory-grid');
+            
+            const newItem = SafeDOM.createHTML('div', { className: 'form-group' }, [
+                SafeDOM.createHTML('label', { for: `item${itemCount}` }, [`Item ${itemCount}`]),
+                SafeDOM.createElement('input', {
+                    type: 'text',
+                    id: `item${itemCount}`,
+                    name: `item${itemCount}`,
+                    placeholder: 'Item name'
+                })
+            ]);
+            
+            const newDesc = SafeDOM.createHTML('div', { className: 'form-group' }, [
+                SafeDOM.createHTML('label', { for: `itemDesc${itemCount}` }, ['Description']),
+                SafeDOM.createElement('input', {
+                    type: 'text',
+                    id: `itemDesc${itemCount}`,
+                    name: `itemDesc${itemCount}`,
+                    placeholder: 'Item description'
+                })
+            ]);
+            
+            inventoryGrid.appendChild(newItem);
+            inventoryGrid.appendChild(newDesc);
+        }
+
+        function addScene() {
+            sceneCount++;
+            const container = document.getElementById('sceneArchive');
+            const sceneGrid = container.querySelector('.scene-archive-grid');
+            
+            const newScene = SafeDOM.createHTML('div', { className: 'form-group' }, [
+                SafeDOM.createHTML('label', { for: `scene${sceneCount}` }, [`Scene ${sceneCount} Summary`]),
+                SafeDOM.createElement('textarea', {
+                    id: `scene${sceneCount}`,
+                    name: `scene${sceneCount}`,
+                    placeholder: 'Scene summary, date, location, stat changes, resources used...'
+                })
+            ]);
+            
+            const newChars = SafeDOM.createHTML('div', { className: 'form-group' }, [
+                SafeDOM.createHTML('label', { for: `sceneChars${sceneCount}` }, ['Involved Characters']),
+                SafeDOM.createElement('input', {
+                    type: 'text',
+                    id: `sceneChars${sceneCount}`,
+                    name: `sceneChars${sceneCount}`,
+                    placeholder: 'Characters involved in this scene'
+                })
+            ]);
+            
+            sceneGrid.appendChild(newScene);
+            sceneGrid.appendChild(newChars);
+        }
+
+        function previewCharacter() {
+            const form = document.getElementById('characterForm');
+            const formData = new FormData(form);
+            const previewSection = document.getElementById('previewSection');
+            const previewContent = document.getElementById('previewContent');
+            
+            // Generate preview content
+            let previewHTML = `
+                <h3>${formData.get('name') || 'Unnamed Character'}</h3>
+                <p><strong>Classification:</strong> ${formData.get('classification')}</p>
+                <p><strong>Playbook:</strong> ${formData.get('playbook')}</p>
+                <p><strong>Subtype:</strong> ${formData.get('subtype')}</p>
+                <p><strong>Apparent Age:</strong> ${formData.get('apparentAge')}</p>
+                ${formData.get('actualAge') ? `<p><strong>Actual Age:</strong> ${formData.get('actualAge')}</p>` : ''}
+                <div style="margin-top: 1rem;">
+                    <h4>Biography:</h4>
+                    <p>${formData.get('bio') || 'No biography provided.'}</p>
+                </div>
+            `;
+            
+            previewContent.innerHTML = previewHTML;
+            previewSection.style.display = 'block';
+            previewSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function resetForm() {
+            if (confirm('Are you sure you want to reset the entire form? All data will be lost.')) {
+                document.getElementById('characterForm').reset();
+                document.getElementById('previewSection').style.display = 'none';
+            }
+        }
+
+        // Form submission
+        document.getElementById('characterForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Collect form data
+            const formData = new FormData(this);
+            const characterData = {};
+            
+            // Convert FormData to object
+            for (let [key, value] of formData.entries()) {
+                characterData[key] = value;
+            }
+            
+            // Validate required fields
+            const requiredFields = ['name', 'apparentAge', 'classification', 'playbook', 'subtype', 'bio'];
+            const missingFields = requiredFields.filter(field => !characterData[field]);
+            
+            if (missingFields.length > 0) {
+                alert(`Please fill in all required fields: ${missingFields.join(', ')}`);
+                return;
+            }
+            
+            // Save character data (for now, just save to localStorage)
+            localStorage.setItem('characterDraft', JSON.stringify(characterData));
+            
+            alert('Character sheet saved! (Note: This is currently saved locally. The approval system will be implemented later.)');
+            
+            // Optionally, you could redirect to a confirmation page
+            // window.location.href = 'character-confirmation.html';
+        });
+
+        // Auto-save draft
+        let autoSaveTimer;
+        document.getElementById('characterForm').addEventListener('input', function() {
+            clearTimeout(autoSaveTimer);
+            autoSaveTimer = setTimeout(function() {
+                const formData = new FormData(document.getElementById('characterForm'));
+                const draftData = {};
+                for (let [key, value] of formData.entries()) {
+                    if (value) draftData[key] = value;
+                }
+                localStorage.setItem('characterDraft', JSON.stringify(draftData));
+                console.log('Draft auto-saved');
+            }, 5000); // Auto-save after 5 seconds of inactivity
+        });
+
+        // Load draft on page load
+        window.addEventListener('load', function() {
+            const draft = localStorage.getItem('characterDraft');
+            if (draft) {
+                const draftData = JSON.parse(draft);
+                const form = document.getElementById('characterForm');
+                
+                // Populate form with draft data
+                for (let [key, value] of Object.entries(draftData)) {
+                    const field = form.querySelector(`[name="${key}"]`);
+                    if (field) {
+                        field.value = value;
+                    }
+                }
+                
+                // Ask user if they want to continue with the draft
+                if (Object.keys(draftData).length > 0) {
+                    const continueDraft = confirm('Found a saved draft. Would you like to continue with it?');
+                    if (!continueDraft) {
+                        localStorage.removeItem('characterDraft');
+                        form.reset();
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

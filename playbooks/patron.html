@@ -13,21 +13,426 @@
         }
         
         .playbook-header {
-            background: linear-gradient(135deg, #483D8B 0%, #6A5ACD 100%);
-            padding: 3rem;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            padding: 2rem;
             border-radius: 15px;
             text-align: center;
             margin-bottom: 2rem;
         }
         
+        .playbook-icon {
+            width: 180px;
+            height: 180px;
+            border-radius: 10px;
+            margin: 0 auto 1.5rem auto;
+            display: block;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            object-fit: cover;
+        }
+        
         .playbook-header h1 {
-            color: white;
+            color: #333;
             font-size: 3rem;
             margin: 0;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
         }
         
         .playbook-subtypes {
+            color: rgba(51, 51, 51, 0.9);
+            font-size: 1.2rem;
+            margin-top: 1rem;
+        }
+        
+        .section {
+            background: #1a1a1a;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            border: 1px solid #4a5568;
+        }
+        
+        .section h2 {
+            color: #FFD700;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #FFD700;
+            padding-bottom: 0.5rem;
+        }
+        
+        .move {
+            background: #2a2a2a;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border-left: 4px solid #FFD700;
+        }
+        
+        .move h3 {
+            color: #FFD700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .back-link {
+            color: #FFD700;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .back-link:hover {
+            color: #FFD700;
+            text-decoration: underline;
+        }
+        
+        .subtype-note {
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid #FFD700;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-style: italic;
+        }
+        
+        .playing-guide {
+            background: #2a2a2a;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border-left: 4px solid #FFD700;
+        }
+        
+        .playing-guide h3 {
+            color: #FFD700;
+            margin: 0 0 0.5rem 0;
+        }
+        
+        .subtype-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .subtype-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 3px solid rgba(255, 215, 0, 0.5);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+            object-fit: cover;
+        }
+        
+        .subtype-title {
+            color: #FFD700;
+            font-size: 2rem;
+            margin: 0;
+        }
+        
+        .darkest-self {
+            background: #3a1a1a;
+            border: 2px solid #ff3333;
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+        }
+        
+        .darkest-self h3 {
+            color: #ff3333;
+            margin-bottom: 1rem;
+        }
+        
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            cursor: pointer;
+        }
+        
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 10px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            border: 3px solid #FFD700;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 35px;
+            color: #FFD700;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        }
+        
+        .modal-close:hover {
+            color: #fff;
+        }
+        
+        .clickable-image {
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        
+        .clickable-image:hover {
+            transform: scale(1.05);
+        }
+        
+        .character-creation-btn {
+            display: inline-block;
+            background: #FFD700;
+            color: #333;
+            padding: 1rem 2rem;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            margin: 2rem 0;
+            transition: all 0.3s ease;
+        }
+        
+        .character-creation-btn:hover {
+            background: #FFA500;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">← Back to Playbooks</a>
+        
+        <div class="playbook-container">
+            <div class="playbook-header">
+                <img src="../images/Playbook Mains/The Patron.png" alt="Patron Playbook" class="playbook-icon clickable-image">
+                <h1>The Patron</h1>
+                <div class="playbook-subtypes">Muse • Djinn • Devil</div>
+            </div>
+            
+            <div class="section">
+                <h2>👑 Playing a Patron</h2>
+                <p>You do everything for them, but you keep track. Bait the trap and wait like the patient spider. They'll never realize just how much they depend on you until it's too late, they have no idea what you can do.</p>
+                
+                <p>As a Patron, you understand that true power comes not from direct action, but from influence, manipulation, and the careful cultivation of dependencies. Whether you inspire greatness, grant wishes, or make deals, you always ensure that others owe you something. Your relationships are investments, and every favor you grant is a deposit in the bank of future leverage. You see the strings that connect people and know exactly how to pull them. In a world of supernatural beings with immense power, your strength lies in making them need you more than they need their own abilities.</p>
+            </div>
+            
+            <div class="darkest-self">
+                <h3>🌑 Darkest Self</h3>
+                <p>As a last resort to being taken out, (when you're out of consequences) you can become your Darkest Self. Lose yourself in your monstrous urges and temporarily double your stress and consequence caps. You've spent too long worrying about what they want. Call in every debt, and make sure they all remember exactly how little they'd have without you. Escape your Darkest Self when you get called out by someone who owes you a lot less than you owe them.</p>
+            </div>
+            
+            <div class="section">
+                <h2>Moves for all Patrons</h2>
+                <p><strong>Choose three from this playbook and/or a subtype below:</strong></p>
+                
+                <div class="move">
+                    <h3>Little Voices</h3>
+                    <p>You can subconsciously influence character motivations. Roll Will:</p>
+                    <p><strong>10-up:</strong> you convey a subliminal suggestion</p>
+                    <p><strong>7-9:</strong> it works but the target feels weird about it</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Gift Horse</h3>
+                    <p>The first time in a scene you offer someone something they find amazing and they accept, take a Fate Point, if they refuse, take +1 on Provoke or Rapport rolls in this scene.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>O.G.</h3>
+                    <p>When you send a threatening or blackmailing note/ email/ message to a Player Character, add +2 to Provoke rolls in the next scene to intimidate them (even if you're not in the scene when they read it).</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Catacombs</h3>
+                    <p>You have a secret sub-basement, if you are at an entrance you automatically succeed to escape through it.</p>
+                </div>
+            </div>
+            
+            <div class="section">
+                <div class="subtype-header">
+                    <img src="../images/Dark City Subtypes/Patron - Muse.png" alt="Muse" class="subtype-icon clickable-image">
+                    <h2 class="subtype-title">Muse</h2>
+                </div>
+                <p><em>Moves only for Muses:</em></p>
+                
+                <div class="move">
+                    <h3>Protegé</h3>
+                    <p>With a skill of at least +4, you can dedicate extended time to train a student in that skill. They get +1 to all rolls in that skill for a duration of your character level in weeks. A character can only benefit from one such lesson per skill at a time.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Lasso</h3>
+                    <p>When you spend a scene setting up an elaborate trap, you can roll with Crafting instead of Fight or Shoot to attack someone physically who enters the trapped area, (even if you aren't present).</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Judas Knows</h3>
+                    <p>The first time you threaten a PC with a secret you shouldn't know, they add a suitable negative mental Aspect, which you get one free invoke for.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Butterfly Or Bee</h3>
+                    <p>Once per scene, if you manage to convince someone to give up an opportunity they would have been very grateful for, you gain a Fate Point, and they get +1 to all their rolls for the rest of the scene.</p>
+                </div>
+                
+                <div class="subtype-note">
+                    <p><em>This is a subtype. Subtypes are mutually exclusive. You can choose a subtype without picking a move. When listing your playbook on your character sheet, list the subtype, if chosen.</em></p>
+                </div>
+                
+                <div class="playing-guide">
+                    <h3>Playing a Muse:</h3>
+                    <p>You know they can do it, you'll support them, and then you'll enjoy the spoils. It's not selfish, they have greatness pent up inside of them and they only need you to help them unlock it. They don't know what they want, you'll show them and they will be yours.</p>
+                </div>
+            </div>
+            
+            <div class="section">
+                <div class="subtype-header">
+                    <img src="../images/Dark City Subtypes/Patron - Djinn.png" alt="Djinn" class="subtype-icon clickable-image">
+                    <h2 class="subtype-title">Djinn</h2>
+                </div>
+                <p><em>Moves only for Djinns:</em></p>
+                
+                <div class="move">
+                    <h3>Wishes</h3>
+                    <p><strong>-x Once per scene</strong> you can use magic to fulfill a wish, roll Will:</p>
+                    <p><strong>- 10+,</strong> you gain a temporary ability or item to fulfill the wish, but something negative and unforeseen will happen</p>
+                    <p><strong>- 7-9,</strong> you gain a momentary ability or use of an item to help grant their wish, but there will be some unforeseen and terrible consequences or price</p>
+                </div>
+                
+                <div class="move">
+                    <h3>The Lamp</h3>
+                    <p>You have a magic lamp, music-box, etc containing a pocket dimensional space you reside within. You are always acutely aware of your vessel, and what physically goes on around it. eg. speech or actions.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Obedience</h3>
+                    <p>When someone makes a wish, you must do your best to fulfill it. When you are asked to do something you do not want to do, gain a Fate point. When you resist fulfilling a wish, Roll Will.</p>
+                    <p><strong>10+,</strong> forget the wish and gain the Aspect 'Confused'</p>
+                    <p><strong>7-9,</strong> gain the Aspect 'Drained' and ignore the order for the scene</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Smoke and Shadows</h3>
+                    <p>With a couple minutes of concentration when you're not 'Exhausted', you can become a creature of thick smoke. As such, you can pass through spaces too small for a person to enter, but the appearance of smoke in an area may be noted by passersby. Roll Will.</p>
+                    <p><strong>10-up,</strong> any possessions you have on you are turned to smoke as well, returning when you retake your human shape</p>
+                    <p><strong>7-9,</strong> choose one:</p>
+                    <ul>
+                        <li>You only transform your body and what is within it, nothing else</li>
+                        <li>The transformation is painful. Gain the Aspect 'Exhausted'</li>
+                        <li>Roll Will to retake your human form; failing triggers your Darkest Self</li>
+                    </ul>
+                </div>
+                
+                <div class="subtype-note">
+                    <p><em>This is a subtype. Subtypes are mutually exclusive. You can choose a subtype without picking a move. When listing your playbook on your character sheet, list the subtype, if chosen.</em></p>
+                </div>
+                
+                <div class="playing-guide">
+                    <h3>Playing a Djinn:</h3>
+                    <p>You've been away from home, isolated from your family, stuck with the humans and other monsters of the world. No matter the magical power you can wield, humans are so complicated and all of these people could have power over you. Frightened? or excited?</p>
+                </div>
+            </div>
+            
+            <div class="section">
+                <div class="subtype-header">
+                    <img src="../images/Dark City Subtypes/Patron - Devil.png" alt="Devil" class="subtype-icon clickable-image">
+                    <h2 class="subtype-title">Devil</h2>
+                </div>
+                <p><em>Moves only for Devils:</em></p>
+                
+                <div class="move">
+                    <h3>Master Of The Inferno</h3>
+                    <p><strong>-x When someone fights for you</strong> and they roll higher than the defender, the overlapping damage can be no less than your Provoke stat.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Give To Get</h3>
+                    <p>If you supply a PC with something they desperately need, take a Fate Point. You also get +1 to any rolls to convince them. If they asked you for it they also gain a Fate Point.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Center Of The Sabbath</h3>
+                    <p>When you enter your Darkest Self clear any negative Aspects you have, along with any minor injuries.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Mammon's Plaything</h3>
+                    <p>When you call in a favor from one PC to fulfill a deal for another PC, you gain a Fate Point and the one repaying you takes +1 on all of their rolls during the scene they are fulfilling their part of the deal.</p>
+                </div>
+                
+                <div class="subtype-note">
+                    <p><em>This is a subtype. Subtypes are mutually exclusive. You can choose a subtype without picking a move. When listing your playbook on your character sheet, list the subtype, if chosen.</em></p>
+                </div>
+                
+                <div class="playing-guide">
+                    <h3>Playing a Devil:</h3>
+                    <p>You know what they want. You know it almost as intimately as they do. Their desires pour down upon you, everyone always wants something, but hey, debts are made to be called in after all.</p>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>🎭 Character Creation</h2>
+                <p>Ready to create your Patron character? Choose your subtype, select your three moves, and master the art of influence and manipulation in the Dark City!</p>
+                
+                <div style="text-align: center;">
+                    <a href="../characters/" class="character-creation-btn">View Character Gallery</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal for full-size images -->
+    <div id="imageModal" class="modal">
+        <span class="modal-close">&times;</span>
+        <img class="modal-content" id="modalImage">
+    </div>
+    
+    <script>
+        // Modal functionality
+        const modal = document.getElementById('imageModal');
+        const modalImg = document.getElementById('modalImage');
+        const modalClose = document.getElementsByClassName('modal-close')[0];
+        
+        // Add click event to all clickable images
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('clickable-image')) {
+                modal.style.display = 'block';
+                modalImg.src = e.target.src;
+                modalImg.alt = e.target.alt;
+            }
+        });
+        
+        // Close modal when clicking the X
+        modalClose.onclick = function() {
+            modal.style.display = 'none';
+        }
+        
+        // Close modal when clicking the image or background
+        modal.onclick = function() {
+            modal.style.display = 'none';
+        }
+        
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                modal.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
             color: rgba(255, 255, 255, 0.9);
             font-size: 1.2rem;
             margin-top: 1rem;

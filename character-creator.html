@@ -569,6 +569,7 @@
 
     <script src="js/config.js"></script>
     <script src="js/safe-dom.js"></script>
+    <script src="js/server-api.js"></script>
     <script src="js/error-handler.js"></script>
     <script>
         // Dynamic form management
@@ -750,17 +751,127 @@
         }
 
         // Form submission
-        document.getElementById('characterForm').addEventListener('submit', function(e) {
+        document.getElementById('characterForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
             // Collect form data
             const formData = new FormData(this);
             const characterData = {};
             
-            // Convert FormData to object
+            // Convert FormData to object and organize data
             for (let [key, value] of formData.entries()) {
                 characterData[key] = value;
             }
+            
+            // Organize skills data
+            const skills = {};
+            for (let level = 4; level >= 1; level--) {
+                for (let slot = 1; slot <= 6; slot++) {
+                    const skillKey = `skill${level}_${slot}`;
+                    if (characterData[skillKey]) {
+                        skills[characterData[skillKey]] = `+${level}`;
+                        delete characterData[skillKey];
+                    }
+                }
+            }
+            characterData.skills = skills;
+            
+            // Organize moves data
+            const moves = [];
+            for (let i = 1; i <= moveCount; i++) {
+                const moveKey = `move${i}`;
+                const descKey = `moveDesc${i}`;
+                if (characterData[moveKey]) {
+                    moves.push({
+                        name: characterData[moveKey],
+                        description: characterData[descKey] || ''
+                    });
+                    delete characterData[moveKey];
+                    delete characterData[descKey];
+                }
+            }
+            
+            // Add darkest self if present
+            if (characterData.darkestSelf) {
+                moves.push({
+                    name: characterData.darkestSelf,
+                    description: characterData.darkestSelfDesc || ''
+                });
+                delete characterData.darkestSelf;
+                delete characterData.darkestSelfDesc;
+            }
+            characterData.moves = moves;
+            
+            // Organize temporary aspects
+            const temporaryAspects = [];
+            for (let i = 1; i <= tempAspectCount; i++) {
+                const aspectKey = `tempAspect${i}`;
+                const dateKey = `tempDate${i}`;
+                if (characterData[aspectKey]) {
+                    temporaryAspects.push({
+                        aspect: characterData[aspectKey],
+                        date: characterData[dateKey] || ''
+                    });
+                    delete characterData[aspectKey];
+                    delete characterData[dateKey];
+                }
+            }
+            characterData.temporaryAspects = temporaryAspects;
+            
+            // Organize consequences
+            const consequences = [];
+            for (let i = 1; i <= consequenceCount; i++) {
+                const consequenceKey = `consequence${i}`;
+                const dateKey = `consequenceDate${i}`;
+                if (characterData[consequenceKey]) {
+                    consequences.push({
+                        consequence: characterData[consequenceKey],
+                        date: characterData[dateKey] || ''
+                    });
+                    delete characterData[consequenceKey];
+                    delete characterData[dateKey];
+                }
+            }
+            characterData.consequences = consequences;
+            
+            // Organize inventory
+            const inventory = [];
+            for (let i = 1; i <= itemCount; i++) {
+                const itemKey = `item${i}`;
+                const descKey = `itemDesc${i}`;
+                if (characterData[itemKey]) {
+                    inventory.push({
+                        item: characterData[itemKey],
+                        description: characterData[descKey] || ''
+                    });
+                    delete characterData[itemKey];
+                    delete characterData[descKey];
+                }
+            }
+            characterData.inventory = inventory;
+            
+            // Organize scenes
+            const scenes = [];
+            for (let i = 1; i <= sceneCount; i++) {
+                const sceneKey = `scene${i}`;
+                const charsKey = `sceneChars${i}`;
+                if (characterData[sceneKey]) {
+                    scenes.push({
+                        summary: characterData[sceneKey],
+                        characters: characterData[sceneCharsKey] || ''
+                    });
+                    delete characterData[sceneKey];
+                    delete characterData[sceneCharsKey];
+                }
+            }
+            characterData.scenes = scenes;
+            
+            // Clean up empty values
+            Object.keys(characterData).forEach(key => {
+                if (!characterData[key] || characterData[key] === '') {
+                    delete characterData[key];
+                }
+            });
             
             // Validate required fields
             const requiredFields = ['name', 'apparentAge', 'classification', 'playbook', 'subtype', 'bio'];
@@ -771,13 +882,24 @@
                 return;
             }
             
-            // Save character data (for now, just save to localStorage)
-            localStorage.setItem('characterDraft', JSON.stringify(characterData));
-            
-            alert('Character sheet saved! (Note: This is currently saved locally. The approval system will be implemented later.)');
-            
-            // Optionally, you could redirect to a confirmation page
-            // window.location.href = 'character-confirmation.html';
+            try {
+                // Submit to server
+                const serverAPI = new ServerAPI();
+                const result = await serverAPI.submitCharacter(characterData);
+                
+                // Clear draft and form
+                localStorage.removeItem('characterDraft');
+                this.reset();
+                
+                alert('Character sheet submitted successfully! It will be reviewed by moderators and you\'ll be notified of the decision.');
+                
+                // Optionally redirect to management page
+                // window.location.href = 'characters/manage.html';
+                
+            } catch (error) {
+                console.error('Error submitting character:', error);
+                alert('Error submitting character. Please try again or contact support.');
+            }
         });
 
         // Auto-save draft

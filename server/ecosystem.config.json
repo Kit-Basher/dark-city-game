@@ -7,11 +7,19 @@
       "exec_mode": "cluster",
       "env": {
         "NODE_ENV": "production",
-        "PORT": 3000
+        "PORT": 3000,
+        "MONGODB_URI": "mongodb://localhost:27017/darkcity",
+        "JWT_SECRET": "your-secret-key-change-in-production",
+        "BCRYPT_ROUNDS": 12,
+        "DISCORD_WEBHOOK_URL": ""
       },
       "env_development": {
         "NODE_ENV": "development",
-        "PORT": 3000
+        "PORT": 3000,
+        "MONGODB_URI": "mongodb://localhost:27017/darkcity",
+        "JWT_SECRET": "your-secret-key-change-in-production",
+        "BCRYPT_ROUNDS": 12,
+        "DISCORD_WEBHOOK_URL": ""
       },
       "log_file": "logs/combined.log",
       "out_file": "logs/out.log",

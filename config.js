@@ -1,4 +1,6 @@
-// Configuration for different environments
+// Environment Configuration for Dark City RPG
+// This file handles environment-specific API endpoints and server URLs
+// DO NOT confuse with /js/config.js which contains application settings
 const config = {
   // Railway production server
   production: {

@@ -35,7 +35,90 @@ class AccessibilityManager {
         });
 
         // Handle arrow keys for calendar navigation
-        // this.setupCalendarKeyboardNavigation(); // TODO: Implement this method
+        this.setupCalendarKeyboardNavigation();
+    }
+
+    // Calendar keyboard navigation
+    setupCalendarKeyboardNavigation() {
+        document.addEventListener('keydown', (e) => {
+            // Only handle calendar navigation when calendar is focused
+            const calendarGrid = document.getElementById('calendarGrid');
+            if (!calendarGrid || !calendarGrid.contains(document.activeElement)) {
+                return;
+            }
+
+            const focusedDay = document.activeElement;
+            if (!focusedDay.classList.contains('calendar-day')) {
+                return;
+            }
+
+            let nextDay = null;
+            const currentDay = parseInt(focusedDay.textContent);
+            const allDays = Array.from(calendarGrid.querySelectorAll('.calendar-day:not(.other-month)'));
+            const currentIndex = allDays.indexOf(focusedDay);
+
+            switch (e.key) {
+                case 'ArrowLeft':
+                    e.preventDefault();
+                    nextDay = currentIndex > 0 ? allDays[currentIndex - 1] : allDays[allDays.length - 1];
+                    break;
+                case 'ArrowRight':
+                    e.preventDefault();
+                    nextDay = currentIndex < allDays.length - 1 ? allDays[currentIndex + 1] : allDays[0];
+                    break;
+                case 'ArrowUp':
+                    e.preventDefault();
+                    nextDay = currentIndex >= 7 ? allDays[currentIndex - 7] : allDays[currentIndex];
+                    break;
+                case 'ArrowDown':
+                    e.preventDefault();
+                    nextDay = currentIndex < allDays.length - 7 ? allDays[currentIndex + 7] : allDays[currentIndex];
+                    break;
+                case 'Home':
+                    e.preventDefault();
+                    nextDay = allDays[0];
+                    break;
+                case 'End':
+                    e.preventDefault();
+                    nextDay = allDays[allDays.length - 1];
+                    break;
+                case 'PageUp':
+                    e.preventDefault();
+                    // Navigate to previous month - trigger month change
+                    this.changeMonth(-1);
+                    break;
+                case 'PageDown':
+                    e.preventDefault();
+                    // Navigate to next month - trigger month change
+                    this.changeMonth(1);
+                    break;
+            }
+
+            if (nextDay && nextDay !== focusedDay) {
+                nextDay.focus();
+                this.announce(`Selected ${nextDay.textContent} of ${nextDay.dataset.month}`);
+            }
+        });
+    }
+
+    // Change calendar month (helper method for PageUp/PageDown)
+    changeMonth(direction) {
+        const prevButton = document.querySelector('.calendar-nav.prev');
+        const nextButton = document.querySelector('.calendar-nav.next');
+        
+        if (direction === -1 && prevButton) {
+            prevButton.click();
+            setTimeout(() => {
+                const firstDay = document.querySelector('.calendar-day:not(.other-month)');
+                if (firstDay) firstDay.focus();
+            }, 100);
+        } else if (direction === 1 && nextButton) {
+            nextButton.click();
+            setTimeout(() => {
+                const firstDay = document.querySelector('.calendar-day:not(.other-month)');
+                if (firstDay) firstDay.focus();
+            }, 100);
+        }
     }
 
     // Screen reader announcements

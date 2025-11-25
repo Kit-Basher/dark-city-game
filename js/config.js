@@ -1,5 +1,6 @@
-// Configuration for Dark City RPG
-// This file should be customized for your deployment
+// Application Configuration for Dark City RPG
+// This file contains application settings, feature flags, and UI configuration
+// DO NOT confuse with /config.js which handles environment-specific endpoints
 window.CONFIG = {
     // GitHub Configuration
     REPO_OWNER: 'Kit-Basher', // Replace with your GitHub username

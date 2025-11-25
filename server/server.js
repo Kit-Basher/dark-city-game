@@ -381,11 +381,9 @@ process.on('uncaughtException', (error) => {
   // Give the server a chance to finish current operations
   setTimeout(() => {
     console.log('🔄 Restarting server due to uncaught exception...');
-    console.log('🔍 Debug: About to call process.exit(1)');
     // process.exit(1); // Temporarily disabled to see the error
   }, 1000);
   
-  console.log('🔍 Debug: Uncaught exception handler setup complete');
 });
 
 process.on('unhandledRejection', (reason, promise) => {
@@ -453,4 +451,3 @@ process.on('SIGINT', () => {
   }, 10000);
 });
 
-console.log('🔍 Debug: Server setup complete - should stay running now');

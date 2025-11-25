@@ -14,10 +14,21 @@
         
         .playbook-header {
             background: linear-gradient(135deg, #8B4513 0%, #654321 100%);
-            padding: 3rem;
+            padding: 2rem;
             border-radius: 15px;
             text-align: center;
             margin-bottom: 2rem;
+        }
+        
+        .playbook-icon {
+            width: 180px;
+            height: 180px;
+            border-radius: 10px;
+            margin: 0 auto 1.5rem auto;
+            display: block;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            object-fit: cover;
         }
         
         .playbook-header h1 {
@@ -28,6 +39,387 @@
         }
         
         .playbook-subtypes {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.2rem;
+            margin-top: 1rem;
+        }
+        
+        .section {
+            background: #1a1a1a;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            border: 1px solid #4a5568;
+        }
+        
+        .section h2 {
+            color: #8B4513;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #8B4513;
+            padding-bottom: 0.5rem;
+        }
+        
+        .move {
+            background: #2a2a2a;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border-left: 4px solid #8B4513;
+        }
+        
+        .move h3 {
+            color: #8B4513;
+            margin-bottom: 0.5rem;
+        }
+        
+        .back-link {
+            color: #8B4513;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .back-link:hover {
+            color: #8B4513;
+            text-decoration: underline;
+        }
+        
+        .subtype-note {
+            background: rgba(139, 69, 19, 0.1);
+            border: 1px solid #8B4513;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-style: italic;
+        }
+        
+        .playing-guide {
+            background: #2a2a2a;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border-left: 4px solid #8B4513;
+        }
+        
+        .playing-guide h3 {
+            color: #8B4513;
+            margin: 0 0 0.5rem 0;
+        }
+        
+        .subtype-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .subtype-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 3px solid rgba(139, 69, 19, 0.5);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+            object-fit: cover;
+        }
+        
+        .subtype-title {
+            color: #8B4513;
+            font-size: 2rem;
+            margin: 0;
+        }
+        
+        .darkest-self {
+            background: #3a1a1a;
+            border: 2px solid #ff3333;
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+        }
+        
+        .darkest-self h3 {
+            color: #ff3333;
+            margin-bottom: 1rem;
+        }
+        
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            cursor: pointer;
+        }
+        
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 10px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            border: 3px solid #8B4513;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 35px;
+            color: #8B4513;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        }
+        
+        .modal-close:hover {
+            color: #fff;
+        }
+        
+        .clickable-image {
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        
+        .clickable-image:hover {
+            transform: scale(1.05);
+        }
+        
+        .character-creation-btn {
+            display: inline-block;
+            background: #8B4513;
+            color: white;
+            padding: 1rem 2rem;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            margin: 2rem 0;
+            transition: all 0.3s ease;
+        }
+        
+        .character-creation-btn:hover {
+            background: #654321;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">← Back to Playbooks</a>
+        
+        <div class="playbook-container">
+            <div class="playbook-header">
+                <img src="../images/Playbook Mains/The Ancient.png" alt="Ancient Playbook" class="playbook-icon clickable-image">
+                <h1>The Ancient</h1>
+                <div class="playbook-subtypes">Dragon • Mummy • Serpentine</div>
+            </div>
+            
+            <div class="section">
+                <h2>🏛️ Playing an Ancient</h2>
+                <p>History is everything, and you've seen your fair share, heard your fair share. You know what people are like, always willing to do anything for a buck. Humans have no loyalty to anything.</p>
+                
+                <p>As an Ancient, you carry the weight of millennia on your shoulders. You have watched empires rise and fall, seen the birth and death of countless mortals, and accumulated wisdom and power that younger beings can only dream of. Your perspective is shaped by the long view of history - you understand patterns, cycles, and the fundamental nature of power that others miss. Whether you're a hoarding dragon, a preserved mummy, or a scheming serpentine, you represent the ancient world's enduring legacy in the modern Dark City. Your challenge is navigating a world that has forgotten the old ways while dealing with beings who barely comprehend the depth of your experience.</p>
+            </div>
+            
+            <div class="darkest-self">
+                <h3>🌑 Darkest Self</h3>
+                <p>As a last resort to being taken out, (when you are out of stress and consequences) you can become your Darkest Self. Lose yourself in your monstrous urges and temporarily double your consequence caps. You have been patient for longer than some civilizations have existed, and now your patience is exhausted. No more planning, no more manipulating, no more waiting. You know what you want, so take it. You escape your Darkest Self when you commit an act so inhuman that you scare yourself.</p>
+            </div>
+            
+            <div class="section">
+                <h2>Moves for all Ancients</h2>
+                <p><strong>Choose three from this playbook and/or a subtype below:</strong></p>
+                
+                <div class="move">
+                    <h3>Authority</h3>
+                    <p>You speak and people listen. When you make a reasonable request, people do their best, add +2 to those Rapport rolls.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Mesmerizing</h3>
+                    <p>When you stare at someone without blinking, roll Provoke; <strong>10+,</strong> they freeze up and will answer any basic queries until you leave or someone touches them, and afterwards they won't really remember anything unusual. <strong>7-9,</strong> it'll still work, but only if you add another distraction. After they'll definitely know something weird happened.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>My Hoard</h3>
+                    <p>You have a massive collection of goodies hidden away, choose what its location looks like and choose 2 of the simple categories of items for it to contain; Historical artifacts, Golden artifacts, Gem encrusted artifacts, Spoils of war, Strange unknown artifacts, Personal trinkets etc etc.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>The Big Reveal</h3>
+                    <p>When you reveal your true form to someone, if they accept you as you truly are, they gain a Fate point, if they reject you, you gain +1 to rolls against them for the rest of this scene.</p>
+                </div>
+            </div>
+            
+            <div class="section">
+                <div class="subtype-header">
+                    <img src="../images/Dark City Subtypes/Ancient - Dragon.png" alt="Dragon" class="subtype-icon clickable-image">
+                    <h2 class="subtype-title">Dragon</h2>
+                </div>
+                <p><em>Moves only for Dragons:</em></p>
+                
+                <div class="move">
+                    <h3>I Am Wrath</h3>
+                    <p><strong>-x- You can lash out</strong> by breathing a deadly substance like fire or acid or roar with deadly force. If you do so, add +2 to any Shoot rolls that make use of this.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Draconic Splendor</h3>
+                    <p>When you are free of negative aspects, PC's subtract 2 from mental conflict rolls against you and NPC's cannot cause you negative mental aspects or consequences.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Coin Polisher</h3>
+                    <p>When you introduce a character to someone important to their story they'll both owe you. Roll Contacts: <strong>10+;</strong> gain a Fate Point and +2 on rapport rolls this scene. <strong>7-9;</strong> It goes great. +1 to your next roll.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Hoard</h3>
+                    <p>You have a Treasure you covet more than anything else, something you would lay your life on the line for. While in its presence you take +2 for any combat rolls and -2 for any other kind of roll.</p>
+                </div>
+                
+                <div class="subtype-note">
+                    <p><em>This is a subtype. Subtypes are mutually exclusive. You can choose a subtype without picking a move. When listing your playbook on your character sheet, list the subtype, if chosen.</em></p>
+                </div>
+                
+                <div class="playing-guide">
+                    <h3>Playing a Dragon:</h3>
+                    <p>People shower you with attention, people want to be you, want you to want them. How much is it really worth if they're all so eager to throw it at you? When will the bottom drop out?</p>
+                </div>
+            </div>
+            
+            <div class="section">
+                <div class="subtype-header">
+                    <img src="../images/Dark City Subtypes/Ancient - Mummy.png" alt="Mummy" class="subtype-icon clickable-image">
+                    <h2 class="subtype-title">Mummy</h2>
+                </div>
+                <p><em>Moves only for Mummies:</em></p>
+                
+                <div class="move">
+                    <h3>Soul Eater</h3>
+                    <p><strong>-x- You can feed</strong> on the life force of others with a touch from your lips. Roll Empathy; <strong>10+,</strong> inflict a fitting minor injury or suitable negative aspect and heal one. <strong>7-9,</strong> you feel a rush of energy and excitement but you both get the aspect "Drained". <strong>6-,</strong> you choke up, take 1 fitting minor injury or a suitable negative aspect.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Mummy's Curse</h3>
+                    <p><strong>-x- When anyone</strong> inflicts damage on you, give them the Aspect 'Fungal Rot'. Once per scene you may pay 1 Fate Point to give the adjective 'drained' to someone with that Aspect.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Tana Leaves</h3>
+                    <p>You have a limited supply of magical tana leaves and know how to use them. After making tea 5 times you'll have to get more leaves, which are hard to come by. Max once per scene you can Roll Crafts; <strong>10+</strong> you've brewed a powerful tea. Heal a minor injury or negative aspect. <strong>7-9,</strong> the flavourful tea will clear one negative mental aspect. <strong>6-,</strong> you've brewed a wonderfully delicious tea.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>The New Order</h3>
+                    <p>Once per scene, when you take it upon yourself to do menial labor that demeans you, gain a Fate Point.</p>
+                </div>
+                
+                <div class="subtype-note">
+                    <p><em>This is a subtype. Subtypes are mutually exclusive. You can choose a subtype without picking a move. When listing your playbook on your character sheet, list the subtype, if chosen.</em></p>
+                </div>
+                
+                <div class="playing-guide">
+                    <h3>Playing a Mummy:</h3>
+                    <p>Once you had it all. Wealth, power, station, the adoration of the people, love, magic. You were in your rightful place, at the head of the table, and it was good. Then it was all taken away from you, leaving you with nothing but the cold, slow passage of millennia.</p>
+                </div>
+            </div>
+            
+            <div class="section">
+                <div class="subtype-header">
+                    <img src="../images/Dark City Subtypes/Ancient - Serpentine.png" alt="Serpentine" class="subtype-icon clickable-image">
+                    <h2 class="subtype-title">Serpentine</h2>
+                </div>
+                <p><em>Moves only for Serpentines:</em></p>
+                
+                <div class="move">
+                    <h3>Shed</h3>
+                    <p><strong>-x- If you are all out</strong> of physical consequences, you can shed your skin. Clear all negative physical adjectives and consequences but for the next while your flesh is soft and weak. Take 2 temporary consequences until you've had substantial time for your new skin to harden. You can only shed your skin again after that process is complete.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Taste Of Fear</h3>
+                    <p><strong>-x-a Your tongue</strong> is super sensitive to chemicals lingering in the air, you get +2 to Notice rolls to taste odors and discern known substances easily.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Dynasty</h3>
+                    <p>In the past, your family was powerful. Whenever you take care of a massive problem for the family, gain a Fate Point.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Big Fish</h3>
+                    <p>You've earned respect and power amongst your family, members below you now obey your beck and call. Spend a fate point to get an automatic 10 on your next Contacts roll.</p>
+                </div>
+                
+                <div class="subtype-note">
+                    <p><em>This is a subtype. Subtypes are mutually exclusive. You can choose a subtype without picking a move. When listing your playbook on your character sheet, list the subtype, if chosen.</em></p>
+                </div>
+                
+                <div class="playing-guide">
+                    <h3>Playing a Serpentine:</h3>
+                    <p>They say that there will come a day when the serpent rules once more. That once again they will swap secrets with powerful allies and venom with powerful enemies. But what does that really do for me now? Legacies and family ties for what?</p>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>🎭 Character Creation</h2>
+                <p>Ready to create your Ancient character? Choose your subtype, select your three moves, and bring the weight of millennia to bear on the Dark City!</p>
+                
+                <div style="text-align: center;">
+                    <a href="../characters/" class="character-creation-btn">View Character Gallery</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal for full-size images -->
+    <div id="imageModal" class="modal">
+        <span class="modal-close">&times;</span>
+        <img class="modal-content" id="modalImage">
+    </div>
+    
+    <script>
+        // Modal functionality
+        const modal = document.getElementById('imageModal');
+        const modalImg = document.getElementById('modalImage');
+        const modalClose = document.getElementsByClassName('modal-close')[0];
+        
+        // Add click event to all clickable images
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('clickable-image')) {
+                modal.style.display = 'block';
+                modalImg.src = e.target.src;
+                modalImg.alt = e.target.alt;
+            }
+        });
+        
+        // Close modal when clicking the X
+        modalClose.onclick = function() {
+            modal.style.display = 'none';
+        }
+        
+        // Close modal when clicking the image or background
+        modal.onclick = function() {
+            modal.style.display = 'none';
+        }
+        
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                modal.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
             color: rgba(255, 255, 255, 0.9);
             font-size: 1.2rem;
             margin-top: 1rem;

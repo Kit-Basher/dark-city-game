@@ -13,11 +13,22 @@
         }
         
         .playbook-header {
-            background: linear-gradient(135deg, #ff6b35 0%, #e55a2b 100%);
-            padding: 3rem;
+            background: linear-gradient(135deg, #9B59B6 0%, #8E44AD 100%);
+            padding: 2rem;
             border-radius: 15px;
             text-align: center;
             margin-bottom: 2rem;
+        }
+        
+        .playbook-icon {
+            width: 180px;
+            height: 180px;
+            border-radius: 10px;
+            margin: 0 auto 1.5rem auto;
+            display: block;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            object-fit: cover;
         }
         
         .playbook-header h1 {
@@ -28,6 +39,414 @@
         }
         
         .playbook-subtypes {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.2rem;
+            margin-top: 1rem;
+        }
+        
+        .section {
+            background: #1a1a1a;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            border: 1px solid #4a5568;
+        }
+        
+        .section h2 {
+            color: #9B59B6;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #9B59B6;
+            padding-bottom: 0.5rem;
+        }
+        
+        .move {
+            background: #2a2a2a;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border-left: 4px solid #9B59B6;
+        }
+        
+        .move h3 {
+            color: #9B59B6;
+            margin-bottom: 0.5rem;
+        }
+        
+        .back-link {
+            color: #9B59B6;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .back-link:hover {
+            color: #9B59B6;
+            text-decoration: underline;
+        }
+        
+        .subtype-note {
+            background: rgba(155, 89, 182, 0.1);
+            border: 1px solid #9B59B6;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-style: italic;
+        }
+        
+        .playing-guide {
+            background: #2a2a2a;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border-left: 4px solid #9B59B6;
+        }
+        
+        .playing-guide h3 {
+            color: #9B59B6;
+            margin: 0 0 0.5rem 0;
+        }
+        
+        .subtype-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .subtype-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 3px solid rgba(155, 89, 182, 0.5);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+            object-fit: cover;
+        }
+        
+        .subtype-title {
+            color: #9B59B6;
+            font-size: 2rem;
+            margin: 0;
+        }
+        
+        .darkest-self {
+            background: #3a1a1a;
+            border: 2px solid #ff3333;
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+        }
+        
+        .darkest-self h3 {
+            color: #ff3333;
+            margin-bottom: 1rem;
+        }
+        
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            cursor: pointer;
+        }
+        
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 10px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            border: 3px solid #9B59B6;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 35px;
+            color: #9B59B6;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        }
+        
+        .modal-close:hover {
+            color: #fff;
+        }
+        
+        .clickable-image {
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        
+        .clickable-image:hover {
+            transform: scale(1.05);
+        }
+        
+        .character-creation-btn {
+            display: inline-block;
+            background: #9B59B6;
+            color: white;
+            padding: 1rem 2rem;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            margin: 2rem 0;
+            transition: all 0.3s ease;
+        }
+        
+        .character-creation-btn:hover {
+            background: #8E44AD;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">← Back to Playbooks</a>
+        
+        <div class="playbook-container">
+            <div class="playbook-header">
+                <img src="../images/Playbook Mains/The Mage.png" alt="Mage Playbook" class="playbook-icon clickable-image">
+                <h1>The Mage</h1>
+                <div class="playbook-subtypes">Wizard • Witch • Warlock</div>
+            </div>
+            
+            <div class="section">
+                <h2>🔮 Playing a Mage</h2>
+                <p>The energy is all around us, why can't they feel it? You can, it's part of who you are and you can use it, really it's too bad for those who can't, they don't know what real power looks like. They couldn't handle it if they did. Control the power, bend it to your will and make the world as you like.</p>
+                
+                <p>As a Mage, you walk between the mundane and the mystical, wielding forces that others can only dimly perceive. Magic flows through you like blood through veins, a constant presence that shapes your perception of reality. Whether you channel this power through ancient knowledge, natural intuition, or dark bargains, you understand that the world is far more complex and malleable than most people realize. This gift comes with responsibility and temptation - the same energy that can heal and protect can also destroy and corrupt.</p>
+            </div>
+            
+            <div class="darkest-self">
+                <h3>🌑 Darkest Self</h3>
+                <p>As a last resort to being taken out, (when you're out of consequences) you can become your Darkest Self. Lose yourself in your monstrous urges and temporarily double your consequence caps. The time for subtlety and patience is over. You're too powerful to put up with their garbage any longer. Do whatever you need to do to get everything you want to have, so that life can be good again, like it used to be. You are no longer your darkest self when someone forces you to stop for a second and deal with your shit.</p>
+            </div>
+            
+            <div class="section">
+                <h2>Moves for all Mage</h2>
+                <p><strong>Choose three from this playbook and/or a subtype below:</strong></p>
+                
+                <div class="move">
+                    <h3>Grimoire</h3>
+                    <p><strong>-x You keep your knowledge in a book</strong> of spells and practices, each time you take this move, add 2 moves from the advancements to your grimoire. You can cast a spell from your grimoire for 1 FP plus the move's original cost, if it has any.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Focus</h3>
+                    <p>You have a kind of object that you use to focus your energy and magic. With it in hand, gain +1 when trying to cast a spell.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Sanctuary</h3>
+                    <p>You have a small special, secret place you maintain for practicing. The entrance is magically hidden and trapped to intruders. Take +1 to all rolls you make within this space.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Familiar</h3>
+                    <p>You have a small magical pet or a small pet with magic, allowing them to appear or disappear at will. They are fully sentient and can communicate with you via telepathy. They can do anything their form infers but are no stronger.</p>
+                </div>
+            </div>
+            
+            <div class="section">
+                <div class="subtype-header">
+                    <img src="../images/Dark City Subtypes/Mage - Wizard.png" alt="Wizard" class="subtype-icon clickable-image">
+                    <h2 class="subtype-title">Wizard</h2>
+                </div>
+                <p><em>Moves only for Wizards:</em></p>
+                
+                <div class="move">
+                    <h3>Magic Scroll</h3>
+                    <p><strong>-x You can write a spell on vellum,</strong> able to be used by anyone. Any moves you combine on the same scroll must be applicable to the same purpose and/or situation. Inscribing a scroll takes a day per move and you must pay any original move activation costs. Casting the spell from the scroll costs 1 FP per inscribed move and destroys the scroll in the process.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Extra Hands</h3>
+                    <p>You may spend a Fate Point and roll Will to give life to an inanimate object, (things bigger than a man can't walk around).</p>
+                    <p><strong>10+:</strong> Your creation acts as an npc for the rest of the scene and listens to you</p>
+                    <p><strong>7-9:</strong> It does what you say but in doing so it causes you a new problem</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Smoke</h3>
+                    <p>You can produce magical smoke that you can shape into anything smaller than 8 ft square, it transforms into that thing, functions and works, and is as real to any onlookers as the real thing, and if it's alive it acts like it should. Any mild pressure and it will dissolve into smoke again.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Fire</h3>
+                    <p>You can manipulate energy, creating a fireball you can throw, or a tendril like whip to snatch at items out of reach.</p>
+                </div>
+                
+                <div class="subtype-note">
+                    <p><em>This is a subtype. Subtypes are mutually exclusive. You can choose a subtype without picking a move. When listing your playbook on your character sheet, list the subtype, if chosen.</em></p>
+                </div>
+                
+                <div class="playing-guide">
+                    <h3>Playing a Wizard:</h3>
+                    <p>Noble, wild, arrogant, and insecure. Wizards rule over a world that most people overlook or take for granted on a daily basis. They have raw power but their place in the world is shifting, maybe even vanishing.</p>
+                </div>
+            </div>
+            
+            <div class="section">
+                <div class="subtype-header">
+                    <img src="../images/Dark City Subtypes/Mage - Witch.png" alt="Witch" class="subtype-icon clickable-image">
+                    <h2 class="subtype-title">Witch</h2>
+                </div>
+                <p><em>Moves only for Witches:</em></p>
+                
+                <div class="move">
+                    <h3>Bone Magic</h3>
+                    <p><strong>-x Max once daily</strong> you can spend 5 FP to imbue a doll made of small bones and something personal from your target like a bit of hair, with a hex. When you place the doll in an unpleasant situation and cast a spell the target of your spell gains a simple negative aspect that reflects the situation the doll is in. ie the doll is in a hot place, they get "sweating", (max 1 aspect per person at a time).</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Candle Magic</h3>
+                    <p>Circle and candle magic can be used for all kinds of protection and prosperity spells, take the time to perform the whole ritual and it provides the target with a one time +1 to a failed roll, potentially changing it into a success (added after the roll) (not stackable).</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Crystal Magic</h3>
+                    <p>You can imbue crystals with magical energy to promote skill improvement. Specify who the stone is for, focus your energy into it. While the target is carrying the crystal, it will provide them with +1 to a skill of their choosing but -1 to another. Only skills at +1 or higher can be decreased by this. (not stackable)</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Divination</h3>
+                    <p>With your own preferred method of divination you can try to offer guidance to a willing target on a situation they specify only once. Roll Lore:</p>
+                    <p><strong>10+:</strong> the character you did the reading for gets +2 to any Will rolls to pursue that outcome and -2 to Will rolls against it</p>
+                    <p><strong>7-9:</strong> the character gets +1 to Will rolls to that end and -1 against</p>
+                </div>
+                
+                <div class="subtype-note">
+                    <p><em>This is a subtype. Subtypes are mutually exclusive. You can choose a subtype without picking a move. When listing your playbook on your character sheet, list the subtype, if chosen.</em></p>
+                </div>
+                
+                <div class="playing-guide">
+                    <h3>Playing a Witch:</h3>
+                    <p>A good witch turns a blind eye to ideas of sweet vengeance and control. A good witch is above that sort of thing. At least, most of the time. You have a hidden "Book of Shadows" that you record all your most important spells and ceremonies, maybe something fun.</p>
+                </div>
+            </div>
+            
+            <div class="section">
+                <div class="subtype-header">
+                    <img src="../images/Dark City Subtypes/Mage - Warlock.png" alt="Warlock" class="subtype-icon clickable-image">
+                    <h2 class="subtype-title">Warlock</h2>
+                </div>
+                <p><em>Moves only for Warlocks:</em></p>
+                
+                <div class="move">
+                    <h3>Curse</h3>
+                    <p><strong>-x For 5 Fate points</strong> you can cast a horrible curse upon a foe. They take; a mental consequence -OR- 2 minor physical injuries.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Reanimation</h3>
+                    <p>You have mastered the ability to raise skeletons or zombies to do your bidding. With the corpse(s) at hand and the ritual started, roll, choose how many minions you want to raise and roll Will;</p>
+                    <p><strong>10+:</strong> choose: One semi intelligent minion. OR - a group of near brainless ones, as many as 6. The more there are, the dumber they act</p>
+                    <p><strong>7-9:</strong> the raised (1-6) your minions are near feral. They constantly get distracted but will return to their graves at the next sunrise or sunset</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Bend Them</h3>
+                    <p>For one Fate Point you can push your will upon an NPC, roll Will.</p>
+                    <p><strong>10+,</strong> they fall into a deep hypnotic state, doing their best to cooperate</p>
+                    <p><strong>7-9,</strong> they fall into a light hypnotic state and confusedly try</p>
+                    <p><em>(Even under hypnosis people maintain their moral codes)</em></p>
+                </div>
+                
+                <div class="move">
+                    <h3>Daddy Issues</h3>
+                    <p>Max once per scene you can pray to your progenitor for guidance or assistance, if you dare. (roll 2d6, the 1st # = blessing, 2nd = curse)</p>
+                    <p><strong>Blessings:</strong></p>
+                    <ul>
+                        <li>You get nothing good</li>
+                        <li>Treat one roll in this scene as 10+</li>
+                        <li>Add 1 to the first damage you do in this scene</li>
+                        <li>Heal someone of a minor physical injury (aspect)</li>
+                        <li>Take 10 instead of rolling Provoke this scene</li>
+                        <li>+1 to a skill for the scene</li>
+                    </ul>
+                    <p><strong>Curses:</strong></p>
+                    <ul>
+                        <li>-1 to an important skill for the scene</li>
+                        <li>Take -6 on your next roll</li>
+                        <li>Gain a suitable negative aspect</li>
+                        <li>Opposition gains a Fate point</li>
+                        <li>One of your moves stops working for a scene</li>
+                        <li>Terrifyingly, nothing bad happens</li>
+                    </ul>
+                </div>
+                
+                <div class="subtype-note">
+                    <p><em>This is a subtype. Subtypes are mutually exclusive. You can choose a subtype without picking a move. When listing your playbook on your character sheet, list the subtype, if chosen.</em></p>
+                </div>
+                
+                <div class="playing-guide">
+                    <h3>Playing a Warlock:</h3>
+                    <p>So you're half demon, nearly ageless, but you're just as fragile in every way humans are, maybe more. Many lives of love, excitement and boredom, at least you have your magic.</p>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>🎭 Character Creation</h2>
+                <p>Ready to create your Mage character? Choose your subtype, select your three moves, and harness the arcane energies of the Dark City!</p>
+                
+                <div style="text-align: center;">
+                    <a href="../characters/" class="character-creation-btn">View Character Gallery</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal for full-size images -->
+    <div id="imageModal" class="modal">
+        <span class="modal-close">&times;</span>
+        <img class="modal-content" id="modalImage">
+    </div>
+    
+    <script>
+        // Modal functionality
+        const modal = document.getElementById('imageModal');
+        const modalImg = document.getElementById('modalImage');
+        const modalClose = document.getElementsByClassName('modal-close')[0];
+        
+        // Add click event to all clickable images
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('clickable-image')) {
+                modal.style.display = 'block';
+                modalImg.src = e.target.src;
+                modalImg.alt = e.target.alt;
+            }
+        });
+        
+        // Close modal when clicking the X
+        modalClose.onclick = function() {
+            modal.style.display = 'none';
+        }
+        
+        // Close modal when clicking the image or background
+        modal.onclick = function() {
+            modal.style.display = 'none';
+        }
+        
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                modal.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
             color: rgba(255, 255, 255, 0.9);
             font-size: 1.2rem;
             margin-top: 1rem;

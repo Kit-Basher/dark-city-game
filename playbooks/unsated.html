@@ -21,9 +21,9 @@
         }
         
         .playbook-icon {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
+            width: 180px;
+            height: 180px;
+            border-radius: 10px;
             margin: 0 auto 1.5rem auto;
             display: block;
             border: 4px solid rgba(255, 255, 255, 0.3);
@@ -75,6 +75,100 @@
         
         .back-link:hover {
             color: #e55a2b;
+            text-decoration: underline;
+        }
+        
+        .subtype-note {
+            background: rgba(220, 20, 60, 0.1);
+            border: 1px solid #DC143C;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-style: italic;
+        }
+        
+        .playing-guide {
+            background: #2a2a2a;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border-left: 4px solid #DC143C;
+        }
+        
+        .playing-guide h3 {
+            color: #DC143C;
+            margin: 0 0 0.5rem 0;
+        }
+        
+        .subtype-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .subtype-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 3px solid rgba(220, 20, 60, 0.5);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+            object-fit: cover;
+        }
+        
+        .subtype-title {
+            color: #DC143C;
+            font-size: 2rem;
+            margin: 0;
+        }
+        
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            cursor: pointer;
+        }
+        
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 10px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            border: 3px solid #DC143C;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 35px;
+            color: #DC143C;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        }
+        
+        .modal-close:hover {
+            color: #fff;
+        }
+        
+        .clickable-image {
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        
+        .clickable-image:hover {
+            transform: scale(1.05);
         }
         
         .move-card {
@@ -142,7 +236,7 @@
         
         <div class="playbook-container">
             <div class="playbook-header">
-                <img src="../images/Playbook Mains/The Unsated.png" alt="Unsated Playbook" class="playbook-icon">
+                <img src="../images/Playbook Mains/The Unsated.png" alt="Unsated Playbook" class="playbook-icon clickable-image">
                 <h1>The Unsated</h1>
                 <div class="playbook-subtypes">Vampire • Ghoul • Succubus</div>
             </div>
@@ -184,89 +278,119 @@
                 </div>
             </div>
             
-            <div class="subtype-section">
-                <h3 class="subtype-header">📖 Subtypes</h3>
-                <p><strong>This is a subtype. Subtypes are mutually exclusive. You can choose a subtype without picking a move. When listing your playbook on your character sheet, list the subtype, if chosen.</strong></p>
+            <div class="section">
+                <div class="subtype-header">
+                    <img src="../images/Dark City Subtypes/Unsated - Vampire.png" alt="Vampire" class="subtype-icon clickable-image">
+                    <h2 class="subtype-title">Vampire</h2>
+                </div>
+                <p><em>Moves only for Vampires:</em></p>
                 
-                <div class="section">
-                    <h3>🧛 The Vampire</h3>
-                    <p><strong>Playing a Vampire:</strong> Some vampires revel in that fact, their afterlife a tapestry of hedonism and exsanguination. Others hate the evil in their skin, solemnly vowing to a chaste and lonely existence. Either way, someone suffers. Where will you draw the line and how will you survive?</p>
-                    
-                    <h4>Moves only for Vampires:</h4>
-                    
-                    <div class="move-card">
-                        <h4>My End</h4>
-                        <p>-x- You remember every gory detail of your death. When you talk about it in detail, give listeners the adjective 'morbid sympathy'. You get +4 on rolls towards convincing people with the 'morbid sympathy' aspect to be willing participants to your wishes.</p>
-                    </div>
-                    
-                    <div class="move-card">
-                        <h4>Invited</h4>
-                        <p>You cannot enter a home without being invited. Once per scene, whenever someone invites you in, gain a Fate point.</p>
-                    </div>
-                    
-                    <div class="move-card">
-                        <h4>Cold As Ice</h4>
-                        <p>Take +2 for any rolls to defend against mental attacks. (Insults, jeers, posturing)</p>
-                    </div>
-                    
-                    <div class="move-card">
-                        <h4>Inescapable</h4>
-                        <p>You may offer one of your Fate Points to entice characters to remain in your presence. Once per scene, if they still walk out on you, gain a Fate point.</p>
-                    </div>
+                <div class="move">
+                    <h3>My End</h3>
+                    <p><strong>-x You remember every gory detail</strong> of your death. When you talk about it in detail, give listeners the adjective 'morbid sympathy'. You get +4 on rolls towards convincing people with the 'morbid sympathy' aspect to be willing participants to your wishes.</p>
                 </div>
                 
-                <div class="section">
-                    <h3>💀 The Ghoul</h3>
-                    <p><strong>Playing a Ghoul:</strong> You're caught between worlds, neither fully living nor completely dead. You feed on the dead and dying, a scavenger of souls and flesh. Your existence is one of constant hunger and the knowledge that you're an abomination to both the living and the truly dead.</p>
-                    
-                    <h4>Moves only for Ghouls:</h4>
-                    
-                    <div class="move-card">
-                        <h4>The Hunger</h4>
-                        <p>-x- You have a Hunger that grows over time (pick 1): fear, power, plunder, adrenaline. When you gorge yourself to satiate a Hunger, choose one: - heal 1 minor injury or 1 negative mental Aspect - gain a suitable positive temporary Aspect - add 2 to your next roll.</p>
-                    </div>
-                    
-                    <div class="move-card">
-                        <h4>No Rest For The Wicked</h4>
-                        <p>-x- When you die, wait it out. A few hours later, you wake up with all the injuries and damage still there, but them becoming non-lethal.</p>
-                    </div>
-                    
-                    <div class="move-card">
-                        <h4>My Crypt</h4>
-                        <p>Your home sits upon a winding catacomb, long halls filled with rooms containing the resting bones of your ancestors. You can travel to and from distant locations with very little travel time.</p>
-                    </div>
-                    
-                    <div class="move-card">
-                        <h4>Watchful</h4>
-                        <p>While defending someone without their knowledge, add +1 to rolls towards that goal.</p>
-                    </div>
+                <div class="move">
+                    <h3>Invited</h3>
+                    <p>You cannot enter a home without being invited. Once per scene, whenever someone invites you in, gain a Fate point.</p>
                 </div>
                 
-                <div class="section">
-                    <h3>💋 The Succubus / Incubus</h3>
-                    <p><strong>Playing a Succubus or Incubus:</strong> You are beauty incarnate. You are the darkness that everyone wants to taste, but no one dares understand. It's there in your eyes, your carefully chosen words, and your every gesture: you no longer have a soul.</p>
-                    
-                    <h4>Moves only for Succubi and Incubi:</h4>
-                    
-                    <div class="move-card">
-                        <h4>Deep Hungers</h4>
-                        <p>-x- Your body contains many histories, and it desires many things. The emotions generated by the 7 deadly sins are your sustenance. When you recklessly pursue your target, add 2 to rolls. When you ignore a promising opportunity to fulfill that urge, roll Will to resist.</p>
-                    </div>
-                    
-                    <div class="move-card">
-                        <h4>Think Again</h4>
-                        <p>Gain a fate point the first time in a scene you convince someone that what they believed is, in fact, wrong and false.</p>
-                    </div>
-                    
-                    <div class="move-card">
-                        <h4>Thrall</h4>
-                        <p>After spending a few full minutes staring into your eyes, most mortals will happily go with almost anything you have to say, as long as they can reason it in their own minds. After their adrenaline wears off, as soon as they come to harm or think "this is insane!" They will snap out of it and remember everything.</p>
-                    </div>
-                    
-                    <div class="move-card">
-                        <h4>Beer Goggles</h4>
-                        <p>You give off a pheromone that acts on people that are attracted to your gender like beer goggles, making them see you slightly more like their preferred interests. If they find you attractive, gain +2 to Rapport rolls towards them.</p>
-                    </div>
+                <div class="move">
+                    <h3>Cold As Ice</h3>
+                    <p>Take +2 for any rolls to defend against mental attacks. (Insults, jeers, posturing)</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Inescapable</h3>
+                    <p>You may offer one of your Fate Points to entice characters to remain in your presence. Once per scene, if they still walk out on you, gain a Fate point.</p>
+                </div>
+                
+                <div class="subtype-note">
+                    <p><em>This is a subtype. Subtypes are mutually exclusive. You can choose a subtype without picking a move. When listing your playbook on your character sheet, list the subtype, if chosen.</em></p>
+                </div>
+                
+                <div class="playing-guide">
+                    <h3>Playing a Vampire:</h3>
+                    <p>Some vampires revel in that fact, their afterlife a tapestry of hedonism and exsanguination. Others hate the evil in their skin, solemnly vowing to a chaste and lonely existence. Either way, someone suffers. Where will you draw the line and how will you survive?</p>
+                </div>
+            </div>
+            
+            <div class="section">
+                <div class="subtype-header">
+                    <img src="../images/Dark City Subtypes/Unsated - Ghoul.png" alt="Ghoul" class="subtype-icon clickable-image">
+                    <h2 class="subtype-title">Ghoul</h2>
+                </div>
+                <p><em>Moves only for Ghouls:</em></p>
+                
+                <div class="move">
+                    <h3>The Hunger</h3>
+                    <p><strong>-x You have a Hunger</strong> that grows over time (pick 1): fear, power, plunder, adrenaline. When you gorge yourself to satiate a Hunger, choose one:</p>
+                    <ul>
+                        <li>Heal 1 minor injury or 1 negative mental Aspect</li>
+                        <li>Gain a suitable positive temporary Aspect</li>
+                        <li>Add 2 to your next roll</li>
+                    </ul>
+                </div>
+                
+                <div class="move">
+                    <h3>No Rest For The Wicked</h3>
+                    <p><strong>-x When you die,</strong> wait it out. A few hours later, you wake up with all the injuries and damage still there, but them becoming non-lethal.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>My Crypt</h3>
+                    <p>Your home sits upon a winding catacomb, long halls filled with rooms containing the resting bones of your ancestors. You can travel to and from distant locations with very little travel time.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Watchful</h3>
+                    <p>While defending someone without their knowledge, add +1 to rolls towards that goal.</p>
+                </div>
+                
+                <div class="subtype-note">
+                    <p><em>This is a subtype. Subtypes are mutually exclusive. You can choose a subtype without picking a move. When listing your playbook on your character sheet, list the subtype, if chosen.</em></p>
+                </div>
+                
+                <div class="playing-guide">
+                    <h3>Playing a Ghoul:</h3>
+                    <p>Death changed you. It took away your contemplative joy, it dulled your senses, and it left you impossibly hungry. You get more and more and for a moment it seems better but then the craving comes back and you start to come up with your next plan. How will you get more?</p>
+                </div>
+            </div>
+            
+            <div class="section">
+                <div class="subtype-header">
+                    <img src="../images/Dark City Subtypes/Unsated - Succubus.png" alt="Succubus/Incubus" class="subtype-icon clickable-image">
+                    <h2 class="subtype-title">Succubus / Incubus</h2>
+                </div>
+                <p><em>Moves only for Succubi and Incubi:</em></p>
+                
+                <div class="move">
+                    <h3>Deep Hungers</h3>
+                    <p><strong>-x Your body contains many histories,</strong> and it desires many things. The emotions generated by the 7 deadly sins are your sustenance. When you recklessly pursue your target, add 2 to rolls. When you ignore a promising opportunity to fulfill that urge, roll Will to resist.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Think Again</h3>
+                    <p>Gain a fate point the first time in a scene you convince someone that what they believed is, in fact, wrong and false.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Thrall</h3>
+                    <p>After spending a few full minutes staring into your eyes, most mortals will happily go with almost anything you have to say, as long as they can reason it in their own minds. After their adrenaline wears off, as soon as they come to harm or think "this is insane!" They will snap out of it and remember everything.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Beer Goggles</h3>
+                    <p>You give off a pheromone that acts on people that are attracted to your gender like beer goggles, making them see you slightly more like their preferred interests. If they find you attractive, gain +2 to Rapport rolls towards them.</p>
+                </div>
+                
+                <div class="subtype-note">
+                    <p><em>This is a subtype. Subtypes are mutually exclusive. You can choose a subtype without picking a move. When listing your playbook on your character sheet, list the subtype, if chosen.</em></p>
+                </div>
+                
+                <div class="playing-guide">
+                    <h3>Playing a Succubus or Incubus:</h3>
+                    <p>You are beauty incarnate. You are the darkness that everyone wants to taste, but no one dares understand. It's there in your eyes, your carefully chosen words, and your every gesture: you no longer have a soul.</p>
                 </div>
             </div>
             
@@ -280,5 +404,44 @@
             </div>
         </div>
     </div>
+    
+    <!-- Modal for full-size images -->
+    <div id="imageModal" class="modal">
+        <span class="modal-close">&times;</span>
+        <img class="modal-content" id="modalImage">
+    </div>
+    
+    <script>
+        // Modal functionality
+        const modal = document.getElementById('imageModal');
+        const modalImg = document.getElementById('modalImage');
+        const modalClose = document.getElementsByClassName('modal-close')[0];
+        
+        // Add click event to all clickable images
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('clickable-image')) {
+                modal.style.display = 'block';
+                modalImg.src = e.target.src;
+                modalImg.alt = e.target.alt;
+            }
+        });
+        
+        // Close modal when clicking the X
+        modalClose.onclick = function() {
+            modal.style.display = 'none';
+        }
+        
+        // Close modal when clicking the image or background
+        modal.onclick = function() {
+            modal.style.display = 'none';
+        }
+        
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                modal.style.display = 'none';
+            }
+        });
+    </script>
 </body>
 </html>

@@ -14,10 +14,21 @@
         
         .playbook-header {
             background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
-            padding: 3rem;
+            padding: 2rem;
             border-radius: 15px;
             text-align: center;
             margin-bottom: 2rem;
+        }
+        
+        .playbook-icon {
+            width: 180px;
+            height: 180px;
+            border-radius: 10px;
+            margin: 0 auto 1.5rem auto;
+            display: block;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            object-fit: cover;
         }
         
         .playbook-header h1 {
@@ -28,6 +39,398 @@
         }
         
         .playbook-subtypes {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.2rem;
+            margin-top: 1rem;
+        }
+        
+        .section {
+            background: #1a1a1a;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            border: 1px solid #4a5568;
+        }
+        
+        .section h2 {
+            color: #8B4513;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #8B4513;
+            padding-bottom: 0.5rem;
+        }
+        
+        .move {
+            background: #2a2a2a;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border-left: 4px solid #8B4513;
+        }
+        
+        .move h3 {
+            color: #8B4513;
+            margin-bottom: 0.5rem;
+        }
+        
+        .back-link {
+            color: #8B4513;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .back-link:hover {
+            color: #8B4513;
+            text-decoration: underline;
+        }
+        
+        .subtype-note {
+            background: rgba(139, 69, 19, 0.1);
+            border: 1px solid #8B4513;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-style: italic;
+        }
+        
+        .playing-guide {
+            background: #2a2a2a;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border-left: 4px solid #8B4513;
+        }
+        
+        .playing-guide h3 {
+            color: #8B4513;
+            margin: 0 0 0.5rem 0;
+        }
+        
+        .subtype-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .subtype-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 3px solid rgba(139, 69, 19, 0.5);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+            object-fit: cover;
+        }
+        
+        .subtype-title {
+            color: #8B4513;
+            font-size: 2rem;
+            margin: 0;
+        }
+        
+        .darkest-self {
+            background: #3a1a1a;
+            border: 2px solid #ff3333;
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+        }
+        
+        .darkest-self h3 {
+            color: #ff3333;
+            margin-bottom: 1rem;
+        }
+        
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            cursor: pointer;
+        }
+        
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 10px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            border: 3px solid #8B4513;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 35px;
+            color: #8B4513;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        }
+        
+        .modal-close:hover {
+            color: #fff;
+        }
+        
+        .clickable-image {
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        
+        .clickable-image:hover {
+            transform: scale(1.05);
+        }
+        
+        .character-creation-btn {
+            display: inline-block;
+            background: #8B4513;
+            color: white;
+            padding: 1rem 2rem;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            margin: 2rem 0;
+            transition: all 0.3s ease;
+        }
+        
+        .character-creation-btn:hover {
+            background: #A0522D;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">← Back to Playbooks</a>
+        
+        <div class="playbook-container">
+            <div class="playbook-header">
+                <img src="../images/Playbook Mains/The Giant.png" alt="Giant Playbook" class="playbook-icon clickable-image">
+                <h1>The Giant</h1>
+                <div class="playbook-subtypes">Sasquatch • Minotaur • Hercules</div>
+            </div>
+            
+            <div class="section">
+                <h2>💪 Playing a Giant</h2>
+                <p>You're big, so what? Why does everyone have to remark about it like you had no idea? Why when someone needs protecting or beaten up they ask you like it's what you do, like it's who you are. You're more than a big idiot, it's time to take care of your own problems.</p>
+                
+                <p>As a Giant, your physical presence dominates every room you enter. People make assumptions about you based on your size - that you're strong, slow, and perhaps not too bright. But there's more to you than just muscle and bulk. You struggle to be seen for who you truly are, not just what you appear to be. Whether you're a gentle soul trapped in a massive frame or a force of nature learning to control your strength, you're constantly navigating a world that wasn't built for someone of your stature.</p>
+            </div>
+            
+            <div class="darkest-self">
+                <h3>🌑 Darkest Self</h3>
+                <p>As a last resort to being taken out, (when you're out of consequences) you can become your darkest self. Lose yourself in your monstrous urges and temporarily double your consequence caps. You're nothing but a violent animal, and everybody knows it. They all just use you - the assholes who think you're just a dumb beast, the suckups who pretend to like you so you won't end them. So fine, be a violent animal. You come out of your Darkest Self when you break something precious that can't be fixed.</p>
+            </div>
+            
+            <div class="section">
+                <h2>Moves for all Giants</h2>
+                <p><strong>Choose three from this playbook and/or a subtype below:</strong></p>
+                
+                <div class="move">
+                    <h3>Bully</h3>
+                    <p><strong>-x Your impressive physique</strong> is as good as a threat. You can roll Fight instead of Provoke, and Physique instead of Will.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Blinders</h3>
+                    <p>When someone in extreme distress begs you to do something significant or dangerous and you accept, you get +1 to rolls towards that goal and -1 to anything non-related rolls in that scene.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Guns</h3>
+                    <p>When you flex, people second guess themselves. Anytime you come to someone's aid, up to 2 times in this scene, you may invoke one of your Character Aspects for free.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Shield</h3>
+                    <p>When someone in your immediate vicinity fails a defense roll, you may throw yourself in the way and pass the harm on to yourself. You take the damage as if you had failed the defense roll yourself.</p>
+                </div>
+            </div>
+            
+            <div class="section">
+                <div class="subtype-header">
+                    <img src="../images/Dark City Subtypes/Giant - Sasquatch.png" alt="Sasquatch" class="subtype-icon clickable-image">
+                    <h2 class="subtype-title">Sasquatch</h2>
+                </div>
+                <p><em>Moves only for Sasquatches:</em></p>
+                
+                <div class="move">
+                    <h3>My Stick</h3>
+                    <p>You can pick up heavy tools and wield them like weapons. Sledge hammers, 2x4s etc are all legitimate pieces of gear for you. Add +2 to any Fight rolls, when using an improvised weapon.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Bush Step</h3>
+                    <p>When near any greenery and you try to run away roll stealth</p>
+                    <p><strong>10+:</strong> You slip from view and remain there in the underbrush, practically invisible</p>
+                    <p><strong>7-9:</strong> You escape to safety, rustling bushes around them, causing confusion</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Empathy</h3>
+                    <p>You know what it's like to feel sad or depressed, to feel outcast or feared for no reason. When sympathizing with others about these kinds of things, you always seem to understand, take +2 to any Empathy rolls like this.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Brooding</h3>
+                    <p>When you obsess over the thing that enraged you, roll Will.</p>
+                    <p><strong>10+:</strong> You get Crazy, add 1 to all combat rolls, yours and your opponents</p>
+                    <p><strong>7-9:</strong> You get crazy serious, add 2 to your next Physique roll</p>
+                </div>
+                
+                <div class="subtype-note">
+                    <p><em>This is a subtype. Subtypes are mutually exclusive. You can choose a subtype without picking a move. When listing your playbook on your character sheet, list the subtype, if chosen.</em></p>
+                </div>
+                
+                <div class="playing-guide">
+                    <h3>Playing a Sasquatch:</h3>
+                    <p>Shy, awkward, private, honest. The Sasquatch is all about watching from the sidelines and having a painfully hard time in social situations. But what about you? What do you really want?</p>
+                </div>
+            </div>
+            
+            <div class="section">
+                <div class="subtype-header">
+                    <img src="../images/Dark City Subtypes/Giant - Minotaur.png" alt="Minotaur" class="subtype-icon clickable-image">
+                    <h2 class="subtype-title">Minotaur</h2>
+                </div>
+                <p><em>Moves only for Minotaurs:</em></p>
+                
+                <div class="move">
+                    <h3>Seeing Red</h3>
+                    <p><strong>-x You have a serious temper,</strong> when you get pissed you get tunnel vision. The one responsible becomes your "target". You can choose to add 2 to any conflict rolls against your "target", but you fail all Will rolls if you do.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Mess With The Bull</h3>
+                    <p><strong>-x When you violently confront</strong> the center of your attention roll Will.</p>
+                    <p><strong>- 7-9:</strong> You take on a huge bestial form, complete with horns and hooves</p>
+                    <p><strong>- 10 up:</strong> Take on bestial form and temporarily become your Darkest Self</p>
+                    <p>While in your bestial form, you deal +1 on all overlapping damage you cause and take 1 less overlapping damage done to you. You can Roll Will in order to return to your human form.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Juggernaut</h3>
+                    <p>Your whole body is as tough as your muscles are so you can use your imposing strength to break through scenery (walls etc). Anytime it's something stronger than drywall roll Physique;</p>
+                    <p><strong>10+:</strong> It takes some work but you can do it</p>
+                    <p><strong>7-9:</strong> It's possible, but if you choose to continue it's going to cause you damage. (Take a minor applicable injury.)</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Ironman</h3>
+                    <p>Your stupendous strength makes your very fists lethal weapons take +1 to all Fight and Physique rolls for combat when using just your bare hands.</p>
+                </div>
+                
+                <div class="subtype-note">
+                    <p><em>This is a subtype. Subtypes are mutually exclusive. You can choose a subtype without picking a move. When listing your playbook on your character sheet, list the subtype, if chosen.</em></p>
+                </div>
+                
+                <div class="playing-guide">
+                    <h3>Playing a Minotaur:</h3>
+                    <p>It's not your fault you're bigger than the others, at least if you beat people up for them, they hang out with you, but you know your friends aren't real friends. It is what it is, it's better than being alone.</p>
+                </div>
+            </div>
+            
+            <div class="section">
+                <div class="subtype-header">
+                    <img src="../images/Dark City Subtypes/Giant - Hercules.png" alt="Hercules" class="subtype-icon clickable-image">
+                    <h2 class="subtype-title">Hercules</h2>
+                </div>
+                <p><em>Moves only for Hercules:</em></p>
+                
+                <div class="move">
+                    <h3>Hysterical Strength</h3>
+                    <p><strong>-x You are stronger than most at all times,</strong> but your adrenaline can surge your available strength. When in times of emotional stress you can roll Will;</p>
+                    <p><strong>10+:</strong> Your adrenaline doubles your physical strength, things that would have been difficult are no problem for the moment. (+3 to Physique rolls)</p>
+                    <p><strong>7-9:</strong> You barely pull it off, pulling muscles and straining yourself. (+2 to Physique rolls)</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Peak Physique</h3>
+                    <p><strong>-x When naked, scantily dressed,</strong> or just being physically lewd you can add +2 to any Provoke and Rapport rolls.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Beacon</h3>
+                    <p>Anytime there is conflict (mental or physical) and you choose a side, your presence grants your allies a surge of confidence and +1 to any of their Provoke rolls!</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Tribute</h3>
+                    <p>If you are forced to allow something bad to happen so you can keep something else worse from happening, gain a Fate point and take the temporary aspect "shamed". Take +2 on the next roll to make up for your failure.</p>
+                </div>
+                
+                <div class="subtype-note">
+                    <p><em>This is a subtype. Subtypes are mutually exclusive. You can choose a subtype without picking a move. When listing your playbook on your character sheet, list the subtype, if chosen.</em></p>
+                </div>
+                
+                <div class="playing-guide">
+                    <h3>Playing a Hercules:</h3>
+                    <p>You're confident, brash and in the prime of your life, the world at your fingertips. You've never had any reason to doubt yourself, and you've always been stronger than everyone else. Your self-esteem is unshakeable - or at least, that's what people think.</p>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>🎭 Character Creation</h2>
+                <p>Ready to create your Giant character? Choose your subtype, select your three moves, and bring your immense power to the Dark City!</p>
+                
+                <div style="text-align: center;">
+                    <a href="../characters/" class="character-creation-btn">View Character Gallery</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal for full-size images -->
+    <div id="imageModal" class="modal">
+        <span class="modal-close">&times;</span>
+        <img class="modal-content" id="modalImage">
+    </div>
+    
+    <script>
+        // Modal functionality
+        const modal = document.getElementById('imageModal');
+        const modalImg = document.getElementById('modalImage');
+        const modalClose = document.getElementsByClassName('modal-close')[0];
+        
+        // Add click event to all clickable images
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('clickable-image')) {
+                modal.style.display = 'block';
+                modalImg.src = e.target.src;
+                modalImg.alt = e.target.alt;
+            }
+        });
+        
+        // Close modal when clicking the X
+        modalClose.onclick = function() {
+            modal.style.display = 'none';
+        }
+        
+        // Close modal when clicking the image or background
+        modal.onclick = function() {
+            modal.style.display = 'none';
+        }
+        
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                modal.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
             color: rgba(255, 255, 255, 0.9);
             font-size: 1.2rem;
             margin-top: 1rem;

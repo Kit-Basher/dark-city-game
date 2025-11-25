@@ -14,10 +14,21 @@
         
         .playbook-header {
             background: linear-gradient(135deg, #4A0080 0%, #2E0040 100%);
-            padding: 3rem;
+            padding: 2rem;
             border-radius: 15px;
             text-align: center;
             margin-bottom: 2rem;
+        }
+        
+        .playbook-icon {
+            width: 180px;
+            height: 180px;
+            border-radius: 10px;
+            margin: 0 auto 1.5rem auto;
+            display: block;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            object-fit: cover;
         }
         
         .playbook-header h1 {
@@ -28,6 +39,409 @@
         }
         
         .playbook-subtypes {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.2rem;
+            margin-top: 1rem;
+        }
+        
+        .section {
+            background: #1a1a1a;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            border: 1px solid #4a5568;
+        }
+        
+        .section h2 {
+            color: #4A0080;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #4A0080;
+            padding-bottom: 0.5rem;
+        }
+        
+        .move {
+            background: #2a2a2a;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border-left: 4px solid #4A0080;
+        }
+        
+        .move h3 {
+            color: #4A0080;
+            margin-bottom: 0.5rem;
+        }
+        
+        .back-link {
+            color: #4A0080;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .back-link:hover {
+            color: #4A0080;
+            text-decoration: underline;
+        }
+        
+        .subtype-note {
+            background: rgba(74, 0, 128, 0.1);
+            border: 1px solid #4A0080;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-style: italic;
+        }
+        
+        .playing-guide {
+            background: #2a2a2a;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border-left: 4px solid #4A0080;
+        }
+        
+        .playing-guide h3 {
+            color: #4A0080;
+            margin: 0 0 0.5rem 0;
+        }
+        
+        .subtype-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .subtype-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 3px solid rgba(74, 0, 128, 0.5);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+            object-fit: cover;
+        }
+        
+        .subtype-title {
+            color: #4A0080;
+            font-size: 2rem;
+            margin: 0;
+        }
+        
+        .darkest-self {
+            background: #3a1a1a;
+            border: 2px solid #ff3333;
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+        }
+        
+        .darkest-self h3 {
+            color: #ff3333;
+            margin-bottom: 1rem;
+        }
+        
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            cursor: pointer;
+        }
+        
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 10px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            border: 3px solid #4A0080;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 35px;
+            color: #4A0080;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        }
+        
+        .modal-close:hover {
+            color: #fff;
+        }
+        
+        .clickable-image {
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        
+        .clickable-image:hover {
+            transform: scale(1.05);
+        }
+        
+        .character-creation-btn {
+            display: inline-block;
+            background: #4A0080;
+            color: white;
+            padding: 1rem 2rem;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            margin: 2rem 0;
+            transition: all 0.3s ease;
+        }
+        
+        .character-creation-btn:hover {
+            background: #2E0040;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">← Back to Playbooks</a>
+        
+        <div class="playbook-container">
+            <div class="playbook-header">
+                <img src="../images/Playbook Mains/The Darkling.png" alt="Darkling Playbook" class="playbook-icon clickable-image">
+                <h1>The Darkling</h1>
+                <div class="playbook-subtypes">Infernal • Proxy • Condemned</div>
+            </div>
+            
+            <div class="section">
+                <h2>🌑 Playing a Darkling</h2>
+                <p>Why me? The questions rang through your head over and over. How did you draw the attention of a shadow or demon, whatever it is? How do I get it to leave me alone, and do I really even want it to?</p>
+                
+                <p>As a Darkling, you are touched by darkness - whether by choice, circumstance, or cruel fate. Something beyond mortal comprehension has marked you as its own, granting you powers that come at a terrible price. You walk the line between humanity and something else entirely, forever changed by your connection to the shadows that cling to you like a second skin.</p>
+            </div>
+            
+            <div class="darkest-self">
+                <h3>🌑 Darkest Self</h3>
+                <p>As a last resort to being taken out, (when you're out of consequences) you can become your darkest self. Lose yourself in your monstrous urges and temporarily double your consequence caps. That was a close one; too close. It could be anything or anyone coming to get to you, so trust no-one but yourself. Push others aside, avoid contact and turn away any help you are offered: if they persist, get violent. You escape your Darkest Self when someone forces their help or support on you without hurting you.</p>
+            </div>
+            
+            <div class="section">
+                <h2>Moves for all Darklings</h2>
+                <p><strong>Choose three from this playbook and/or a subtype below:</strong></p>
+                
+                <div class="move">
+                    <h3>Under Pressure</h3>
+                    <p><strong>-x You can beg the darkness for assistance,</strong> it emanates an overwhelming sense of dread that fills the room, but pay 1 Fate Point and you get +1 to any rolls to save yourself for the rest of the scene.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Defiance</h3>
+                    <p><strong>-x The first time in a scene you refuse to cooperate</strong> because it goes against your Character Aspects and even though it is dangerous for you to do so, you can invoke your Character Aspects once each for free.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Poltergeist</h3>
+                    <p><strong>-x When you roll a 2,</strong> all hell breaks loose, destroying the scenery and creating up to two new dangerous temporary aspects. You can invoke these once each for free.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Menacing Aspect</h3>
+                    <p>A dark aura swirls around you, most people can't see it but they sure feel it. NPCs tend to avoid you and you take +2 on Provoke rolls.</p>
+                </div>
+            </div>
+            
+            <div class="section">
+                <div class="subtype-header">
+                    <img src="../images/Dark City Subtypes/Darkling - Infernal.png" alt="Infernal" class="subtype-icon clickable-image">
+                    <h2 class="subtype-title">Infernal</h2>
+                </div>
+                <p><em>Moves only for Infernals:</em></p>
+                
+                <div class="subtype-note">
+                    <p><strong>By choosing this subtype, you are subject to the Dark Power mechanic:</strong></p>
+                    <p>You owe a debt to some deity or Dark Power. It maintains its own pool of Fate Points which it can give you to make demands of you. Only you can see or hear it but others can feel its power when it appears. If it ever has 8 Fate Points, it will spend them to trigger your Darkest Self. Keep track of its Fate Points in the Special Resources section of your character sheet.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>The Collective</h3>
+                    <p><strong>-x When you meditate and ask your Dark Power</strong> for assistance roll: Notice or Investigate; (You can pay one FP to add +1)</p>
+                    <p><strong>- 10+:</strong> Choose two <strong>- 7-9:</strong> Choose one (ask their player for answers).</p>
+                    <ul>
+                        <li>Learn their immediate family members names birthdays etc</li>
+                        <li>Learn details about locations your subject has lived</li>
+                        <li>Learn about their first or secret love</li>
+                        <li>Learn their deepest darkest fear</li>
+                        <li>Learn about their current hopes dreams and aspirations</li>
+                        <li>Learn what they wrote in a journal/diary/blog etc</li>
+                    </ul>
+                </div>
+                
+                <div class="move">
+                    <h3>Elsewise Power</h3>
+                    <p><strong>-x You can give the Dark Power a Fate Point</strong> in order to use a move (from any playbook) you don't have, in that instance.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Dark Recruiter</h3>
+                    <p><strong>-x Once per scene,</strong> when you provide your Dark Power with a new follower or sacrifice, it will give one of its Fate points to you.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Power Flow</h3>
+                    <p><strong>-x You can give your Dark Power a Fate Point</strong> in order to add +3 to a roll or remove a minor negative Aspect from yourself.</p>
+                </div>
+                
+                <div class="subtype-note">
+                    <p><em>This is a subtype. Subtypes are mutually exclusive. You can choose a subtype without picking a move. When listing your playbook on your character sheet, list the subtype, if chosen.</em></p>
+                </div>
+                
+                <div class="playing-guide">
+                    <h3>Playing an Infernal:</h3>
+                    <p>It started out innocent, helped you when no one else would, helped you acquire things you could never have got on your own. You accept its gifts anxiously since you know that nothing in life is free. What will it want in return?</p>
+                </div>
+            </div>
+            
+            <div class="section">
+                <div class="subtype-header">
+                    <img src="../images/Dark City Subtypes/Darkling - Proxy.png" alt="Proxy" class="subtype-icon clickable-image">
+                    <h2 class="subtype-title">Proxy</h2>
+                </div>
+                <p><em>Moves only for Proxies:</em></p>
+                
+                <div class="move">
+                    <h3>"IT"</h3>
+                    <p><strong>-x It's Always There… Watching.</strong> "IT" wants to make you fail and if you do, it will devour your soul. Up to twice per scene, "IT" will create new scene Aspects by changing physical things i.e. setting things on fire or blowing icy winds, by water flooding across the floor or the whole room shaking etc etc. The Proxy can invoke these new Aspects once for free (like they caused it).</p>
+                </div>
+                
+                <div class="move">
+                    <h3>The Sickness</h3>
+                    <p><strong>-x You have an unhealthy fascination</strong> for people, if you choose one character to be your "subject" you get automatic 10's on Will rolls towards them.</p>
+                    <p>When you suggest an action for your "subject" that creates a new problem for them and grants them a Fate Point, add 1 to their 'sickness' count.</p>
+                    <p>When they reach 5 'sickness' they gain access to the Proxy playbook and must use their next advancement to take a Proxy move.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Distortion</h3>
+                    <p>Your masked face causes distortion in any photographic, video, or audio recordings of yourself. The distortion may range from mild static to severe interference.</p>
+                    <p>When you frighten someone indirectly, roll Deceive instead of Provoke. This can consist of mysterious but meaningful images, phrases written in ciphers, or recurring symbols. Gain 1 on your next roll towards them after this.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Path Of Shadows</h3>
+                    <p>You can escape through doorways in shadow connecting to a maze of dimly lit hallways. You can spend a Fate point to open the way for others and can cause your victims to find themselves repeatedly passing through the same hallways and doors without actually getting anywhere.</p>
+                </div>
+                
+                <div class="subtype-note">
+                    <p><em>This is a subtype. Subtypes are mutually exclusive. You can choose a subtype without picking a move. When listing your playbook on your character sheet, list the subtype, if chosen.</em></p>
+                </div>
+                
+                <div class="playing-guide">
+                    <h3>Playing a Proxy:</h3>
+                    <p>I can See it sometimes, out there peering down at me from the darkness. I can hear its breath, its murmur, sometimes it's so close I can feel its breath on my neck. Hiding even my face seems to help, but it's always there, just around the next corner ready to get me!</p>
+                </div>
+            </div>
+            
+            <div class="section">
+                <div class="subtype-header">
+                    <img src="../images/Dark City Subtypes/Darkling - Condemned.png" alt="Condemned" class="subtype-icon clickable-image">
+                    <h2 class="subtype-title">Condemned</h2>
+                </div>
+                <p><em>Moves only for Condemned:</em></p>
+                
+                <div class="subtype-note">
+                    <p><strong>By choosing this Subtype, you are subject to the Countdown Timer mechanic:</strong></p>
+                    <p>Add 1 to your Countdown Timer every day. At 6, you will die the next day. Keep track of your Countdown Timer in the Special Resources section of your character sheet.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Appointment With Death</h3>
+                    <p><strong>-x If you're about to take your last consequence</strong> before your Countdown is full, you can take 10 on the Physique roll to defend. Consecutive uses cause you to take progressively worse injuries.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Desperate Times</h3>
+                    <p><strong>-x You may roll +Countdown</strong> instead of Will, Fight or Shoot.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Pay The Piper</h3>
+                    <p><strong>-x Once per scene</strong> by creating more and more discord, misery, terror, or wanton destruction than ever before, you can subtract 1 from your Countdown clock.</p>
+                </div>
+                
+                <div class="move">
+                    <h3>Redeemer</h3>
+                    <p>Once per scene if someone tries to save you and you deny them, they gain a Fate Point. If someone tries to save you and you let them, you gain a Fate Point.</p>
+                </div>
+                
+                <div class="subtype-note">
+                    <p><em>This is a subtype. Subtypes are mutually exclusive. You can choose a subtype without picking a move. When listing your playbook on your character sheet, list the subtype, if chosen.</em></p>
+                </div>
+                
+                <div class="playing-guide">
+                    <h3>Playing a Condemned:</h3>
+                    <p>It's after you. There's no more running. It's now or never. things get destroyed, people get hurt and every time it's worse. You won't make it much further anyway. Maybe it's better to just give up? Or maybe, just maybe, you can win?</p>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>🎭 Character Creation</h2>
+                <p>Ready to create your Darkling character? Choose your subtype, select your three moves, and embrace the darkness in the Dark City!</p>
+                
+                <div style="text-align: center;">
+                    <a href="../characters/" class="character-creation-btn">View Character Gallery</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal for full-size images -->
+    <div id="imageModal" class="modal">
+        <span class="modal-close">&times;</span>
+        <img class="modal-content" id="modalImage">
+    </div>
+    
+    <script>
+        // Modal functionality
+        const modal = document.getElementById('imageModal');
+        const modalImg = document.getElementById('modalImage');
+        const modalClose = document.getElementsByClassName('modal-close')[0];
+        
+        // Add click event to all clickable images
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('clickable-image')) {
+                modal.style.display = 'block';
+                modalImg.src = e.target.src;
+                modalImg.alt = e.target.alt;
+            }
+        });
+        
+        // Close modal when clicking the X
+        modalClose.onclick = function() {
+            modal.style.display = 'none';
+        }
+        
+        // Close modal when clicking the image or background
+        modal.onclick = function() {
+            modal.style.display = 'none';
+        }
+        
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                modal.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
             color: rgba(255, 255, 255, 0.9);
             font-size: 1.2rem;
             margin-top: 1rem;

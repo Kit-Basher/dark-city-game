@@ -1,5 +1,6 @@
 # Dependencies
 node_modules/
+package-lock.json
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
@@ -137,3 +138,12 @@ coverage/
 # Server logs
 *.log
 server_output.log
+
+# Development files
+tests/
+*.tmp
+draft_*
+
+# Cache directories
+.cache/
+.parcel-cache/

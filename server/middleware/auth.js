@@ -149,6 +149,8 @@ class AuthManager {
 class ApiKeyAuth {
     constructor() {
         this.apiKey = process.env.API_KEY || 'dark-city-dev-key';
+        console.log('🔑 API Key loaded:', this.apiKey ? 'Set (value hidden)' : 'Using default');
+        console.log('🔑 Environment API_KEY:', process.env.API_KEY ? 'Set' : 'Not set');
     }
 
     // Middleware for API key authentication

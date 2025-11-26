@@ -10,13 +10,13 @@ const config = {
   
   // Local development server
   development: {
-    apiURL: '/api',
-    socketURL: window.location.origin
+    apiURL: 'http://localhost:3000/api',
+    socketURL: 'http://localhost:3000'
   }
 };
 
 // Auto-detect environment
-const isProduction = window.location.hostname !== 'localhost' && !window.location.hostname.includes('127.0.0.1');
+const isProduction = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
 const currentConfig = isProduction ? config.production : config.development;
 
 // Export the current configuration

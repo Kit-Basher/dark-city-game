@@ -207,7 +207,7 @@
                 <ul class="nav-links" role="menubar">
                     <li role="none"><a href="index.html" role="menuitem">Home</a></li>
                     <li role="none"><a href="character-creator.html" role="menuitem" class="active">Character Creator</a></li>
-                    <li role="none"><a href="characters/" role="menuitem">Characters</a></li>
+                    <li role="none"><a href="characters/gallery.html" role="menuitem">Characters</a></li>
                     <li role="none"><a href="playbooks/" role="menuitem">Playbooks</a></li>
                 </ul>
             </div>
@@ -1180,7 +1180,41 @@
                     throw new Error('Character name and playbook are required');
                 }
                 
+                // Flatten the character data to match server validation schema
+                const flattenedData = {
+                    name: characterData.name,
+                    apparentAge: characterData.apparentAge,
+                    actualAge: characterData.actualAge,
+                    classification: characterData.classification,
+                    playbook: characterData.playbook,
+                    subtype: characterData.subtype,
+                    bio: characterData.bio,
+                    humanHeight: characterData.appearance?.human?.height || '',
+                    humanWeight: characterData.appearance?.human?.weight || '',
+                    monsterHeight: characterData.appearance?.monster?.height || '',
+                    monsterWeight: characterData.appearance?.monster?.weight || '',
+                    darkestSelf: characterData.darkestSelf?.name || '',
+                    darkestSelfDesc: characterData.darkestSelf?.description || '',
+                    fatePoints: characterData.stress?.fatePoints || '3',
+                    physicalStress: characterData.stress?.physical || '2',
+                    mentalStress: characterData.stress?.mental || '2',
+                    physicalConsequences: characterData.stress?.physicalConsequences || '1',
+                    mentalConsequences: characterData.stress?.mentalConsequences || '1',
+                    specialResources: characterData.specialResources,
+                    connections: characterData.connections,
+                    moves: characterData.moves.map(move => ({
+                        ...move,
+                        source: 'Playbook'
+                    })),
+                    inventory: characterData.inventory,
+                    scenes: characterData.scenes,
+                    aspects: characterData.aspects,
+                    temporaryAspects: characterData.temporaryAspects,
+                    consequences: characterData.consequences
+                };
+                
                 console.log('🌐 Submitting to server...');
+                console.log('📤 Character data being sent:', JSON.stringify(flattenedData, null, 2));
                 
                 // Submit to server
                 const serverAPI = new ServerAPI();
@@ -1189,7 +1223,7 @@
                     config: window.APP_CONFIG
                 });
                 
-                const result = await serverAPI.submitCharacter(characterData);
+                const result = await serverAPI.submitCharacter(flattenedData);
                 console.log('✅ Server response:', result);
                 
                 // Clear draft and form

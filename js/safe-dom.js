@@ -48,6 +48,11 @@ class SafeDOM {
     static createHTML(tag, attributes = {}, children = []) {
         const element = this.createElement(tag, attributes);
         
+        // Ensure children is an array
+        if (!Array.isArray(children)) {
+            children = children ? [children] : [];
+        }
+        
         children.forEach(child => {
             if (typeof child === 'string') {
                 element.appendChild(document.createTextNode(child));

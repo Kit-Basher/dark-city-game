@@ -67,11 +67,16 @@ class ServerAPI {
     // Get all approved characters (for main page)
     async getApprovedCharacters() {
         try {
-            const response = await fetch(`${this.baseURL}/characters`);
+            const response = await fetch(`${this.baseURL}/characters`, {
+                headers: {
+                    'Authorization': `Bearer ${window.CONFIG?.API_KEY || 'dark-city-dev-key'}`
+                }
+            });
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            const characters = await response.json();
+            const data = await response.json();
+            const characters = data.characters || data; // Handle both formats
             // Loaded ${characters.length} approved characters from server
             return characters;
         } catch (error) {
@@ -103,7 +108,11 @@ class ServerAPI {
     // Get pending submissions (moderator)
     async getPendingSubmissions() {
         try {
-            const response = await fetch(`${this.baseURL}/characters/pending`);
+            const response = await fetch(`${this.baseURL}/characters/pending`, {
+                headers: {
+                    'Authorization': `Bearer ${window.CONFIG?.API_KEY || 'dark-city-dev-key'}`
+                }
+            });
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
@@ -123,6 +132,7 @@ class ServerAPI {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${window.CONFIG?.API_KEY || 'dark-city-dev-key'}`
                 },
                 body: JSON.stringify({ feedback, reviewedBy })
             });

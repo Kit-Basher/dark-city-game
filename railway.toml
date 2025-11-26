@@ -12,4 +12,6 @@ restartPolicyMaxRetries = 10
 NODE_ENV = "production"
 PORT = "8080"
 REDIS_URL = "disabled"
-ALLOWED_ORIGINS = "https://kit-basher.github.io"
+ALLOWED_ORIGINS = "https://kit-basher.github.io,https://dark-city-server-production.up.railway.app"
+MONGODB_URI = "${{MONGODB_URI}}"
+API_KEY = "${{API_KEY}}"

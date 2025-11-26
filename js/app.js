@@ -487,7 +487,7 @@ class ContentLoader {
             SafeDOM.createHTML('div', {
                 style: 'margin-top: 1rem;'
             }, [
-                SafeDOM.createLink('View Details', 'characters/index.html', {
+                SafeDOM.createLink('View Details', 'characters/gallery.html', {
                     className: 'btn btn-primary',
                     style: 'font-size: 0.8rem; padding: 0.5rem 1rem;'
                 })

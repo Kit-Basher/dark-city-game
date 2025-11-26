@@ -35,6 +35,7 @@ class ErrorHandler {
                     const error = new Error(errorData.error || `HTTP ${response.status}`);
                     error.status = response.status;
                     error.data = errorData;
+                    console.log('🔍 Server error details:', errorData);
                     throw error;
                 }
                 

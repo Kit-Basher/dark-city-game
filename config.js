@@ -4,8 +4,8 @@
 const config = {
   // Railway production server
   production: {
-    apiURL: 'https://dark-city-server-production.up.railway.app/api',
-    socketURL: 'https://dark-city-server-production.up.railway.app'
+    apiURL: 'https://dark-city-game-production.up.railway.app/api',
+    socketURL: 'https://dark-city-game-production.up.railway.app'
   },
   
   // Local development server

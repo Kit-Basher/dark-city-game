@@ -378,3 +378,37 @@ footer {
         font-size: 0.9rem;
     }
 }
+
+/* New Main Content Grid Layout */
+.main-content-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin: 2rem 0;
+}
+
+.main-content-grid .section {
+    margin-bottom: 0;
+}
+
+.main-content-grid .container {
+    padding: 0;
+}
+
+/* Full width section for characters */
+.section.full-width {
+    grid-column: 1 / -1;
+    margin-top: 2rem;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .main-content-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .main-content-grid .section {
+        margin-bottom: 2rem;
+    }
+}

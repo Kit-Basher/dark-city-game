@@ -47,83 +47,88 @@
             </div>
         </section>
 
-        <section id="rules" class="section" aria-labelledby="rules-title">
-            <div class="container">
-                <h2 id="rules-title">Game Rules</h2>
-                <div class="rules-grid" role="grid" aria-label="Rules categories">
-                    <div class="rule-card" role="gridcell">
-                        <h3>Server Rules</h3>
-                        <p>Community guidelines and content standards for Dark City.</p>
-                        <a href="rules/server-rules.html" class="btn btn-outline" aria-describedby="server-rules-desc">View Details</a>
-                        <p id="server-rules-desc" class="sr-only">Click to view server rules and community guidelines</p>
-                    </div>
-                    <div class="rule-card" role="gridcell">
-                        <h3>How It Works</h3>
-                        <p>Core mechanics, dice rolling, and gameplay systems.</p>
-                        <a href="rules/how-it-works.html" class="btn btn-outline" aria-describedby="how-it-works-desc">View Details</a>
-                        <p id="how-it-works-desc" class="sr-only">Click to view game mechanics and systems</p>
-                    </div>
-                    <div class="rule-card">
-                        <h3>Character Creation</h3>
-                        <p>Complete guide to creating your Dark City character.</p>
-                        <a href="rules/character-creation.html" class="btn btn-outline">View Details</a>
-                    </div>
-                    <div class="rule-card">
-                        <h3>Playing the Game</h3>
-                        <p>How to post, join scenes, and use server features.</p>
-                        <a href="rules/playing-the-game.html" class="btn btn-outline">View Details</a>
+        <!-- Main Content Grid -->
+        <div class="main-content-grid">
+            <!-- Rules Section (Left Side) -->
+            <section id="rules" class="section" aria-labelledby="rules-title">
+                <div class="container">
+                    <h2 id="rules-title">Game Rules</h2>
+                    <div class="rules-grid" role="grid" aria-label="Rules categories">
+                        <div class="rule-card" role="gridcell">
+                            <h3>Server Rules</h3>
+                            <p>Community guidelines and content standards for Dark City.</p>
+                            <a href="rules/server-rules.html" class="btn btn-outline" aria-describedby="server-rules-desc">View Details</a>
+                            <p id="server-rules-desc" class="sr-only">Click to view server rules and community guidelines</p>
+                        </div>
+                        <div class="rule-card" role="gridcell">
+                            <h3>How It Works</h3>
+                            <p>Core mechanics, dice rolling, and gameplay systems.</p>
+                            <a href="rules/how-it-works.html" class="btn btn-outline" aria-describedby="how-it-works-desc">View Details</a>
+                            <p id="how-it-works-desc" class="sr-only">Click to view game mechanics and systems</p>
+                        </div>
+                        <div class="rule-card">
+                            <h3>Character Creation</h3>
+                            <p>Complete guide to creating your Dark City character.</p>
+                            <a href="rules/character-creation.html" class="btn btn-outline">View Details</a>
+                        </div>
+                        <div class="rule-card">
+                            <h3>Playing the Game</h3>
+                            <p>How to post, join scenes, and use server features.</p>
+                            <a href="rules/playing-the-game.html" class="btn btn-outline">View Details</a>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <section id="playbooks" class="section">
-            <div class="container">
-                <h2>Character Playbooks</h2>
-                <p style="color: white; font-weight: 500;">Choose your path from 19 unique playbooks, each with special powers and subtypes.</p>
-                <div class="playbook-actions">
-                    <a href="playbooks/index.html" class="btn btn-primary">Browse All Playbooks</a>
-                    <a href="characters/gallery.html" class="btn btn-secondary">View Characters</a>
+            <!-- Playbooks Section (Right Side) -->
+            <section id="playbooks" class="section">
+                <div class="container">
+                    <h2>Character Playbooks</h2>
+                    <p style="color: white; font-weight: 500;">Choose your path from 19 unique playbooks, each with special powers and subtypes.</p>
+                    <div class="playbook-actions">
+                        <a href="playbooks/index.html" class="btn btn-primary">Browse All Playbooks</a>
+                        <a href="characters/gallery.html" class="btn btn-secondary">View Characters</a>
+                    </div>
+                    <div class="rules-grid">
+                        <div class="rule-card">
+                            <h3>Ageless</h3>
+                            <p>Immortal beings who've seen centuries pass. Subtypes: Immortal, Phoenix, Gargoyle</p>
+                            <a href="playbooks/ageless.html" class="btn btn-outline">View Details</a>
+                        </div>
+                        <div class="rule-card">
+                            <h3>Wild</h3>
+                            <p>Shapeshifters who walk between worlds. Subtypes: Werewolf, Werebeast, Shifter</p>
+                            <a href="playbooks/wild.html" class="btn btn-outline">View Details</a>
+                        </div>
+                        <div class="rule-card">
+                            <h3>Mage</h3>
+                            <p>Masters of arcane arts and magical forces. Subtypes: Wizard, Witch, Warlock</p>
+                            <a href="playbooks/mage.html" class="btn btn-outline">View Details</a>
+                        </div>
+                        <div class="rule-card">
+                            <h3>Unsated</h3>
+                            <p>Beings driven by eternal hunger. Subtypes: Vampire, Ghoul, Succubus</p>
+                            <a href="playbooks/unsated.html" class="btn btn-outline">View Details</a>
+                        </div>
+                        <div class="rule-card">
+                            <h3>Fae</h3>
+                            <p>Magical creatures of nature and illusion. Subtypes: Fairy, Dryad, Pan</p>
+                            <a href="playbooks/fae.html" class="btn btn-outline">View Details</a>
+                        </div>
+                        <div class="rule-card">
+                            <h3>Mortal</h3>
+                            <p>Ordinary humans caught in extraordinary circumstances. Subtypes: Smitten, Neighbour, Sighted</p>
+                            <a href="playbooks/mortal.html" class="btn btn-outline">View Details</a>
+                        </div>
+                    </div>
+                    <div style="text-align: center; margin-top: 2rem;">
+                        <a href="playbooks/index.html" class="btn btn-primary">View All 19 Playbooks</a>
+                    </div>
                 </div>
-                <div class="rules-grid">
-                    <div class="rule-card">
-                        <h3>Ageless</h3>
-                        <p>Immortal beings who've seen centuries pass. Subtypes: Immortal, Phoenix, Gargoyle</p>
-                        <a href="playbooks/ageless.html" class="btn btn-outline">View Details</a>
-                    </div>
-                    <div class="rule-card">
-                        <h3>Wild</h3>
-                        <p>Shapeshifters who walk between worlds. Subtypes: Werewolf, Werebeast, Shifter</p>
-                        <a href="playbooks/wild.html" class="btn btn-outline">View Details</a>
-                    </div>
-                    <div class="rule-card">
-                        <h3>Mage</h3>
-                        <p>Masters of arcane arts and magical forces. Subtypes: Wizard, Witch, Warlock</p>
-                        <a href="playbooks/mage.html" class="btn btn-outline">View Details</a>
-                    </div>
-                    <div class="rule-card">
-                        <h3>Unsated</h3>
-                        <p>Beings driven by eternal hunger. Subtypes: Vampire, Ghoul, Succubus</p>
-                        <a href="playbooks/unsated.html" class="btn btn-outline">View Details</a>
-                    </div>
-                    <div class="rule-card">
-                        <h3>Fae</h3>
-                        <p>Magical creatures of nature and illusion. Subtypes: Fairy, Dryad, Pan</p>
-                        <a href="playbooks/fae.html" class="btn btn-outline">View Details</a>
-                    </div>
-                    <div class="rule-card">
-                        <h3>Mortal</h3>
-                        <p>Ordinary humans caught in extraordinary circumstances. Subtypes: Smitten, Neighbour, Sighted</p>
-                        <a href="playbooks/mortal.html" class="btn btn-outline">View Details</a>
-                    </div>
-                </div>
-                <div style="text-align: center; margin-top: 2rem;">
-                    <a href="playbooks/index.html" class="btn btn-primary">View All 19 Playbooks</a>
-                </div>
-            </div>
-        </section>
+            </section>
+        </div>
 
-        <section id="characters" class="section">
+        <section id="characters" class="section full-width">
             <div class="container">
                 <h2>Character Sheets</h2>
                 <div class="character-actions">

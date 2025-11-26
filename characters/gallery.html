@@ -556,16 +556,9 @@
         
         // Create a character card element
         function createCharacterCard(character) {
-            // Create safe filename for profile link
-            const safeName = character.name
-                .toLowerCase()
-                .replace(/[^a-z0-9]/g, '-')
-                .replace(/-+/g, '-')
-                .replace(/^-|-$/g, '');
-            
             const card = SafeDOM.createElement('div', {
                 className: 'character-card approved',
-                onclick: () => window.open(`profiles/${safeName}-${character._id}.html`, '_blank')
+                onclick: () => generateAndShowProfile(character._id)
             });
             
             const statusBadge = SafeDOM.createElement('div', {
@@ -712,6 +705,357 @@
             
             modalContent.innerHTML = detailHTML;
             modal.style.display = 'block';
+        }
+
+        // Generate and show character profile dynamically
+        async function generateAndShowProfile(characterId) {
+            try {
+                // Fetch character data
+                const response = await fetch(`https://dark-city-game-production.up.railway.app/api/characters/${characterId}`, {
+                    headers: {
+                        'Authorization': 'Bearer dark-city-production-key'
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to load character details');
+                }
+                
+                const character = await response.json();
+                
+                // Generate profile HTML
+                const profileHTML = generateProfileHTML(character);
+                
+                // Create new window with profile content
+                const profileWindow = window.open('', '_blank');
+                profileWindow.document.write(profileHTML);
+                profileWindow.document.close();
+                
+            } catch (error) {
+                console.error('Error generating profile:', error);
+                alert('Error loading character profile');
+            }
+        }
+
+        // Generate profile HTML from template
+        function generateProfileHTML(character) {
+            const template = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${character.name} - Dark City RPG Character Profile</title>
+    <meta name="description" content="${character.name} - ${character.classification} ${character.playbook} in Dark City RPG">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: white;
+            background-color: #1a1a1a;
+            min-height: 100vh;
+        }
+        
+        .profile-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .profile-header {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 2px solid #ff6b35;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .profile-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ff6b35, #f7931e, #ff6b35);
+        }
+        
+        .profile-name {
+            font-size: 2.5rem;
+            color: #ff6b35;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+        
+        .profile-title {
+            font-size: 1.2rem;
+            color: #ccc;
+            margin-bottom: 1rem;
+        }
+        
+        .profile-badges {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+        
+        .badge {
+            background: #444;
+            color: #fff;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            border: 1px solid #666;
+        }
+        
+        .badge.playbook {
+            background: #ff6b35;
+            border-color: #ff8c42;
+        }
+        
+        .badge.classification {
+            background: #4a90e2;
+            border-color: #6ba3f5;
+        }
+        
+        .profile-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+        
+        .profile-main {
+            background: #1a1a1a;
+            border-radius: 10px;
+            padding: 2rem;
+            border: 1px solid #444;
+        }
+        
+        .profile-sidebar {
+            background: #1a1a1a;
+            border-radius: 10px;
+            padding: 2rem;
+            border: 1px solid #444;
+        }
+        
+        .section-title {
+            color: #ff6b35;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid #ff6b35;
+            padding-bottom: 0.5rem;
+        }
+        
+        .bio-section {
+            margin-bottom: 2rem;
+        }
+        
+        .bio-text {
+            color: #ccc;
+            line-height: 1.6;
+            font-size: 1.1rem;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-item {
+            background: #2d2d2d;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #444;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            color: #ff6b35;
+            font-weight: bold;
+        }
+        
+        .stat-label {
+            color: #999;
+            font-size: 0.9rem;
+            margin-top: 0.25rem;
+        }
+        
+        .moves-section, .skills-section {
+            margin-bottom: 2rem;
+        }
+        
+        .move-item, .skill-item {
+            background: #2d2d2d;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border: 1px solid #444;
+        }
+        
+        .move-name, .skill-name {
+            color: #f7931e;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        
+        .move-description, .skill-description {
+            color: #ccc;
+            font-size: 0.9rem;
+        }
+        
+        .join-date {
+            background: #2d2d2d;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #444;
+            margin-bottom: 1rem;
+        }
+        
+        .join-date-text {
+            color: #999;
+            font-size: 0.9rem;
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-bottom: 2rem;
+            color: #ff6b35;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        .back-link:hover {
+            color: #ff8c42;
+        }
+        
+        @media (max-width: 768px) {
+            .profile-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .profile-name {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="profile-container">
+        <a href="javascript:window.close();" class="back-link">← Close Profile</a>
+        
+        <div class="profile-header">
+            <h1 class="profile-name">${character.name}</h1>
+            <p class="profile-title">${character.classification} • ${character.playbook}</p>
+            <div class="profile-badges">
+                <span class="badge playbook">${character.playbook}</span>
+                <span class="badge classification">${character.classification}</span>
+                <span class="badge">${character.subtype || 'None'}</span>
+                <span class="badge" style="background: #27ae60;">✅ Approved</span>
+            </div>
+        </div>
+        
+        <div class="profile-content">
+            <div class="profile-main">
+                <div class="bio-section">
+                    <h2 class="section-title">Biography</h2>
+                    <p class="bio-text">${character.bio || 'No biography available.'}</p>
+                </div>
+                
+                ${character.darkestSelf ? `
+                <div class="bio-section">
+                    <h2 class="section-title">Darkest Self</h2>
+                    <p class="bio-text">${character.darkestSelf}</p>
+                </div>
+                ` : ''}
+                
+                ${character.moves && character.moves.length > 0 ? `
+                <div class="moves-section">
+                    <h2 class="section-title">Moves & Abilities</h2>
+                    ${character.moves.map(move => `
+                        <div class="move-item">
+                            <div class="move-name">${move.name}</div>
+                            <div class="move-description">${move.description || 'No description available'}</div>
+                        </div>
+                    `).join('')}
+                </div>
+                ` : ''}
+                
+                ${character.skills && character.skills.length > 0 ? `
+                <div class="skills-section">
+                    <h2 class="section-title">Skills</h2>
+                    ${character.skills.map(skill => `
+                        <div class="skill-item">
+                            <div class="skill-name">${skill.name}</div>
+                            <div class="skill-description">Level ${skill.level}</div>
+                        </div>
+                    `).join('')}
+                </div>
+                ` : ''}
+            </div>
+            
+            <div class="profile-sidebar">
+                <div class="join-date">
+                    <p class="join-date-text">🎭 Joined Dark City</p>
+                    <p class="join-date-text" style="font-size: 1.2rem; color: #ff6b35; font-weight: bold;">${new Date(character.submittedAt).toLocaleDateString('en-US', { 
+                        year: 'numeric', 
+                        month: 'long', 
+                        day: 'numeric' 
+                    })}</p>
+                </div>
+                
+                <h3 class="section-title">Character Stats</h3>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value">${character.fatePoints || '1'}</div>
+                        <div class="stat-label">Fate Points</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">${character.physicalStress || '2'}</div>
+                        <div class="stat-label">Physical Stress</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">${character.mentalStress || '2'}</div>
+                        <div class="stat-label">Mental Stress</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">${character.apparentAge || 'Unknown'}</div>
+                        <div class="stat-label">Apparent Age</div>
+                    </div>
+                </div>
+                
+                <h3 class="section-title">Physical Details</h3>
+                <div style="color: #ccc; line-height: 1.6;">
+                    <p><strong>Apparent Age:</strong> ${character.apparentAge || 'Unknown'}</p>
+                    <p><strong>Actual Age:</strong> ${character.actualAge || 'Unknown'}</p>
+                    ${character.humanHeight ? `<p><strong>Human Height:</strong> ${character.humanHeight}</p>` : ''}
+                    ${character.humanWeight ? `<p><strong>Human Weight:</strong> ${character.humanWeight}</p>` : ''}
+                    ${character.monsterHeight ? `<p><strong>Monster Height:</strong> ${character.monsterHeight}</p>` : ''}
+                    ${character.monsterWeight ? `<p><strong>Monster Weight:</strong> ${character.monsterWeight}</p>` : ''}
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>`;
+            
+            return template;
         }
     </script>
 </body>

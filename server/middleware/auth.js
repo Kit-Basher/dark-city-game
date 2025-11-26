@@ -167,14 +167,14 @@ class ApiKeyAuth {
 
             const providedKey = authHeader.substring(7);
             
-            // TEMPORARILY DISABLE API KEY CHECK FOR TESTING
-            // if (providedKey !== this.apiKey) {
-            //     return res.status(401).json({
-            //         error: 'Invalid API key',
-            //         message: 'The provided API key is incorrect'
-            //     });
-            // }
-            console.log('🔓 API key check temporarily disabled for testing');
+            if (providedKey !== this.apiKey) {
+                console.log('🔑 API key mismatch:', { provided: providedKey, expected: this.apiKey });
+                return res.status(401).json({
+                    error: 'Invalid API key',
+                    message: 'The provided API key is incorrect'
+                });
+            }
+            console.log('✅ API key authentication successful');
 
             // Add user context for API key authentication
             req.user = {

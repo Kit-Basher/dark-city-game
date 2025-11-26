@@ -544,9 +544,12 @@
                 </section>
 
                 <!-- Form Actions -->
+                <div class="form-actions">
+            <button type="button" class="btn btn-secondary" onclick="autofillTestCharacter()">🚀 Quick Test Character</button>
+            <button type="submit" class="btn btn-primary">💾 Save Character Sheet</button>
+            <button type="button" class="btn btn-secondary" onclick="clearForm()">🗑️ Clear Form</button>
+        </div>
                 <div style="text-align: center; margin-top: 3rem;">
-                    <button type="submit" class="btn-primary">Save Character Sheet</button>
-                    <button type="button" class="btn-secondary" onclick="previewCharacter()">Preview</button>
                     <button type="button" class="btn-secondary" onclick="resetForm()">Reset</button>
                 </div>
             </form>
@@ -922,6 +925,84 @@
                 alert(`Character sheet saved locally! The server is currently unavailable (${errorMessage}), but your character has been saved and will be submitted when the server is back online. You can continue creating other characters.\n\nYour character ID: ${characterData.id}`);
             }
         });
+
+        // Autofill test character for quick testing
+        function autofillTestCharacter() {
+            const testData = {
+                // Basic Info
+                'character-name': 'Test Character ' + Date.now(),
+                'pronouns': 'They/Them',
+                'playbook': 'Immortal',
+                'classification': 'Vampire',
+                'circle': 'The Unseen Circle',
+                'experience': '2',
+                
+                // Bio
+                'appearance': 'Tall and mysterious with dark eyes and a commanding presence. Dressed in elegant, dark clothing that hints at their ageless nature.',
+                'background': 'Born in the 15th century, turned into a vampire during a tragic encounter. Has spent centuries learning to control their powers and navigate the supernatural world.',
+                'role': 'Protector of the supernatural community, mediator between different factions',
+                'motivations': 'Maintaining balance, protecting innocent supernaturals, seeking redemption for past mistakes',
+                
+                // Forms
+                'human-form': 'Appears as a sophisticated, attractive human in their early 30s with piercing eyes',
+                'monster-form': 'Transforms into a terrifying vampire with fangs, glowing red eyes, and enhanced strength',
+                'alternate-form': 'Can appear as a shadow or mist to move undetected',
+                
+                // Stats
+                'blood': '3',
+                'heart': '2',
+                'mind': '4',
+                'spirit': '3',
+                'mask': '2',
+                
+                // Skills
+                'skill1': 'Combat',
+                'skill1-level': '2',
+                'skill2': 'Stealth',
+                'skill2-level': '1',
+                'skill3': 'Intimidation',
+                'skill3-level': '2',
+                
+                // Moves
+                'move1': 'Immortal Healing',
+                'move2': 'Shadow Walk',
+                'move3': 'Mesmerize',
+                
+                // Aspects
+                'aspect1': 'Ancient Knowledge',
+                'aspect2': 'Supernatural Speed',
+                
+                // Consequences
+                'consequence1': 'Sunlight Vulnerability',
+                'consequence2': 'Blood Thirst',
+                
+                // Resources
+                'resources': 'Wealth: 3\nContacts: 2\nHideouts: 1',
+                
+                // Inventory
+                'item1': 'Ancient Sword',
+                'item2': 'Blood Vials',
+                
+                // Scene
+                'sceneTitle1': 'The First Hunt',
+                'sceneDesc1': 'My first night as a vampire - the confusion, fear, and unexpected power.',
+                'sceneChars1': 'My sire, innocent victim'
+            };
+            
+            // Fill in all the test data
+            Object.keys(testData).forEach(key => {
+                const element = document.getElementById(key);
+                if (element) {
+                    element.value = testData[key];
+                }
+            });
+            
+            // Add some dynamic elements if needed
+            addMove(); // Add an extra move
+            addItem(); // Add an extra item
+            
+            alert('🚀 Test character loaded! You can now submit to test the server connection.');
+        }
 
         // Auto-save draft
         let autoSaveTimer;

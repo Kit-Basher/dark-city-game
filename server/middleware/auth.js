@@ -149,8 +149,6 @@ class AuthManager {
 class ApiKeyAuth {
     constructor() {
         this.apiKey = process.env.API_KEY || 'dark-city-dev-key';
-        console.log('🔑 API Key loaded:', this.apiKey ? 'Set (value hidden)' : 'Using default');
-        console.log('🔑 Environment API_KEY:', process.env.API_KEY ? 'Set' : 'Not set');
     }
 
     // Middleware for API key authentication
@@ -168,13 +166,11 @@ class ApiKeyAuth {
             const providedKey = authHeader.substring(7);
             
             if (providedKey !== this.apiKey) {
-                console.log('🔑 API key mismatch:', { provided: providedKey, expected: this.apiKey });
                 return res.status(401).json({
                     error: 'Invalid API key',
                     message: 'The provided API key is incorrect'
                 });
             }
-            console.log('✅ API key authentication successful');
 
             // Add user context for API key authentication
             req.user = {

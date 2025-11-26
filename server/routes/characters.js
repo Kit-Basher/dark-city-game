@@ -3,6 +3,134 @@ const router = express.Router();
 const Character = require('../models/Character');
 const CharacterService = require('../services/characterService');
 const { validate, characterSchema } = require('../middleware/validation');
+const fs = require('fs').promises;
+const path = require('path');
+
+/**
+ * Generate a profile page for an approved character
+ */
+async function generateCharacterProfile(character) {
+  try {
+    // Read the template
+    const templatePath = path.join(__dirname, '../../characters/profile-template.html');
+    const template = await fs.readFile(templatePath, 'utf8');
+    
+    // Prepare template replacements
+    const replacements = {
+      '{{CHARACTER_NAME}}': character.name || 'Unnamed Character',
+      '{{CLASSIFICATION}}': character.classification || 'Unknown',
+      '{{PLAYBOOK}}': character.playbook || 'Unknown',
+      '{{SUBTYPE}}': character.subtype || 'None',
+      '{{BIO}}': character.bio || 'No biography available.',
+      '{{FATE_POINTS}}': character.fatePoints || '1',
+      '{{PHYSICAL_STRESS}}': character.physicalStress || '2',
+      '{{MENTAL_STRESS}}': character.mentalStress || '2',
+      '{{APPARENT_AGE}}': character.apparentAge || 'Unknown',
+      '{{ACTUAL_AGE}}': character.actualAge || 'Unknown',
+      '{{JOIN_DATE}}': new Date(character.submittedAt).toLocaleDateString('en-US', { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+      })
+    };
+    
+    // Handle Darkest Self section
+    let darkestSelfSection = '';
+    if (character.darkestSelf) {
+      darkestSelfSection = `
+        <div class="bio-section">
+          <h2 class="section-title">Darkest Self</h2>
+          <p class="bio-text">${character.darkestSelf}</p>
+        </div>
+      `;
+    }
+    replacements['{{DARKEST_SELF_SECTION}}'] = darkestSelfSection;
+    
+    // Handle Moves section
+    let movesSection = '';
+    if (character.moves && character.moves.length > 0) {
+      const movesHTML = character.moves.map(move => `
+        <div class="move-item">
+          <div class="move-name">${move.name}</div>
+          <div class="move-description">${move.description || 'No description available'}</div>
+        </div>
+      `).join('');
+      
+      movesSection = `
+        <div class="moves-section">
+          <h2 class="section-title">Moves & Abilities</h2>
+          ${movesHTML}
+        </div>
+      `;
+    }
+    replacements['{{MOVES_SECTION}}'] = movesSection;
+    
+    // Handle Skills section
+    let skillsSection = '';
+    if (character.skills && character.skills.length > 0) {
+      const skillsHTML = character.skills.map(skill => `
+        <div class="skill-item">
+          <div class="skill-name">${skill.name}</div>
+          <div class="skill-description">Level ${skill.level}</div>
+        </div>
+      `).join('');
+      
+      skillsSection = `
+        <div class="skills-section">
+          <h2 class="section-title">Skills</h2>
+          ${skillsHTML}
+        </div>
+      `;
+    }
+    replacements['{{SKILLS_SECTION}}'] = skillsSection;
+    
+    // Handle physical stats
+    let humanPhysicalStats = '';
+    if (character.humanHeight || character.humanWeight) {
+      humanPhysicalStats = `
+        <p><strong>Human Height:</strong> ${character.humanHeight || 'Unknown'}</p>
+        <p><strong>Human Weight:</strong> ${character.humanWeight || 'Unknown'}</p>
+      `;
+    }
+    replacements['{{HUMAN_PHYSICAL_STATS}}'] = humanPhysicalStats;
+    
+    let monsterPhysicalStats = '';
+    if (character.monsterHeight || character.monsterWeight) {
+      monsterPhysicalStats = `
+        <p><strong>Monster Height:</strong> ${character.monsterHeight || 'Unknown'}</p>
+        <p><strong>Monster Weight:</strong> ${character.monsterWeight || 'Unknown'}</p>
+      `;
+    }
+    replacements['{{MONSTER_PHYSICAL_STATS}}'] = monsterPhysicalStats;
+    
+    // Replace all placeholders
+    let profileHTML = template;
+    for (const [placeholder, value] of Object.entries(replacements)) {
+      profileHTML = profileHTML.replace(new RegExp(placeholder.replace(/[{}]/g, '\\$&'), 'g'), value);
+    }
+    
+    // Create safe filename
+    const safeName = character.name
+      .toLowerCase()
+      .replace(/[^a-z0-9]/g, '-')
+      .replace(/-+/g, '-')
+      .replace(/^-|-$/g, '');
+    
+    // Ensure profiles directory exists
+    const profilesDir = path.join(__dirname, '../../characters/profiles');
+    await fs.mkdir(profilesDir, { recursive: true });
+    
+    // Write profile page
+    const profilePath = path.join(profilesDir, `${safeName}-${character._id}.html`);
+    await fs.writeFile(profilePath, profileHTML, 'utf8');
+    
+    console.log(`✅ Generated profile page: ${safeName}-${character._id}.html`);
+    
+  } catch (error) {
+    console.error('Error generating character profile:', error);
+    // Don't throw error - profile generation failure shouldn't break approval
+  }
+}
 
 /**
  * @swagger
@@ -141,6 +269,9 @@ router.put('/:id/approve', async (req, res) => {
     if (!character) {
       return res.status(404).json({ error: 'Character not found' });
     }
+    
+    // Generate profile page for approved character
+    await generateCharacterProfile(character);
     
     // Emit real-time notification
     const io = req.app.get('io');

@@ -556,9 +556,16 @@
         
         // Create a character card element
         function createCharacterCard(character) {
+            // Create safe filename for profile link
+            const safeName = character.name
+                .toLowerCase()
+                .replace(/[^a-z0-9]/g, '-')
+                .replace(/-+/g, '-')
+                .replace(/^-|-$/g, '');
+            
             const card = SafeDOM.createElement('div', {
                 className: 'character-card approved',
-                onclick: () => showCharacterDetail(character)
+                onclick: () => window.open(`profiles/${safeName}-${character._id}.html`, '_blank')
             });
             
             const statusBadge = SafeDOM.createElement('div', {

@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{CHARACTER_NAME}} - Dark City RPG Character Profile</title>
+    <meta name="description" content="{{CHARACTER_NAME}} - {{CLASSIFICATION}} {{PLAYBOOK}} in Dark City RPG">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/accessibility.css">
+    <link rel="stylesheet" href="../../css/mobile.css">
+    <style>
+        .profile-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .profile-header {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 2px solid #ff6b35;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .profile-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ff6b35, #f7931e, #ff6b35);
+        }
+        
+        .profile-name {
+            font-size: 2.5rem;
+            color: #ff6b35;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+        
+        .profile-title {
+            font-size: 1.2rem;
+            color: #ccc;
+            margin-bottom: 1rem;
+        }
+        
+        .profile-badges {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+        
+        .badge {
+            background: #444;
+            color: #fff;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            border: 1px solid #666;
+        }
+        
+        .badge.playbook {
+            background: #ff6b35;
+            border-color: #ff8c42;
+        }
+        
+        .badge.classification {
+            background: #4a90e2;
+            border-color: #6ba3f5;
+        }
+        
+        .profile-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+        
+        .profile-main {
+            background: #1a1a1a;
+            border-radius: 10px;
+            padding: 2rem;
+            border: 1px solid #444;
+        }
+        
+        .profile-sidebar {
+            background: #1a1a1a;
+            border-radius: 10px;
+            padding: 2rem;
+            border: 1px solid #444;
+        }
+        
+        .section-title {
+            color: #ff6b35;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid #ff6b35;
+            padding-bottom: 0.5rem;
+        }
+        
+        .bio-section {
+            margin-bottom: 2rem;
+        }
+        
+        .bio-text {
+            color: #ccc;
+            line-height: 1.6;
+            font-size: 1.1rem;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-item {
+            background: #2d2d2d;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #444;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            color: #ff6b35;
+            font-weight: bold;
+        }
+        
+        .stat-label {
+            color: #999;
+            font-size: 0.9rem;
+            margin-top: 0.25rem;
+        }
+        
+        .moves-section, .skills-section {
+            margin-bottom: 2rem;
+        }
+        
+        .move-item, .skill-item {
+            background: #2d2d2d;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border: 1px solid #444;
+        }
+        
+        .move-name, .skill-name {
+            color: #f7931e;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        
+        .move-description, .skill-description {
+            color: #ccc;
+            font-size: 0.9rem;
+        }
+        
+        .join-date {
+            background: #2d2d2d;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #444;
+            margin-bottom: 1rem;
+        }
+        
+        .join-date-text {
+            color: #999;
+            font-size: 0.9rem;
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-bottom: 2rem;
+            color: #ff6b35;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        .back-link:hover {
+            color: #ff8c42;
+        }
+        
+        @media (max-width: 768px) {
+            .profile-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .profile-name {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="#main-content" class="skip-to-main">Skip to main content</a>
+    
+    <header role="banner">
+        <nav role="navigation" aria-label="Main navigation">
+            <div class="nav-container">
+                <h1><a href="../../index.html" style="color: #ff6b35; text-decoration: none;">Dark City</a></h1>
+                <button class="mobile-menu-toggle" aria-label="Toggle mobile menu" aria-expanded="false">
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                </button>
+                <ul class="nav-links" role="menubar">
+                    <li role="none"><a href="../../index.html" role="menuitem">Home</a></li>
+                    <li role="none"><a href="../../rules/server-rules.html" role="menuitem">Rules</a></li>
+                    <li role="none"><a href="../../playbooks/index.html" role="menuitem">Playbooks</a></li>
+                    <li role="none"><a href="../../characters/gallery.html" role="menuitem">Characters</a></li>
+                    <li role="none"><a href="../../character-creator.html" role="menuitem">Character Creator</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <main role="main" id="main-content">
+        <div class="profile-container">
+            <a href="../gallery.html" class="back-link">← Back to Character Gallery</a>
+            
+            <div class="profile-header">
+                <h1 class="profile-name">{{CHARACTER_NAME}}</h1>
+                <p class="profile-title">{{CLASSIFICATION}} • {{PLAYBOOK}}</p>
+                <div class="profile-badges">
+                    <span class="badge playbook">{{PLAYBOOK}}</span>
+                    <span class="badge classification">{{CLASSIFICATION}}</span>
+                    <span class="badge">{{SUBTYPE}}</span>
+                    <span class="badge" style="background: #27ae60;">✅ Approved</span>
+                </div>
+            </div>
+            
+            <div class="profile-content">
+                <div class="profile-main">
+                    <div class="bio-section">
+                        <h2 class="section-title">Biography</h2>
+                        <p class="bio-text">{{BIO}}</p>
+                    </div>
+                    
+                    {{DARKEST_SELF_SECTION}}
+                    
+                    {{MOVES_SECTION}}
+                    
+                    {{SKILLS_SECTION}}
+                </div>
+                
+                <div class="profile-sidebar">
+                    <div class="join-date">
+                        <p class="join-date-text">🎭 Joined Dark City</p>
+                        <p class="join-date-text" style="font-size: 1.2rem; color: #ff6b35; font-weight: bold;">{{JOIN_DATE}}</p>
+                    </div>
+                    
+                    <h3 class="section-title">Character Stats</h3>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-value">{{FATE_POINTS}}</div>
+                            <div class="stat-label">Fate Points</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">{{PHYSICAL_STRESS}}</div>
+                            <div class="stat-label">Physical Stress</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">{{MENTAL_STRESS}}</div>
+                            <div class="stat-label">Mental Stress</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">{{APPARENT_AGE}}</div>
+                            <div class="stat-label">Apparent Age</div>
+                        </div>
+                    </div>
+                    
+                    <h3 class="section-title">Physical Details</h3>
+                    <div style="color: #ccc; line-height: 1.6;">
+                        <p><strong>Apparent Age:</strong> {{APPARENT_AGE}}</p>
+                        <p><strong>Actual Age:</strong> {{ACTUAL_AGE}}</p>
+                        {{HUMAN_PHYSICAL_STATS}}
+                        {{MONSTER_PHYSICAL_STATS}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Dark City RPG. Built with GitHub Pages.</p>
+        </div>
+    </footer>
+
+    <script src="../../js/config.js"></script>
+    <script src="../../js/safe-dom.js"></script>
+    <script src="../../js/accessibility.js"></script>
+</body>
+</html>

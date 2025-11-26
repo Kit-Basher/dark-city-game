@@ -546,6 +546,7 @@
                 <!-- Form Actions -->
                 <div class="form-actions">
             <button type="button" class="btn btn-secondary" onclick="autofillTestCharacter()">🚀 Quick Test Character</button>
+            <button type="button" class="btn btn-success" onclick="submitCharacterForm()">📤 Submit to Server</button>
             <button type="submit" class="btn btn-primary">💾 Save Character Sheet</button>
             <button type="button" class="btn btn-secondary" onclick="clearForm()">🗑️ Clear Form</button>
         </div>
@@ -928,80 +929,273 @@
 
         // Autofill test character for quick testing
         function autofillTestCharacter() {
-            const testData = {
-                // Basic Info
-                'character-name': 'Test Character ' + Date.now(),
-                'pronouns': 'They/Them',
-                'playbook': 'Immortal',
-                'classification': 'Vampire',
-                'circle': 'The Unseen Circle',
-                'experience': '2',
+            try {
+                console.log('🚀 Starting autofill...');
                 
-                // Bio
-                'appearance': 'Tall and mysterious with dark eyes and a commanding presence. Dressed in elegant, dark clothing that hints at their ageless nature.',
-                'background': 'Born in the 15th century, turned into a vampire during a tragic encounter. Has spent centuries learning to control their powers and navigate the supernatural world.',
-                'role': 'Protector of the supernatural community, mediator between different factions',
-                'motivations': 'Maintaining balance, protecting innocent supernaturals, seeking redemption for past mistakes',
+                const testData = {
+                    // Basic Info
+                    'character-name': 'Test Character ' + Date.now(),
+                    'pronouns': 'They/Them',
+                    'playbook': 'Immortal',
+                    'classification': 'Vampire',
+                    'circle': 'The Unseen Circle',
+                    'experience': '2',
+                    
+                    // Bio
+                    'appearance': 'Tall and mysterious with dark eyes and a commanding presence. Dressed in elegant, dark clothing that hints at their ageless nature.',
+                    'background': 'Born in the 15th century, turned into a vampire during a tragic encounter. Has spent centuries learning to control their powers and navigate the supernatural world.',
+                    'role': 'Protector of the supernatural community, mediator between different factions',
+                    'motivations': 'Maintaining balance, protecting innocent supernaturals, seeking redemption for past mistakes',
+                    
+                    // Forms
+                    'human-form': 'Appears as a sophisticated, attractive human in their early 30s with piercing eyes',
+                    'monster-form': 'Transforms into a terrifying vampire with fangs, glowing red eyes, and enhanced strength',
+                    'alternate-form': 'Can appear as a shadow or mist to move undetected',
+                    
+                    // Stats
+                    'blood': '3',
+                    'heart': '2',
+                    'mind': '4',
+                    'spirit': '3',
+                    'mask': '2',
+                    
+                    // Skills
+                    'skill1': 'Combat',
+                    'skill1-level': '2',
+                    'skill2': 'Stealth',
+                    'skill2-level': '1',
+                    'skill3': 'Intimidation',
+                    'skill3-level': '2',
+                    
+                    // Moves
+                    'move1': 'Immortal Healing',
+                    'move2': 'Shadow Walk',
+                    'move3': 'Mesmerize',
+                    
+                    // Aspects
+                    'aspect1': 'Ancient Knowledge',
+                    'aspect2': 'Supernatural Speed',
+                    
+                    // Consequences
+                    'consequence1': 'Sunlight Vulnerability',
+                    'consequence2': 'Blood Thirst',
+                    
+                    // Resources
+                    'resources': 'Wealth: 3\nContacts: 2\nHideouts: 1',
+                    
+                    // Inventory
+                    'item1': 'Ancient Sword',
+                    'item2': 'Blood Vials',
+                    
+                    // Scene
+                    'sceneTitle1': 'The First Hunt',
+                    'sceneDesc1': 'My first night as a vampire - the confusion, fear, and unexpected power.',
+                    'sceneChars1': 'My sire, innocent victim'
+                };
                 
-                // Forms
-                'human-form': 'Appears as a sophisticated, attractive human in their early 30s with piercing eyes',
-                'monster-form': 'Transforms into a terrifying vampire with fangs, glowing red eyes, and enhanced strength',
-                'alternate-form': 'Can appear as a shadow or mist to move undetected',
+                console.log('📝 Test data created:', Object.keys(testData).length, 'fields');
                 
-                // Stats
-                'blood': '3',
-                'heart': '2',
-                'mind': '4',
-                'spirit': '3',
-                'mask': '2',
+                // Fill in all the test data
+                let filledCount = 0;
+                Object.keys(testData).forEach(key => {
+                    const element = document.getElementById(key);
+                    if (element) {
+                        element.value = testData[key];
+                        filledCount++;
+                    } else {
+                        console.warn('⚠️ Element not found:', key);
+                    }
+                });
                 
-                // Skills
-                'skill1': 'Combat',
-                'skill1-level': '2',
-                'skill2': 'Stealth',
-                'skill2-level': '1',
-                'skill3': 'Intimidation',
-                'skill3-level': '2',
+                console.log('✅ Filled', filledCount, 'fields successfully');
                 
-                // Moves
-                'move1': 'Immortal Healing',
-                'move2': 'Shadow Walk',
-                'move3': 'Mesmerize',
+                // Trigger change events to update any listeners
+                testData.keys.forEach(key => {
+                    const element = document.getElementById(key);
+                    if (element) {
+                        element.dispatchEvent(new Event('change', { bubbles: true }));
+                        element.dispatchEvent(new Event('input', { bubbles: true }));
+                    }
+                });
                 
-                // Aspects
-                'aspect1': 'Ancient Knowledge',
-                'aspect2': 'Supernatural Speed',
+                alert('🚀 Test character loaded successfully! You can now submit to test the server connection.');
                 
-                // Consequences
-                'consequence1': 'Sunlight Vulnerability',
-                'consequence2': 'Blood Thirst',
-                
-                // Resources
-                'resources': 'Wealth: 3\nContacts: 2\nHideouts: 1',
-                
-                // Inventory
-                'item1': 'Ancient Sword',
-                'item2': 'Blood Vials',
-                
-                // Scene
-                'sceneTitle1': 'The First Hunt',
-                'sceneDesc1': 'My first night as a vampire - the confusion, fear, and unexpected power.',
-                'sceneChars1': 'My sire, innocent victim'
-            };
+            } catch (error) {
+                console.error('❌ Autofill error:', error);
+                alert('❌ Error autofilling character: ' + error.message);
+            }
+        }
+
+        // Submit character form directly to server
+        async function submitCharacterForm() {
+            console.log('🚀 Starting character submission...');
             
-            // Fill in all the test data
-            Object.keys(testData).forEach(key => {
-                const element = document.getElementById(key);
-                if (element) {
-                    element.value = testData[key];
+            try {
+                // Collect form data
+                const form = document.getElementById('characterForm');
+                const formData = new FormData(form);
+                
+                console.log('📝 Collecting form data...');
+                
+                // Organize character data
+                const characterData = {
+                    // Basic Info
+                    name: formData.get('character-name'),
+                    pronouns: formData.get('pronouns'),
+                    playbook: formData.get('playbook'),
+                    classification: formData.get('classification'),
+                    circle: formData.get('circle'),
+                    experience: formData.get('experience'),
+                    
+                    // Bio
+                    appearance: formData.get('appearance'),
+                    background: formData.get('background'),
+                    role: formData.get('role'),
+                    motivations: formData.get('motivations'),
+                    
+                    // Forms
+                    forms: {
+                        human: formData.get('human-form'),
+                        monster: formData.get('monster-form'),
+                        alternate: formData.get('alternate-form')
+                    },
+                    
+                    // Stats
+                    stats: {
+                        blood: formData.get('blood'),
+                        heart: formData.get('heart'),
+                        mind: formData.get('mind'),
+                        spirit: formData.get('spirit'),
+                        mask: formData.get('mask')
+                    },
+                    
+                    // Skills
+                    skills: [],
+                    moves: [],
+                    temporaryAspects: [],
+                    consequences: [],
+                    inventory: [],
+                    scenes: []
+                };
+                
+                // Collect skills
+                for (let i = 1; i <= 3; i++) {
+                    const skillName = formData.get(`skill${i}`);
+                    const skillLevel = formData.get(`skill${i}-level`);
+                    if (skillName && skillLevel) {
+                        characterData.skills.push({ name: skillName, level: skillLevel });
+                    }
                 }
-            });
-            
-            // Add some dynamic elements if needed
-            addMove(); // Add an extra move
-            addItem(); // Add an extra item
-            
-            alert('🚀 Test character loaded! You can now submit to test the server connection.');
+                
+                // Collect moves
+                for (let i = 1; i <= 10; i++) {
+                    const move = formData.get(`move${i}`);
+                    if (move) {
+                        characterData.moves.push(move);
+                    }
+                }
+                
+                // Collect aspects
+                for (let i = 1; i <= 5; i++) {
+                    const aspect = formData.get(`aspect${i}`);
+                    if (aspect) {
+                        characterData.temporaryAspects.push(aspect);
+                    }
+                }
+                
+                // Collect consequences
+                for (let i = 1; i <= 5; i++) {
+                    const consequence = formData.get(`consequence${i}`);
+                    if (consequence) {
+                        characterData.consequences.push(consequence);
+                    }
+                }
+                
+                // Collect inventory
+                for (let i = 1; i <= 10; i++) {
+                    const item = formData.get(`item${i}`);
+                    if (item) {
+                        characterData.inventory.push(item);
+                    }
+                }
+                
+                // Collect scenes
+                for (let i = 1; i <= 10; i++) {
+                    const sceneTitle = formData.get(`sceneTitle${i}`);
+                    const sceneDesc = formData.get(`sceneDesc${i}`);
+                    const sceneChars = formData.get(`sceneChars${i}`);
+                    if (sceneTitle && sceneDesc) {
+                        characterData.scenes.push({
+                            title: sceneTitle,
+                            description: sceneDesc,
+                            characters: sceneChars
+                        });
+                    }
+                }
+                
+                // Add resources
+                characterData.resources = formData.get('resources');
+                
+                console.log('✅ Character data organized:', {
+                    name: characterData.name,
+                    playbook: characterData.playbook,
+                    skillsCount: characterData.skills.length,
+                    movesCount: characterData.moves.length,
+                    scenesCount: characterData.scenes.length
+                });
+                
+                // Validate required fields
+                if (!characterData.name || !characterData.playbook) {
+                    throw new Error('Character name and playbook are required');
+                }
+                
+                console.log('🌐 Submitting to server...');
+                
+                // Submit to server
+                const serverAPI = new ServerAPI();
+                console.log('📡 Server API created:', {
+                    baseURL: serverAPI.baseURL,
+                    config: window.APP_CONFIG
+                });
+                
+                const result = await serverAPI.submitCharacter(characterData);
+                console.log('✅ Server response:', result);
+                
+                // Clear draft and form
+                localStorage.removeItem('characterDraft');
+                form.reset();
+                
+                alert('🎉 Character sheet submitted successfully! It will be reviewed by moderators and you\'ll be notified of the decision.');
+                
+            } catch (error) {
+                console.error('❌ Submission error:', error);
+                console.error('❌ Error stack:', error.stack);
+                console.error('❌ Error details:', {
+                    message: error.message,
+                    name: error.name,
+                    toString: error.toString()
+                });
+                
+                // Fallback: Save to localStorage
+                try {
+                    const timestamp = new Date().toISOString();
+                    characterData.submittedAt = timestamp;
+                    characterData.id = 'draft_' + Date.now();
+                    characterData.status = 'pending_submission';
+                    
+                    const drafts = JSON.parse(localStorage.getItem('characterDrafts') || '[]');
+                    drafts.push(characterData);
+                    localStorage.setItem('characterDrafts', JSON.stringify(drafts));
+                    
+                    console.log('💾 Saved to localStorage:', characterData.id);
+                    
+                    alert(`❌ Server submission failed (${error.message}). Character saved locally with ID: ${characterData.id}`);
+                    
+                } catch (storageError) {
+                    console.error('❌ Storage error:', storageError);
+                    alert(`❌ Both server and local storage failed: ${error.message}`);
+                }
+            }
         }
 
         // Auto-save draft

@@ -46,6 +46,20 @@
                 </div>
             </section>
         </div>
+
+        <!-- All Approved Characters Section -->
+        <section class="bg-gray-800 rounded-lg p-6 mt-8">
+            <h2 class="text-2xl font-semibold text-blue-400 mb-4">
+                <i class="fas fa-users"></i> All Approved Characters
+                <span class="text-sm text-gray-400 ml-2">(Moderator: Delete characters when needed)</span>
+            </h2>
+            <div id="all-approved-characters" class="space-y-4">
+                <div class="text-gray-500 text-center py-8">
+                    <i class="fas fa-spinner fa-spin text-4xl mb-4"></i>
+                    <p>Loading all approved characters...</p>
+                </div>
+            </div>
+        </section>
     </div>
 
     <!-- Character Review Modal -->
@@ -323,10 +337,171 @@
             alert('Rejection feature coming soon!');
         }
 
+        // Load all approved characters (with delete functionality)
+        async function loadAllApprovedCharacters() {
+            try {
+                const response = await fetch(`https://dark-city-game-production.up.railway.app/api/characters?status=approved&limit=50`, {
+                    headers: {
+                        'Authorization': `Bearer dark-city-production-key`
+                    }
+                });
+                const data = await response.json();
+                const characters = data.characters || [];
+                
+                const container = document.getElementById('all-approved-characters');
+                
+                if (characters.length === 0) {
+                    container.innerHTML = `
+                        <div class="text-gray-500 text-center py-8">
+                            <i class="fas fa-users text-4xl mb-4"></i>
+                            <p>No approved characters found</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = characters.map(character => `
+                    <div class="bg-gray-700 rounded-lg p-4 border border-gray-600">
+                        <div class="flex justify-between items-start">
+                            <div class="flex-1">
+                                <h3 class="text-lg font-semibold text-white mb-2">${character.name}</h3>
+                                <div class="grid grid-cols-2 gap-2 text-sm text-gray-300">
+                                    <span><i class="fas fa-tag"></i> ${character.classification}</span>
+                                    <span><i class="fas fa-book"></i> ${character.playbook}</span>
+                                    <span><i class="fas fa-birthday-cake"></i> ${character.apparentAge}</span>
+                                    <span><i class="fas fa-calendar"></i> ${new Date(character.submittedAt).toLocaleDateString()}</span>
+                                </div>
+                                ${character.bio ? `<p class="text-gray-400 mt-2 text-sm">${character.bio.substring(0, 100)}${character.bio.length > 100 ? '...' : ''}</p>` : ''}
+                            </div>
+                            <div class="flex space-x-2 ml-4">
+                                <button onclick="viewCharacterDetails('${character._id}')" class="bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-sm">
+                                    <i class="fas fa-eye"></i> View
+                                </button>
+                                <button onclick="deleteCharacter('${character._id}', '${character.name}')" class="bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-sm">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+
+            } catch (error) {
+                console.error('Error loading all approved characters:', error);
+                document.getElementById('all-approved-characters').innerHTML = `
+                    <div class="text-red-500 text-center py-8">
+                        <i class="fas fa-exclamation-triangle text-4xl mb-4"></i>
+                        <p>Error loading approved characters</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Delete character with confirmation
+        async function deleteCharacter(characterId, characterName) {
+            if (!confirm(`Are you sure you want to delete "${characterName}"? This action cannot be undone.`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`https://dark-city-game-production.up.railway.app/api/characters/${characterId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer dark-city-production-key`
+                    }
+                });
+
+                if (response.ok) {
+                    alert(`Character "${characterName}" has been deleted successfully.`);
+                    // Refresh all character lists
+                    loadAllApprovedCharacters();
+                    loadApprovedCharacters();
+                } else {
+                    throw new Error('Delete failed');
+                }
+                
+            } catch (error) {
+                console.error('Error deleting character:', error);
+                alert('Error deleting character. Please try again.');
+            }
+        }
+
+        // View character details (reuse review modal but without approval buttons)
+        async function viewCharacterDetails(characterId) {
+            try {
+                const response = await fetch(`https://dark-city-game-production.up.railway.app/api/characters/pending`, {
+                    headers: {
+                        'Authorization': `Bearer dark-city-production-key`
+                    }
+                });
+                const characters = await response.json();
+                
+                // Look for the character in both pending and approved
+                const allCharacters = [...characters];
+                const approvedResponse = await fetch(`https://dark-city-game-production.up.railway.app/api/characters?status=approved&limit=50`, {
+                    headers: {
+                        'Authorization': `Bearer dark-city-production-key`
+                    }
+                });
+                const approvedData = await approvedResponse.json();
+                allCharacters.push(...(approvedData.characters || []));
+                
+                const character = allCharacters.find(c => c._id === characterId);
+                
+                if (!character) {
+                    alert('Character not found');
+                    return;
+                }
+
+                currentCharacter = character;
+                
+                // Show character details in modal
+                const detailsHtml = `
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <h4 class="font-semibold text-red-400 mb-2">Basic Info</h4>
+                            <p><strong>Name:</strong> ${character.name}</p>
+                            <p><strong>Classification:</strong> ${character.classification}</p>
+                            <p><strong>Playbook:</strong> ${character.playbook}</p>
+                            <p><strong>Apparent Age:</strong> ${character.apparentAge}</p>
+                            <p><strong>Actual Age:</strong> ${character.actualAge}</p>
+                            <p><strong>Status:</strong> <span class="text-green-400">${character.status}</span></p>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-red-400 mb-2">Background</h4>
+                            <p><strong>Bio:</strong> ${character.bio || 'Not provided'}</p>
+                        </div>
+                    </div>
+                    
+                    ${character.moves && character.moves.length > 0 ? `
+                        <div class="mt-4">
+                            <h4 class="font-semibold text-red-400 mb-2">Moves</h4>
+                            <ul class="list-disc list-inside text-gray-300">
+                                ${character.moves.map(move => `<li>${move.name}: ${move.description}</li>`).join('')}
+                            </ul>
+                        </div>
+                    ` : ''}
+                `;
+                
+                document.getElementById('character-details').innerHTML = detailsHtml;
+                document.getElementById('review-modal').classList.remove('hidden');
+                
+                // Hide approval buttons for viewing only
+                const modalActions = document.querySelector('.border-t.border-gray-700.pt-4');
+                if (modalActions) {
+                    modalActions.style.display = 'none';
+                }
+                
+            } catch (error) {
+                console.error('Error viewing character:', error);
+                alert('Error loading character details');
+            }
+        }
+
         // Initialize the page
         document.addEventListener('DOMContentLoaded', () => {
             loadPendingCharacters();
             loadApprovedCharacters();
+            loadAllApprovedCharacters();
         });
     </script>
 </body>

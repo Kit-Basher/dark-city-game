@@ -233,12 +233,25 @@ router.get('/pending', async (req, res) => {
  */
 router.post('/submit', validate(characterSchema), async (req, res) => {
   try {
+    console.log('🔍 Received character submission with keys:', Object.keys(req.body));
+    console.log('🔍 Has humanPhoto:', !!req.body.humanPhoto);
+    console.log('🔍 Has monsterPhoto:', !!req.body.monsterPhoto);
+    console.log('🔍 Human photo length:', req.body.humanPhoto ? req.body.humanPhoto.length : 0);
+    console.log('🔍 Monster photo length:', req.body.monsterPhoto ? req.body.monsterPhoto.length : 0);
+    
     const character = new Character({
       ...req.body,
       submittedBy: req.body.submittedBy || 'anonymous',
     });
     
     const savedCharacter = await character.save();
+    
+    console.log('✅ Character saved with photo fields:', {
+      hasHumanPhoto: !!savedCharacter.humanPhoto,
+      hasMonsterPhoto: !!savedCharacter.monsterPhoto,
+      humanPhotoLength: savedCharacter.humanPhoto ? savedCharacter.humanPhoto.length : 0,
+      monsterPhotoLength: savedCharacter.monsterPhoto ? savedCharacter.monsterPhoto.length : 0
+    });
     
     // Emit real-time notification
     const io = req.app.get('io');
@@ -248,6 +261,7 @@ router.post('/submit', validate(characterSchema), async (req, res) => {
     
     res.status(201).json(savedCharacter);
   } catch (error) {
+    console.error('❌ Error submitting character:', error);
     res.status(400).json({ error: error.message });
   }
 });
@@ -372,8 +386,18 @@ router.get('/:id', async (req, res) => {
       return res.status(404).json({ error: 'Character not found' });
     }
     
+    console.log('🔍 Retrieved character with photos:', {
+      id: character._id,
+      name: character.name,
+      hasHumanPhoto: !!character.humanPhoto,
+      hasMonsterPhoto: !!character.monsterPhoto,
+      humanPhotoLength: character.humanPhoto ? character.humanPhoto.length : 0,
+      monsterPhotoLength: character.monsterPhoto ? character.monsterPhoto.length : 0
+    });
+    
     res.json(character);
   } catch (error) {
+    console.error('❌ Error retrieving character:', error);
     res.status(500).json({ error: error.message });
   }
 });

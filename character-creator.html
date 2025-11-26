@@ -906,6 +906,7 @@
                     reader.onload = (e) => resolve(e.target.result);
                     reader.readAsDataURL(humanPhotoFile);
                 });
+                console.log('📸 Human photo added, length:', characterData.humanPhoto.length);
             }
             
             if (monsterPhotoFile) {
@@ -914,7 +915,12 @@
                     reader.onload = (e) => resolve(e.target.result);
                     reader.readAsDataURL(monsterPhotoFile);
                 });
+                console.log('📸 Monster photo added, length:', characterData.monsterPhoto.length);
             }
+            
+            console.log('🔍 Final character data keys:', Object.keys(characterData));
+            console.log('🔍 Has humanPhoto:', !!characterData.humanPhoto);
+            console.log('🔍 Has monsterPhoto:', !!characterData.monsterPhoto);
             
             // Organize skills data
             const skills = {};

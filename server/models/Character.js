@@ -36,6 +36,8 @@ const characterSchema = new mongoose.Schema({
   humanWeight: String,
   monsterHeight: String,
   monsterWeight: String,
+  humanPhoto: String,
+  monsterPhoto: String,
   darkestSelf: {
     type: String,
     required: true,

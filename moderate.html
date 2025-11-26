@@ -459,6 +459,23 @@
                 const detailsHtml = `
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
+                            <h4 class="font-semibold text-red-400 mb-2">Character Photos</h4>
+                            <div class="flex gap-4 mb-4">
+                                ${character.humanPhoto ? `
+                                <div class="text-center">
+                                    <img src="${character.humanPhoto}" alt="${character.name} - Human Form" class="w-24 h-24 rounded-lg border-2 border-gray-600 object-cover mb-1">
+                                    <p class="text-xs text-gray-400">👤 Human</p>
+                                </div>
+                                ` : '<div class="text-center"><div class="w-24 h-24 rounded-lg border-2 border-dashed border-gray-600 flex items-center justify-center mb-1"><span class="text-gray-500 text-xs">No Human Photo</span></div><p class="text-xs text-gray-400">👤 Human</p></div>'}
+                                
+                                ${character.monsterPhoto ? `
+                                <div class="text-center">
+                                    <img src="${character.monsterPhoto}" alt="${character.name} - Monster Form" class="w-24 h-24 rounded-lg border-2 border-gray-600 object-cover mb-1">
+                                    <p class="text-xs text-gray-400">👹 Monster</p>
+                                </div>
+                                ` : '<div class="text-center"><div class="w-24 h-24 rounded-lg border-2 border-dashed border-gray-600 flex items-center justify-center mb-1"><span class="text-gray-500 text-xs">No Monster Photo</span></div><p class="text-xs text-gray-400">👹 Monster</p></div>'}
+                            </div>
+                            
                             <h4 class="font-semibold text-red-400 mb-2">Basic Info</h4>
                             <p><strong>Name:</strong> ${character.name}</p>
                             <p><strong>Classification:</strong> ${character.classification}</p>

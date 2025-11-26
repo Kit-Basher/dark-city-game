@@ -254,35 +254,45 @@
                 details.innerHTML = `
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <h4 class="font-semibold text-yellow-400">Basic Info</h4>
+                            <h4 class="font-semibold text-red-400 mb-2">Character Photos</h4>
+                            <div class="flex gap-4 mb-4">
+                                ${currentCharacter.humanPhoto ? `
+                                <div class="text-center">
+                                    <img src="${currentCharacter.humanPhoto}" alt="${currentCharacter.name} - Human Form" class="w-24 h-24 rounded-lg border-2 border-gray-600 object-cover mb-1">
+                                    <p class="text-xs text-gray-400">👤 Human</p>
+                                </div>
+                                ` : '<div class="text-center"><div class="w-24 h-24 rounded-lg border-2 border-dashed border-gray-600 flex items-center justify-center mb-1"><span class="text-gray-500 text-xs">No Human Photo</span></div><p class="text-xs text-gray-400">👤 Human</p></div>'}
+                                
+                                ${currentCharacter.monsterPhoto ? `
+                                <div class="text-center">
+                                    <img src="${currentCharacter.monsterPhoto}" alt="${currentCharacter.name} - Monster Form" class="w-24 h-24 rounded-lg border-2 border-gray-600 object-cover mb-1">
+                                    <p class="text-xs text-gray-400">👹 Monster</p>
+                                </div>
+                                ` : '<div class="text-center"><div class="w-24 h-24 rounded-lg border-2 border-dashed border-gray-600 flex items-center justify-center mb-1"><span class="text-gray-500 text-xs">No Monster Photo</span></div><p class="text-xs text-gray-400">👹 Monster</p></div>'}
+                            </div>
+                            
+                            <h4 class="font-semibold text-red-400 mb-2">Basic Info</h4>
                             <p><strong>Name:</strong> ${currentCharacter.name}</p>
                             <p><strong>Classification:</strong> ${currentCharacter.classification}</p>
                             <p><strong>Playbook:</strong> ${currentCharacter.playbook}</p>
                             <p><strong>Apparent Age:</strong> ${currentCharacter.apparentAge}</p>
                             <p><strong>Actual Age:</strong> ${currentCharacter.actualAge}</p>
+                            <p><strong>Status:</strong> <span class="text-yellow-400">${currentCharacter.status}</span></p>
                         </div>
                         <div>
-                            <h4 class="font-semibold text-yellow-400">Appearance</h4>
-                            <p><strong>Height:</strong> ${currentCharacter.humanHeight}</p>
-                            <p><strong>Weight:</strong> ${currentCharacter.humanWeight}</p>
-                            <p><strong>Monster Height:</strong> ${currentCharacter.monsterHeight}</p>
-                            <p><strong>Monster Weight:</strong> ${currentCharacter.monsterWeight}</p>
-                        </div>
-                        <div class="md:col-span-2">
-                            <h4 class="font-semibold text-yellow-400">Bio</h4>
-                            <p class="text-gray-300">${currentCharacter.bio}</p>
-                        </div>
-                        <div class="md:col-span-2">
-                            <h4 class="font-semibold text-yellow-400">Moves</h4>
-                            <ul class="list-disc list-inside">
-                                ${currentCharacter.moves.map(move => `<li><strong>${move.name}:</strong> ${move.description}</li>`).join('')}
-                            </ul>
-                        </div>
-                        <div class="md:col-span-2">
-                            <h4 class="font-semibold text-yellow-400">Aspects</h4>
-                            <p>${(currentCharacter.aspects || []).join(', ') || 'No aspects defined'}</p>
+                            <h4 class="font-semibold text-red-400 mb-2">Background</h4>
+                            <p><strong>Bio:</strong> ${currentCharacter.bio || 'Not provided'}</p>
                         </div>
                     </div>
+                    
+                    ${currentCharacter.moves && currentCharacter.moves.length > 0 ? `
+                        <div class="mt-4">
+                            <h4 class="font-semibold text-red-400 mb-2">Moves</h4>
+                            <ul class="list-disc list-inside text-gray-300">
+                                ${currentCharacter.moves.map(move => `<li>${move.name}: ${move.description}</li>`).join('')}
+                            </ul>
+                        </div>
+                    ` : ''}
                 `;
                 
                 document.getElementById('review-modal').classList.remove('hidden');

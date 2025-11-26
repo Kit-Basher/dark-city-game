@@ -253,6 +253,33 @@
             background: linear-gradient(90deg, #ff6b35, #f7931e, #ff6b35);
         }
         
+        .profile-photos {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .profile-photo {
+            text-align: center;
+        }
+        
+        .profile-photo img {
+            width: 150px;
+            height: 150px;
+            border-radius: 10px;
+            border: 3px solid #444;
+            object-fit: cover;
+            margin-bottom: 0.5rem;
+        }
+        
+        .profile-photo-label {
+            color: #999;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        
         .profile-name {
             font-size: 2.5rem;
             color: #ff6b35;
@@ -426,6 +453,31 @@
         <a href="javascript:window.close();" class="back-link">← Close Profile</a>
         
         <div class="profile-header">
+            <div class="profile-photos">
+                ${character.humanPhoto ? `
+                <div class="profile-photo">
+                    <img src="${character.humanPhoto}" alt="${character.name} - Human Form">
+                    <div class="profile-photo-label">👤 Human Form</div>
+                </div>
+                ` : ''}
+                
+                ${character.monsterPhoto ? `
+                <div class="profile-photo">
+                    <img src="${character.monsterPhoto}" alt="${character.name} - Monster Form">
+                    <div class="profile-photo-label">👹 Monster Form</div>
+                </div>
+                ` : ''}
+                
+                ${!character.humanPhoto && !character.monsterPhoto ? `
+                <div class="profile-photo">
+                    <div style="width: 150px; height: 150px; border: 3px dashed #666; border-radius: 10px; display: flex; align-items: center; justify-content: center; background: #2a2a2a;">
+                        <div style="color: #666; text-align: center; padding: 1rem;">No photos uploaded</div>
+                    </div>
+                    <div class="profile-photo-label">📷 No Images</div>
+                </div>
+                ` : ''}
+            </div>
+            
             <h1 class="profile-name">${character.name}</h1>
             <p class="profile-title">${character.classification} • ${character.playbook}</p>
             <div class="profile-badges">

@@ -138,6 +138,86 @@
             background: #555;
         }
         
+        .photo-upload-section {
+            background: #1a1a1a;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border: 1px solid #444;
+        }
+        
+        .photo-upload-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+        
+        .photo-upload-item {
+            text-align: center;
+        }
+        
+        .photo-upload-item h4 {
+            color: #ff6b35;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+        
+        .photo-preview {
+            width: 200px;
+            height: 200px;
+            border: 2px dashed #666;
+            border-radius: 8px;
+            margin: 1rem auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #2a2a2a;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .photo-preview img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: cover;
+            border-radius: 6px;
+        }
+        
+        .photo-preview .placeholder {
+            color: #666;
+            font-size: 0.9rem;
+            text-align: center;
+            padding: 1rem;
+        }
+        
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+            background: #444;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            border: 1px solid #666;
+            transition: all 0.3s ease;
+        }
+        
+        .file-input-wrapper:hover {
+            background: #555;
+            border-color: #ff6b35;
+        }
+        
+        .file-input-wrapper input[type="file"] {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            cursor: pointer;
+            width: 100%;
+            height: 100%;
+        }
+        
         .preview-section {
             background: #1a1a1a;
             padding: 2rem;
@@ -278,6 +358,36 @@
                     <div class="form-group">
                         <label for="bio">Character Biography *</label>
                         <textarea id="bio" name="bio" required placeholder="Describe your character's background, personality, and history..."></textarea>
+                    </div>
+                </section>
+
+                <!-- Character Photos -->
+                <section class="form-section">
+                    <h2>📸 Character Photos</h2>
+                    <p style="color: #ccc; margin-bottom: 1rem;">Upload images for your character's human and monster forms. Images will be displayed on your character profile.</p>
+                    
+                    <div class="photo-upload-grid">
+                        <div class="photo-upload-item">
+                            <h4>👤 Human Form</h4>
+                            <div class="photo-preview" id="humanPhotoPreview">
+                                <div class="placeholder">No image uploaded</div>
+                            </div>
+                            <div class="file-input-wrapper">
+                                <input type="file" id="humanPhoto" name="humanPhoto" accept="image/*" onchange="previewPhoto('human')">
+                                📷 Choose Human Photo
+                            </div>
+                        </div>
+                        
+                        <div class="photo-upload-item">
+                            <h4>👹 Monster Form</h4>
+                            <div class="photo-preview" id="monsterPhotoPreview">
+                                <div class="placeholder">No image uploaded</div>
+                            </div>
+                            <div class="file-input-wrapper">
+                                <input type="file" id="monsterPhoto" name="monsterPhoto" accept="image/*" onchange="previewPhoto('monster')">
+                                📷 Choose Monster Photo
+                            </div>
+                        </div>
                     </div>
                 </section>
 
@@ -723,6 +833,22 @@
             sceneGrid.appendChild(newChars);
         }
 
+        // Photo preview function
+        function previewPhoto(type) {
+            const fileInput = document.getElementById(type + 'Photo');
+            const previewDiv = document.getElementById(type + 'PhotoPreview');
+            
+            if (fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    previewDiv.innerHTML = `<img src="${e.target.result}" alt="${type} form photo">`;
+                };
+                
+                reader.readAsDataURL(fileInput.files[0]);
+            }
+        }
+
         function previewCharacter() {
             const form = document.getElementById('characterForm');
             const formData = new FormData(form);
@@ -766,6 +892,27 @@
             // Convert FormData to object and organize data
             for (let [key, value] of formData.entries()) {
                 characterData[key] = value;
+            }
+            
+            // Handle photo uploads
+            const humanPhotoFile = document.getElementById('humanPhoto').files[0];
+            const monsterPhotoFile = document.getElementById('monsterPhoto').files[0];
+            
+            // Convert photos to base64 synchronously
+            if (humanPhotoFile) {
+                characterData.humanPhoto = await new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => resolve(e.target.result);
+                    reader.readAsDataURL(humanPhotoFile);
+                });
+            }
+            
+            if (monsterPhotoFile) {
+                characterData.monsterPhoto = await new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => resolve(e.target.result);
+                    reader.readAsDataURL(monsterPhotoFile);
+                });
             }
             
             // Organize skills data

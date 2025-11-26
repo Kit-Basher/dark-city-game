@@ -174,6 +174,48 @@ router.get('/', async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /characters/{id}:
+ *   get:
+ *     summary: Get a specific character by ID
+ *     description: Retrieve a single character by their unique ID
+ *     tags: [Characters]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Character ID
+ *     responses:
+ *       200:
+ *         description: Character details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Character'
+ *       404:
+ *         description: Character not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
+router.get('/:id', async (req, res) => {
+  try {
+    const character = await Character.findById(req.params.id);
+    
+    if (!character) {
+      return res.status(404).json({ error: 'Character not found' });
+    }
+    
+    res.json(character);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // GET all submissions (moderator only)
 router.get('/submissions', async (req, res) => {
   try {

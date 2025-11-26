@@ -165,7 +165,8 @@ app.use('/api', (req, res, next) => {
 app.use(requestLogger);
 
 // Serve static files from parent directory
-app.use(express.static('../'));
+const path = require('path');
+app.use(express.static(path.join(__dirname, '..')));
 
 // Specific route for character builder
 // Character builder page removed - route deleted

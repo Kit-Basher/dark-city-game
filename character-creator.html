@@ -934,63 +934,69 @@
                 
                 const testData = {
                     // Basic Info
-                    'character-name': 'Test Character ' + Date.now(),
-                    'pronouns': 'They/Them',
-                    'playbook': 'Immortal',
+                    'name': 'Test Character ' + Date.now(),
+                    'apparentAge': '25',
+                    'actualAge': '250',
                     'classification': 'Vampire',
-                    'circle': 'The Unseen Circle',
-                    'experience': '2',
+                    'playbook': 'Immortal',
+                    'subtype': 'Vampire',
+                    'bio': 'Born in the 15th century, turned into a vampire during a tragic encounter. Has spent centuries learning to control their powers and navigate the supernatural world.',
                     
-                    // Bio
-                    'appearance': 'Tall and mysterious with dark eyes and a commanding presence. Dressed in elegant, dark clothing that hints at their ageless nature.',
-                    'background': 'Born in the 15th century, turned into a vampire during a tragic encounter. Has spent centuries learning to control their powers and navigate the supernatural world.',
-                    'role': 'Protector of the supernatural community, mediator between different factions',
-                    'motivations': 'Maintaining balance, protecting innocent supernaturals, seeking redemption for past mistakes',
-                    
-                    // Forms
-                    'human-form': 'Appears as a sophisticated, attractive human in their early 30s with piercing eyes',
-                    'monster-form': 'Transforms into a terrifying vampire with fangs, glowing red eyes, and enhanced strength',
-                    'alternate-form': 'Can appear as a shadow or mist to move undetected',
-                    
-                    // Stats
-                    'blood': '3',
-                    'heart': '2',
-                    'mind': '4',
-                    'spirit': '3',
-                    'mask': '2',
-                    
-                    // Skills
-                    'skill1': 'Combat',
-                    'skill1-level': '2',
-                    'skill2': 'Stealth',
-                    'skill2-level': '1',
-                    'skill3': 'Intimidation',
-                    'skill3-level': '2',
-                    
-                    // Moves
-                    'move1': 'Immortal Healing',
-                    'move2': 'Shadow Walk',
-                    'move3': 'Mesmerize',
+                    // Appearance
+                    'humanHeight': '5\'10"',
+                    'humanWeight': '180 lbs',
+                    'monsterHeight': '8\' tall',
+                    'monsterWeight': '400 lbs',
                     
                     // Aspects
                     'aspect1': 'Ancient Knowledge',
                     'aspect2': 'Supernatural Speed',
+                    'aspect3': 'Immortal Healing',
+                    
+                    // Stress & Consequences
+                    'physicalStress': '2',
+                    'mentalStress': '1',
+                    'physicalConsequences': '1',
+                    'mentalConsequences': '1',
+                    'fatePoints': '3',
+                    
+                    // Temporary Aspects
+                    'tempAspect1': 'Blood Bond',
+                    'tempAspect2': 'Shadow Walker',
+                    'tempDate1': new Date().toISOString().split('T')[0],
+                    'tempDate2': new Date().toISOString().split('T')[0],
+                    
+                    // Special Resources
+                    'specialResources': 'Ancient sword, blood vials, shadow cloak, immortal contacts',
                     
                     // Consequences
                     'consequence1': 'Sunlight Vulnerability',
                     'consequence2': 'Blood Thirst',
+                    'consequenceDate1': new Date().toISOString().split('T')[0],
+                    'consequenceDate2': new Date().toISOString().split('T')[0],
                     
-                    // Resources
-                    'resources': 'Wealth: 3\nContacts: 2\nHideouts: 1',
+                    // Moves
+                    'move1': 'Immortal Healing',
+                    'moveDesc1': 'Heal quickly from wounds',
+                    'move2': 'Shadow Walk',
+                    'moveDesc2': 'Move through shadows',
+                    'move3': 'Mesmerize',
+                    'moveDesc3': 'Control minds with gaze',
+                    'darkestSelf': 'Blood Frenzy',
+                    'darkestSelfDesc': 'Lose control when near blood',
+                    
+                    // Connections
+                    'connections': 'Sire: Ancient Master\nAllies: Vampire Coven\nEnemies: Vampire Hunters\nContacts: Underground Network',
                     
                     // Inventory
                     'item1': 'Ancient Sword',
+                    'itemDesc1': 'Enchanted blade passed down through generations',
                     'item2': 'Blood Vials',
+                    'itemDesc2': 'Emergency blood supply',
                     
                     // Scene
-                    'sceneTitle1': 'The First Hunt',
-                    'sceneDesc1': 'My first night as a vampire - the confusion, fear, and unexpected power.',
-                    'sceneChars1': 'My sire, innocent victim'
+                    'scene1': 'The First Hunt - My transformation and first taste of blood. Changed my life forever.',
+                    'sceneChars1': 'My sire, innocent victim, vampire hunters'
                 };
                 
                 console.log('📝 Test data created:', Object.keys(testData).length, 'fields');
@@ -1002,6 +1008,7 @@
                     if (element) {
                         element.value = testData[key];
                         filledCount++;
+                        console.log('✅ Filled:', key, 'with value:', testData[key]);
                     } else {
                         console.warn('⚠️ Element not found:', key);
                     }
@@ -1010,7 +1017,7 @@
                 console.log('✅ Filled', filledCount, 'fields successfully');
                 
                 // Trigger change events to update any listeners
-                testData.keys.forEach(key => {
+                Object.keys(testData).forEach(key => {
                     const element = document.getElementById(key);
                     if (element) {
                         element.dispatchEvent(new Event('change', { bubbles: true }));
@@ -1040,106 +1047,128 @@
                 // Organize character data
                 const characterData = {
                     // Basic Info
-                    name: formData.get('character-name'),
-                    pronouns: formData.get('pronouns'),
-                    playbook: formData.get('playbook'),
+                    name: formData.get('name'),
+                    apparentAge: formData.get('apparentAge'),
+                    actualAge: formData.get('actualAge'),
                     classification: formData.get('classification'),
-                    circle: formData.get('circle'),
-                    experience: formData.get('experience'),
+                    playbook: formData.get('playbook'),
+                    subtype: formData.get('subtype'),
+                    bio: formData.get('bio'),
                     
-                    // Bio
-                    appearance: formData.get('appearance'),
-                    background: formData.get('background'),
-                    role: formData.get('role'),
-                    motivations: formData.get('motivations'),
-                    
-                    // Forms
-                    forms: {
-                        human: formData.get('human-form'),
-                        monster: formData.get('monster-form'),
-                        alternate: formData.get('alternate-form')
+                    // Appearance
+                    appearance: {
+                        human: {
+                            height: formData.get('humanHeight'),
+                            weight: formData.get('humanWeight')
+                        },
+                        monster: {
+                            height: formData.get('monsterHeight'),
+                            weight: formData.get('monsterWeight')
+                        }
                     },
                     
-                    // Stats
-                    stats: {
-                        blood: formData.get('blood'),
-                        heart: formData.get('heart'),
-                        mind: formData.get('mind'),
-                        spirit: formData.get('spirit'),
-                        mask: formData.get('mask')
-                    },
-                    
-                    // Skills
-                    skills: [],
-                    moves: [],
+                    // Aspects
+                    aspects: [],
                     temporaryAspects: [],
                     consequences: [],
+                    moves: [],
                     inventory: [],
                     scenes: []
                 };
                 
-                // Collect skills
-                for (let i = 1; i <= 3; i++) {
-                    const skillName = formData.get(`skill${i}`);
-                    const skillLevel = formData.get(`skill${i}-level`);
-                    if (skillName && skillLevel) {
-                        characterData.skills.push({ name: skillName, level: skillLevel });
-                    }
-                }
-                
-                // Collect moves
-                for (let i = 1; i <= 10; i++) {
-                    const move = formData.get(`move${i}`);
-                    if (move) {
-                        characterData.moves.push(move);
-                    }
-                }
-                
-                // Collect aspects
+                // Collect permanent aspects
                 for (let i = 1; i <= 5; i++) {
                     const aspect = formData.get(`aspect${i}`);
                     if (aspect) {
-                        characterData.temporaryAspects.push(aspect);
+                        characterData.aspects.push(aspect);
                     }
                 }
+                
+                // Collect temporary aspects
+                for (let i = 1; i <= 5; i++) {
+                    const aspect = formData.get(`tempAspect${i}`);
+                    const date = formData.get(`tempDate${i}`);
+                    if (aspect) {
+                        characterData.temporaryAspects.push({
+                            name: aspect,
+                            date: date
+                        });
+                    }
+                }
+                
+                // Collect stress and consequences
+                characterData.stress = {
+                    physical: formData.get('physicalStress'),
+                    mental: formData.get('mentalStress'),
+                    physicalConsequences: formData.get('physicalConsequences'),
+                    mentalConsequences: formData.get('mentalConsequences'),
+                    fatePoints: formData.get('fatePoints')
+                };
                 
                 // Collect consequences
                 for (let i = 1; i <= 5; i++) {
                     const consequence = formData.get(`consequence${i}`);
+                    const date = formData.get(`consequenceDate${i}`);
                     if (consequence) {
-                        characterData.consequences.push(consequence);
+                        characterData.consequences.push({
+                            name: consequence,
+                            date: date
+                        });
                     }
                 }
+                
+                // Special resources
+                characterData.specialResources = formData.get('specialResources');
+                
+                // Collect moves
+                for (let i = 1; i <= 10; i++) {
+                    const move = formData.get(`move${i}`);
+                    const desc = formData.get(`moveDesc${i}`);
+                    if (move) {
+                        characterData.moves.push({
+                            name: move,
+                            description: desc || ''
+                        });
+                    }
+                }
+                
+                // Darkest self
+                characterData.darkestSelf = {
+                    name: formData.get('darkestSelf'),
+                    description: formData.get('darkestSelfDesc')
+                };
+                
+                // Connections
+                characterData.connections = formData.get('connections');
                 
                 // Collect inventory
                 for (let i = 1; i <= 10; i++) {
                     const item = formData.get(`item${i}`);
+                    const desc = formData.get(`itemDesc${i}`);
                     if (item) {
-                        characterData.inventory.push(item);
+                        characterData.inventory.push({
+                            name: item,
+                            description: desc || ''
+                        });
                     }
                 }
                 
                 // Collect scenes
                 for (let i = 1; i <= 10; i++) {
-                    const sceneTitle = formData.get(`sceneTitle${i}`);
-                    const sceneDesc = formData.get(`sceneDesc${i}`);
-                    const sceneChars = formData.get(`sceneChars${i}`);
-                    if (sceneTitle && sceneDesc) {
+                    const scene = formData.get(`scene${i}`);
+                    const chars = formData.get(`sceneChars${i}`);
+                    if (scene) {
                         characterData.scenes.push({
-                            title: sceneTitle,
-                            description: sceneDesc,
-                            characters: sceneChars
+                            description: scene,
+                            characters: chars || ''
                         });
                     }
                 }
                 
-                // Add resources
-                characterData.resources = formData.get('resources');
-                
                 console.log('✅ Character data organized:', {
                     name: characterData.name,
                     playbook: characterData.playbook,
-                    skillsCount: characterData.skills.length,
+                    aspectsCount: characterData.aspects.length,
                     movesCount: characterData.moves.length,
                     scenesCount: characterData.scenes.length
                 });

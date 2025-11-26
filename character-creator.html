@@ -863,10 +863,10 @@
                 if (characterData[sceneKey]) {
                     scenes.push({
                         summary: characterData[sceneKey],
-                        characters: characterData[sceneCharsKey] || ''
+                        characters: characterData[charsKey] || ''
                     });
                     delete characterData[sceneKey];
-                    delete characterData[sceneCharsKey];
+                    delete characterData[charsKey];
                 }
             }
             characterData.scenes = scenes;
@@ -1208,17 +1208,20 @@
                 // Fallback: Save to localStorage
                 try {
                     const timestamp = new Date().toISOString();
-                    characterData.submittedAt = timestamp;
-                    characterData.id = 'draft_' + Date.now();
-                    characterData.status = 'pending_submission';
+                    const fallbackData = {
+                        ...characterData,
+                        submittedAt: timestamp,
+                        id: 'draft_' + Date.now(),
+                        status: 'pending_submission'
+                    };
                     
                     const drafts = JSON.parse(localStorage.getItem('characterDrafts') || '[]');
-                    drafts.push(characterData);
+                    drafts.push(fallbackData);
                     localStorage.setItem('characterDrafts', JSON.stringify(drafts));
                     
-                    console.log('💾 Saved to localStorage:', characterData.id);
+                    console.log('💾 Saved to localStorage:', fallbackData.id);
                     
-                    alert(`❌ Server submission failed (${error.message}). Character saved locally with ID: ${characterData.id}`);
+                    alert(`❌ Server submission failed (${error.message}). Character saved locally with ID: ${fallbackData.id}`);
                     
                 } catch (storageError) {
                     console.error('❌ Storage error:', storageError);

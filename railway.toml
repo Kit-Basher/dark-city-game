@@ -10,5 +10,6 @@ restartPolicyMaxRetries = 10
 
 [env]
 NODE_ENV = "production"
-PORT = "3000"
+PORT = "8080"
 REDIS_URL = "disabled"
+ALLOWED_ORIGINS = "https://kit-basher.github.io"

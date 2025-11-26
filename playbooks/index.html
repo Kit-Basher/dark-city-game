@@ -333,7 +333,7 @@
             
             let filteredPlaybooks = playbooks;
             
-            if (category) {
+            if (category && category !== 'all') {
                 filteredPlaybooks = playbooks.filter(playbook => playbook.category === category);
             }
             

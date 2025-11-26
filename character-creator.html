@@ -938,7 +938,7 @@
                     'apparentAge': '25',
                     'actualAge': '250',
                     'classification': 'Vampire',
-                    'playbook': 'Immortal',
+                    'playbook': 'Unsated',
                     'subtype': 'Vampire',
                     'bio': 'Born in the 15th century, turned into a vampire during a tragic encounter. Has spent centuries learning to control their powers and navigate the supernatural world.',
                     
@@ -1037,6 +1037,8 @@
         async function submitCharacterForm() {
             console.log('🚀 Starting character submission...');
             
+            let characterData = {}; // Declare outside try block
+            
             try {
                 // Collect form data
                 const form = document.getElementById('characterForm');
@@ -1045,7 +1047,7 @@
                 console.log('📝 Collecting form data...');
                 
                 // Organize character data
-                const characterData = {
+                characterData = {
                     // Basic Info
                     name: formData.get('name'),
                     apparentAge: formData.get('apparentAge'),

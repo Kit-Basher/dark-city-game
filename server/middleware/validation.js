@@ -101,6 +101,18 @@ const characterSchema = Joi.object({
             'string.max': 'Monster weight cannot exceed 20 characters'
         }),
     
+    humanPhoto: Joi.string()
+        .allow('')
+        .messages({
+            'string.base': 'Human photo must be a valid base64 string'
+        }),
+    
+    monsterPhoto: Joi.string()
+        .allow('')
+        .messages({
+            'string.base': 'Monster photo must be a valid base64 string'
+        }),
+    
     darkestSelf: Joi.string()
         .trim()
         .min(10)

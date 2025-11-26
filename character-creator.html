@@ -923,12 +923,15 @@
             console.log('🔍 Has monsterPhoto:', !!characterData.monsterPhoto);
             
             // Organize skills data
-            const skills = {};
+            const skills = [];
             for (let level = 4; level >= 1; level--) {
                 for (let slot = 1; slot <= 6; slot++) {
                     const skillKey = `skill${level}_${slot}`;
                     if (characterData[skillKey]) {
-                        skills[characterData[skillKey]] = `+${level}`;
+                        skills.push({
+                            name: characterData[skillKey],
+                            level: level
+                        });
                         delete characterData[skillKey];
                     }
                 }
@@ -943,6 +946,7 @@
                 if (characterData[moveKey]) {
                     moves.push({
                         name: characterData[moveKey],
+                        source: characterData.playbook, // Use playbook as source
                         description: characterData[descKey] || ''
                     });
                     delete characterData[moveKey];
@@ -950,15 +954,8 @@
                 }
             }
             
-            // Add darkest self if present
-            if (characterData.darkestSelf) {
-                moves.push({
-                    name: characterData.darkestSelf,
-                    description: characterData.darkestSelfDesc || ''
-                });
-                delete characterData.darkestSelf;
-                delete characterData.darkestSelfDesc;
-            }
+            // Darkest Self is already a string field, no need to convert to move
+            // Just ensure it's included as-is
             characterData.moves = moves;
             
             // Organize temporary aspects

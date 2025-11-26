@@ -46,20 +46,20 @@ class ServerAPI {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${window.CONFIG?.API_KEY || process.env.API_KEY || 'dark-city-dev-key'}`
+                    'Authorization': `Bearer ${window.CONFIG?.API_KEY || 'dark-city-dev-key'}`
                 },
                 body: JSON.stringify(characterData)
             });
-            
+
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                const errorText = await response.text();
+                console.error('Server response error:', response.status, errorText);
+                throw new Error(`Server responded with ${response.status}: ${errorText}`);
             }
-            
-            const result = await response.json();
-            // Character submitted to server: result
-            return result;
+
+            return await response.json();
         } catch (error) {
-            // Error submitting character: error
+            console.error('Submit character error:', error);
             throw error;
         }
     }

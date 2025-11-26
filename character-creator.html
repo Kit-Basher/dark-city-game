@@ -904,6 +904,7 @@
                 const timestamp = new Date().toISOString();
                 characterData.submittedAt = timestamp;
                 characterData.id = 'draft_' + Date.now();
+                characterData.status = 'pending_submission';
                 
                 // Get existing drafts
                 const drafts = JSON.parse(localStorage.getItem('characterDrafts') || '[]');
@@ -914,7 +915,11 @@
                 localStorage.removeItem('characterDraft');
                 this.reset();
                 
-                alert('Character sheet saved locally! The server is currently unavailable, but your character has been saved and will be submitted when the server is back online. You can continue creating other characters.');
+                // Provide more detailed error message
+                const errorMessage = error.message || 'Unknown error';
+                console.log('Server error details:', errorMessage);
+                
+                alert(`Character sheet saved locally! The server is currently unavailable (${errorMessage}), but your character has been saved and will be submitted when the server is back online. You can continue creating other characters.\n\nYour character ID: ${characterData.id}`);
             }
         });
 

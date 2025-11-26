@@ -16,7 +16,7 @@ const config = {
 };
 
 // Auto-detect environment
-const isProduction = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
+const isProduction = window.location.hostname.includes('github.io');
 const currentConfig = isProduction ? config.production : config.development;
 
 // Export the current configuration

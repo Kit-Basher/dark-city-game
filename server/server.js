@@ -197,7 +197,17 @@ app.get('/api-docs.json', (req, res) => {
     res.send(specs);
 });
 
-// Comprehensive health checks
+// Root endpoint for Railway health check
+app.get('/', (req, res) => {
+  res.json({
+    status: 'ok',
+    message: 'Dark City RPG Server is running',
+    timestamp: new Date().toISOString(),
+    version: '1.0.0'
+  });
+});
+
+// Health check endpoint
 app.get('/health', applyRateLimiting('publicEndpoints'), async (req, res) => {
     try {
         const health = await healthChecker.getHealthStatus();

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dark City - RPG Game Hub</title>
     <meta name="description" content="A mysterious urban fantasy RPG where shadows hold secrets and every choice matters.">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌙</text></svg>">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/accessibility.css">
     <link rel="stylesheet" href="css/mobile.css">
@@ -537,6 +538,16 @@
                     })}</p>
                 </div>
                 
+                <h3 class="section-title">Physical Details</h3>
+                <div style="color: #ccc; line-height: 1.6;">
+                    <p><strong>Apparent Age:</strong> ${character.apparentAge || 'Unknown'}</p>
+                    <p><strong>Actual Age:</strong> ${character.actualAge || 'Unknown'}</p>
+                    ${character.humanHeight ? `<p><strong>Human Height:</strong> ${character.humanHeight}</p>` : ''}
+                    ${character.humanWeight ? `<p><strong>Human Weight:</strong> ${character.humanWeight}</p>` : ''}
+                    ${character.monsterHeight ? `<p><strong>Monster Height:</strong> ${character.monsterHeight}</p>` : ''}
+                    ${character.monsterWeight ? `<p><strong>Monster Weight:</strong> ${character.monsterWeight}</p>` : ''}
+                </div>
+                
                 <h3 class="section-title">Character Stats</h3>
                 <div class="stats-grid">
                     <div class="stat-item">
@@ -555,16 +566,6 @@
                         <div class="stat-value">${character.apparentAge || 'Unknown'}</div>
                         <div class="stat-label">Apparent Age</div>
                     </div>
-                </div>
-                
-                <h3 class="section-title">Physical Details</h3>
-                <div style="color: #ccc; line-height: 1.6;">
-                    <p><strong>Apparent Age:</strong> ${character.apparentAge || 'Unknown'}</p>
-                    <p><strong>Actual Age:</strong> ${character.actualAge || 'Unknown'}</p>
-                    ${character.humanHeight ? `<p><strong>Human Height:</strong> ${character.humanHeight}</p>` : ''}
-                    ${character.humanWeight ? `<p><strong>Human Weight:</strong> ${character.humanWeight}</p>` : ''}
-                    ${character.monsterHeight ? `<p><strong>Monster Height:</strong> ${character.monsterHeight}</p>` : ''}
-                    ${character.monsterWeight ? `<p><strong>Monster Weight:</strong> ${character.monsterWeight}</p>` : ''}
                 </div>
             </div>
         </div>

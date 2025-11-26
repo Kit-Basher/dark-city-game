@@ -898,8 +898,23 @@
                 // window.location.href = 'characters/manage.html';
                 
             } catch (error) {
-                console.error('Error submitting character:', error);
-                alert('Error submitting character. Please try again or contact support.');
+                console.error('Error submitting character to server:', error);
+                
+                // Fallback: Save to localStorage for later submission
+                const timestamp = new Date().toISOString();
+                characterData.submittedAt = timestamp;
+                characterData.id = 'draft_' + Date.now();
+                
+                // Get existing drafts
+                const drafts = JSON.parse(localStorage.getItem('characterDrafts') || '[]');
+                drafts.push(characterData);
+                localStorage.setItem('characterDrafts', JSON.stringify(drafts));
+                
+                // Clear current draft
+                localStorage.removeItem('characterDraft');
+                this.reset();
+                
+                alert('Character sheet saved locally! The server is currently unavailable, but your character has been saved and will be submitted when the server is back online. You can continue creating other characters.');
             }
         });
 

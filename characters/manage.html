@@ -524,9 +524,19 @@
                 document.getElementById('loadingMessage').style.display = 'none';
                 
             } catch (error) {
-                console.error('Error loading submissions:', error);
+                console.error('Error loading submissions from server:', error);
                 document.getElementById('loadingMessage').style.display = 'none';
-                document.getElementById('noCharactersMessage').style.display = 'block';
+                
+                // Show server connection error message
+                const grid = document.getElementById('characterGrid');
+                SafeDOM.setContent(grid, SafeDOM.createHTML('div', {
+                    style: 'text-align: center; color: #ff6b35; padding: 2rem; grid-column: 1/-1;'
+                }, [
+                    SafeDOM.createHTML('h3', {}, ['🔴 Server Connection Error']),
+                    SafeDOM.createHTML('p', {}, ['Unable to connect to the Dark City server.']),
+                    SafeDOM.createHTML('p', {}, ['Please ensure the server is running and accessible.']),
+                    SafeDOM.createHTML('p', {}, ['Error: ' + error.message])
+                ]));
             }
         }
         

@@ -429,9 +429,21 @@
                 document.getElementById('loadingMessage').style.display = 'none';
                 
             } catch (error) {
-                console.error('Error loading characters:', error);
-                document.getElementById('loadingMessage').style.display = 'none';
-                document.getElementById('noCharactersMessage').style.display = 'block';
+                console.error('Error loading characters from server:', error);
+                console.log('Server API not available, trying GitHub...');
+                
+                // Fallback to GitHub API
+                try {
+                    allCharacters = await loadCharactersFromGitHub();
+                    filteredCharacters = [...allCharacters];
+                    populateFilters();
+                    displayCharacters();
+                    document.getElementById('loadingMessage').style.display = 'none';
+                } catch (githubError) {
+                    console.error('Error loading from GitHub:', githubError);
+                    document.getElementById('loadingMessage').style.display = 'none';
+                    document.getElementById('noCharactersMessage').style.display = 'block';
+                }
             }
         }
         

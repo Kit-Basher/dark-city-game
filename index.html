@@ -716,18 +716,18 @@
         }
         
         // Allow Enter key to submit password
-        document.getElementById('passwordInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
+        document.getElementById('passwordInput').onkeypress = function(e) {
+            if (e.keyCode == 13) {
                 verifyPassword();
             }
-        });
+        };
         
         // Allow Escape key to close modal
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
+        document.onkeydown = function(e) {
+            if (e.keyCode == 27) {
                 closePasswordModal();
             }
-        });
+        };
     </script>
 </body>
 </html>`;

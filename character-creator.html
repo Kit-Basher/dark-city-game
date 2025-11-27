@@ -899,6 +899,15 @@
             const humanPhotoFile = document.getElementById('humanPhoto').files[0];
             const monsterPhotoFile = document.getElementById('monsterPhoto').files[0];
             
+            console.log('🔍 Photo file selection:', {
+                hasHumanFile: !!humanPhotoFile,
+                hasMonsterFile: !!monsterPhotoFile,
+                humanFileName: humanPhotoFile ? humanPhotoFile.name : 'none',
+                monsterFileName: monsterPhotoFile ? monsterPhotoFile.name : 'none',
+                humanFileSize: humanPhotoFile ? humanPhotoFile.size : 0,
+                monsterFileSize: monsterPhotoFile ? monsterPhotoFile.size : 0
+            });
+            
             // Convert photos to base64 synchronously
             if (humanPhotoFile) {
                 characterData.humanPhoto = await new Promise((resolve) => {
@@ -907,6 +916,8 @@
                     reader.readAsDataURL(humanPhotoFile);
                 });
                 console.log('📸 Human photo added, length:', characterData.humanPhoto.length);
+            } else {
+                console.log('⚠️ No human photo file selected');
             }
             
             if (monsterPhotoFile) {
@@ -916,11 +927,20 @@
                     reader.readAsDataURL(monsterPhotoFile);
                 });
                 console.log('📸 Monster photo added, length:', characterData.monsterPhoto.length);
+            } else {
+                console.log('⚠️ No monster photo file selected');
             }
             
             console.log('🔍 Final character data keys:', Object.keys(characterData));
             console.log('🔍 Has humanPhoto:', !!characterData.humanPhoto);
             console.log('🔍 Has monsterPhoto:', !!characterData.monsterPhoto);
+            console.log('🔍 About to submit character with photo data:', {
+                totalKeys: Object.keys(characterData).length,
+                humanPhotoLength: characterData.humanPhoto ? characterData.humanPhoto.length : 0,
+                monsterPhotoLength: characterData.monsterPhoto ? characterData.monsterPhoto.length : 0,
+                humanPhotoStart: characterData.humanPhoto ? characterData.humanPhoto.substring(0, 50) + '...' : 'none',
+                monsterPhotoStart: characterData.monsterPhoto ? characterData.monsterPhoto.substring(0, 50) + '...' : 'none'
+            });
             
             // Organize skills data
             const skills = [];

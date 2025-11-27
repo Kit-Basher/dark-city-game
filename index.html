@@ -235,17 +235,6 @@
             html += '.profile-header{text-align:center;margin-bottom:30px;}';
             html += '.profile-name{font-size:2.5rem;color:#ff6b35;margin-bottom:10px;}';
             html += '.profile-title{font-size:1.2rem;color:#ccc;margin-bottom:20px;}';
-            html += '.edit-profile-btn{background:#ff6b35;color:white;border:none;padding:10px 20px;border-radius:5px;cursor:pointer;font-size:1rem;}';
-            html += '.edit-profile-btn:hover{background:#e55a2b;}';
-            html += '.password-modal{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.9);display:none;align-items:center;justify-content:center;z-index:1000;}';
-            html += '.password-modal-content{background:#2a2a2a;padding:30px;border-radius:15px;border:2px solid #ff6b35;max-width:400px;text-align:center;}';
-            html += '.password-modal h3{color:#ff6b35;margin-bottom:15px;font-size:1.3rem;}';
-            html += '.password-modal p{margin-bottom:20px;color:#ccc;}';
-            html += '.password-modal input{width:100%;padding:12px;background:#1a1a1a;border:1px solid #666;color:white;border-radius:8px;margin-bottom:20px;font-size:1rem;}';
-            html += '.password-modal-buttons{display:flex;gap:10px;justify-content:center;}';
-            html += '.password-modal-buttons button{padding:12px 20px;border:none;border-radius:8px;cursor:pointer;font-size:1rem;}';
-            html += '.password-modal-buttons .confirm{background:#ff6b35;color:white;}';
-            html += '.password-modal-buttons .cancel{background:#666;color:white;}';
             html += '.profile-content{margin-top:30px;}';
             html += '.bio-section{margin-bottom:30px;}';
             html += '.section-title{color:#ff6b35;font-size:1.5rem;margin-bottom:15px;border-bottom:2px solid #444;padding-bottom:10px;}';
@@ -263,7 +252,6 @@
             html += '<div class="profile-header">';
             html += '<h1 class="profile-name">' + character.name + '</h1>';
             html += '<p class="profile-title">' + character.classification + ' • ' + character.playbook + '</p>';
-            html += '<button onclick="window.location.href=\'../character-creator.html?edit=' + character._id + '\'" class="edit-profile-btn">✏️ Edit Profile</button>';
             html += '</div>';
             html += '<div class="profile-content">';
             html += '<div class="bio-section">';

@@ -1217,222 +1217,123 @@
                 
                 console.log('📝 Collecting form data...');
                 
-                // Organize character data
-                characterData = {
-                    // Basic Info
-                    name: formData.get('name'),
-                    apparentAge: formData.get('apparentAge'),
-                    actualAge: formData.get('actualAge'),
-                    classification: formData.get('classification'),
-                    playbook: formData.get('playbook'),
-                    subtype: formData.get('subtype'),
-                    bio: formData.get('bio'),
-                    
-                    // Appearance
-                    appearance: {
-                        human: {
-                            height: formData.get('humanHeight'),
-                            weight: formData.get('humanWeight')
-                        },
-                        monster: {
-                            height: formData.get('monsterHeight'),
-                            weight: formData.get('monsterWeight')
+                // Convert FormData to object and organize data
+                for (let [key, value] of formData.entries()) {
+                    characterData[key] = value;
+                }
+                
+                // Handle photo uploads
+                const humanPhotoFile = document.getElementById('humanPhoto').files[0];
+                const monsterPhotoFile = document.getElementById('monsterPhoto').files[0];
+                
+                console.log('🔍 Photo file selection:', {
+                    hasHumanFile: !!humanPhotoFile,
+                    hasMonsterFile: !!monsterPhotoFile,
+                    humanFileName: humanPhotoFile ? humanPhotoFile.name : 'none',
+                    monsterFileName: monsterPhotoFile ? monsterPhotoFile.name : 'none',
+                    humanFileSize: humanPhotoFile ? humanPhotoFile.size : 0,
+                    monsterFileSize: monsterPhotoFile ? monsterPhotoFile.size : 0
+                });
+                
+                // Convert photos to base64 synchronously
+                if (humanPhotoFile) {
+                    characterData.humanPhoto = await new Promise((resolve) => {
+                        const reader = new FileReader();
+                        reader.onload = (e) => resolve(e.target.result);
+                        reader.readAsDataURL(humanPhotoFile);
+                    });
+                    console.log('📸 Human photo added, length:', characterData.humanPhoto.length);
+                } else {
+                    console.log('⚠️ No human photo file selected');
+                }
+                
+                if (monsterPhotoFile) {
+                    characterData.monsterPhoto = await new Promise((resolve) => {
+                        const reader = new FileReader();
+                        reader.onload = (e) => resolve(e.target.result);
+                        reader.readAsDataURL(monsterPhotoFile);
+                    });
+                    console.log('📸 Monster photo added, length:', characterData.monsterPhoto.length);
+                } else {
+                    console.log('⚠️ No monster photo file selected');
+                }
+                
+                console.log('🔍 Final character data keys:', Object.keys(characterData));
+                console.log('🔍 Has humanPhoto:', !!characterData.humanPhoto);
+                console.log('🔍 Has monsterPhoto:', !!characterData.monsterPhoto);
+                console.log('🔍 About to submit character with photo data:', {
+                    totalKeys: Object.keys(characterData).length,
+                    humanPhotoLength: characterData.humanPhoto ? characterData.humanPhoto.length : 0,
+                    monsterPhotoLength: characterData.monsterPhoto ? characterData.monsterPhoto.length : 0,
+                    humanPhotoStart: characterData.humanPhoto ? characterData.humanPhoto.substring(0, 50) + '...' : 'none',
+                    monsterPhotoStart: characterData.monsterPhoto ? characterData.monsterPhoto.substring(0, 50) + '...' : 'none'
+                });
+                
+                // Organize skills data
+                const skills = [];
+                for (let level = 4; level >= 1; level--) {
+                    for (let slot = 1; slot <= 6; slot++) {
+                        const skillKey = `skill${level}_${slot}`;
+                        if (characterData[skillKey]) {
+                            skills.push({
+                                name: characterData[skillKey],
+                                level: level
+                            });
+                            delete characterData[skillKey];
                         }
-                    },
-                    
-                    // Aspects
-                    aspects: [],
-                    temporaryAspects: [],
-                    consequences: [],
-                    moves: [],
-                    inventory: [],
-                    scenes: []
-                };
-                
-                // Collect permanent aspects
-                for (let i = 1; i <= 5; i++) {
-                    const aspect = formData.get(`aspect${i}`);
-                    if (aspect) {
-                        characterData.aspects.push(aspect);
                     }
                 }
+                characterData.skills = skills;
                 
-                // Collect temporary aspects
-                for (let i = 1; i <= 5; i++) {
-                    const aspect = formData.get(`tempAspect${i}`);
-                    const date = formData.get(`tempDate${i}`);
-                    if (aspect) {
-                        characterData.temporaryAspects.push({
-                            name: aspect,
-                            date: date
+                // Organize moves data
+                const moves = [];
+                for (let i = 1; i <= moveCount; i++) {
+                    const moveKey = `move${i}`;
+                    const descKey = `moveDesc${i}`;
+                    if (characterData[moveKey]) {
+                        moves.push({
+                            name: characterData[moveKey],
+                            source: characterData.playbook, // Use playbook as source
+                            description: characterData[descKey] || ''
                         });
+                        delete characterData[moveKey];
+                        delete characterData[descKey];
                     }
                 }
                 
-                // Collect stress and consequences
-                characterData.stress = {
-                    physical: formData.get('physicalStress'),
-                    mental: formData.get('mentalStress'),
-                    physicalConsequences: formData.get('physicalConsequences'),
-                    mentalConsequences: formData.get('mentalConsequences'),
-                    fatePoints: formData.get('fatePoints')
-                };
-                
-                // Collect consequences
-                for (let i = 1; i <= 5; i++) {
-                    const consequence = formData.get(`consequence${i}`);
-                    const date = formData.get(`consequenceDate${i}`);
-                    if (consequence) {
-                        characterData.consequences.push({
-                            name: consequence,
-                            date: date
-                        });
-                    }
-                }
-                
-                // Special resources
-                characterData.specialResources = formData.get('specialResources');
-                
-                // Collect moves
-                for (let i = 1; i <= 10; i++) {
-                    const move = formData.get(`move${i}`);
-                    const desc = formData.get(`moveDesc${i}`);
-                    if (move) {
-                        characterData.moves.push({
-                            name: move,
-                            description: desc || ''
-                        });
-                    }
-                }
-                
-                // Darkest self
-                characterData.darkestSelf = {
-                    name: formData.get('darkestSelf'),
-                    description: formData.get('darkestSelfDesc')
-                };
-                
-                // Connections
-                characterData.connections = formData.get('connections');
-                
-                // Collect inventory
-                for (let i = 1; i <= 10; i++) {
-                    const item = formData.get(`item${i}`);
-                    const desc = formData.get(`itemDesc${i}`);
-                    if (item) {
-                        characterData.inventory.push({
-                            name: item,
-                            description: desc || ''
-                        });
-                    }
-                }
-                
-                // Collect scenes
-                for (let i = 1; i <= 10; i++) {
-                    const scene = formData.get(`scene${i}`);
-                    const chars = formData.get(`sceneChars${i}`);
-                    if (scene) {
-                        characterData.scenes.push({
-                            description: scene,
-                            characters: chars || ''
-                        });
-                    }
-                }
+                // Darkest Self is already a string field, no need to convert to move
+                // Just ensure it's included as-is
+                characterData.moves = moves;
                 
                 console.log('✅ Character data organized:', {
                     name: characterData.name,
                     playbook: characterData.playbook,
-                    aspectsCount: characterData.aspects.length,
-                    movesCount: characterData.moves.length,
-                    scenesCount: characterData.scenes.length
+                    aspectsCount: characterData.aspects?.length || 0,
+                    movesCount: characterData.moves?.length || 0,
+                    scenesCount: characterData.scenes?.length || 0
                 });
-                
-                // Validate required fields
-                if (!characterData.name || !characterData.playbook) {
-                    throw new Error('Character name and playbook are required');
-                }
-                
-                // Flatten the character data to match server validation schema
-                const flattenedData = {
-                    name: characterData.name,
-                    apparentAge: characterData.apparentAge,
-                    actualAge: characterData.actualAge,
-                    classification: characterData.classification,
-                    playbook: characterData.playbook,
-                    subtype: characterData.subtype,
-                    bio: characterData.bio,
-                    humanHeight: characterData.appearance?.human?.height || '',
-                    humanWeight: characterData.appearance?.human?.weight || '',
-                    monsterHeight: characterData.appearance?.monster?.height || '',
-                    monsterWeight: characterData.appearance?.monster?.weight || '',
-                    darkestSelf: characterData.darkestSelf?.description || characterData.darkestSelf?.name || '',
-                    fatePoints: characterData.stress?.fatePoints || '3',
-                    physicalStress: characterData.stress?.physical || '2',
-                    mentalStress: characterData.stress?.mental || '2',
-                    physicalConsequences: characterData.stress?.physicalConsequences || '1',
-                    mentalConsequences: characterData.stress?.mentalConsequences || '1',
-                    specialResources: characterData.specialResources,
-                    connections: characterData.connections,
-                    moves: characterData.moves.map(move => ({
-                        ...move,
-                        source: 'Playbook'
-                    })),
-                    inventory: characterData.inventory,
-                    scenes: characterData.scenes,
-                    aspects: characterData.aspects,
-                    temporaryAspects: characterData.temporaryAspects,
-                    consequences: characterData.consequences
-                };
                 
                 console.log('🌐 Submitting to server...');
-                console.log('📤 Character data being sent:', JSON.stringify(flattenedData, null, 2));
+                console.log('📤 Character data being sent:', characterData);
+                
+                // Create server API instance
+                const serverAPI = new ServerAPI();
+                console.log('📡 Server API created:', serverAPI);
                 
                 // Submit to server
-                const serverAPI = new ServerAPI();
-                console.log('📡 Server API created:', {
-                    baseURL: serverAPI.baseURL,
-                    config: window.APP_CONFIG
-                });
-                
-                const result = await serverAPI.submitCharacter(flattenedData);
+                const result = await serverAPI.submitCharacter(characterData);
                 console.log('✅ Server response:', result);
                 
-                // Clear draft and form
-                localStorage.removeItem('characterDraft');
-                form.reset();
-                
+                // Show success message
                 alert('🎉 Character sheet submitted successfully! It will be reviewed by moderators and you\'ll be notified of the decision.');
+                
+                // Reset form
+                document.getElementById('characterForm').reset();
                 
             } catch (error) {
                 console.error('❌ Submission error:', error);
-                console.error('❌ Error stack:', error.stack);
-                console.error('❌ Error details:', {
-                    message: error.message,
-                    name: error.name,
-                    toString: error.toString()
-                });
-                
-                // Fallback: Save to localStorage
-                try {
-                    const timestamp = new Date().toISOString();
-                    const fallbackData = {
-                        ...characterData,
-                        submittedAt: timestamp,
-                        id: 'draft_' + Date.now(),
-                        status: 'pending_submission'
-                    };
-                    
-                    const drafts = JSON.parse(localStorage.getItem('characterDrafts') || '[]');
-                    drafts.push(fallbackData);
-                    localStorage.setItem('characterDrafts', JSON.stringify(drafts));
-                    
-                    console.log('💾 Saved to localStorage:', fallbackData.id);
-                    
-                    alert(`❌ Server submission failed (${error.message}). Character saved locally with ID: ${fallbackData.id}`);
-                    
-                } catch (storageError) {
-                    console.error('❌ Storage error:', storageError);
-                    alert(`❌ Both server and local storage failed: ${error.message}`);
-                }
+                console.error('❌ Error submitting character to server:', error);
+                alert(`❌ Error submitting character: ${error.message}`);
             }
         }
 

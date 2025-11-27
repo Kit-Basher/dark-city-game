@@ -709,6 +709,8 @@
 
         // Generate and show character profile dynamically
         async function generateAndShowProfile(characterId) {
+            console.log('🔍 Gallery: Clicked character with ID:', characterId);
+            
             try {
                 // Fetch character data
                 const response = await fetch(`https://dark-city-game-production.up.railway.app/api/characters/${characterId}`, {
@@ -722,6 +724,7 @@
                 }
                 
                 const character = await response.json();
+                console.log('🔍 Gallery: Character data loaded:', character.name);
                 
                 // Generate profile HTML and set proper URL
                 const profileHTML = generateProfileHTML(character);
@@ -731,12 +734,16 @@
                 
                 // Create a new window with proper URL
                 const profileWindow = window.open('', '_blank');
+                
+                // Set the URL and title immediately
+                profileWindow.document.title = `${character.name} - Dark City Character Profile`;
+                profileWindow.history.replaceState({}, '', `#${characterSlug}-${character._id}`);
+                
+                // Write the content
                 profileWindow.document.write(profileHTML);
                 profileWindow.document.close();
                 
-                // Set the URL to show the character name
-                profileWindow.history.replaceState({}, '', `#${characterSlug}-${character._id}`);
-                profileWindow.document.title = `${character.name} - Dark City Character Profile`;
+                console.log('🔍 Gallery: Profile window opened with URL:', `#${characterSlug}-${character._id}`);
                 
             } catch (error) {
                 console.error('Error generating profile:', error);
@@ -1022,12 +1029,7 @@
             
             <h1 class="profile-name">${character.name}</h1>
             <p class="profile-title">${character.classification} • ${character.playbook}</p>
-            <div class="profile-badges">
-                <span class="badge playbook">${character.playbook}</span>
-                <span class="badge classification">${character.classification}</span>
-                <span class="badge">${character.subtype || 'None'}</span>
-                <span class="badge" style="background: #27ae60;">✅ Approved</span>
-            </div>
+            <button onclick="showEditPasswordModal('${character.name}')" class="edit-profile-btn">✏️ Edit Profile</button>
         </div>
         
         <div class="profile-content">

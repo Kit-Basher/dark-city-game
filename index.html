@@ -198,12 +198,14 @@
                     
                     // Create a new window with proper URL
                     const profileWindow = window.open('', '_blank');
+                    
+                    // Set the URL and title immediately
+                    profileWindow.document.title = `${character.name} - Dark City Character Profile`;
+                    profileWindow.history.replaceState({}, '', `#${characterSlug}-${character._id}`);
+                    
+                    // Write the content
                     profileWindow.document.write(profileHTML);
                     profileWindow.document.close();
-                    
-                    // Set the URL to show the character name
-                    profileWindow.history.replaceState({}, '', `#${characterSlug}-${character._id}`);
-                    profileWindow.document.title = `${character.name} - Dark City Character Profile`;
                     
                 } catch (error) {
                     console.error('Error generating profile:', error);

@@ -1342,6 +1342,11 @@
                 // Reset form
                 document.getElementById('characterForm').reset();
                 
+                // Redirect to homepage after successful submission
+                setTimeout(() => {
+                    window.location.href = '../index.html';
+                }, 1000);
+                
             } catch (error) {
                 console.error('❌ Submission error:', error);
                 console.error('❌ Error submitting character to server:', error);

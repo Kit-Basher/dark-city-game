@@ -98,7 +98,17 @@ class ServerAPI {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             const characters = await response.json();
-            console.log(`Loaded ${characters.length} characters from server`);
+            console.log('API Response:', characters);
+            console.log('API Response type:', typeof characters);
+            console.log('API Response isArray:', Array.isArray(characters));
+            console.log(`Loaded ${characters ? characters.length : 'null/undefined'} characters from server`);
+            
+            // Ensure we return an array
+            if (!Array.isArray(characters)) {
+                console.warn('API did not return an array, returning empty array');
+                return [];
+            }
+            
             return characters;
         } catch (error) {
             console.error('Error loading submissions:', error);

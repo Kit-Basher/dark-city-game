@@ -58,16 +58,6 @@ class ModeratorPanel {
         
         try {
             this.allSubmissions = await this.serverAPI.getAllSubmissions();
-            console.log('Raw API response:', this.allSubmissions);
-            console.log('API response type:', typeof this.allSubmissions);
-            console.log('API response isArray:', Array.isArray(this.allSubmissions));
-            
-            // Ensure we have an array
-            if (!Array.isArray(this.allSubmissions)) {
-                console.warn('API did not return an array, using empty array');
-                this.allSubmissions = [];
-            }
-            
             console.log(`Loaded ${this.allSubmissions.length} submissions from server`);
             
             this.updateStatistics();

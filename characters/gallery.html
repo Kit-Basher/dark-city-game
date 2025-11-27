@@ -556,17 +556,10 @@
         
         // Create a character card element
         function createCharacterCard(character) {
-            console.log('🔍 Gallery: Creating card for character:', character.name, 'ID:', character._id);
-            
             const card = SafeDOM.createElement('div', {
                 className: 'character-card approved',
-                onclick: () => {
-                    console.log('🔍 Gallery: Card clicked for character:', character.name);
-                    generateAndShowProfile(character._id);
-                }
+                onclick: () => generateAndShowProfile(character._id)
             });
-            
-            console.log('🔍 Gallery: Card element created:', card);
             
             const statusBadge = SafeDOM.createElement('div', {
                 className: 'status-badge'

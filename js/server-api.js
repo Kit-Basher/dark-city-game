@@ -1,23 +1,23 @@
 // Server API Client for Dark City RPG
 class ServerAPI {
     constructor() {
-        // Use Railway API for production
-        this.baseURL = 'https://dark-city-game-production.up.railway.app/api';
-        this.socketURL = 'https://dark-city-game-production.up.railway.app';
+        // Use configuration based on environment
+        this.baseURL = window.APP_CONFIG ? window.APP_CONFIG.apiURL : '/api';
         this.socket = null;
     }
 
     // Initialize WebSocket connection
     initSocket() {
-        // Use Railway socket URL
-        this.socket = io(this.socketURL);
+        // Use configured socket URL
+        const socketURL = window.APP_CONFIG ? window.APP_CONFIG.socketURL : window.location.origin;
+        this.socket = io(socketURL);
         
         this.socket.on('connect', () => {
-            console.log('Connected to server');
+            // Connected to server
         });
         
         this.socket.on('disconnect', () => {
-            console.log('Disconnected from server');
+            // Disconnected from server
         });
         
         return this.socket;
@@ -27,7 +27,7 @@ class ServerAPI {
     joinModerator() {
         if (this.socket) {
             this.socket.emit('joinModerator');
-            console.log('Joined moderator room');
+            // Joined moderator room
         }
     }
 
@@ -88,38 +88,27 @@ class ServerAPI {
     // Get all submissions (moderator only)
     async getAllSubmissions() {
         try {
-            // Get all characters (both pending and approved)
-            const response = await fetch(`${this.baseURL}/characters`, {
+            const response = await fetch(`${this.baseURL}/characters/submissions`, {
                 headers: {
-                    'Authorization': `Bearer dark-city-production-key`
+                    'Authorization': `Bearer ${window.CONFIG?.API_KEY || process.env.API_KEY || 'dark-city-dev-key'}`
                 }
             });
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            const characters = await response.json();
-            console.log('API Response:', characters);
-            console.log('API Response type:', typeof characters);
-            console.log('API Response isArray:', Array.isArray(characters));
-            console.log(`Loaded ${characters ? characters.length : 'null/undefined'} characters from server`);
-            
-            // Ensure we return an array
-            if (!Array.isArray(characters)) {
-                console.warn('API did not return an array, returning empty array');
-                return [];
-            }
-            
-            return characters;
+            const submissions = await response.json();
+            // Loaded ${submissions.length} submissions from server
+            return submissions;
         } catch (error) {
-            console.error('Error loading submissions:', error);
-            throw error;
+            // Error loading submissions: error
+            return [];
         }
     }
 
     // Get pending submissions (moderator)
     async getPendingSubmissions() {
         try {
-            const response = await fetch(`${this.baseURL}/characters?status=pending`, {
+            const response = await fetch(`${this.baseURL}/characters/pending`, {
                 headers: {
                     'Authorization': `Bearer dark-city-production-key`
                 }
@@ -128,10 +117,10 @@ class ServerAPI {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             const pending = await response.json();
-            console.log(`Loaded ${pending.length} pending submissions from server`);
+            // Loaded ${pending.length} pending submissions from server
             return pending;
         } catch (error) {
-            console.error('Error loading pending submissions:', error);
+            // Error loading pending submissions: error
             return [];
         }
     }

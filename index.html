@@ -199,15 +199,13 @@
                     // Create a new window with proper URL
                     const profileWindow = window.open('', '_blank');
                     
-                    // Write the content first
+                    // Set the URL and title immediately
+                    profileWindow.document.title = `${character.name} - Dark City Character Profile`;
+                    profileWindow.history.replaceState({}, '', `#${characterSlug}-${character._id}`);
+                    
+                    // Write the content
                     profileWindow.document.write(profileHTML);
                     profileWindow.document.close();
-                    
-                    // Set the title after content is written
-                    profileWindow.document.title = `${character.name} - Dark City Character Profile`;
-                    
-                    // Note: We can't set history.replaceState on popup windows due to security restrictions
-                    // The window will show the character name in the title instead
                     
                 } catch (error) {
                     console.error('Error generating profile:', error);

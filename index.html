@@ -271,14 +271,14 @@
             html += '</div>';
             
             // Add JavaScript
-            html += '<script>';
-            html += 'const characterData = {name:"' + character.name + '",id:"' + character._id + '",editPassword:"' + (character.editPassword || '') + '"};';
-            html += 'function showEditPasswordModal(){if(!characterData.editPassword){window.location.href="../character-creator.html?edit="+characterData.id;return;}document.getElementById("passwordModal").style.display="flex";document.getElementById("passwordInput").value="";document.getElementById("passwordInput").focus();}';
-            html += 'function closePasswordModal(){document.getElementById("passwordModal").style.display="none";document.getElementById("passwordInput").value="";}';
-            html += 'function verifyPassword(){const password=document.getElementById("passwordInput").value;if(password===characterData.editPassword){window.location.href="../character-creator.html?edit="+characterData.id;}else{alert("Incorrect password. Please try again.");document.getElementById("passwordInput").value="";document.getElementById("passwordInput").focus();}}';
-            html += 'document.getElementById("passwordInput").onkeypress=function(e){if(e.keyCode==13){verifyPassword();}};';
-            html += 'document.onkeydown=function(e){if(e.keyCode==27){closePasswordModal();}};';
-            html += '</script>';
+            html += "<script>";
+            html += "const characterData = {name:\"" + character.name + "\",id:\"" + character._id + "\",editPassword:\"" + (character.editPassword || '') + "\"};";
+            html += "function showEditPasswordModal(){if(!characterData.editPassword){window.location.href=\"../character-creator.html?edit=\"+characterData.id;return;}document.getElementById(\"passwordModal\").style.display=\"flex\";document.getElementById(\"passwordInput\").value=\"\";document.getElementById(\"passwordInput\").focus();}";
+            html += "function closePasswordModal(){document.getElementById(\"passwordModal\").style.display=\"none\";document.getElementById(\"passwordInput\").value=\"\";}";
+            html += "function verifyPassword(){const password=document.getElementById(\"passwordInput\").value;if(password===characterData.editPassword){window.location.href=\"../character-creator.html?edit=\"+characterData.id;}else{alert(\"Incorrect password. Please try again.\");document.getElementById(\"passwordInput\").value=\"\";document.getElementById(\"passwordInput\").focus();}}";
+            html += "document.getElementById(\"passwordInput\").onkeypress=function(e){if(e.keyCode==13){verifyPassword();}};";
+            html += "document.onkeydown=function(e){if(e.keyCode==27){closePasswordModal();}};";
+            html += "</script>";
             
             html += '</body></html>';
             return html;

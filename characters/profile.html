@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Character Profile - Dark City RPG</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌙</text></svg>">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/accessibility.css">
+    <link rel="stylesheet" href="../css/mobile.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a1a1a;
+            color: #e0e0e0;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: #2d2d2d;
+            min-height: 100vh;
+        }
+        
+        .profile-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: #333;
+            border-radius: 15px;
+            border: 2px solid #444;
+        }
+        
+        .profile-name {
+            font-size: 2.5rem;
+            color: #ff6b35;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+        
+        .profile-title {
+            font-size: 1.2rem;
+            color: #ccc;
+            margin-bottom: 1rem;
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-bottom: 2rem;
+            color: #ff6b35;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 8px 16px;
+            border: 1px solid #ff6b35;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .back-link:hover {
+            background: #ff6b35;
+            color: #1a1a1a;
+        }
+        
+        .profile-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+        
+        .profile-main {
+            background: #333;
+            padding: 2rem;
+            border-radius: 15px;
+            border: 2px solid #444;
+        }
+        
+        .section-title {
+            color: #ff6b35;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid #444;
+            padding-bottom: 0.5rem;
+        }
+        
+        .bio-text {
+            color: #e0e0e0;
+            line-height: 1.8;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .stat-item {
+            background: #1a1a1a;
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid #444;
+        }
+        
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #ff6b35;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: #999;
+            text-transform: uppercase;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 4rem;
+            color: #ccc;
+        }
+        
+        .error {
+            text-align: center;
+            padding: 4rem;
+            color: #ff6b35;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="javascript:window.close();" class="back-link">✕ Close Profile</a>
+        
+        <div id="loading" class="loading">
+            <h2>Loading character profile...</h2>
+        </div>
+        
+        <div id="error" class="error" style="display: none;">
+            <h2>Error loading character</h2>
+            <p>Unable to load character profile. Please try again.</p>
+        </div>
+        
+        <div id="profile-content" style="display: none;">
+            <!-- Profile content will be loaded here -->
+        </div>
+    </div>
+
+    <script src="../config.js"></script>
+    <script src="../js/safe-dom.js"></script>
+    <script src="../js/error-handler.js"></script>
+    
+    <script>
+        // Get character ID from URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const characterId = urlParams.get('id');
+        
+        if (!characterId) {
+            showError('No character ID provided');
+        } else {
+            loadCharacterProfile(characterId);
+        }
+        
+        async function loadCharacterProfile(id) {
+            try {
+                const response = await fetch(`${window.CONFIG.API_BASE_URL}/characters/${id}`, {
+                    headers: {
+                        'Authorization': `Bearer ${window.CONFIG.API_KEY}`
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to load character');
+                }
+                
+                const character = await response.json();
+                displayProfile(character);
+                
+            } catch (error) {
+                console.error('Error loading character:', error);
+                showError('Failed to load character profile');
+            }
+        }
+        
+        function displayProfile(character) {
+            const content = document.getElementById('profile-content');
+            const loading = document.getElementById('loading');
+            
+            // Build profile HTML
+            const profileHTML = `
+                <div class="profile-header">
+                    <h1 class="profile-name">${character.name}</h1>
+                    <p class="profile-title">${character.classification} • ${character.playbook}</p>
+                </div>
+                
+                <div class="profile-content">
+                    <div class="profile-main">
+                        <div class="bio-section">
+                            <h2 class="section-title">Biography</h2>
+                            <p class="bio-text">${character.bio || 'No biography available.'}</p>
+                        </div>
+                        
+                        ${character.darkestSelf ? `
+                        <div class="bio-section">
+                            <h2 class="section-title">Darkest Self</h2>
+                            <p class="bio-text">${character.darkestSelf}</p>
+                        </div>
+                        ` : ''}
+                        
+                        <div class="bio-section">
+                            <h2 class="section-title">Stats</h2>
+                            <div class="stats-grid">
+                                <div class="stat-item">
+                                    <div class="stat-value">${character.fatePoints || 0}</div>
+                                    <div class="stat-label">Fate Points</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-value">${character.physicalStress || 0}</div>
+                                    <div class="stat-label">Physical Stress</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-value">${character.mentalStress || 0}</div>
+                                    <div class="stat-label">Mental Stress</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-value">${character.apparentAge || 'Unknown'}</div>
+                                    <div class="stat-label">Apparent Age</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            content.innerHTML = profileHTML;
+            loading.style.display = 'none';
+            content.style.display = 'block';
+            
+            // Update page title
+            document.title = `${character.name} - Dark City Character Profile`;
+        }
+        
+        function showError(message) {
+            const loading = document.getElementById('loading');
+            const error = document.getElementById('error');
+            
+            loading.style.display = 'none';
+            error.style.display = 'block';
+            error.querySelector('p').textContent = message;
+        }
+    </script>
+</body>
+</html>

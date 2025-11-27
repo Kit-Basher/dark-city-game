@@ -35,6 +35,109 @@
             background: linear-gradient(90deg, #ff6b35, #f7931e, #ff6b35);
         }
         
+        .profile-photos {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .profile-photo {
+            text-align: center;
+        }
+        
+        .profile-photo img {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 3px solid #ff6b35;
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+        }
+        
+        .profile-photo-label {
+            color: #999;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        
+        .edit-profile-btn {
+            background: #ff6b35;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            transition: background 0.3s ease;
+        }
+        
+        .edit-profile-btn:hover {
+            background: #e55a2b;
+        }
+        
+        .password-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .password-modal-content {
+            background: #2a2a2a;
+            padding: 2rem;
+            border-radius: 10px;
+            border: 2px solid #ff6b35;
+            max-width: 400px;
+            width: 90%;
+        }
+        
+        .password-modal h3 {
+            color: #ff6b35;
+            margin-bottom: 1rem;
+        }
+        
+        .password-modal input {
+            width: 100%;
+            padding: 0.5rem;
+            background: #1a1a1a;
+            border: 1px solid #666;
+            color: white;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+        }
+        
+        .password-modal-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+        
+        .password-modal-buttons button {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .password-modal-buttons .confirm {
+            background: #ff6b35;
+            color: white;
+        }
+        
+        .password-modal-buttons .cancel {
+            background: #666;
+            color: white;
+        }
+        
         .profile-name {
             font-size: 2.5rem;
             color: #ff6b35;
@@ -231,14 +334,10 @@
             <a href="../gallery.html" class="back-link">← Back to Character Gallery</a>
             
             <div class="profile-header">
+                {{PHOTOS_SECTION}}
                 <h1 class="profile-name">{{CHARACTER_NAME}}</h1>
                 <p class="profile-title">{{CLASSIFICATION}} • {{PLAYBOOK}}</p>
-                <div class="profile-badges">
-                    <span class="badge playbook">{{PLAYBOOK}}</span>
-                    <span class="badge classification">{{CLASSIFICATION}}</span>
-                    <span class="badge">{{SUBTYPE}}</span>
-                    <span class="badge" style="background: #27ae60;">✅ Approved</span>
-                </div>
+                <button onclick="showEditPasswordModal()" class="edit-profile-btn">✏️ Edit Profile</button>
             </div>
             
             <div class="profile-content">
@@ -302,5 +401,72 @@
     <script src="../../js/config.js"></script>
     <script src="../../js/safe-dom.js"></script>
     <script src="../../js/accessibility.js"></script>
+    
+    <!-- Password Modal -->
+    <div id="passwordModal" class="password-modal">
+        <div class="password-modal-content">
+            <h3>🔐 Enter Edit Password</h3>
+            <p>This character is protected with an edit password. Please enter the password to continue.</p>
+            <input type="password" id="passwordInput" placeholder="Enter edit password">
+            <div class="password-modal-buttons">
+                <button class="cancel" onclick="closePasswordModal()">Cancel</button>
+                <button class="confirm" onclick="verifyPassword()">Unlock Edit</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const characterData = {
+            name: '{{CHARACTER_NAME}}',
+            id: '{{CHARACTER_ID}}',
+            editPassword: '{{EDIT_PASSWORD}}'
+        };
+        
+        function showEditPasswordModal() {
+            if (!characterData.editPassword) {
+                // No password set, go directly to edit mode
+                window.location.href = `../../character-creator.html?edit=${characterData.id}`;
+                return;
+            }
+            
+            // Show password modal
+            document.getElementById('passwordModal').style.display = 'flex';
+            document.getElementById('passwordInput').value = '';
+            document.getElementById('passwordInput').focus();
+        }
+        
+        function closePasswordModal() {
+            document.getElementById('passwordModal').style.display = 'none';
+            document.getElementById('passwordInput').value = '';
+        }
+        
+        function verifyPassword() {
+            const password = document.getElementById('passwordInput').value;
+            
+            if (password === characterData.editPassword) {
+                // Password correct, redirect to edit mode
+                window.location.href = `../../character-creator.html?edit=${characterData.id}`;
+            } else {
+                // Password incorrect
+                alert('Incorrect password. Please try again.');
+                document.getElementById('passwordInput').value = '';
+                document.getElementById('passwordInput').focus();
+            }
+        }
+        
+        // Allow Enter key to submit password
+        document.getElementById('passwordInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                verifyPassword();
+            }
+        });
+        
+        // Allow Escape key to close modal
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closePasswordModal();
+            }
+        });
+    </script>
 </body>
 </html>

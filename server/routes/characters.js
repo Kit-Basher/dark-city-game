@@ -84,6 +84,48 @@ async function generateCharacterProfile(character) {
     }
     replacements['{{SKILLS_SECTION}}'] = skillsSection;
     
+    // Handle photos
+    let photosSection = '';
+    if (character.humanPhoto || character.monsterPhoto) {
+      const photosHTML = [];
+      
+      if (character.humanPhoto) {
+        photosHTML.push(`
+          <div class="profile-photo">
+            <img src="${character.humanPhoto}" alt="${character.name} - Human Form">
+            <div class="profile-photo-label">👤 Human Form</div>
+          </div>
+        `);
+      }
+      
+      if (character.monsterPhoto) {
+        photosHTML.push(`
+          <div class="profile-photo">
+            <img src="${character.monsterPhoto}" alt="${character.name} - Monster Form">
+            <div class="profile-photo-label">👹 Monster Form</div>
+          </div>
+        `);
+      }
+      
+      photosSection = `
+        <div class="profile-photos">
+          ${photosHTML.join('')}
+        </div>
+      `;
+    } else {
+      photosSection = `
+        <div class="profile-photos">
+          <div class="profile-photo">
+            <div style="width: 150px; height: 150px; border: 3px dashed #666; border-radius: 10px; display: flex; align-items: center; justify-content: center; background: #2a2a2a;">
+              <div style="color: #666; text-align: center; padding: 1rem;">No photos uploaded</div>
+            </div>
+            <div class="profile-photo-label">📷 No Images</div>
+          </div>
+        </div>
+      `;
+    }
+    replacements['{{PHOTOS_SECTION}}'] = photosSection;
+    
     // Handle physical stats
     let humanPhysicalStats = '';
     if (character.humanHeight || character.humanWeight) {
@@ -102,6 +144,10 @@ async function generateCharacterProfile(character) {
       `;
     }
     replacements['{{MONSTER_PHYSICAL_STATS}}'] = monsterPhysicalStats;
+    
+    // Add edit password data
+    replacements['{{EDIT_PASSWORD}}'] = character.editPassword || '';
+    replacements['{{CHARACTER_ID}}'] = character._id;
     
     // Replace all placeholders
     let profileHTML = template;
@@ -398,27 +444,6 @@ router.get('/:id', async (req, res) => {
     res.json(character);
   } catch (error) {
     console.error('❌ Error retrieving character:', error);
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// Get character by name (for password verification)
-router.get('/by-name/:name', async (req, res) => {
-  try {
-    const character = await Character.findOne({ name: decodeURIComponent(req.params.name) });
-    
-    if (!character) {
-      return res.status(404).json({ error: 'Character not found' });
-    }
-    
-    console.log('🔍 Retrieved character by name for edit verification:', {
-      name: character.name,
-      hasEditPassword: !!character.editPassword
-    });
-    
-    res.json(character);
-  } catch (error) {
-    console.error('❌ Error retrieving character by name:', error);
     res.status(500).json({ error: error.message });
   }
 });

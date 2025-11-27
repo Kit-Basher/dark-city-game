@@ -187,20 +187,30 @@
                     throw new Error('Failed to load character details');
                 }
                 
-                const character = await response.json();
-                
-                // Generate profile URL and navigate to it
-                const safeName = character.name.toLowerCase()
-                    .replace(/[^a-z0-9]+/g, '-')
-                    .replace(/^-+|-+$/g, '');
-                
-                const profileUrl = `characters/profiles/${safeName}-${character._id}.html`;
-                
-                // Navigate to the profile page
-                window.location.href = profileUrl;
-                
+                try {
+                    const character = await response.json();
+                    
+                    // Generate profile HTML and set proper URL
+                    const profileHTML = generateProfileHTML(character);
+                    const characterSlug = character.name.toLowerCase()
+                        .replace(/[^a-z0-9]+/g, '-')
+                        .replace(/^-+|-+$/g, '');
+                    
+                    // Create a new window with proper URL
+                    const profileWindow = window.open('', '_blank');
+                    profileWindow.document.write(profileHTML);
+                    profileWindow.document.close();
+                    
+                    // Set the URL to show the character name
+                    profileWindow.history.replaceState({}, '', `#${characterSlug}-${character._id}`);
+                    profileWindow.document.title = `${character.name} - Dark City Character Profile`;
+                    
+                } catch (error) {
+                    console.error('Error generating profile:', error);
+                    alert('Error loading character profile');
+                }
             } catch (error) {
-                console.error('Error generating profile:', error);
+                console.error('Error fetching character:', error);
                 alert('Error loading character profile');
             }
         }

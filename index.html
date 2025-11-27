@@ -183,97 +183,21 @@
         // Generate and show character profile dynamically
         async function generateAndShowProfile(characterId) {
             try {
-                // Fetch character data
-                const response = await fetch(`https://dark-city-game-production.up.railway.app/api/characters/${characterId}`, {
-                    headers: {
-                        'Authorization': 'Bearer dark-city-production-key'
-                    }
-                });
+                // Open character profile in new window
+                const profileWindow = window.open(`characters/profile.html?id=${characterId}`, '_blank', 'width=800,height=600,scrollbars=yes,resizable=yes');
                 
-                if (!response.ok) {
-                    throw new Error('Failed to load character details');
+                if (!profileWindow) {
+                    alert('Please allow popups to view character profiles');
+                    return;
                 }
                 
-                try {
-                    const character = await response.json();
-                    
-                    // Generate profile HTML and set proper URL
-                    const profileHTML = generateProfileHTML(character);
-                    const characterSlug = character.name.toLowerCase()
-                        .replace(/[^a-z0-9]+/g, '-')
-                        .replace(/^-+|-+$/g, '');
-                    
-                    // Create a new window with proper URL
-                    const profileWindow = window.open('', '_blank');
-                    
-                    // Write the content first
-                    profileWindow.document.write(profileHTML);
-                    profileWindow.document.close();
-                    
-                    // Set the title after content is written
-                    profileWindow.document.title = `${character.name} - Dark City Character Profile`;
-                    
-                    // Note: We can't set history.replaceState on popup windows due to security restrictions
-                    // The window will show the character name in the title instead
-                    
-                } catch (error) {
-                    console.error('Error generating profile:', error);
-                    alert('Error loading character profile');
-                }
+                // Focus the new window
+                profileWindow.focus();
+                
             } catch (error) {
-                console.error('Error fetching character:', error);
-                alert('Error loading character profile');
+                console.error('Error opening profile:', error);
+                alert('Error opening character profile');
             }
-        }
-
-        // Generate profile HTML from template
-        function generateProfileHTML(character) {
-            var html = '<!DOCTYPE html><html><head>';
-            html += '<title>' + character.name + ' - Dark City Character Profile</title>';
-            html += '<style>';
-            html += 'body{font-family:Arial,sans-serif;background:#1a1a1a;color:#fff;margin:0;padding:20px;}';
-            html += '.container{max-width:800px;margin:0 auto;background:#2d2d2d;padding:30px;border-radius:15px;}';
-            html += '.profile-header{text-align:center;margin-bottom:30px;}';
-            html += '.profile-name{font-size:2.5rem;color:#ff6b35;margin-bottom:10px;}';
-            html += '.profile-title{font-size:1.2rem;color:#ccc;margin-bottom:20px;}';
-            html += '.close-btn{display:inline-block;background:#ff6b35;color:white;padding:10px 20px;text-decoration:none;border-radius:5px;margin-bottom:20px;}';
-            html += '.close-btn:hover{background:#e55a2b;}';
-            html += '.section{margin-bottom:25px;}';
-            html += '.section-title{color:#ff6b35;font-size:1.3rem;margin-bottom:10px;border-bottom:2px solid #444;padding-bottom:5px;}';
-            html += '.bio-text{color:#e0e0e0;line-height:1.6;}';
-            html += '.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:15px;margin-top:15px;}';
-            html += '.stat{background:#1a1a1a;padding:15px;border-radius:8px;text-align:center;}';
-            html += '.stat-value{font-size:1.5rem;color:#ff6b35;font-weight:bold;margin-bottom:5px;}';
-            html += '.stat-label{font-size:0.9rem;color:#999;}';
-            html += '</style></head><body>';
-            html += '<div class="container">';
-            html += '<a href="javascript:window.close();" class="close-btn">✕ Close Profile</a>';
-            html += '<div class="profile-header">';
-            html += '<h1 class="profile-name">' + character.name + '</h1>';
-            html += '<p class="profile-title">' + character.classification + ' • ' + character.playbook + '</p>';
-            html += '</div>';
-            html += '<div class="section">';
-            html += '<h2 class="section-title">Biography</h2>';
-            html += '<p class="bio-text">' + (character.bio || 'No biography available.') + '</p>';
-            html += '</div>';
-            if (character.darkestSelf) {
-                html += '<div class="section">';
-                html += '<h2 class="section-title">Darkest Self</h2>';
-                html += '<p class="bio-text">' + character.darkestSelf + '</p>';
-                html += '</div>';
-            }
-            html += '<div class="section">';
-            html += '<h2 class="section-title">Stats</h2>';
-            html += '<div class="stats">';
-            html += '<div class="stat"><div class="stat-value">' + (character.fatePoints || 0) + '</div><div class="stat-label">Fate Points</div></div>';
-            html += '<div class="stat"><div class="stat-value">' + (character.physicalStress || 0) + '</div><div class="stat-label">Physical Stress</div></div>';
-            html += '<div class="stat"><div class="stat-value">' + (character.mentalStress || 0) + '</div><div class="stat-label">Mental Stress</div></div>';
-            html += '<div class="stat"><div class="stat-value">' + (character.apparentAge || 'Unknown') + '</div><div class="stat-label">Apparent Age</div></div>';
-            html += '</div>';
-            html += '</div>';
-            html += '</div>';
-            html += '</body></html>';
-            return html;
         }
     </script>
 </body>

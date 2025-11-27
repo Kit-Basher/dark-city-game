@@ -5,17 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Character Profile - Dark City RPG</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌙</text></svg>">
-    <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="../css/accessibility.css">
-    <link rel="stylesheet" href="../css/mobile.css">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: #1a1a1a;
             color: #e0e0e0;
             line-height: 1.6;
-            margin: 0;
-            padding: 0;
+            min-height: 100vh;
         }
         
         .container {
@@ -127,10 +129,30 @@
             color: #ccc;
         }
         
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #444;
+            border-top: 4px solid #ff6b35;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 2rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
         .error {
             text-align: center;
             padding: 4rem;
             color: #ff6b35;
+        }
+        
+        .error-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
         }
         
         @media (max-width: 768px) {
@@ -149,12 +171,14 @@
         <a href="javascript:window.close();" class="back-link">✕ Close Profile</a>
         
         <div id="loading" class="loading">
+            <div class="loading-spinner"></div>
             <h2>Loading character profile...</h2>
         </div>
         
         <div id="error" class="error" style="display: none;">
+            <div class="error-icon">⚠️</div>
             <h2>Error loading character</h2>
-            <p>Unable to load character profile. Please try again.</p>
+            <p id="error-message">Unable to load character profile. Please try again.</p>
         </div>
         
         <div id="profile-content" style="display: none;">
@@ -162,108 +186,166 @@
         </div>
     </div>
 
-    <script src="../config.js"></script>
-    <script src="../js/safe-dom.js"></script>
-    <script src="../js/error-handler.js"></script>
-    
     <script>
+        // Configuration
+        const CONFIG = {
+            API_BASE_URL: 'https://dark-city-game-production.up.railway.app/api',
+            API_KEY: 'dark-city-production-key'
+        };
+        
         // Get character ID from URL parameters
         const urlParams = new URLSearchParams(window.location.search);
         const characterId = urlParams.get('id');
         
+        // Validate character ID
         if (!characterId) {
             showError('No character ID provided');
+        } else if (!/^[a-f0-9]{24}$/i.test(characterId)) {
+            showError('Invalid character ID format');
         } else {
             loadCharacterProfile(characterId);
         }
         
+        // Load character profile with error handling
         async function loadCharacterProfile(id) {
             try {
-                const response = await fetch(`${window.CONFIG.API_BASE_URL}/characters/${id}`, {
+                console.log('Loading character:', id);
+                
+                // Show loading state
+                showLoading();
+                
+                // Fetch character data
+                const response = await fetch(`${CONFIG.API_BASE_URL}/characters/${id}`, {
                     headers: {
-                        'Authorization': `Bearer ${window.CONFIG.API_KEY}`
-                    }
+                        'Authorization': `Bearer ${CONFIG.API_KEY}`,
+                        'Content-Type': 'application/json'
+                    },
+                    timeout: 10000 // 10 second timeout
                 });
                 
+                console.log('Response status:', response.status);
+                
                 if (!response.ok) {
-                    throw new Error('Failed to load character');
+                    if (response.status === 404) {
+                        throw new Error('Character not found');
+                    } else if (response.status === 500) {
+                        throw new Error('Server error - please try again later');
+                    } else {
+                        throw new Error(`Failed to load character (${response.status})`);
+                    }
                 }
                 
                 const character = await response.json();
+                console.log('Character data loaded:', character);
+                
+                // Validate character data
+                if (!character || !character.name) {
+                    throw new Error('Invalid character data received');
+                }
+                
+                // Display profile
                 displayProfile(character);
                 
             } catch (error) {
                 console.error('Error loading character:', error);
-                showError('Failed to load character profile');
+                showError(error.message || 'Failed to load character profile');
             }
         }
         
+        // Display character profile
         function displayProfile(character) {
             const content = document.getElementById('profile-content');
             const loading = document.getElementById('loading');
             
-            // Build profile HTML
-            const profileHTML = `
-                <div class="profile-header">
-                    <h1 class="profile-name">${character.name}</h1>
-                    <p class="profile-title">${character.classification} • ${character.playbook}</p>
-                </div>
-                
-                <div class="profile-content">
-                    <div class="profile-main">
-                        <div class="bio-section">
-                            <h2 class="section-title">Biography</h2>
-                            <p class="bio-text">${character.bio || 'No biography available.'}</p>
-                        </div>
-                        
-                        ${character.darkestSelf ? `
-                        <div class="bio-section">
-                            <h2 class="section-title">Darkest Self</h2>
-                            <p class="bio-text">${character.darkestSelf}</p>
-                        </div>
-                        ` : ''}
-                        
-                        <div class="bio-section">
-                            <h2 class="section-title">Stats</h2>
-                            <div class="stats-grid">
-                                <div class="stat-item">
-                                    <div class="stat-value">${character.fatePoints || 0}</div>
-                                    <div class="stat-label">Fate Points</div>
-                                </div>
-                                <div class="stat-item">
-                                    <div class="stat-value">${character.physicalStress || 0}</div>
-                                    <div class="stat-label">Physical Stress</div>
-                                </div>
-                                <div class="stat-item">
-                                    <div class="stat-value">${character.mentalStress || 0}</div>
-                                    <div class="stat-label">Mental Stress</div>
-                                </div>
-                                <div class="stat-item">
-                                    <div class="stat-value">${character.apparentAge || 'Unknown'}</div>
-                                    <div class="stat-label">Apparent Age</div>
+            try {
+                // Build profile HTML safely
+                const profileHTML = `
+                    <div class="profile-header">
+                        <h1 class="profile-name">${escapeHtml(character.name)}</h1>
+                        <p class="profile-title">${escapeHtml(character.classification || 'Unknown')} • ${escapeHtml(character.playbook || 'Unknown')}</p>
+                    </div>
+                    
+                    <div class="profile-content">
+                        <div class="profile-main">
+                            <div class="bio-section">
+                                <h2 class="section-title">Biography</h2>
+                                <p class="bio-text">${escapeHtml(character.bio || 'No biography available.')}</p>
+                            </div>
+                            
+                            ${character.darkestSelf ? `
+                            <div class="bio-section">
+                                <h2 class="section-title">Darkest Self</h2>
+                                <p class="bio-text">${escapeHtml(character.darkestSelf)}</p>
+                            </div>
+                            ` : ''}
+                            
+                            <div class="bio-section">
+                                <h2 class="section-title">Stats</h2>
+                                <div class="stats-grid">
+                                    <div class="stat-item">
+                                        <div class="stat-value">${character.fatePoints || 0}</div>
+                                        <div class="stat-label">Fate Points</div>
+                                    </div>
+                                    <div class="stat-item">
+                                        <div class="stat-value">${character.physicalStress || 0}</div>
+                                        <div class="stat-label">Physical Stress</div>
+                                    </div>
+                                    <div class="stat-item">
+                                        <div class="stat-value">${character.mentalStress || 0}</div>
+                                        <div class="stat-label">Mental Stress</div>
+                                    </div>
+                                    <div class="stat-item">
+                                        <div class="stat-value">${escapeHtml(character.apparentAge || 'Unknown')}</div>
+                                        <div class="stat-label">Apparent Age</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            `;
-            
-            content.innerHTML = profileHTML;
-            loading.style.display = 'none';
-            content.style.display = 'block';
-            
-            // Update page title
-            document.title = `${character.name} - Dark City Character Profile`;
+                `;
+                
+                content.innerHTML = profileHTML;
+                loading.style.display = 'none';
+                content.style.display = 'block';
+                
+                // Update page title
+                document.title = `${escapeHtml(character.name)} - Dark City Character Profile`;
+                
+            } catch (error) {
+                console.error('Error displaying profile:', error);
+                showError('Error displaying character profile');
+            }
         }
         
+        // Show loading state
+        function showLoading() {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('error').style.display = 'none';
+            document.getElementById('profile-content').style.display = 'none';
+        }
+        
+        // Show error state
         function showError(message) {
             const loading = document.getElementById('loading');
             const error = document.getElementById('error');
+            const errorMessage = document.getElementById('error-message');
             
             loading.style.display = 'none';
             error.style.display = 'block';
-            error.querySelector('p').textContent = message;
+            errorMessage.textContent = message;
         }
+        
+        // Escape HTML to prevent XSS
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        // Handle window close
+        window.addEventListener('beforeunload', function(e) {
+            // Clean up if needed
+        });
     </script>
 </body>
 </html>

@@ -654,6 +654,18 @@
                     <button type="button" class="btn-secondary" onclick="addScene()">+ Add More Scenes</button>
                 </section>
 
+                <!-- Edit Password -->
+                <section class="form-section">
+                    <h2>🔐 Profile Edit Password</h2>
+                    <div class="form-group">
+                        <label for="editPassword">Edit Password (Optional)</label>
+                        <input type="password" id="editPassword" name="editPassword" placeholder="Create a password to protect your character from edits">
+                        <small style="color: #888; margin-top: 0.5rem; display: block;">
+                            💡 Optional: Set a password to allow only you (or anyone with the password) to edit this character profile later.
+                        </small>
+                    </div>
+                </section>
+
                 <!-- Form Actions -->
                 <div class="form-actions">
             <button type="button" class="btn btn-secondary" onclick="autofillTestCharacter()">🚀 Quick Test Character</button>
@@ -1265,8 +1277,8 @@
                     totalKeys: Object.keys(characterData).length,
                     humanPhotoLength: characterData.humanPhoto ? characterData.humanPhoto.length : 0,
                     monsterPhotoLength: characterData.monsterPhoto ? characterData.monsterPhoto.length : 0,
-                    humanPhotoStart: characterData.humanPhoto ? characterData.humanPhoto.substring(0, 50) + '...' : 'none',
-                    monsterPhotoStart: characterData.monsterPhoto ? characterData.monsterPhoto.substring(0, 50) + '...' : 'none'
+                    humanPhotoStart: characterData.humanPhoto && typeof characterData.humanPhoto === 'string' ? characterData.humanPhoto.substring(0, 50) + '...' : 'none',
+                    monsterPhotoStart: characterData.monsterPhoto && typeof characterData.monsterPhoto === 'string' ? characterData.monsterPhoto.substring(0, 50) + '...' : 'none'
                 });
                 
                 // Organize skills data

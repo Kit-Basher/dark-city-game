@@ -294,6 +294,82 @@
             margin-bottom: 1rem;
         }
         
+        .edit-profile-btn {
+            background: #ff6b35;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            transition: background 0.3s ease;
+        }
+        
+        .edit-profile-btn:hover {
+            background: #e55a2b;
+        }
+        
+        .password-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .password-modal-content {
+            background: #2a2a2a;
+            padding: 2rem;
+            border-radius: 10px;
+            border: 2px solid #ff6b35;
+            max-width: 400px;
+            width: 90%;
+        }
+        
+        .password-modal h3 {
+            color: #ff6b35;
+            margin-bottom: 1rem;
+        }
+        
+        .password-modal input {
+            width: 100%;
+            padding: 0.5rem;
+            background: #1a1a1a;
+            border: 1px solid #666;
+            color: white;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+        }
+        
+        .password-modal-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+        
+        .password-modal-buttons button {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .password-modal-buttons .confirm {
+            background: #ff6b35;
+            color: white;
+        }
+        
+        .password-modal-buttons .cancel {
+            background: #666;
+            color: white;
+        }
+        
         .profile-badges {
             display: flex;
             gap: 1rem;
@@ -481,6 +557,7 @@
             
             <h1 class="profile-name">${character.name}</h1>
             <p class="profile-title">${character.classification} • ${character.playbook}</p>
+            <button onclick="showEditPasswordModal()" class="edit-profile-btn">✏️ Edit Profile</button>
         </div>
         
         <div class="profile-content">
@@ -569,6 +646,88 @@
             
             return template;
         }
+    </script>
+    
+    <!-- Password Modal -->
+    <div id="passwordModal" class="password-modal">
+        <div class="password-modal-content">
+            <h3>🔐 Enter Edit Password</h3>
+            <p>This character is protected with an edit password. Please enter the password to continue.</p>
+            <input type="password" id="passwordInput" placeholder="Enter edit password">
+            <div class="password-modal-buttons">
+                <button class="cancel" onclick="closePasswordModal()">Cancel</button>
+                <button class="confirm" onclick="verifyPassword()">Unlock Edit</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let currentCharacter = null;
+        
+        function showEditPasswordModal() {
+            // Get character data from the current page
+            const characterName = document.querySelector('.profile-name').textContent;
+            
+            // Fetch character data to check if it has a password
+            fetch(`/api/characters/by-name/${encodeURIComponent(characterName)}`)
+                .then(response => response.json())
+                .then(character => {
+                    currentCharacter = character;
+                    
+                    if (!character.editPassword) {
+                        // No password set, go directly to edit mode
+                        window.location.href = `/character-creator.html?edit=${character._id}`;
+                        return;
+                    }
+                    
+                    // Show password modal
+                    document.getElementById('passwordModal').style.display = 'flex';
+                    document.getElementById('passwordInput').value = '';
+                    document.getElementById('passwordInput').focus();
+                })
+                .catch(error => {
+                    console.error('Error fetching character:', error);
+                    alert('Error loading character data');
+                });
+        }
+        
+        function closePasswordModal() {
+            document.getElementById('passwordModal').style.display = 'none';
+            document.getElementById('passwordInput').value = '';
+        }
+        
+        function verifyPassword() {
+            const password = document.getElementById('passwordInput').value;
+            
+            if (!currentCharacter) {
+                alert('Error: Character data not loaded');
+                return;
+            }
+            
+            if (password === currentCharacter.editPassword) {
+                // Password correct, redirect to edit mode
+                window.location.href = `/character-creator.html?edit=${currentCharacter._id}`;
+            } else {
+                // Password incorrect
+                alert('Incorrect password. Please try again.');
+                document.getElementById('passwordInput').value = '';
+                document.getElementById('passwordInput').focus();
+            }
+        }
+        
+        // Allow Enter key to submit password
+        document.getElementById('passwordInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                verifyPassword();
+            }
+        });
+        
+        // Allow Escape key to close modal
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closePasswordModal();
+            }
+        });
     </script>
 </body>
 </html>

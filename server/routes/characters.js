@@ -402,4 +402,25 @@ router.get('/:id', async (req, res) => {
   }
 });
 
+// Get character by name (for password verification)
+router.get('/by-name/:name', async (req, res) => {
+  try {
+    const character = await Character.findOne({ name: decodeURIComponent(req.params.name) });
+    
+    if (!character) {
+      return res.status(404).json({ error: 'Character not found' });
+    }
+    
+    console.log('🔍 Retrieved character by name for edit verification:', {
+      name: character.name,
+      hasEditPassword: !!character.editPassword
+    });
+    
+    res.json(character);
+  } catch (error) {
+    console.error('❌ Error retrieving character by name:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 module.exports = router;

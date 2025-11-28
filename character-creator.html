@@ -659,7 +659,7 @@
                     <h2>🔐 Profile Edit Password</h2>
                     <div class="form-group">
                         <label for="editPassword">Edit Password (Optional)</label>
-                        <input type="password" id="editPassword" name="editPassword" placeholder="Create a password to protect your character from edits">
+                        <input type="password" id="editPassword" name="editPassword" placeholder="Create a password to protect your character from edits" autocomplete="new-password">
                         <small style="color: #888; margin-top: 0.5rem; display: block;">
                             💡 Optional: Set a password to allow only you (or anyone with the password) to edit this character profile later.
                         </small>
@@ -1243,8 +1243,8 @@
                 const monsterPhotoFile = document.getElementById('monsterPhoto').files[0];
                 
                 // Explicitly set photo fields to handle properly
-                characterData.humanPhoto = null;
-                characterData.monsterPhoto = null;
+                characterData.humanPhoto = '';
+                characterData.monsterPhoto = '';
                 
                 console.log('🔍 Photo file selection:', {
                     hasHumanFile: !!humanPhotoFile,
@@ -1264,7 +1264,7 @@
                     });
                     console.log('📸 Human photo added, length:', characterData.humanPhoto.length);
                 } else {
-                    characterData.humanPhoto = null;
+                    characterData.humanPhoto = '';
                     console.log('⚠️ No human photo file selected');
                 }
                 
@@ -1276,7 +1276,7 @@
                     });
                     console.log('📸 Monster photo added, length:', characterData.monsterPhoto.length);
                 } else {
-                    characterData.monsterPhoto = null;
+                    characterData.monsterPhoto = '';
                     console.log('⚠️ No monster photo file selected');
                 }
                 

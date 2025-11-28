@@ -413,7 +413,15 @@
                     return;
                 }
 
-                container.innerHTML = characters.map(character => `
+                container.innerHTML = characters.map(character => {
+                    // Create safe filename for profile link
+                    const safeName = character.name
+                        .toLowerCase()
+                        .replace(/[^a-z0-9]/g, '-')
+                        .replace(/-+/g, '-')
+                        .replace(/^-|-$/g, '');
+                    
+                    return `
                     <div class="bg-gray-700 rounded-lg p-4 border border-gray-600">
                         <div class="flex justify-between items-start">
                             <div class="flex-1">
@@ -425,8 +433,16 @@
                                     <span><i class="fas fa-calendar"></i> ${new Date(character.submittedAt).toLocaleDateString()}</span>
                                 </div>
                                 ${character.bio ? `<p class="text-gray-400 mt-2 text-sm">${character.bio.substring(0, 100)}${character.bio.length > 100 ? '...' : ''}</p>` : ''}
+                                <div class="mt-2">
+                                    <span class="text-xs text-green-400">
+                                        <i class="fas fa-file-alt"></i> Profile: characters/profiles/${safeName}-${character._id}.html
+                                    </span>
+                                </div>
                             </div>
-                            <div class="flex space-x-2 ml-4">
+                            <div class="flex flex-col space-y-2 ml-4">
+                                <button onclick="window.open('characters/profiles/${safeName}-${character._id}.html', '_blank')" class="bg-green-600 hover:bg-green-700 px-3 py-1 rounded text-sm">
+                                    <i class="fas fa-user-circle"></i> Profile
+                                </button>
                                 <button onclick="viewCharacterDetails('${character._id}')" class="bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-sm">
                                     <i class="fas fa-eye"></i> View
                                 </button>
@@ -436,7 +452,7 @@
                             </div>
                         </div>
                     </div>
-                `).join('');
+                }).join('');
 
             } catch (error) {
                 console.error('Error loading all approved characters:', error);

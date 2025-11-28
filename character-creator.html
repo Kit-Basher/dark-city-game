@@ -1256,6 +1256,7 @@
                     });
                     console.log('📸 Human photo added, length:', characterData.humanPhoto.length);
                 } else {
+                    characterData.humanPhoto = null;
                     console.log('⚠️ No human photo file selected');
                 }
                 
@@ -1267,6 +1268,7 @@
                     });
                     console.log('📸 Monster photo added, length:', characterData.monsterPhoto.length);
                 } else {
+                    characterData.monsterPhoto = null;
                     console.log('⚠️ No monster photo file selected');
                 }
                 

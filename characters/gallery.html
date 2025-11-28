@@ -558,7 +558,7 @@
         function createCharacterCard(character) {
             const card = SafeDOM.createElement('div', {
                 className: 'character-card approved',
-                onclick: () => generateAndShowProfile(character._id)
+                onclick: () => window.open(`profiles/${character.name.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '')}-${character._id}.html`, '_blank')
             });
             
             const statusBadge = SafeDOM.createElement('div', {
@@ -715,7 +715,7 @@
                 // Fetch character data
                 const response = await fetch(`https://dark-city-game-production.up.railway.app/api/characters/${characterId}`, {
                     headers: {
-                        'Authorization': 'Bearer dark-city-production-key'
+                        'Authorization': 'Bearer dark-city-dev-key'
                     }
                 });
                 

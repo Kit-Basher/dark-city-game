@@ -1189,6 +1189,10 @@
                 Object.keys(testData).forEach(key => {
                     const element = document.getElementById(key);
                     if (element) {
+                        // Skip file inputs - they can't be programmatically set
+                        if (element.type === 'file') {
+                            return;
+                        }
                         element.value = testData[key];
                         filledCount++;
                         console.log('✅ Filled:', key, 'with value:', testData[key]);
@@ -1237,6 +1241,10 @@
                 // Handle photo uploads
                 const humanPhotoFile = document.getElementById('humanPhoto').files[0];
                 const monsterPhotoFile = document.getElementById('monsterPhoto').files[0];
+                
+                // Explicitly set photo fields to handle properly
+                characterData.humanPhoto = null;
+                characterData.monsterPhoto = null;
                 
                 console.log('🔍 Photo file selection:', {
                     hasHumanFile: !!humanPhotoFile,
@@ -1382,6 +1390,10 @@
                 for (let [key, value] of Object.entries(draftData)) {
                     const field = form.querySelector(`[name="${key}"]`);
                     if (field) {
+                        // Skip file inputs - they can't be programmatically set
+                        if (field.type === 'file') {
+                            continue;
+                        }
                         field.value = value;
                     }
                 }

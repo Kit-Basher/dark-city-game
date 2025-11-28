@@ -147,8 +147,7 @@
             try {
                 const response = await fetch(`${window.APP_CONFIG.apiURL}/characters?status=approved&limit=6`, {
                     headers: {
-                        'Authorization': `Bearer ${window.APP_CONFIG.API_KEY}`,
-                        'X-API-Key': window.APP_CONFIG.API_KEY
+                        'Authorization': `Bearer ${window.APP_CONFIG.API_KEY}`
                     }
                 });
                 

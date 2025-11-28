@@ -421,8 +421,10 @@
                         .replace(/-+/g, '-')
                         .replace(/^-|-$/g, '');
                     
-                    return `
-                    <div class="bg-gray-700 rounded-lg p-4 border border-gray-600">
+                    const bioText = character.bio ? 
+                        `<p class="text-gray-400 mt-2 text-sm">${character.bio.substring(0, 100)}${character.bio.length > 100 ? '...' : ''}</p>` : '';
+                    
+                    return `<div class="bg-gray-700 rounded-lg p-4 border border-gray-600">
                         <div class="flex justify-between items-start">
                             <div class="flex-1">
                                 <h3 class="text-lg font-semibold text-white mb-2">${character.name}</h3>
@@ -432,7 +434,7 @@
                                     <span><i class="fas fa-birthday-cake"></i> ${character.apparentAge}</span>
                                     <span><i class="fas fa-calendar"></i> ${new Date(character.submittedAt).toLocaleDateString()}</span>
                                 </div>
-                                ${character.bio ? `<p class="text-gray-400 mt-2 text-sm">${character.bio.substring(0, 100)}${character.bio.length > 100 ? '...' : ''}</p>` : ''}
+                                ${bioText}
                                 <div class="mt-2">
                                     <span class="text-xs text-green-400">
                                         <i class="fas fa-file-alt"></i> Profile: characters/profiles/${safeName}-${character._id}.html
@@ -451,8 +453,7 @@
                                 </button>
                             </div>
                         </div>
-                    </div>
-                }).join('');
+                    </div>`}).join('');
 
             } catch (error) {
                 console.error('Error loading all approved characters:', error);

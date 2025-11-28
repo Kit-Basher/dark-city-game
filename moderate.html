@@ -141,7 +141,8 @@
                         'Authorization': `Bearer dark-city-production-key`
                     }
                 });
-                const characters = await response.json();
+                const data = await response.json();
+                const characters = data.characters || [];
                 
                 const container = document.getElementById('pending-characters');
                 
@@ -241,7 +242,8 @@
                         'Authorization': `Bearer dark-city-production-key`
                     }
                 });
-                const characters = await response.json();
+                const data = await response.json();
+                const characters = data.characters || [];
                 currentCharacter = characters.find(c => c._id === characterId);
                 
                 if (!currentCharacter) {
@@ -535,7 +537,8 @@
                         'Authorization': `Bearer dark-city-production-key`
                     }
                 });
-                const characters = await response.json();
+                const data = await response.json();
+                const characters = data.characters || [];
                 
                 // Look for the character in both pending and approved
                 const allCharacters = [...characters];

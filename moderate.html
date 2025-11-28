@@ -11,7 +11,8 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌙</text></svg>">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css?v=2.2.19" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css?v=6.0.0" rel="stylesheet">
-    <script src="js/config.js?v=1.0.1"></script>
+    <script src="config.js?v=1.0.1"></script>
+    <script src="js/env-loader.js?v=1.0.1"></script>
     <script src="js/server-api.js?v=1.0.1"></script>
     <script src="js/error-handler.js?v=1.0.1"></script>
 </head>
@@ -141,9 +142,9 @@
         async function loadPendingCharacters() {
             try {
                 console.log('🔍 Loading pending characters from API...');
-                const response = await fetch(`https://dark-city-game-production.up.railway.app/api/characters/pending`, {
+                const response = await fetch(`${window.APP_CONFIG.apiURL}/characters/pending`, {
                     headers: {
-                        'Authorization': `Bearer dark-city-production-key`
+                        'Authorization': `Bearer ${window.APP_CONFIG.API_KEY}`
                     }
                 });
                 const data = await response.json();
@@ -192,9 +193,9 @@
         // Load approved characters
         async function loadApprovedCharacters() {
             try {
-                const response = await fetch(`https://dark-city-game-production.up.railway.app/api/characters?limit=5`, {
+                const response = await fetch(`${window.APP_CONFIG.apiURL}/characters?limit=5`, {
                     headers: {
-                        'Authorization': `Bearer dark-city-production-key`
+                        'Authorization': `Bearer ${window.APP_CONFIG.API_KEY}`
                     }
                 });
                 const data = await response.json();
@@ -244,9 +245,9 @@
         // Open review modal
         async function openReviewModal(characterId) {
             try {
-                const response = await fetch(`https://dark-city-game-production.up.railway.app/api/characters/pending`, {
+                const response = await fetch(`${window.APP_CONFIG.apiURL}/characters/pending`, {
                     headers: {
-                        'Authorization': `Bearer dark-city-production-key`
+                        'Authorization': `Bearer ${window.APP_CONFIG.API_KEY}`
                     }
                 });
                 const data = await response.json();
@@ -339,11 +340,11 @@
                     rejectBtn.classList.add('opacity-50');
                 }
                 
-                const response = await fetch(`https://dark-city-game-production.up.railway.app/api/characters/${currentCharacter._id}/approve`, {
+                const response = await fetch(`${window.APP_CONFIG.apiURL}/characters/${currentCharacter._id}/approve`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer dark-city-production-key`
+                        'Authorization': `Bearer ${window.APP_CONFIG.API_KEY}`
                     },
                     body: JSON.stringify({
                         reviewedBy: 'moderator',
@@ -402,9 +403,9 @@
         // Load all approved characters (with delete functionality)
         async function loadAllApprovedCharacters() {
             try {
-                const response = await fetch(`https://dark-city-game-production.up.railway.app/api/characters?status=approved&limit=50`, {
+                const response = await fetch(`${window.APP_CONFIG.apiURL}/characters?status=approved&limit=50`, {
                     headers: {
-                        'Authorization': `Bearer dark-city-production-key`
+                        'Authorization': `Bearer ${window.APP_CONFIG.API_KEY}`
                     }
                 });
                 const data = await response.json();
@@ -498,10 +499,10 @@
                     button.classList.add('opacity-50');
                 }
 
-                const response = await fetch(`https://dark-city-game-production.up.railway.app/api/characters/${characterId}`, {
+                const response = await fetch(`${window.APP_CONFIG.apiURL}/characters/${characterId}`, {
                     method: 'DELETE',
                     headers: {
-                        'Authorization': `Bearer dark-city-production-key`
+                        'Authorization': `Bearer ${window.APP_CONFIG.API_KEY}`
                     }
                 });
 
@@ -539,9 +540,9 @@
         // View character details (reuse review modal but without approval buttons)
         async function viewCharacterDetails(characterId) {
             try {
-                const response = await fetch(`https://dark-city-game-production.up.railway.app/api/characters/pending`, {
+                const response = await fetch(`${window.APP_CONFIG.apiURL}/characters/pending`, {
                     headers: {
-                        'Authorization': `Bearer dark-city-production-key`
+                        'Authorization': `Bearer ${window.APP_CONFIG.API_KEY}`
                     }
                 });
                 const data = await response.json();
@@ -549,9 +550,9 @@
                 
                 // Look for the character in both pending and approved
                 const allCharacters = [...characters];
-                const approvedResponse = await fetch(`https://dark-city-game-production.up.railway.app/api/characters?status=approved&limit=50`, {
+                const approvedResponse = await fetch(`${window.APP_CONFIG.apiURL}/characters?status=approved&limit=50`, {
                     headers: {
-                        'Authorization': `Bearer dark-city-production-key`
+                        'Authorization': `Bearer ${window.APP_CONFIG.API_KEY}`
                     }
                 });
                 const approvedData = await approvedResponse.json();

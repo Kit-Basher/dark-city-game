@@ -46,7 +46,8 @@ class ServerAPI {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${window.APP_CONFIG?.API_KEY || 'dark-city-dev-key'}`
+                    'Authorization': `Bearer ${window.APP_CONFIG?.API_KEY || 'dark-city-dev-key'}`,
+                    'X-API-Key': window.APP_CONFIG?.API_KEY || 'dark-city-dev-key'
                 },
                 body: JSON.stringify(characterData)
             });
@@ -69,7 +70,8 @@ class ServerAPI {
         try {
             const response = await fetch(`${this.baseURL}/characters`, {
                 headers: {
-                    'Authorization': `Bearer ${window.APP_CONFIG?.API_KEY || 'dark-city-dev-key'}`
+                    'Authorization': `Bearer ${window.APP_CONFIG?.API_KEY || 'dark-city-dev-key'}`,
+                    'X-API-Key': window.APP_CONFIG?.API_KEY || 'dark-city-dev-key'
                 }
             });
             if (!response.ok) {
@@ -110,7 +112,8 @@ class ServerAPI {
         try {
             const response = await fetch(`${this.baseURL}/characters/pending`, {
                 headers: {
-                    'Authorization': `Bearer ${window.APP_CONFIG?.API_KEY || 'dark-city-dev-key'}`
+                    'Authorization': `Bearer ${window.APP_CONFIG?.API_KEY || 'dark-city-dev-key'}`,
+                    'X-API-Key': window.APP_CONFIG?.API_KEY || 'dark-city-dev-key'
                 }
             });
             if (!response.ok) {
@@ -132,7 +135,8 @@ class ServerAPI {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${window.APP_CONFIG?.API_KEY || 'dark-city-dev-key'}`
+                    'Authorization': `Bearer ${window.APP_CONFIG?.API_KEY || 'dark-city-dev-key'}`,
+                    'X-API-Key': window.APP_CONFIG?.API_KEY || 'dark-city-dev-key'
                 },
                 body: JSON.stringify({ feedback, reviewedBy })
             });

@@ -726,24 +726,15 @@
                 const character = await response.json();
                 console.log('🔍 Gallery: Character data loaded:', character.name);
                 
-                // Generate profile HTML and set proper URL
-                const profileHTML = generateProfileHTML(character);
+                // Generate stable profile URL
                 const characterSlug = character.name.toLowerCase()
                     .replace(/[^a-z0-9]+/g, '-')
                     .replace(/^-+|-+$/g, '');
                 
-                // Create a new window with proper URL
-                const profileWindow = window.open('', '_blank');
+                // Open stable profile page
+                window.open(`profiles/${characterSlug}-${character._id}.html`, '_blank');
                 
-                // Set the URL and title immediately
-                profileWindow.document.title = `${character.name} - Dark City Character Profile`;
-                profileWindow.history.replaceState({}, '', `#${characterSlug}-${character._id}`);
-                
-                // Write the content
-                profileWindow.document.write(profileHTML);
-                profileWindow.document.close();
-                
-                console.log('🔍 Gallery: Profile window opened with URL:', `#${characterSlug}-${character._id}`);
+                console.log('🔍 Gallery: Profile window opened with URL:', `profiles/${characterSlug}-${character._id}.html`);
                 
             } catch (error) {
                 console.error('Error generating profile:', error);

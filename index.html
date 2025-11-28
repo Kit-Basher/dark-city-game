@@ -155,7 +155,7 @@
                     <div class="character-card clickable-character" style="background: #2d2d2d; border: 1px solid #444; border-radius: 8px; padding: 1rem; margin-bottom: 1rem; cursor: pointer; transition: all 0.3s ease;" 
                          onmouseover="this.style.background='#3a3a3a'; this.style.borderColor='#ff6b35';" 
                          onmouseout="this.style.background='#2d2d2d'; this.style.borderColor='#444';"
-                         onclick="generateAndShowProfile('${character._id}')">
+                         onclick="window.open('characters/profiles/${safeName}-${character._id}.html', '_blank')">
                         <h4 style="color: #fff; margin: 0 0 0.5rem 0;">${character.name}</h4>
                         <p style="color: #ccc; margin: 0; font-size: 0.9rem;">${character.classification} - ${character.playbook}</p>
                         <p style="color: #999; margin: 0.5rem 0 0 0; font-size: 0.8rem;">${character.bio ? character.bio.substring(0, 100) + (character.bio.length > 100 ? '...' : '') : 'No bio provided'}</p>

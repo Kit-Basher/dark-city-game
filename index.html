@@ -8,11 +8,16 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌙</text></svg>">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/accessibility.css">
+    <link rel="stylesheet" href="css/accessibility-enhancements.css">
     <link rel="stylesheet" href="css/mobile.css">
+    <link rel="stylesheet" href="css/components.css">
 </head>
 <body>
     <a href="#main-content" class="skip-to-main">Skip to main content</a>
     <div class="aria-live" aria-live="polite" aria-atomic="true"></div>
+    <div class="loading-announcement" aria-live="polite" aria-atomic="true"></div>
+    <div class="error-announcement" aria-live="assertive" aria-atomic="true"></div>
+    <div class="success-announcement" aria-live="polite" aria-atomic="true"></div>
     
     <header role="banner">
         <nav role="navigation" aria-label="Main navigation">
@@ -113,65 +118,129 @@
     </footer>
 
     <script src="config.js"></script>
-    <script src="js/config.js"></script>
+    <script src="js/env-loader.js"></script>
+    <script src="js/performance.js"></script>
     <script src="js/safe-dom.js"></script>
     <script src="js/error-handler.js"></script>
     <script src="js/simple-calendar.js"></script>
     <script src="js/accessibility.js"></script>
     
     <script>
-        // Load top 6 most recent characters
+        // Load top 6 most recent characters with caching
         async function loadRecentCharacters() {
+            const charactersList = document.getElementById('charactersList');
+            const cacheKey = 'recent_characters_6';
+            
+            // Show loading state
+            charactersList.innerHTML = '<p class="text-center text-gray-400">Loading characters...</p>';
+            
+            // Announce loading to screen readers
+            announceToScreenReader('Loading characters...', 'loading');
+            
+            // Check cache first
+            const cachedData = window.apiCache.get(cacheKey);
+            if (cachedData) {
+                renderCharacters(cachedData);
+                return;
+            }
+            
             try {
-                const response = await fetch('https://dark-city-game-production.up.railway.app/api/characters?status=approved&limit=6', {
+                const response = await fetch(`${window.APP_CONFIG.apiURL}/characters?status=approved&limit=6`, {
                     headers: {
-                        'Authorization': 'Bearer dark-city-production-key'
+                        'Authorization': `Bearer ${window.APP_CONFIG.API_KEY}`
                     }
                 });
                 
                 if (!response.ok) {
-                    throw new Error('Failed to load characters');
+                    if (response.status === 401) {
+                        throw new Error('Authentication failed. Please check your configuration.');
+                    } else if (response.status === 404) {
+                        throw new Error('Character service not available.');
+                    } else if (response.status >= 500) {
+                        throw new Error('Server error. Please try again later.');
+                    } else {
+                        throw new Error(`Failed to load characters (${response.status})`);
+                    }
                 }
                 
                 const data = await response.json();
                 const characters = data.characters || [];
                 
-                const charactersList = document.getElementById('charactersList');
+                // Cache the results
+                window.apiCache.set(cacheKey, characters);
                 
-                if (characters.length === 0) {
-                    charactersList.innerHTML = '<p class="text-center text-gray-400">No characters found. Be the first to create one!</p>';
-                    return;
-                }
+                renderCharacters(characters);
                 
-                charactersList.innerHTML = characters.map(character => {
-                    // Create safe filename for profile link
-                    const safeName = character.name
-                        .toLowerCase()
-                        .replace(/[^a-z0-9]/g, '-')
-                        .replace(/-+/g, '-')
-                        .replace(/^-|-$/g, '');
-                    
-                    return `
-                    <div class="character-card clickable-character" style="background: #2d2d2d; border: 1px solid #444; border-radius: 8px; padding: 1rem; margin-bottom: 1rem; cursor: pointer; transition: all 0.3s ease;" 
-                         onmouseover="this.style.background='#3a3a3a'; this.style.borderColor='#ff6b35';" 
-                         onmouseout="this.style.background='#2d2d2d'; this.style.borderColor='#444';"
-                         onclick="window.open('characters/profiles/${safeName}-${character._id}.html', '_blank')">
-                        <h4 style="color: #fff; margin: 0 0 0.5rem 0;">${character.name}</h4>
-                        <p style="color: #ccc; margin: 0; font-size: 0.9rem;">${character.classification} - ${character.playbook}</p>
-                        <p style="color: #999; margin: 0.5rem 0 0 0; font-size: 0.8rem;">${character.bio ? character.bio.substring(0, 100) + (character.bio.length > 100 ? '...' : '') : 'No bio provided'}</p>
-                        <p style="color: #666; margin: 0.5rem 0 0 0; font-size: 0.7rem; font-style: italic;">📄 View full profile</p>
-                    </div>
-                `;
-                }).join('');
+                // Announce success to screen readers
+                announceToScreenReader(`Loaded ${characters.length} characters`, 'success');
                 
             } catch (error) {
                 console.error('Error loading characters:', error);
-                document.getElementById('charactersList').innerHTML = '<p class="text-center text-red-400">Error loading characters</p>';
+                charactersList.innerHTML = `
+                    <div class="error-message text-center">
+                        <p class="text-red-400">Error loading characters</p>
+                        <p class="text-gray-400 text-sm">${error.message}</p>
+                        <button onclick="loadRecentCharacters()" class="btn btn-outline mt-2">Retry</button>
+                    </div>
+                `;
+                
+                // Announce error to screen readers
+                announceToScreenReader(`Error loading characters: ${error.message}`, 'error');
             }
+        }
+        
+        function renderCharacters(characters) {
+            const charactersList = document.getElementById('charactersList');
+            
+            if (characters.length === 0) {
+                charactersList.innerHTML = '<p class="text-center text-gray-400">No characters found. Be the first to create one!</p>';
+                return;
+            }
+            
+            charactersList.innerHTML = characters.map(character => {
+                // Create safe filename for profile link
+                const safeName = character.name
+                    .toLowerCase()
+                    .replace(/[^a-z0-9]/g, '-')
+                    .replace(/-+/g, '-')
+                    .replace(/^-|-$/g, '');
+                
+                // Sanitize character data for display
+                const sanitizedName = character.name ? character.name.replace(/</g, '&lt;').replace(/>/g, '&gt;') : 'Unknown Character';
+                const sanitizedClassification = character.classification ? character.classification.replace(/</g, '&lt;').replace(/>/g, '&gt;') : 'Unknown';
+                const sanitizedPlaybook = character.playbook ? character.playbook.replace(/</g, '&lt;').replace(/>/g, '&gt;') : 'Unknown';
+                const sanitizedBio = character.bio ? character.bio.substring(0, 100).replace(/</g, '&lt;').replace(/>/g, '&gt;') + (character.bio.length > 100 ? '...' : '') : 'No bio provided';
+                
+                return `
+                    <div class="character-card clickable-character" 
+                         role="article"
+                         tabindex="0"
+                         aria-label="Character: ${sanitizedName}, ${sanitizedClassification} - ${sanitizedPlaybook}"
+                         onkeypress="if(event.key==='Enter'||event.key===' ') this.click()"
+                         onclick="window.open('characters/profiles/${safeName}-${character._id}.html', '_blank')">
+                        <h4>${sanitizedName}</h4>
+                        <p class="text-sm">${sanitizedClassification} - ${sanitizedPlaybook}</p>
+                        <p class="text-xs text-gray">${sanitizedBio}</p>
+                        <p class="text-xs text-muted">📄 View full profile</p>
+                    </div>
+                `;
+            }).join('');
         }
         
         // Load characters when page loads
         document.addEventListener('DOMContentLoaded', loadRecentCharacters);
+        
+        // Screen reader announcement function
+        function announceToScreenReader(message, type = 'polite') {
+            const announcementElement = document.querySelector(`.${type}-announcement`);
+            if (announcementElement) {
+                announcementElement.textContent = message;
+                // Clear after announcement
+                setTimeout(() => {
+                    announcementElement.textContent = '';
+                }, 1000);
+            }
+        }
 
     </script>
 </body>

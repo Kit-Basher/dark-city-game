@@ -3,12 +3,12 @@ const router = express.Router();
 const Character = require('../models/Character');
 const CharacterService = require('../services/characterService');
 const { validate, characterSchema } = require('../middleware/validation');
+const fs = require('fs');
 const { generateCharacterProfile } = require('../utils/profileGenerator');
 const path = require('path');
 
 /**
- * Generate a profile page for an approved character
- */
+ * @swagger
 async function generateCharacterProfile(character) {
   try {
     // Read the template
@@ -119,7 +119,7 @@ async function generateCharacterProfile(character) {
             <div style="width: 150px; height: 150px; border: 3px dashed #666; border-radius: 10px; display: flex; align-items: center; justify-content: center; background: #2a2a2a;">
               <div style="color: #666; text-align: center; padding: 1rem;">No photos uploaded</div>
             </div>
-            <div class="profile-photo-label">📷 No Images</div>
+            <div class="profile-photo-label">📸 No Images</div>
           </div>
         </div>
       `;

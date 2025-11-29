@@ -108,6 +108,14 @@ class CharacterService {
     // Optimized character submission
     static async createCharacter(characterData, userId) {
         try {
+            // Handle editPassword - if empty string, set to null for no password protection
+            if (characterData.editPassword === '') {
+                characterData.editPassword = null;
+            } else if (!characterData.editPassword) {
+                // Generate random password if none provided
+                characterData.editPassword = Math.random().toString(36).substring(2, 10);
+            }
+
             const character = new Character({
                 ...characterData,
                 submittedBy: userId || 'anonymous'

@@ -55,8 +55,9 @@ router.get('/:id', asyncHandler(async (req, res) => {
     // Check authorization - either API key for moderators or edit password for owners
     const hasApiKey = req.headers.authorization && req.headers.authorization.startsWith('Bearer ');
     const hasValidPassword = editPassword && character.editPassword === editPassword;
+    const hasNoPasswordProtection = !character.editPassword; // Character has no password protection
     
-    if (!hasApiKey && !hasValidPassword) {
+    if (!hasApiKey && !hasValidPassword && !hasNoPasswordProtection) {
       return res.status(401).json({ 
         error: 'Unauthorized',
         message: 'Valid edit password or authorization required'

@@ -518,15 +518,32 @@
             // Check if edit password is in URL
             editPassword = urlParams.get('editPassword');
             
+            // First try to load character without password (for unprotected characters)
             if (editPassword) {
                 loadCharacter();
             } else {
-                showPasswordModal();
+                // Try loading without password first
+                tryLoadCharacterWithoutPassword();
             }
 
             // Setup form listeners
             setupFormListeners();
         });
+
+        // Try loading character without password first
+        async function tryLoadCharacterWithoutPassword() {
+            try {
+                await loadCharacter();
+            } catch (error) {
+                if (error.message.includes('Unauthorized') || error.message.includes('authorization required')) {
+                    // Character is password protected, show password modal
+                    showPasswordModal();
+                } else {
+                    // Other error
+                    showError('Failed to load character: ' + error.message);
+                }
+            }
+        }
 
         // Show password modal
         function showPasswordModal() {

@@ -26,7 +26,44 @@ async function generateCharacterProfile(character) {
         year: 'numeric', 
         month: 'long', 
         day: 'numeric' 
-      })
+      }),
+      '{{PHOTOS_SECTION}}': character.photos && character.photos.length > 0 ? 
+        `<div class="profile-photos">
+          <h3>Photos</h3>
+          ${character.photos.map(photo => 
+            `<img src="${photo.url}" alt="${photo.caption || 'Character photo'}" />`
+          ).join('')}
+        </div>` : '<div class="profile-photos"><p>No photos uploaded</p></div>',
+      '{{DARKEST_SELF_SECTION}}': character.darkestSelf ? 
+        `<div class="darkest-self">
+          <h3>Darkest Self</h3>
+          <p>${character.darkestSelf}</p>
+        </div>` : '',
+      '{{MOVES_SECTION}}': character.moves && character.moves.length > 0 ? 
+        `<div class="moves">
+          <h3>Moves</h3>
+          ${character.moves.map(move => 
+            `<div class="move">
+              <h4>${move.name}</h4>
+              <p>${move.description}</p>
+            </div>`
+          ).join('')}
+        </div>` : '',
+      '{{SKILLS_SECTION}}': '', // Not implemented yet
+      '{{HUMAN_PHYSICAL_STATS}}': character.humanHeight || character.humanWeight ? 
+        `<div class="human-stats">
+          <h3>Human Form</h3>
+          ${character.humanHeight ? `<p>Height: ${character.humanHeight}</p>` : ''}
+          ${character.humanWeight ? `<p>Weight: ${character.humanWeight}</p>` : ''}
+        </div>` : '',
+      '{{MONSTER_PHYSICAL_STATS}}': character.werewolfHeight || character.werewolfWeight ? 
+        `<div class="monster-stats">
+          <h3>Werewolf Form</h3>
+          ${character.werewolfHeight ? `<p>Height: ${character.werewolfHeight}</p>` : ''}
+          ${character.werewolfWeight ? `<p>Weight: ${character.werewolfWeight}</p>` : ''}
+        </div>` : '',
+      '{{CHARACTER_ID}}': character._id || '',
+      '{{EDIT_PASSWORD}}': character.editPassword || ''
     };
     
     // Replace placeholders in template

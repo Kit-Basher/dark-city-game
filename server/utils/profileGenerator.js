@@ -3,9 +3,13 @@ const path = require('path');
 
 async function generateCharacterProfile(character) {
   try {
+    console.log('🔧 Profile Generation: Starting for character:', character.name);
+    
     // Read the template
     const templatePath = path.join(__dirname, '../../characters/profile-template.html');
+    console.log('🔧 Profile Generation: Template path:', templatePath);
     const template = await fs.readFile(templatePath, 'utf8');
+    console.log('🔧 Profile Generation: Template read successfully, length:', template.length);
     
     const replacements = {
       '{{CHARACTER_NAME}}': character.name || 'Unnamed Character',
@@ -41,13 +45,16 @@ async function generateCharacterProfile(character) {
     
     // Ensure profiles directory exists
     const profilesDir = path.join(__dirname, '../../characters/profiles');
+    console.log('🔧 Profile Generation: Profiles directory:', profilesDir);
     await fs.mkdir(profilesDir, { recursive: true });
     
     // Write profile page
     const profilePath = path.join(profilesDir, `${safeName}-${character._id}.html`);
+    console.log('🔧 Profile Generation: Writing profile to:', profilePath);
     await fs.writeFile(profilePath, profileHTML, 'utf8');
     
     console.log(`✅ Generated profile page: ${safeName}-${character._id}.html`);
+    console.log('🔧 Profile Generation: File written successfully');
     
   } catch (error) {
     console.error('Error generating character profile:', error);

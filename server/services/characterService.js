@@ -406,6 +406,53 @@ class CharacterService {
             throw error;
         }
     }
+
+    // Convenience methods for specific status queries
+    static async getApprovedCharacters(options = {}) {
+        return this.getCharacters({ ...options, status: 'approved' });
+    }
+
+    static async getAllSubmissions(options = {}) {
+        return this.getCharacters({ ...options, status: null }); // Get all statuses
+    }
+
+    static async getPendingSubmissions(options = {}) {
+        return this.getCharacters({ ...options, status: 'pending' });
+    }
+
+    static async approveCharacter(characterId, options = {}) {
+        return this.moderateCharacter(characterId, 'approve', options.reviewedBy, options.feedback);
+    }
+
+    static async rejectCharacter(characterId, options = {}) {
+        return this.moderateCharacter(characterId, 'reject', options.reviewedBy, options.feedback);
+    }
+
+    static async deleteCharacter(characterId) {
+        try {
+            const character = await Character.findByIdAndDelete(characterId);
+            if (!character) {
+                return null;
+            }
+
+            // Clear cache
+            await cacheService.clearPattern('characters:*');
+            
+            structuredLogger.logInfo('Character deleted successfully', {
+                characterId,
+                characterName: character.name
+            });
+
+            return character;
+        } catch (error) {
+            logger.error('Error deleting character:', error);
+            structuredLogger.logError(error, { 
+                operation: 'deleteCharacter', 
+                characterId 
+            });
+            throw error;
+        }
+    }
 }
 
 module.exports = CharacterService;

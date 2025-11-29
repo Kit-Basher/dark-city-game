@@ -603,7 +603,19 @@
         // Cancel edit
         function cancelEdit() {
             if (confirm('Are you sure you want to cancel? Any unsaved changes will be lost.')) {
-                window.history.back();
+                // Try to go back to the character profile if we came from there
+                if (originalCharacterData && originalCharacterData.name) {
+                    const profileName = originalCharacterData.name.toLowerCase().replace(/[^a-z0-9]/g, '-');
+                    const profileUrl = `../profiles/${profileName}-${characterId}.html`;
+                    window.location.href = profileUrl;
+                } else {
+                    // Fallback to history back or close window
+                    if (window.history.length > 1) {
+                        window.history.back();
+                    } else {
+                        window.close();
+                    }
+                }
             }
         }
 
@@ -960,8 +972,8 @@
 
         // Show success message
         function showSuccess(message) {
-            if (window.errorHandler) {
-                window.errorHandler.showUserError({
+            if (window.errorHandler && window.errorHandler.showUserSuccess) {
+                window.errorHandler.showUserSuccess({
                     message: message,
                     context: 'Success',
                     timestamp: new Date().toISOString()

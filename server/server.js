@@ -17,6 +17,7 @@ const { specs, swaggerUi } = require('./config/swagger');
 const { applyRateLimiting, rateLimitStats } = require('./middleware/rateLimiting');
 const HealthChecker = require('./middleware/health');
 const { logger, structuredLogger, requestLogger } = require('./config/logging');
+const injectEnvVars = require('./middleware/envInjector');
 
 // Connect to MongoDB
 connectDB();
@@ -164,6 +165,9 @@ app.use('/api', (req, res, next) => {
 
 // Request logging middleware
 app.use(requestLogger);
+
+// Inject environment variables into HTML pages
+app.use(injectEnvVars);
 
 // Serve static files from parent directory
 const path = require('path');

@@ -668,7 +668,7 @@
                 // Fetch character data
                 const response = await fetch(`https://dark-city-game-production.up.railway.app/api/characters/${characterId}`, {
                     headers: {
-                        'Authorization': 'Bearer dark-city-dev-key'
+                        'Authorization': `Bearer ${window.APP_CONFIG.API_KEY}`
                     }
                 });
                 

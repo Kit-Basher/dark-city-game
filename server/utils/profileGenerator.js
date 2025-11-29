@@ -4,6 +4,8 @@ const path = require('path');
 async function generateCharacterProfile(character) {
   try {
     console.log('🔧 Profile Generation: Starting for character:', character.name);
+    console.log('🔧 Profile Generation: Character photos data:', character.photos);
+    console.log('🔧 Profile Generation: Photos count:', character.photos?.length || 0);
     
     // Read the template
     const templatePath = path.join(__dirname, '../../characters/profile-template.html');
@@ -27,13 +29,22 @@ async function generateCharacterProfile(character) {
         month: 'long', 
         day: 'numeric' 
       }),
-      '{{PHOTOS_SECTION}}': character.photos && character.photos.length > 0 ? 
-        `<div class="profile-photos">
-          <h3>Photos</h3>
-          ${character.photos.map(photo => 
+      '{{PHOTOS_SECTION}}': (() => {
+        if (character.photos && character.photos.length > 0) {
+          const photosHTML = character.photos.map(photo => 
             `<img src="${photo.url}" alt="${photo.caption || 'Character photo'}" />`
-          ).join('')}
-        </div>` : '<div class="profile-photos"><p>No photos uploaded</p></div>',
+          ).join('');
+          const result = `<div class="profile-photos">
+          <h3>Photos</h3>
+          ${photosHTML}
+        </div>`;
+          console.log('🔧 Profile Generation: Generated photos HTML:', result);
+          return result;
+        } else {
+          console.log('🔧 Profile Generation: No photos found, using default');
+          return '<div class="profile-photos"><p>No photos uploaded</p></div>';
+        }
+      })(),
       '{{DARKEST_SELF_SECTION}}': character.darkestSelf ? 
         `<div class="darkest-self">
           <h3>Darkest Self</h3>

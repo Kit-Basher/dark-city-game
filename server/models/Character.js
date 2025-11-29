@@ -110,6 +110,14 @@ const characterSchema = new mongoose.Schema({
   }],
   humanPhoto: String,
   monsterPhoto: String,
+  editPassword: {
+    type: String,
+    required: true,
+    default: function() {
+      // Generate random 8-character password
+      return Math.random().toString(36).substring(2, 10);
+    }
+  },
 }, {
   timestamps: true,
 });

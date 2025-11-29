@@ -10,6 +10,7 @@ const axios = require('axios');
 
 const connectDB = require('./config/database');
 const characterRoutes = require('./routes/characters');
+const characterEditRoutes = require('./routes/character-edit');
 const { ApiKeyAuth } = require('./middleware/auth');
 const { errorHandler } = require('./middleware/errorHandler');
 const { specs, swaggerUi } = require('./config/swagger');
@@ -175,18 +176,22 @@ app.get('/characters/profiles/:filename', async (req, res) => {
   // Try to serve the file first
   res.sendFile(profilePath, async (err) => {
     if (err) {
-      console.error('Profile not found:', profilePath);
+      const logger = require('./config/logging').logger;
+      if (logger) {
+        logger.error('Profile not found:', { profilePath });
+      }
       
       // Fallback: try to generate profile on-demand
       const characterId = req.params.filename.split('-').pop().replace('.html', '');
-      console.log('🔄 Attempting to generate profile on-demand for character:', characterId);
       
       try {
         const Character = require('./models/Character');
         const character = await Character.findById(characterId);
         
         if (character && character.status === 'approved') {
-          console.log('✅ Found approved character, generating profile...');
+          if (logger) {
+            logger.info('Generating profile on-demand for approved character:', { characterId });
+          }
           
           // Generate profile using the utility function
           const { generateCharacterProfile } = require('./utils/profileGenerator');
@@ -196,7 +201,9 @@ app.get('/characters/profiles/:filename', async (req, res) => {
           setTimeout(() => {
             res.sendFile(profilePath, (secondErr) => {
               if (secondErr) {
-                console.error('Profile generation failed:', secondErr);
+                if (logger) {
+                  logger.error('Profile generation failed:', { error: secondErr.message, characterId });
+                }
                 res.status(404).json({
                   error: 'Profile not found',
                   message: `Character profile ${req.params.filename} does not exist and could not be generated`
@@ -237,6 +244,7 @@ const healthChecker = new HealthChecker();
 
 // Routes
 app.use('/api/characters', characterRoutes);
+app.use('/api/characters', characterEditRoutes);
 
 // API Documentation
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs, {

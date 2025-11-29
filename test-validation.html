@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Input Validation Test - Dark City RPG</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #1a1a1a;
+            color: #fff;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #444;
+            border-radius: 5px;
+        }
+        .result {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 3px;
+        }
+        .pass {
+            background-color: #2d5a2d;
+            border: 1px solid #4a8c4a;
+        }
+        .fail {
+            background-color: #5a2d2d;
+            border: 1px solid #8c4a4a;
+        }
+        .warning {
+            background-color: #5a5a2d;
+            border: 1px solid #8c8c4a;
+        }
+        input, textarea, button {
+            margin: 5px;
+            padding: 8px;
+            border-radius: 3px;
+            border: 1px solid #555;
+            background-color: #333;
+            color: #fff;
+        }
+        button {
+            background-color: #444;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #555;
+        }
+        pre {
+            background-color: #2a2a2a;
+            padding: 10px;
+            border-radius: 3px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Input Validation & Sanitization Test</h1>
+    <p>This page tests the security improvements and input sanitization implemented in the Dark City RPG.</p>
+
+    <div class="test-section">
+        <h2>📝 Test Character Data Submission</h2>
+        <p>Try submitting malicious or malformed data to test the validation:</p>
+        
+        <div>
+            <label>Character Name:</label>
+            <input type="text" id="testName" value="<script>alert('XSS')</script>" size="50">
+        </div>
+        
+        <div>
+            <label>Bio:</label>
+            <textarea id="testBio" rows="3" cols="50">&lt;img src=x onerror=alert(&apos;XSS&apos;)&gt;This is a test bio with malicious content</textarea>
+        </div>
+        
+        <div>
+            <label>Photo URL:</label>
+            <input type="text" id="testPhoto" value="javascript:alert('XSS')" size="50">
+        </div>
+        
+        <button onclick="testValidation()">🔍 Test Validation</button>
+        <button onclick="testMaliciousData()">🚨 Test Malicious Data</button>
+        <button onclick="testEdgeCases()">🔬 Test Edge Cases</button>
+        
+        <div id="testResults"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>🛡️ Security Tests</h2>
+        <button onclick="testXSSPrevention()">Test XSS Prevention</button>
+        <button onclick="testURLValidation()">Test URL Validation</button>
+        <button onclick="testLengthLimits()">Test Length Limits</button>
+        <div id="securityResults"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>📊 Test Results Summary</h2>
+        <div id="summaryResults"></div>
+    </div>
+
+    <!-- Include the security scripts -->
+    <script src="config.js"></script>
+    <script src="js/env-loader.js"></script>
+    <script src="js/input-sanitizer.js"></script>
+    <script src="js/server-api.js"></script>
+    <script src="js/error-handler.js"></script>
+
+    <script>
+        let testResults = {
+            passed: 0,
+            failed: 0,
+            warnings: 0,
+            details: []
+        };
+
+        function addResult(testName, status, message, details = null) {
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `result ${status}`;
+            resultDiv.innerHTML = `
+                <strong>${testName}:</strong> ${message}
+                ${details ? `<pre>${JSON.stringify(details, null, 2)}</pre>` : ''}
+            `;
+            
+            const container = document.getElementById('testResults');
+            container.appendChild(resultDiv);
+            
+            testResults.details.push({ testName, status, message, details });
+            
+            if (status === 'pass') testResults.passed++;
+            else if (status === 'fail') testResults.failed++;
+            else testResults.warnings++;
+            
+            updateSummary();
+        }
+
+        function updateSummary() {
+            const summaryDiv = document.getElementById('summaryResults');
+            summaryDiv.innerHTML = `
+                <div class="result ${testResults.failed === 0 ? 'pass' : 'fail'}">
+                    <strong>Test Summary:</strong><br>
+                    ✅ Passed: ${testResults.passed}<br>
+                    ❌ Failed: ${testResults.failed}<br>
+                    ⚠️ Warnings: ${testResults.warnings}<br>
+                    📊 Total: ${testResults.passed + testResults.failed + testResults.warnings}
+                </div>
+            `;
+        }
+
+        function testValidation() {
+            const testData = {
+                name: document.getElementById('testName').value,
+                bio: document.getElementById('testBio').value,
+                photos: [{ url: document.getElementById('testPhoto').value, caption: '&lt;script&gt;alert(1)&lt;/script&gt;' }],
+                classification: 'Mortal',
+                fatePoints: 5,
+                physicalStress: 2,
+                mentalStress: 2
+            };
+
+            try {
+                const sanitized = InputSanitizer.validateCharacterData(testData);
+                
+                addResult('Basic Validation', 'pass', 'Data validation completed', {
+                    original: testData,
+                    sanitized: sanitized
+                });
+                
+                // Check that script tags were removed
+                if (!sanitized.name.includes('<script>') && !sanitized.bio.includes('<script>')) {
+                    addResult('XSS Script Removal', 'pass', 'Script tags successfully removed');
+                } else {
+                    addResult('XSS Script Removal', 'fail', 'Script tags still present in data');
+                }
+                
+                // Check URL validation
+                if (!sanitized.photos[0].url || sanitized.photos[0].url.startsWith('http')) {
+                    addResult('URL Validation', 'pass', 'Dangerous URLs blocked');
+                } else {
+                    addResult('URL Validation', 'fail', 'Dangerous URLs not blocked');
+                }
+                
+            } catch (error) {
+                addResult('Validation Error', 'fail', 'Validation threw an error', error.message);
+            }
+        }
+
+        function testMaliciousData() {
+            const maliciousTests = [
+                {
+                    name: '&lt;img src=x onerror=alert(&quot;XSS&quot;)&gt;',
+                    test: 'XSS via img tag'
+                },
+                {
+                    name: 'javascript:alert(&quot;XSS&quot;)',
+                    test: 'JavaScript protocol'
+                },
+                {
+                    bio: '&lt;iframe src=&quot;javascript:alert(&apos;XSS&apos;)&quot;&gt;&lt;/iframe&gt;',
+                    test: 'XSS via iframe'
+                },
+                {
+                    photos: [{ url: 'data:text/html,&lt;script&gt;alert(&quot;XSS&quot;)&lt;/script&gt;', caption: 'Data URL' }],
+                    test: 'Data URL injection'
+                },
+                {
+                    classification: '&lt;script&gt;alert(&quot;XSS&quot;)&lt;/script&gt;',
+                    test: 'XSS in classification'
+                }
+            ];
+
+            maliciousTests.forEach((testData, index) => {
+                try {
+                    const sanitized = InputSanitizer.validateCharacterData(testData);
+                    const hasXSS = JSON.stringify(sanitized).includes('&lt;script&gt;') || 
+                                  JSON.stringify(sanitized).includes('javascript:');
+                    
+                    if (hasXSS) {
+                        addResult(`Malicious Test ${index + 1}`, 'fail', `${testData.test} - XSS not blocked`, sanitized);
+                    } else {
+                        addResult(`Malicious Test ${index + 1}`, 'pass', `${testData.test} - XSS blocked successfully`);
+                    }
+                } catch (error) {
+                    addResult(`Malicious Test ${index + 1}`, 'pass', `${testData.test} - Error thrown (expected)`, error.message);
+                }
+            });
+        }
+
+        function testEdgeCases() {
+            const edgeCases = [
+                { name: '', test: 'Empty name' },
+                { name: 'a'.repeat(100), test: 'Very long name' },
+                { bio: 'a'.repeat(2000), test: 'Very long bio' },
+                { fatePoints: -5, test: 'Negative fate points' },
+                { fatePoints: 999, test: 'Excessive fate points' },
+                { photos: 'not an array', test: 'Invalid photos type' },
+                { moves: [{ name: '', description: 'a'.repeat(2000) }], test: 'Invalid move data' }
+            ];
+
+            edgeCases.forEach((testCase, index) => {
+                try {
+                    const sanitized = InputSanitizer.validateCharacterData(testCase);
+                    addResult(`Edge Case ${index + 1}`, 'pass', `${testCase.test} - Handled gracefully`);
+                } catch (error) {
+                    addResult(`Edge Case ${index + 1}`, 'warning', `${testCase.test} - Error thrown`, error.message);
+                }
+            });
+        }
+
+        function testXSSPrevention() {
+            const xssPayloads = [
+                '&lt;script&gt;alert(&quot;XSS&quot;)&lt;/script&gt;',
+                '&lt;img src=x onerror=alert(&quot;XSS&quot;)&gt;',
+                '&lt;svg onload=alert(&quot;XSS&quot;)&gt;',
+                'javascript:alert(&quot;XSS&quot;)',
+                '&lt;iframe src=&quot;javascript:alert(&apos;XSS&apos;)&quot;&gt;&lt;/iframe&gt;'
+            ];
+
+            xssPayloads.forEach((payload, index) => {
+                const sanitized = InputSanitizer.sanitizeHtml(payload);
+                const hasXSS = sanitized.includes('&lt;script&gt;') || sanitized.includes('javascript:') || 
+                              sanitized.includes('onerror=') || sanitized.includes('onload=');
+                
+                addResult(`XSS Test ${index + 1}`, hasXSS ? 'fail' : 'pass', 
+                         hasXSS ? 'XSS payload not sanitized' : 'XSS payload sanitized successfully',
+                         { original: payload, sanitized: sanitized });
+            });
+        }
+
+        function testURLValidation() {
+            const urlTests = [
+                { url: 'https://example.com/image.jpg', valid: true },
+                { url: 'http://example.com/image.jpg', valid: true },
+                { url: 'javascript:alert(&quot;XSS&quot;)', valid: false },
+                { url: 'data:text/html,&lt;script&gt;alert(&quot;XSS&quot;)&lt;/script&gt;', valid: false },
+                { url: 'ftp://example.com/file.jpg', valid: false },
+                { url: 'not-a-url', valid: false },
+                { url: '', valid: false }
+            ];
+
+            urlTests.forEach((test, index) => {
+                const result = InputSanitizer.sanitizeUrl(test.url);
+                const isValid = (result !== null) === test.valid;
+                
+                addResult(`URL Test ${index + 1}`, isValid ? 'pass' : 'fail', 
+                         isValid ? 'URL validation correct' : 'URL validation incorrect',
+                         { original: test.url, expected: test.valid, actual: result !== null });
+            });
+        }
+
+        function testLengthLimits() {
+            const lengthTests = [
+                { field: 'name', value: 'a'.repeat(60), expected: 50 },
+                { field: 'bio', value: 'a'.repeat(1100), expected: 1000 },
+                { field: 'feedback', value: 'a'.repeat(600), expected: 500 }
+            ];
+
+            lengthTests.forEach((test, index) => {
+                let result;
+                switch (test.field) {
+                    case 'name':
+                        result = InputSanitizer.sanitizeCharacterName(test.value);
+                        break;
+                    case 'bio':
+                        result = InputSanitizer.sanitizeBio(test.value);
+                        break;
+                    case 'feedback':
+                        result = InputSanitizer.sanitizeFeedback(test.value);
+                        break;
+                }
+                
+                const isCorrectLength = result.length <= test.expected;
+                addResult(`Length Test ${index + 1}`, isCorrectLength ? 'pass' : 'fail', 
+                         isCorrectLength ? 'Length limit enforced' : 'Length limit not enforced',
+                         { field: test.field, original: test.value.length, result: result.length, expected: test.expected });
+            });
+        }
+
+        // Initialize
+        updateSummary();
+    </script>
+</body>
+</html>

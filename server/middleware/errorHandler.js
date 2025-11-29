@@ -91,10 +91,12 @@ class ForbiddenError extends AppError {
 
 module.exports = {
     errorHandler,
-    asyncHandler,
     AppError,
     NotFoundError,
     ValidationError,
     UnauthorizedError,
-    ForbiddenError
+    ForbiddenError,
+    asyncHandler: (fn) => (req, res, next) => {
+        Promise.resolve(fn(req, res, next)).catch(next);
+    }
 };

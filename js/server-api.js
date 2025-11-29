@@ -42,13 +42,21 @@ class ServerAPI {
     // Submit new character
     async submitCharacter(characterData) {
         try {
+            // Validate and sanitize input data
+            if (!characterData || typeof characterData !== 'object') {
+                throw new Error('Invalid character data provided');
+            }
+
+            const sanitizedData = window.InputSanitizer ? 
+                window.InputSanitizer.validateCharacterData(characterData) : characterData;
+
             const response = await fetch(`${this.baseURL}/characters/submit`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${window.APP_CONFIG?.API_KEY || 'dark-city-dev-key'}`
+                    'Authorization': window.APP_CONFIG?.API_KEY ? `Bearer ${window.APP_CONFIG.API_KEY}` : ''
                 },
-                body: JSON.stringify(characterData)
+                body: JSON.stringify(sanitizedData)
             });
 
             if (!response.ok) {
@@ -69,7 +77,7 @@ class ServerAPI {
         try {
             const response = await fetch(`${this.baseURL}/characters`, {
                 headers: {
-                    'Authorization': `Bearer ${window.APP_CONFIG?.API_KEY || 'dark-city-dev-key'}`
+                    'Authorization': window.APP_CONFIG?.API_KEY ? `Bearer ${window.APP_CONFIG.API_KEY}` : ''
                 }
             });
             if (!response.ok) {
@@ -90,7 +98,7 @@ class ServerAPI {
         try {
             const response = await fetch(`${this.baseURL}/characters/submissions`, {
                 headers: {
-                    'Authorization': `Bearer ${window.CONFIG?.API_KEY || process.env.API_KEY || 'dark-city-dev-key'}`
+                    'Authorization': window.CONFIG?.API_KEY || window.APP_CONFIG?.API_KEY ? `Bearer ${window.CONFIG?.API_KEY || window.APP_CONFIG?.API_KEY}` : ''
                 }
             });
             if (!response.ok) {
@@ -110,7 +118,7 @@ class ServerAPI {
         try {
             const response = await fetch(`${this.baseURL}/characters/pending`, {
                 headers: {
-                    'Authorization': `Bearer ${window.APP_CONFIG?.API_KEY || 'dark-city-dev-key'}`
+                    'Authorization': window.APP_CONFIG?.API_KEY ? `Bearer ${window.APP_CONFIG.API_KEY}` : ''
                 }
             });
             if (!response.ok) {
@@ -128,13 +136,26 @@ class ServerAPI {
     // Approve character (moderator)
     async approveCharacter(characterId, feedback = '', reviewedBy = 'moderator') {
         try {
+            // Validate inputs
+            if (!characterId || typeof characterId !== 'string') {
+                throw new Error('Invalid character ID provided');
+            }
+
+            const sanitizedFeedback = window.InputSanitizer ? 
+                window.InputSanitizer.sanitizeFeedback(feedback) : feedback;
+            const sanitizedReviewedBy = window.InputSanitizer ? 
+                window.InputSanitizer.sanitizeCharacterName(reviewedBy) : reviewedBy;
+
             const response = await fetch(`${this.baseURL}/characters/${characterId}/approve`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${window.APP_CONFIG?.API_KEY || 'dark-city-dev-key'}`
+                    'Authorization': window.APP_CONFIG?.API_KEY ? `Bearer ${window.APP_CONFIG.API_KEY}` : ''
                 },
-                body: JSON.stringify({ feedback, reviewedBy })
+                body: JSON.stringify({ 
+                    feedback: sanitizedFeedback, 
+                    reviewedBy: sanitizedReviewedBy 
+                })
             });
             
             if (!response.ok) {
@@ -153,12 +174,25 @@ class ServerAPI {
     // Reject character (moderator)
     async rejectCharacter(characterId, feedback = '', reviewedBy = 'moderator') {
         try {
+            // Validate inputs
+            if (!characterId || typeof characterId !== 'string') {
+                throw new Error('Invalid character ID provided');
+            }
+
+            const sanitizedFeedback = window.InputSanitizer ? 
+                window.InputSanitizer.sanitizeFeedback(feedback) : feedback;
+            const sanitizedReviewedBy = window.InputSanitizer ? 
+                window.InputSanitizer.sanitizeCharacterName(reviewedBy) : reviewedBy;
+
             const response = await fetch(`${this.baseURL}/characters/${characterId}/reject`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ feedback, reviewedBy })
+                body: JSON.stringify({ 
+                    feedback: sanitizedFeedback, 
+                    reviewedBy: sanitizedReviewedBy 
+                })
             });
             
             if (!response.ok) {

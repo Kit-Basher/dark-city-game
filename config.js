@@ -23,7 +23,7 @@ const currentEnv = isProduction ? 'production' : 'development';
 window.ENV = window.ENV || {};
 const envConfig = environments[currentEnv];
 
-// Application Configuration
+// Application Configuration (single source of truth)
 window.APP_CONFIG = {
     // Environment-specific URLs
     apiURL: window.ENV.API_URL || envConfig.apiURL,
@@ -38,7 +38,7 @@ window.APP_CONFIG = {
     
     // API Configuration
     API_BASE_URL: '/api',
-    API_KEY: window.ENV.API_KEY || 'dark-city-dev-key',
+    API_KEY: window.ENV.API_KEY || null,
     
     // Feature Flags
     ENABLE_GITHUB_INTEGRATION: window.ENV.ENABLE_GITHUB_INTEGRATION === 'true',
@@ -52,5 +52,5 @@ window.APP_CONFIG = {
     ALLOWED_ORIGINS: window.ENV.ALLOWED_ORIGINS?.split(',') || ['http://localhost:3000', 'https://yourusername.github.io']
 };
 
-// Backward compatibility
+// Backward compatibility alias (deprecated - use APP_CONFIG)
 window.CONFIG = window.APP_CONFIG;

@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Character - Dark City RPG</title>
+    <meta name="description" content="Edit your Dark City RPG character sheet">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌙</text></svg>">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/accessibility.css">
+    <link rel="stylesheet" href="../css/mobile.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <style>
+        .edit-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .edit-header {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 2px solid #ff6b35;
+        }
+        
+        .edit-form {
+            display: grid;
+            gap: 2rem;
+        }
+        
+        .form-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 107, 53, 0.3);
+        }
+        
+        .form-section h3 {
+            color: #ff6b35;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid #ff6b35;
+            padding-bottom: 0.5rem;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-group label {
+            color: #f7931e;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 107, 53, 0.5);
+            border-radius: 5px;
+            padding: 0.75rem;
+            color: #fff;
+            transition: all 0.3s ease;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #ff6b35;
+            box-shadow: 0 0 10px rgba(255, 107, 53, 0.3);
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .photo-upload {
+            border: 2px dashed #ff6b35;
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .photo-upload:hover {
+            border-color: #f7931e;
+            background: rgba(255, 107, 53, 0.1);
+        }
+        
+        .photo-preview {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .photo-item {
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            width: 150px;
+            height: 150px;
+        }
+        
+        .photo-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .photo-remove {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(255, 0, 0, 0.8);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .moves-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .move-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 107, 53, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            position: relative;
+        }
+        
+        .move-remove {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 0, 0, 0.8);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.4);
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ff6b35;
+            border: 1px solid #ff6b35;
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 107, 53, 0.2);
+        }
+        
+        .btn-danger {
+            background: rgba(255, 0, 0, 0.8);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: rgba(255, 0, 0, 1);
+        }
+        
+        .auto-save-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+        
+        .auto-save-indicator.saving {
+            background: rgba(255, 193, 7, 0.8);
+        }
+        
+        .auto-save-indicator.saved {
+            background: rgba(76, 175, 80, 0.8);
+        }
+        
+        .auto-save-indicator.error {
+            background: rgba(244, 67, 54, 0.8);
+        }
+        
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+        
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255, 107, 53, 0.3);
+            border-top: 3px solid #ff6b35;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .password-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 3000;
+        }
+        
+        .password-modal-content {
+            background: #1a1a1a;
+            border: 2px solid #ff6b35;
+            border-radius: 15px;
+            padding: 2rem;
+            max-width: 400px;
+            width: 90%;
+        }
+        
+        .password-modal h3 {
+            color: #ff6b35;
+            margin-bottom: 1rem;
+        }
+        
+        .password-modal input {
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+        
+        .password-modal-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+        
+        @media (max-width: 768px) {
+            .edit-container {
+                padding: 1rem;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <div class="auto-save-indicator" id="autoSaveIndicator" style="display: none;">
+        <span id="autoSaveText">Saving...</span>
+    </div>
+
+    <div class="password-modal" id="passwordModal" style="display: none;">
+        <div class="password-modal-content">
+            <h3>🔐 Edit Password Required</h3>
+            <p>Please enter the edit password for this character:</p>
+            <input type="password" id="editPasswordInput" placeholder="Enter edit password">
+            <div class="password-modal-buttons">
+                <button class="btn btn-primary" onclick="submitPassword()">Unlock</button>
+                <button class="btn btn-secondary" onclick="cancelEdit()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="edit-container">
+        <header class="edit-header">
+            <h1 id="characterNameDisplay">Edit Character</h1>
+            <p id="characterSubtitle">Update your character sheet</p>
+        </header>
+
+        <form id="characterEditForm" class="edit-form">
+            <!-- Basic Information -->
+            <section class="form-section">
+                <h3>📝 Basic Information</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="name">Character Name *</label>
+                        <input type="text" id="name" name="name" required maxlength="50">
+                    </div>
+                    <div class="form-group">
+                        <label for="classification">Classification *</label>
+                        <select id="classification" name="classification" required>
+                            <option value="">Select Classification</option>
+                            <option value="Vampire">Vampire</option>
+                            <option value="Werewolf">Werewolf</option>
+                            <option value="Human">Human</option>
+                            <option value="Ghost">Ghost</option>
+                            <option value="Wizard">Wizard</option>
+                            <option value="Fairy">Fairy</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="playbook">Playbook *</label>
+                        <select id="playbook" name="playbook" required>
+                            <option value="">Select Playbook</option>
+                            <option value="Mortal">Mortal</option>
+                            <option value="Ageless">Ageless</option>
+                            <option value="Unsated">Unsated</option>
+                            <option value="Wild">Wild</option>
+                            <option value="Mage">Mage</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="subtype">Subtype *</label>
+                        <input type="text" id="subtype" name="subtype" required maxlength="50">
+                    </div>
+                </div>
+            </section>
+
+            <!-- Physical Description -->
+            <section class="form-section">
+                <h3>👤 Physical Description</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="apparentAge">Apparent Age *</label>
+                        <input type="text" id="apparentAge" name="apparentAge" required maxlength="30">
+                    </div>
+                    <div class="form-group">
+                        <label for="actualAge">Actual Age *</label>
+                        <input type="text" id="actualAge" name="actualAge" required maxlength="30">
+                    </div>
+                    <div class="form-group">
+                        <label for="humanHeight">Human Height</label>
+                        <input type="text" id="humanHeight" name="humanHeight" maxlength="30">
+                    </div>
+                    <div class="form-group">
+                        <label for="humanWeight">Human Weight</label>
+                        <input type="text" id="humanWeight" name="humanWeight" maxlength="30">
+                    </div>
+                    <div class="form-group">
+                        <label for="werewolfHeight">Werewolf Height</label>
+                        <input type="text" id="werewolfHeight" name="werewolfHeight" maxlength="30">
+                    </div>
+                    <div class="form-group">
+                        <label for="werewolfWeight">Werewolf Weight</label>
+                        <input type="text" id="werewolfWeight" name="werewolfWeight" maxlength="30">
+                    </div>
+                </div>
+            </section>
+
+            <!-- Character Details -->
+            <section class="form-section">
+                <h3>📖 Character Details</h3>
+                <div class="form-group">
+                    <label for="bio">Biography *</label>
+                    <textarea id="bio" name="bio" required maxlength="1000" rows="6"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="darkestSelf">Darkest Self *</label>
+                    <textarea id="darkestSelf" name="darkestSelf" required maxlength="1000" rows="4"></textarea>
+                </div>
+            </section>
+
+            <!-- Stats -->
+            <section class="form-section">
+                <h3>⚡ Stats</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="fatePoints">Fate Points</label>
+                        <input type="number" id="fatePoints" name="fatePoints" min="0" max="10" value="1">
+                    </div>
+                    <div class="form-group">
+                        <label for="physicalStress">Physical Stress</label>
+                        <input type="number" id="physicalStress" name="physicalStress" min="0" max="10" value="2">
+                    </div>
+                    <div class="form-group">
+                        <label for="mentalStress">Mental Stress</label>
+                        <input type="number" id="mentalStress" name="mentalStress" min="0" max="10" value="2">
+                    </div>
+                </div>
+            </section>
+
+            <!-- Photos -->
+            <section class="form-section">
+                <h3>📸 Photos</h3>
+                <div class="photo-upload" onclick="document.getElementById('photoInput').click()">
+                    <p>📷 Click to upload photos</p>
+                    <p style="font-size: 14px; opacity: 0.7;">JPG, PNG, GIF up to 5MB</p>
+                </div>
+                <input type="file" id="photoInput" accept="image/*" multiple style="display: none;">
+                <div class="photo-preview" id="photoPreview"></div>
+                
+                <div class="form-grid" style="margin-top: 1rem;">
+                    <div class="form-group">
+                        <label for="humanPhoto">Human Form Photo URL</label>
+                        <input type="url" id="humanPhoto" name="humanPhoto" placeholder="https://...">
+                    </div>
+                    <div class="form-group">
+                        <label for="monsterPhoto">Monster Form Photo URL</label>
+                        <input type="url" id="monsterPhoto" name="monsterPhoto" placeholder="https://...">
+                    </div>
+                </div>
+            </section>
+
+            <!-- Moves -->
+            <section class="form-section">
+                <h3>🎭 Moves</h3>
+                <div class="moves-list" id="movesList">
+                    <!-- Moves will be dynamically added here -->
+                </div>
+                <button type="button" class="btn btn-secondary" onclick="addMove()">+ Add Move</button>
+            </section>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button type="submit" class="btn btn-primary">💾 Save Changes</button>
+                <button type="button" class="btn btn-secondary" onclick="duplicateCharacter()">📋 Duplicate Character</button>
+                <button type="button" class="btn btn-secondary" onclick="changePassword()">🔐 Change Password</button>
+                <button type="button" class="btn btn-secondary" onclick="viewProfile()">👁️ View Profile</button>
+                <button type="button" class="btn btn-danger" onclick="cancelEdit()">❌ Cancel</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../config.js"></script>
+    <script src="../js/env-loader.js"></script>
+    <script src="../js/input-sanitizer.js"></script>
+    <script src="../js/safe-dom.js"></script>
+    <script src="../js/server-api.js"></script>
+    <script src="../js/character-edit-api.js"></script>
+    <script src="../js/error-handler.js"></script>
+    
+    <script>
+        // Global variables
+        let characterId = null;
+        let editPassword = null;
+        let originalCharacterData = null;
+        let autoSaveFunction = null;
+        let characterPhotos = [];
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get character ID from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            characterId = urlParams.get('id');
+            
+            if (!characterId) {
+                showError('No character ID provided');
+                return;
+            }
+
+            // Check if edit password is in URL
+            editPassword = urlParams.get('editPassword');
+            
+            if (editPassword) {
+                loadCharacter();
+            } else {
+                showPasswordModal();
+            }
+
+            // Setup form listeners
+            setupFormListeners();
+        });
+
+        // Show password modal
+        function showPasswordModal() {
+            document.getElementById('passwordModal').style.display = 'flex';
+            document.getElementById('editPasswordInput').focus();
+        }
+
+        // Hide password modal
+        function hidePasswordModal() {
+            document.getElementById('passwordModal').style.display = 'none';
+            document.getElementById('editPasswordInput').value = '';
+        }
+
+        // Submit password
+        async function submitPassword() {
+            const password = document.getElementById('editPasswordInput').value.trim();
+            
+            if (!password) {
+                showError('Please enter an edit password');
+                return;
+            }
+
+            // Validate password
+            const isValid = await window.characterEditAPI.validateEditPassword(characterId, password);
+            
+            if (isValid) {
+                editPassword = password;
+                hidePasswordModal();
+                loadCharacter();
+            } else {
+                showError('Invalid edit password');
+            }
+        }
+
+        // Cancel edit
+        function cancelEdit() {
+            if (confirm('Are you sure you want to cancel? Any unsaved changes will be lost.')) {
+                window.history.back();
+            }
+        }
+
+        // Load character data
+        async function loadCharacter() {
+            showLoading(true);
+            
+            try {
+                const character = await window.characterEditAPI.getCharacterForEdit(characterId, editPassword);
+                originalCharacterData = character;
+                
+                // Update header
+                document.getElementById('characterNameDisplay').textContent = `Edit: ${character.name}`;
+                document.getElementById('characterSubtitle').textContent = `${character.classification} ${character.playbook}`;
+                
+                // Populate form
+                populateForm(character);
+                
+                // Setup auto-save
+                setupAutoSave();
+                
+                // Setup real-time updates
+                setupRealTimeUpdates();
+                
+            } catch (error) {
+                showError('Failed to load character: ' + error.message);
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // Populate form with character data
+        function populateForm(character) {
+            // Basic info
+            document.getElementById('name').value = character.name || '';
+            document.getElementById('classification').value = character.classification || '';
+            document.getElementById('playbook').value = character.playbook || '';
+            document.getElementById('subtype').value = character.subtype || '';
+            
+            // Physical description
+            document.getElementById('apparentAge').value = character.apparentAge || '';
+            document.getElementById('actualAge').value = character.actualAge || '';
+            document.getElementById('humanHeight').value = character.humanHeight || '';
+            document.getElementById('humanWeight').value = character.humanWeight || '';
+            document.getElementById('werewolfHeight').value = character.werewolfHeight || '';
+            document.getElementById('werewolfWeight').value = character.werewolfWeight || '';
+            
+            // Character details
+            document.getElementById('bio').value = character.bio || '';
+            document.getElementById('darkestSelf').value = character.darkestSelf || '';
+            
+            // Stats
+            document.getElementById('fatePoints').value = character.fatePoints || '1';
+            document.getElementById('physicalStress').value = character.physicalStress || '2';
+            document.getElementById('mentalStress').value = character.mentalStress || '2';
+            
+            // Photos
+            characterPhotos = character.photos || [];
+            displayPhotos();
+            
+            document.getElementById('humanPhoto').value = character.humanPhoto || '';
+            document.getElementById('monsterPhoto').value = character.monsterPhoto || '';
+            
+            // Moves
+            displayMoves(character.moves || []);
+        }
+
+        // Setup form listeners
+        function setupFormListeners() {
+            const form = document.getElementById('characterEditForm');
+            
+            // Form submission
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                await saveCharacter();
+            });
+
+            // Auto-save on input changes
+            const inputs = form.querySelectorAll('input, select, textarea');
+            inputs.forEach(input => {
+                input.addEventListener('input', function() {
+                    if (autoSaveFunction) {
+                        const formData = getFormData();
+                        autoSaveFunction(formData);
+                    }
+                });
+            });
+
+            // Photo upload
+            document.getElementById('photoInput').addEventListener('change', handlePhotoUpload);
+        }
+
+        // Setup auto-save
+        function setupAutoSave() {
+            autoSaveFunction = window.characterEditAPI.createAutoSave(
+                characterId, 
+                editPassword, 
+                (success, error) => {
+                    const indicator = document.getElementById('autoSaveIndicator');
+                    const text = document.getElementById('autoSaveText');
+                    
+                    if (success) {
+                        indicator.className = 'auto-save-indicator saved';
+                        text.textContent = '✓ Saved';
+                    } else {
+                        indicator.className = 'auto-save-indicator error';
+                        text.textContent = '✗ Save failed';
+                        if (error) console.error('Auto-save error:', error);
+                    }
+                    
+                    indicator.style.display = 'block';
+                    setTimeout(() => {
+                        indicator.style.display = 'none';
+                    }, 3000);
+                }
+            );
+        }
+
+        // Setup real-time updates
+        function setupRealTimeUpdates() {
+            window.characterEditAPI.onCharacterUpdated((data) => {
+                if (data.characterId === characterId && data.updatedBy !== 'owner') {
+                    // Character was updated by someone else (moderator)
+                    if (confirm('This character was updated by a moderator. Reload to see changes?')) {
+                        loadCharacter();
+                    }
+                }
+            });
+        }
+
+        // Get form data
+        function getFormData() {
+            const formData = {
+                name: document.getElementById('name').value,
+                classification: document.getElementById('classification').value,
+                playbook: document.getElementById('playbook').value,
+                subtype: document.getElementById('subtype').value,
+                apparentAge: document.getElementById('apparentAge').value,
+                actualAge: document.getElementById('actualAge').value,
+                humanHeight: document.getElementById('humanHeight').value,
+                humanWeight: document.getElementById('humanWeight').value,
+                werewolfHeight: document.getElementById('werewolfHeight').value,
+                werewolfWeight: document.getElementById('werewolfWeight').value,
+                bio: document.getElementById('bio').value,
+                darkestSelf: document.getElementById('darkestSelf').value,
+                fatePoints: document.getElementById('fatePoints').value,
+                physicalStress: document.getElementById('physicalStress').value,
+                mentalStress: document.getElementById('mentalStress').value,
+                humanPhoto: document.getElementById('humanPhoto').value,
+                monsterPhoto: document.getElementById('monsterPhoto').value,
+                photos: characterPhotos,
+                moves: getMovesData()
+            };
+            
+            return formData;
+        }
+
+        // Save character
+        async function saveCharacter() {
+            showLoading(true);
+            
+            try {
+                const formData = getFormData();
+                const result = await window.characterEditAPI.updateCharacter(characterId, formData, editPassword);
+                
+                showSuccess('Character saved successfully!');
+                
+                // Update original data
+                originalCharacterData = result.character;
+                
+                // Update header
+                document.getElementById('characterNameDisplay').textContent = `Edit: ${result.character.name}`;
+                
+            } catch (error) {
+                showError('Failed to save character: ' + error.message);
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // Handle photo upload
+        function handlePhotoUpload(event) {
+            const files = event.target.files;
+            
+            for (let file of files) {
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        characterPhotos.push({
+                            url: e.target.result,
+                            caption: file.name,
+                            uploadedAt: new Date().toISOString()
+                        });
+                        displayPhotos();
+                    };
+                    reader.readAsDataURL(file);
+                }
+            }
+        }
+
+        // Display photos
+        function displayPhotos() {
+            const preview = document.getElementById('photoPreview');
+            preview.innerHTML = '';
+            
+            characterPhotos.forEach((photo, index) => {
+                const photoItem = document.createElement('div');
+                photoItem.className = 'photo-item';
+                photoItem.innerHTML = `
+                    <img src="${photo.url}" alt="${photo.caption || 'Character photo'}">
+                    <button class="photo-remove" onclick="removePhoto(${index})">×</button>
+                `;
+                preview.appendChild(photoItem);
+            });
+        }
+
+        // Remove photo
+        function removePhoto(index) {
+            characterPhotos.splice(index, 1);
+            displayPhotos();
+        }
+
+        // Display moves
+        function displayMoves(moves) {
+            const movesList = document.getElementById('movesList');
+            movesList.innerHTML = '';
+            
+            moves.forEach((move, index) => {
+                addMoveElement(move, index);
+            });
+        }
+
+        // Add move element
+        function addMoveElement(move = {}, index = null) {
+            const movesList = document.getElementById('movesList');
+            const moveIndex = index !== null ? index : movesList.children.length;
+            
+            const moveItem = document.createElement('div');
+            moveItem.className = 'move-item';
+            moveItem.innerHTML = `
+                <button class="move-remove" onclick="removeMove(${moveIndex})">×</button>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Move Name</label>
+                        <input type="text" name="moveName_${moveIndex}" value="${move.name || ''}" maxlength="100">
+                    </div>
+                    <div class="form-group">
+                        <label>Source</label>
+                        <input type="text" name="moveSource_${moveIndex}" value="${move.source || ''}" maxlength="50">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea name="moveDescription_${moveIndex}" rows="3" maxlength="500">${move.description || ''}</textarea>
+                </div>
+            `;
+            
+            movesList.appendChild(moveItem);
+        }
+
+        // Add new move
+        function addMove() {
+            addMoveElement();
+        }
+
+        // Remove move
+        function removeMove(index) {
+            const movesList = document.getElementById('movesList');
+            if (movesList.children[index]) {
+                movesList.children[index].remove();
+            }
+        }
+
+        // Get moves data
+        function getMovesData() {
+            const moves = [];
+            const movesList = document.getElementById('movesList');
+            
+            Array.from(movesList.children).forEach((moveElement, index) => {
+                const name = moveElement.querySelector(`[name="moveName_${index}"]`).value;
+                const source = moveElement.querySelector(`[name="moveSource_${index}"]`).value;
+                const description = moveElement.querySelector(`[name="moveDescription_${index}"]`).value;
+                
+                if (name && description) {
+                    moves.push({ name, source, description });
+                }
+            });
+            
+            return moves;
+        }
+
+        // Duplicate character
+        async function duplicateCharacter() {
+            const newName = prompt('Enter a name for the duplicated character:');
+            
+            if (!newName) return;
+            
+            showLoading(true);
+            
+            try {
+                const result = await window.characterEditAPI.duplicateCharacter(characterId, editPassword, newName);
+                
+                showSuccess(`Character "${result.character.name}" duplicated successfully!`);
+                
+                // Open new character in edit mode
+                setTimeout(() => {
+                    window.location.href = `character-edit.html?id=${result.character._id}&editPassword=${result.character.editPassword}`;
+                }, 2000);
+                
+            } catch (error) {
+                showError('Failed to duplicate character: ' + error.message);
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // Change password
+        async function changePassword() {
+            const currentPassword = prompt('Enter current edit password:');
+            
+            if (!currentPassword) return;
+            
+            const newPassword = prompt('Enter new edit password (min 4 characters):');
+            
+            if (!newPassword || newPassword.length < 4) {
+                showError('New password must be at least 4 characters long');
+                return;
+            }
+            
+            showLoading(true);
+            
+            try {
+                await window.characterEditAPI.changeEditPassword(characterId, currentPassword, newPassword);
+                
+                editPassword = newPassword;
+                showSuccess('Edit password changed successfully!');
+                
+            } catch (error) {
+                showError('Failed to change password: ' + error.message);
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // View profile
+        function viewProfile() {
+            window.open(`../characters/profiles/${originalCharacterData.name.toLowerCase().replace(/[^a-z0-9]/g, '-')}-${characterId}.html`, '_blank');
+        }
+
+        // Show/hide loading overlay
+        function showLoading(show) {
+            document.getElementById('loadingOverlay').style.display = show ? 'flex' : 'none';
+        }
+
+        // Show success message
+        function showSuccess(message) {
+            if (window.errorHandler) {
+                window.errorHandler.showUserError({
+                    message: message,
+                    context: 'Success',
+                    timestamp: new Date().toISOString()
+                });
+            } else {
+                alert('✅ ' + message);
+            }
+        }
+
+        // Show error message
+        function showError(message) {
+            if (window.errorHandler) {
+                window.errorHandler.showUserError({
+                    message: message,
+                    context: 'Error',
+                    timestamp: new Date().toISOString()
+                });
+            } else {
+                alert('❌ ' + message);
+            }
+        }
+
+        // Handle Enter key in password modal
+        document.getElementById('editPasswordInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                submitPassword();
+            }
+        });
+    </script>
+</body>
+</html>

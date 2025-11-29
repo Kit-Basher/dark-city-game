@@ -136,6 +136,8 @@ class CharacterService {
     // Optimized character approval/rejection
     static async moderateCharacter(characterId, action, moderatorId, feedback = '') {
         try {
+            console.log('🔧 Moderation: Starting', { characterId, action, moderatorId });
+            
             const updateData = {
                 status: action,
                 reviewedBy: moderatorId,
@@ -143,6 +145,7 @@ class CharacterService {
                 feedback
             };
 
+            console.log('🔧 Moderation: Updating character with data:', updateData);
             const character = await Character.findByIdAndUpdate(
                 characterId,
                 updateData,
@@ -150,29 +153,47 @@ class CharacterService {
             ).lean().exec();
 
             if (!character) {
+                console.log('🔧 Moderation: Character not found');
                 throw new Error('Character not found');
             }
 
-            // Log the moderation action
-            if (action === 'approved') {
-                structuredLogger.logCharacterApproval(character, moderatorId);
-            } else {
-                structuredLogger.logBusiness('character_rejected', {
-                    characterId: character._id,
-                    characterName: character.name,
-                    rejectedBy: moderatorId,
-                    feedback
-                });
+            console.log('🔧 Moderation: Character updated successfully:', character.name);
+
+            // Log the moderation action (with error handling)
+            try {
+                if (action === 'approved') {
+                    structuredLogger.logCharacterApproval(character, moderatorId);
+                } else {
+                    structuredLogger.logBusiness('character_rejected', {
+                        characterId: character._id,
+                        characterName: character.name,
+                        rejectedBy: moderatorId,
+                        feedback
+                    });
+                }
+                console.log('🔧 Moderation: Logging completed');
+            } catch (logError) {
+                console.warn('🔧 Moderation: Logging failed:', logError.message);
+                // Don't fail the moderation if logging fails
             }
 
+            console.log('🔧 Moderation: Operation completed successfully');
             return character;
         } catch (error) {
-            structuredLogger.logError(error, { 
-                operation: 'moderateCharacter', 
-                characterId, 
-                action, 
-                moderatorId 
-            });
+            console.error('🔧 Moderation: Error occurred:', error);
+            
+            // Log error (with error handling)
+            try {
+                structuredLogger.logError(error, { 
+                    operation: 'moderateCharacter', 
+                    characterId, 
+                    action, 
+                    moderatorId 
+                });
+            } catch (logError) {
+                console.warn('🔧 Moderation: Error logging failed:', logError.message);
+            }
+            
             throw error;
         }
     }

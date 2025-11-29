@@ -195,7 +195,7 @@ app.use(express.static(path.join(__dirname, '..')));
 
 // Serve character profile pages
 app.get('/characters/profiles/:filename', async (req, res) => {
-  const profilePath = path.join(process.cwd(), 'characters', 'profiles', req.params.filename);
+  const profilePath = path.join(process.cwd(), '..', 'characters', 'profiles', req.params.filename); // Go up from /app/server to /app
   
   // Try to serve the file first
   res.sendFile(profilePath, async (err) => {

@@ -4,7 +4,7 @@ const path = require('path');
 
 // Inject environment variables into HTML files during build/startup
 const injectEnvIntoHTML = async () => {
-    const publicDir = path.join(__dirname, '..');
+    const publicDir = path.join(process.cwd(), '..'); // Go up from /app/server to /app
     const htmlFiles = ['index.html', 'gallery.html', 'moderate.html', 'character-creator.html'];
     
     // Environment variables to inject

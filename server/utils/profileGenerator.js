@@ -5,7 +5,7 @@ const Character = require('../models/Character');
 // Ensure profiles directory exists and regenerate profiles for approved characters
 async function initializeProfiles() {
   try {
-    const profilesDir = path.join(process.cwd(), 'characters', 'profiles');
+    const profilesDir = path.join(process.cwd(), '..', 'characters', 'profiles'); // Go up from /app/server to /app
     await fs.mkdir(profilesDir, { recursive: true });
     
     // Find all approved characters and generate profiles
@@ -28,7 +28,7 @@ async function initializeProfiles() {
 async function generateCharacterProfile(character) {
   try {
     // Read the template (use absolute path for Railway)
-    const templatePath = path.join(process.cwd(), 'characters', 'profile-template.html');
+    const templatePath = path.join(process.cwd(), '..', 'characters', 'profile-template.html'); // Go up from /app/server to /app
     const template = await fs.readFile(templatePath, 'utf8');
     
     const replacements = {
@@ -139,7 +139,7 @@ async function generateCharacterProfile(character) {
       .replace(/^-|-$/g, '');
     
     // Ensure profiles directory exists (use absolute path for Railway)
-    const profilesDir = path.join(process.cwd(), 'characters', 'profiles');
+    const profilesDir = path.join(process.cwd(), '..', 'characters', 'profiles'); // Go up from /app/server to /app
     await fs.mkdir(profilesDir, { recursive: true });
     
     // Write profile page

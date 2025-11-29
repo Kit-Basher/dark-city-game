@@ -18,9 +18,13 @@ const { applyRateLimiting, rateLimitStats } = require('./middleware/rateLimiting
 const HealthChecker = require('./middleware/health');
 const { logger, structuredLogger, requestLogger } = require('./config/logging');
 const injectEnvVars = require('./middleware/envInjector');
+const { injectEnvIntoHTML } = require('./utils/envInjector');
 
 // Connect to MongoDB
 connectDB();
+
+// Inject environment variables into HTML files
+injectEnvIntoHTML().catch(console.error);
 
 const app = express();
 const server = http.createServer(app);

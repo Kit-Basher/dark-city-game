@@ -169,15 +169,54 @@ const path = require('path');
 app.use(express.static(path.join(__dirname, '..')));
 
 // Serve character profile pages
-app.get('/characters/profiles/:filename', (req, res) => {
+app.get('/characters/profiles/:filename', async (req, res) => {
   const profilePath = path.join(__dirname, '../characters/profiles', req.params.filename);
-  res.sendFile(profilePath, (err) => {
+  
+  // Try to serve the file first
+  res.sendFile(profilePath, async (err) => {
     if (err) {
       console.error('Profile not found:', profilePath);
-      res.status(404).json({
-        error: 'Profile not found',
-        message: `Character profile ${req.params.filename} does not exist`
-      });
+      
+      // Fallback: try to generate profile on-demand
+      const characterId = req.params.filename.split('-').pop().replace('.html', '');
+      console.log('🔄 Attempting to generate profile on-demand for character:', characterId);
+      
+      try {
+        const Character = require('./models/Character');
+        const character = await Character.findById(characterId);
+        
+        if (character && character.status === 'approved') {
+          console.log('✅ Found approved character, generating profile...');
+          
+          // Generate profile using the exported function
+          const { generateCharacterProfile } = require('./routes/characters');
+          await generateCharacterProfile(character);
+          
+          // Try serving again after a short delay
+          setTimeout(() => {
+            res.sendFile(profilePath, (secondErr) => {
+              if (secondErr) {
+                console.error('Profile generation failed:', secondErr);
+                res.status(404).json({
+                  error: 'Profile not found',
+                  message: `Character profile ${req.params.filename} does not exist and could not be generated`
+                });
+              }
+            });
+          }, 1000);
+        } else {
+          res.status(404).json({
+            error: 'Profile not found',
+            message: `Character profile ${req.params.filename} does not exist`
+          });
+        }
+      } catch (error) {
+        console.error('Error in on-demand profile generation:', error);
+        res.status(404).json({
+          error: 'Profile not found',
+          message: `Character profile ${req.params.filename} does not exist`
+        });
+      }
     }
   });
 });

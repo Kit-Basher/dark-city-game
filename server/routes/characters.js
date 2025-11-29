@@ -178,6 +178,9 @@ async function generateCharacterProfile(character) {
   }
 }
 
+// Export the function for use in server.js
+module.exports.generateCharacterProfile = generateCharacterProfile;
+
 /**
  * @swagger
  * /characters:

@@ -337,7 +337,7 @@
                 {{PHOTOS_SECTION}}
                 <h1 class="profile-name">{{CHARACTER_NAME}}</h1>
                 <p class="profile-title">{{CLASSIFICATION}} • {{PLAYBOOK}}</p>
-                <button onclick="showEditPasswordModal()" class="edit-profile-btn">✏️ Edit Profile</button>
+                <button id="editProfileBtn" class="edit-profile-btn">✏️ Edit Profile</button>
             </div>
             
             <div class="profile-content">
@@ -409,8 +409,8 @@
             <p>This character is protected with an edit password. Please enter the password to continue.</p>
             <input type="password" id="passwordInput" placeholder="Enter edit password">
             <div class="password-modal-buttons">
-                <button class="cancel" onclick="closePasswordModal()">Cancel</button>
-                <button class="confirm" onclick="verifyPassword()">Unlock Edit</button>
+                <button id="cancelPasswordBtn" class="cancel">Cancel</button>
+                <button id="unlockEditBtn" class="confirm">Unlock Edit</button>
             </div>
         </div>
     </div>
@@ -422,10 +422,31 @@
             editPassword: '{{EDIT_PASSWORD}}'
         };
         
+        // Add event listeners instead of inline onclick handlers
+        document.addEventListener('DOMContentLoaded', function() {
+            // Edit profile button
+            const editBtn = document.getElementById('editProfileBtn');
+            if (editBtn) {
+                editBtn.addEventListener('click', showEditPasswordModal);
+            }
+            
+            // Password modal buttons
+            const cancelBtn = document.getElementById('cancelPasswordBtn');
+            const unlockBtn = document.getElementById('unlockEditBtn');
+            
+            if (cancelBtn) {
+                cancelBtn.addEventListener('click', closePasswordModal);
+            }
+            
+            if (unlockBtn) {
+                unlockBtn.addEventListener('click', verifyPassword);
+            }
+        });
+        
         function showEditPasswordModal() {
             if (!characterData.editPassword) {
                 // No password set, go directly to edit mode
-                window.location.href = `../../character-creator.html?edit=${characterData.id}`;
+                window.location.href = `../../character-edit.html?id=${characterData.id}`;
                 return;
             }
             
@@ -445,7 +466,7 @@
             
             if (password === characterData.editPassword) {
                 // Password correct, redirect to edit mode
-                window.location.href = `../../character-creator.html?edit=${characterData.id}`;
+                window.location.href = `../../character-edit.html?id=${characterData.id}&editPassword=${password}`;
             } else {
                 // Password incorrect
                 alert('Incorrect password. Please try again.');

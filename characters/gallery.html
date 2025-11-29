@@ -509,44 +509,30 @@
         
         // Create a character card element
         function createCharacterCard(character) {
-            const card = SafeDOM.createElement('div', {
-                className: 'character-card approved',
-                onclick: () => showCharacterDetail(character)
-            });
+            const card = document.createElement('div');
+            card.className = 'character-card approved';
+            card.onclick = () => showCharacterDetail(character);
+            card.style.cursor = 'pointer';
             
-            const statusBadge = SafeDOM.createElement('div', {
-                className: 'status-badge'
-            }, '✅ APPROVED');
+            const statusBadge = document.createElement('div');
+            statusBadge.className = 'status-badge';
+            statusBadge.textContent = '✅ APPROVED';
             
-            const name = SafeDOM.createElement('div', {
-                className: 'character-name'
-            }, character.name || 'Unnamed Character');
+            const name = document.createElement('div');
+            name.className = 'character-name';
+            name.textContent = character.name || 'Unnamed Character';
             
-            const info = SafeDOM.createHTML('div', {
-                className: 'character-info'
-            }, [
-                SafeDOM.createHTML('p', {}, [`Playbook: ${character.playbook || 'Unknown'}`]),
-                SafeDOM.createHTML('p', {}, [`Classification: ${character.classification || 'Unknown'}`]),
-                SafeDOM.createHTML('p', {}, [`Subtype: ${character.subtype || 'None'}`]),
-                SafeDOM.createHTML('p', {}, [`Age: ${character.apparentAge || 'Unknown'}${character.actualAge ? ` (${character.actualAge})` : ''}`])
-            ]);
-            
-            const bio = SafeDOM.createHTML('div', {
-                className: 'character-bio'
-            }, character.bio ? character.bio.substring(0, 150) + (character.bio.length > 150 ? '...' : '') : 'No bio available');
-            
-            const stats = SafeDOM.createHTML('div', {
-                className: 'stats-row'
-            }, [
-                SafeDOM.createHTML('span', { className: 'playbook-tag' }, [character.playbook || 'Unknown']),
-                SafeDOM.createHTML('span', {}, [`FP: ${character.fatePoints || '1'}/5`])
-            ]);
+            const info = document.createElement('div');
+            info.className = 'character-info';
+            info.innerHTML = `
+                <p>Playbook: ${character.playbook || 'Unknown'}</p>
+                <p>Classification: ${character.classification || 'Unknown'}</p>
+                <p>Age: ${character.apparentAge || 'Unknown'}</p>
+            `;
             
             card.appendChild(statusBadge);
             card.appendChild(name);
             card.appendChild(info);
-            card.appendChild(bio);
-            card.appendChild(stats);
             
             return card;
         }
@@ -569,6 +555,7 @@
         
         // Show character detail in modal
         function showCharacterDetail(character) {
+            console.log('🔍 Gallery: Showing character detail for:', character.name);
             const modal = document.getElementById('characterModal');
             const modalContent = document.getElementById('modalCharacterDetails');
             
@@ -660,7 +647,9 @@
             `;
             
             modalContent.innerHTML = detailHTML;
+            console.log('🔍 Gallery: Modal content set, showing modal...');
             modal.style.display = 'block';
+            console.log('🔍 Gallery: Modal should now be visible');
         }
 
         // Generate and show character profile dynamically

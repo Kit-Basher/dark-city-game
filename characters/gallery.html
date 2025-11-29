@@ -507,6 +507,16 @@
             });
         }
         
+        // Helper function to create safe filename
+        function createSafeFilename(character) {
+            const safeName = character.name
+                .toLowerCase()
+                .replace(/[^a-z0-9]/g, '-')
+                .replace(/-+/g, '-')
+                .replace(/^-|-$/g, '');
+            return `${safeName}-${character._id}.html`;
+        }
+
         // Create a character card element
         function createCharacterCard(character) {
             const card = document.createElement('div');
@@ -638,7 +648,7 @@
                     ` : ''}
                     
                     <div style="text-align: center; margin-top: 2rem;">
-                        <button onclick="window.open('https://dark-city-game-production.up.railway.app/characters/profiles/${character.name.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '')}-${character._id}.html', '_blank')" class="btn btn-primary" style="background: #ff6b35; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 5px; cursor: pointer; margin-right: 1rem;">
+                        <button onclick="window.open('https://dark-city-game-production.up.railway.app/characters/profiles/${createSafeFilename(character).replace('.html', '')}', '_blank')" class="btn btn-primary" style="background: #ff6b35; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 5px; cursor: pointer; margin-right: 1rem;">
                             📄 View Full Profile
                         </button>
                         <p><small>Character submitted on ${new Date(character.submittedAt || character.createdAt).toLocaleDateString()}</small></p>
@@ -648,6 +658,7 @@
             
             modalContent.innerHTML = detailHTML;
             console.log('🔍 Gallery: Modal content set, showing modal...');
+            console.log('🔍 Gallery: Profile URL should be:', `https://dark-city-game-production.up.railway.app/characters/profiles/${createSafeFilename(character).replace('.html', '')}`);
             modal.style.display = 'block';
             console.log('🔍 Gallery: Modal should now be visible');
         }

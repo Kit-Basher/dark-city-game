@@ -19,12 +19,18 @@ const HealthChecker = require('./middleware/health');
 const { logger, structuredLogger, requestLogger } = require('./config/logging');
 const injectEnvVars = require('./middleware/envInjector');
 const { injectEnvIntoHTML } = require('./utils/envInjector');
+const { initializeProfiles } = require('./utils/profileGenerator');
 
 // Connect to MongoDB
 connectDB();
 
 // Inject environment variables into HTML files
 injectEnvIntoHTML().catch(console.error);
+
+// Initialize character profiles after database connection
+setTimeout(() => {
+  initializeProfiles().catch(console.error);
+}, 2000); // Wait 2 seconds for DB to be ready
 
 const app = express();
 const server = http.createServer(app);
@@ -189,7 +195,7 @@ app.use(express.static(path.join(__dirname, '..')));
 
 // Serve character profile pages
 app.get('/characters/profiles/:filename', async (req, res) => {
-  const profilePath = path.join(__dirname, '../characters/profiles', req.params.filename);
+  const profilePath = path.join(process.cwd(), 'characters', 'profiles', req.params.filename);
   
   // Try to serve the file first
   res.sendFile(profilePath, async (err) => {

@@ -1,10 +1,34 @@
 const fs = require('fs').promises;
 const path = require('path');
+const Character = require('../models/Character');
+
+// Ensure profiles directory exists and regenerate profiles for approved characters
+async function initializeProfiles() {
+  try {
+    const profilesDir = path.join(process.cwd(), 'characters', 'profiles');
+    await fs.mkdir(profilesDir, { recursive: true });
+    
+    // Find all approved characters and generate profiles
+    const approvedCharacters = await Character.find({ status: 'approved' });
+    
+    for (const character of approvedCharacters) {
+      try {
+        await generateCharacterProfile(character);
+      } catch (error) {
+        console.error(`Failed to generate profile for ${character.name}:`, error.message);
+      }
+    }
+    
+    console.log(`✅ Generated ${approvedCharacters.length} character profiles`);
+  } catch (error) {
+    console.error('❌ Failed to initialize profiles:', error.message);
+  }
+}
 
 async function generateCharacterProfile(character) {
   try {
-    // Read the template
-    const templatePath = path.join(__dirname, '../../characters/profile-template.html');
+    // Read the template (use absolute path for Railway)
+    const templatePath = path.join(process.cwd(), 'characters', 'profile-template.html');
     const template = await fs.readFile(templatePath, 'utf8');
     
     const replacements = {
@@ -114,13 +138,19 @@ async function generateCharacterProfile(character) {
       .replace(/-+/g, '-')
       .replace(/^-|-$/g, '');
     
-    // Ensure profiles directory exists
-    const profilesDir = path.join(__dirname, '../../characters/profiles');
+    // Ensure profiles directory exists (use absolute path for Railway)
+    const profilesDir = path.join(process.cwd(), 'characters', 'profiles');
     await fs.mkdir(profilesDir, { recursive: true });
     
     // Write profile page
     const profilePath = path.join(profilesDir, `${safeName}-${character._id}.html`);
     await fs.writeFile(profilePath, profileHTML, 'utf8');
+    
+    // Log successful generation
+    const logger = require('../config/logging').logger;
+    if (logger) {
+      logger.info('Character profile generated:', { profilePath, characterId: character._id });
+    }
     
   } catch (error) {
     // Use proper logging instead of console.error
@@ -135,4 +165,4 @@ async function generateCharacterProfile(character) {
   }
 }
 
-module.exports = { generateCharacterProfile };
+module.exports = { generateCharacterProfile, initializeProfiles };

@@ -8,6 +8,7 @@ const injectEnvVars = (req, res, next) => {
             // Environment variables to inject
             const envVars = {
                 'API_KEY': process.env.API_KEY || '',
+                'JWT_SECRET': process.env.JWT_SECRET || '',
                 'NODE_ENV': process.env.NODE_ENV || 'development',
                 'REPO_OWNER': process.env.REPO_OWNER || 'Kit-Basher',
                 'REPO_NAME': process.env.REPO_NAME || 'dark-city-game',
@@ -17,6 +18,11 @@ const injectEnvVars = (req, res, next) => {
                 'MAX_CHARACTERS_PER_PAGE': process.env.MAX_CHARACTERS_PER_PAGE || '12',
                 'ALLOWED_ORIGINS': process.env.ALLOWED_ORIGINS || 'http://localhost:3000,http://localhost:8080,https://kit-basher.github.io'
             };
+            
+            // Debug logging (remove in production)
+            if (process.env.NODE_ENV === 'development') {
+                console.log('Injecting environment variables:', envVars);
+            }
             
             // Generate meta tags
             const metaTags = Object.entries(envVars)

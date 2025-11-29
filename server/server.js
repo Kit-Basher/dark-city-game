@@ -169,6 +169,16 @@ app.use(requestLogger);
 // Inject environment variables into HTML pages
 app.use(injectEnvVars);
 
+// Serve HTML files with environment injection
+app.get(/^.*\.html$/, (req, res, next) => {
+    const filePath = path.join(__dirname, '..', req.path);
+    res.sendFile(filePath, (err) => {
+        if (err) {
+            next(err);
+        }
+    });
+});
+
 // Serve static files from parent directory
 const path = require('path');
 app.use(express.static(path.join(__dirname, '..')));

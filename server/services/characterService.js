@@ -449,11 +449,17 @@ class CharacterService {
                 // Don't fail the deletion if cache clear fails
             }
             
-            structuredLogger.logInfo('Character deleted successfully', {
-                characterId,
-                characterName: character.name
-            });
+            // Log success (with error handling)
+            try {
+                structuredLogger.logInfo('Character deleted successfully', {
+                    characterId,
+                    characterName: character.name
+                });
+            } catch (logError) {
+                console.warn('🗑️ Character Deletion: Structured logging failed:', logError.message);
+            }
 
+            console.log('🗑️ Character Deletion: Operation completed successfully');
             return character;
         } catch (error) {
             logger.error('Error deleting character:', error);

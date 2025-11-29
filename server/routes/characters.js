@@ -332,10 +332,18 @@ router.delete('/:id', async (req, res) => {
       return res.status(404).json({ error: 'Character not found' });
     }
 
-    // Emit real-time notification
-    const io = req.app.get('io');
-    if (io) {
-      io.emit('characterDeleted', character);
+    // Emit real-time notification (with error handling)
+    try {
+      const io = req.app.get('io');
+      if (io) {
+        io.emit('characterDeleted', character);
+        console.log('🗑️ Route: WebSocket notification sent');
+      } else {
+        console.log('🗑️ Route: WebSocket not available');
+      }
+    } catch (wsError) {
+      console.warn('🗑️ Route: WebSocket emission failed:', wsError.message);
+      // Don't fail the deletion if WebSocket fails
     }
 
     res.json({

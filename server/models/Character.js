@@ -17,7 +17,7 @@ const characterSchema = new mongoose.Schema({
   classification: {
     type: String,
     required: true,
-    enum: ['Vampire', 'Werewolf', 'Human', 'Ghost', 'Wizard', 'Fairy', 'Other'],
+    enum: ['Vampire', 'Werewolf', 'Human', 'Ghost', 'Wizard', 'Fairy', 'Other', 'Unknown'],
   },
   playbook: {
     type: String,

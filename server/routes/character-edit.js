@@ -156,6 +156,17 @@ router.put('/:id', asyncHandler(async (req, res) => {
       });
     }
 
+    // Handle missing move sources - default to character's playbook
+    if (updateData.moves && Array.isArray(updateData.moves)) {
+      updateData.moves = updateData.moves.map(move => {
+        if (!move.source && move.name) {
+          // Default source to character's playbook if available, otherwise to "Custom"
+          move.source = character.playbook || 'Custom';
+        }
+        return move;
+      });
+    }
+
     // Update the character
     const updatedCharacter = await Character.findByIdAndUpdate(
       id,

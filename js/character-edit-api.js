@@ -38,6 +38,15 @@ class CharacterEditAPI {
                 throw new Error('Invalid update data provided');
             }
 
+            console.log('🔍 API Debug - updateCharacter called:', {
+                characterId,
+                characterIdType: typeof characterId,
+                hasEditPassword: !!editPassword,
+                updateDataKeys: Object.keys(updateData),
+                hasMoves: !!updateData.moves,
+                movesCount: updateData.moves ? updateData.moves.length : 0
+            });
+
             const sanitizedData = window.InputSanitizer ? 
                 window.InputSanitizer.validateCharacterData(updateData) : updateData;
 
@@ -45,6 +54,8 @@ class CharacterEditAPI {
             if (editPassword) {
                 url.searchParams.set('editPassword', editPassword);
             }
+
+            console.log('🔍 API Debug - Request URL:', url.toString());
 
             const response = await fetch(url, {
                 method: 'PUT',

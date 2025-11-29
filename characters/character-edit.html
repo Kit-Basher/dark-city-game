@@ -353,7 +353,6 @@
             <input type="password" id="editPasswordInput" placeholder="Enter edit password">
             <div class="password-modal-buttons">
                 <button class="btn btn-primary" onclick="submitPassword()">Unlock</button>
-                <button class="btn btn-secondary" onclick="cancelEdit()">Cancel</button>
             </div>
         </div>
     </div>
@@ -501,10 +500,7 @@
             <!-- Action Buttons -->
             <div class="action-buttons">
                 <button type="submit" class="btn btn-primary">💾 Save Changes</button>
-                <button type="button" class="btn btn-secondary" onclick="duplicateCharacter()">📋 Duplicate Character</button>
                 <button type="button" class="btn btn-secondary" onclick="changePassword()">🔐 Change Password</button>
-                <button type="button" class="btn btn-secondary" onclick="viewProfile()">👁️ View Profile</button>
-                <button type="button" class="btn btn-danger" onclick="cancelEdit()">❌ Cancel</button>
             </div>
         </form>
     </div>
@@ -907,31 +903,6 @@
             return moves;
         }
 
-        // Duplicate character
-        async function duplicateCharacter() {
-            const newName = prompt('Enter a name for the duplicated character:');
-            
-            if (!newName) return;
-            
-            showLoading(true);
-            
-            try {
-                const result = await window.characterEditAPI.duplicateCharacter(characterId, editPassword, newName);
-                
-                showSuccess(`Character "${result.character.name}" duplicated successfully!`);
-                
-                // Open new character in edit mode
-                setTimeout(() => {
-                    window.location.href = `character-edit.html?id=${result.character._id}&editPassword=${result.character.editPassword}`;
-                }, 2000);
-                
-            } catch (error) {
-                showError('Failed to duplicate character: ' + error.message);
-            } finally {
-                showLoading(false);
-            }
-        }
-
         // Change password
         async function changePassword() {
             const currentPassword = prompt('Enter current edit password:');
@@ -958,11 +929,6 @@
             } finally {
                 showLoading(false);
             }
-        }
-
-        // View profile
-        function viewProfile() {
-            window.open(`../characters/profiles/${originalCharacterData.name.toLowerCase().replace(/[^a-z0-9]/g, '-')}-${characterId}.html`, '_blank');
         }
 
         // Show/hide loading overlay

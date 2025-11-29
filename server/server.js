@@ -168,6 +168,20 @@ app.use(requestLogger);
 const path = require('path');
 app.use(express.static(path.join(__dirname, '..')));
 
+// Serve character profile pages
+app.get('/characters/profiles/:filename', (req, res) => {
+  const profilePath = path.join(__dirname, '../characters/profiles', req.params.filename);
+  res.sendFile(profilePath, (err) => {
+    if (err) {
+      console.error('Profile not found:', profilePath);
+      res.status(404).json({
+        error: 'Profile not found',
+        message: `Character profile ${req.params.filename} does not exist`
+      });
+    }
+  });
+});
+
 // Specific route for character builder
 // Character builder page removed - route deleted
 

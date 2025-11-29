@@ -324,7 +324,9 @@ router.put('/:id/reject', async (req, res) => {
  */
 router.delete('/:id', async (req, res) => {
   try {
+    console.log('🗑️ Route: Delete request for character ID:', req.params.id);
     const character = await CharacterService.deleteCharacter(req.params.id);
+    console.log('🗑️ Route: Delete result:', character ? 'Success' : 'Character not found');
 
     if (!character) {
       return res.status(404).json({ error: 'Character not found' });

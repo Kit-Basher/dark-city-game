@@ -430,13 +430,24 @@ class CharacterService {
 
     static async deleteCharacter(characterId) {
         try {
+            console.log('🗑️ Character Deletion: Starting for ID:', characterId);
+            
             const character = await Character.findByIdAndDelete(characterId);
+            console.log('🗑️ Character Deletion: Found and deleted character:', character?.name || 'Not found');
+            
             if (!character) {
+                console.log('🗑️ Character Deletion: Character not found');
                 return null;
             }
 
-            // Clear cache
-            await cacheService.clearPattern('characters:*');
+            // Clear cache (with error handling)
+            try {
+                await cacheService.clearPattern('characters:*');
+                console.log('🗑️ Character Deletion: Cache cleared');
+            } catch (cacheError) {
+                console.warn('🗑️ Character Deletion: Cache clear failed:', cacheError.message);
+                // Don't fail the deletion if cache clear fails
+            }
             
             structuredLogger.logInfo('Character deleted successfully', {
                 characterId,

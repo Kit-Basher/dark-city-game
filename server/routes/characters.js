@@ -207,13 +207,29 @@ router.put('/:id/approve', async (req, res) => {
       return res.status(404).json({ error: 'Character not found' });
     }
 
-    // Generate profile page
-    await generateCharacterProfile(character);
+    // Generate profile page (with error handling)
+    try {
+      console.log('🔧 Approval: Starting profile generation for:', character.name);
+      await generateCharacterProfile(character);
+      console.log('🔧 Approval: Profile generation completed');
+    } catch (profileError) {
+      console.warn('🔧 Approval: Profile generation failed:', profileError.message);
+      // Don't fail the approval if profile generation fails
+      // Character is still approved, just no profile page
+    }
     
-    // Emit real-time notification
-    const io = req.app.get('io');
-    if (io) {
-      io.emit('characterApproved', character);
+    // Emit real-time notification (with error handling)
+    try {
+      const io = req.app.get('io');
+      if (io) {
+        io.emit('characterApproved', character);
+        console.log('🔧 Approval: WebSocket notification sent');
+      } else {
+        console.log('🔧 Approval: WebSocket not available');
+      }
+    } catch (wsError) {
+      console.warn('🔧 Approval: WebSocket emission failed:', wsError.message);
+      // Don't fail the approval if WebSocket fails
     }
 
     res.json({

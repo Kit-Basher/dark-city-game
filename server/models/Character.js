@@ -100,6 +100,16 @@ const characterSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  photos: [{
+    url: String,
+    caption: String,
+    uploadedAt: {
+      type: Date,
+      default: Date.now
+    }
+  }],
+  humanPhoto: String,
+  monsterPhoto: String,
 }, {
   timestamps: true,
 });

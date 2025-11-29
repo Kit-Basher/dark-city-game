@@ -5,6 +5,8 @@ async function generateCharacterProfile(character) {
   try {
     console.log('🔧 Profile Generation: Starting for character:', character.name);
     console.log('🔧 Profile Generation: Character photos data:', character.photos);
+    console.log('🔧 Profile Generation: Human photo:', character.humanPhoto ? 'present' : 'not present');
+    console.log('🔧 Profile Generation: Monster photo:', character.monsterPhoto ? 'present' : 'not present');
     console.log('🔧 Profile Generation: Photos count:', character.photos?.length || 0);
     
     // Read the template
@@ -30,10 +32,41 @@ async function generateCharacterProfile(character) {
         day: 'numeric' 
       }),
       '{{PHOTOS_SECTION}}': (() => {
+        let photosHTML = '';
+        
+        // Handle individual photo fields (humanPhoto, monsterPhoto)
+        if (character.humanPhoto || character.monsterPhoto) {
+          photosHTML += '<div class="character-forms">';
+          
+          if (character.humanPhoto) {
+            photosHTML += `
+              <div class="human-form">
+                <h4>Human Form</h4>
+                <img src="${character.humanPhoto}" alt="Human form photo" />
+              </div>
+            `;
+          }
+          
+          if (character.monsterPhoto) {
+            photosHTML += `
+              <div class="monster-form">
+                <h4>Monster Form</h4>
+                <img src="${character.monsterPhoto}" alt="Monster form photo" />
+              </div>
+            `;
+          }
+          
+          photosHTML += '</div>';
+        }
+        
+        // Handle photos array
         if (character.photos && character.photos.length > 0) {
-          const photosHTML = character.photos.map(photo => 
+          photosHTML += character.photos.map(photo => 
             `<img src="${photo.url}" alt="${photo.caption || 'Character photo'}" />`
           ).join('');
+        }
+        
+        if (photosHTML) {
           const result = `<div class="profile-photos">
           <h3>Photos</h3>
           ${photosHTML}

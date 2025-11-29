@@ -138,8 +138,17 @@ class CharacterService {
         try {
             console.log('🔧 Moderation: Starting', { characterId, action, moderatorId });
             
+            // Convert action to proper status value
+            const statusMap = {
+                'approve': 'approved',
+                'reject': 'rejected'
+            };
+            const status = statusMap[action] || action;
+            
+            console.log('🔧 Moderation: Converting action', { action, status });
+            
             const updateData = {
-                status: action,
+                status: status,
                 reviewedBy: moderatorId,
                 reviewedAt: new Date(),
                 feedback

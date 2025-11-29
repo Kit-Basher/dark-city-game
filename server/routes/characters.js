@@ -3,183 +3,8 @@ const router = express.Router();
 const Character = require('../models/Character');
 const CharacterService = require('../services/characterService');
 const { validate, characterSchema } = require('../middleware/validation');
-const fs = require('fs');
 const { generateCharacterProfile } = require('../utils/profileGenerator');
 const path = require('path');
-
-/**
- * @swagger
-async function generateCharacterProfile(character) {
-  try {
-    // Read the template
-    const templatePath = path.join(__dirname, '../../characters/profile-template.html');
-    const template = await fs.readFile(templatePath, 'utf8');
-    
-    // Prepare template replacements
-    const replacements = {
-      '{{CHARACTER_NAME}}': character.name || 'Unnamed Character',
-      '{{CLASSIFICATION}}': character.classification || 'Unknown',
-      '{{PLAYBOOK}}': character.playbook || 'Unknown',
-      '{{SUBTYPE}}': character.subtype || 'None',
-      '{{BIO}}': character.bio || 'No biography available.',
-      '{{FATE_POINTS}}': character.fatePoints || '1',
-      '{{PHYSICAL_STRESS}}': character.physicalStress || '2',
-      '{{MENTAL_STRESS}}': character.mentalStress || '2',
-      '{{APPARENT_AGE}}': character.apparentAge || 'Unknown',
-      '{{ACTUAL_AGE}}': character.actualAge || 'Unknown',
-      '{{JOIN_DATE}}': new Date(character.submittedAt).toLocaleDateString('en-US', { 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric' 
-      })
-    };
-    
-    // Handle Darkest Self section
-    let darkestSelfSection = '';
-    if (character.darkestSelf) {
-      darkestSelfSection = `
-        <div class="bio-section">
-          <h2 class="section-title">Darkest Self</h2>
-          <p class="bio-text">${character.darkestSelf}</p>
-        </div>
-      `;
-    }
-    replacements['{{DARKEST_SELF_SECTION}}'] = darkestSelfSection;
-    
-    // Handle Moves section
-    let movesSection = '';
-    if (character.moves && character.moves.length > 0) {
-      const movesHTML = character.moves.map(move => `
-        <div class="move-item">
-          <div class="move-name">${move.name}</div>
-          <div class="move-description">${move.description || 'No description available'}</div>
-        </div>
-      `).join('');
-      
-      movesSection = `
-        <div class="moves-section">
-          <h2 class="section-title">Moves & Abilities</h2>
-          ${movesHTML}
-        </div>
-      `;
-    }
-    replacements['{{MOVES_SECTION}}'] = movesSection;
-    
-    // Handle Skills section
-    let skillsSection = '';
-    if (character.skills && character.skills.length > 0) {
-      const skillsHTML = character.skills.map(skill => `
-        <div class="skill-item">
-          <div class="skill-name">${skill.name}</div>
-          <div class="skill-description">Level ${skill.level}</div>
-        </div>
-      `).join('');
-      
-      skillsSection = `
-        <div class="skills-section">
-          <h2 class="section-title">Skills</h2>
-          ${skillsHTML}
-        </div>
-      `;
-    }
-    replacements['{{SKILLS_SECTION}}'] = skillsSection;
-    
-    // Handle photos
-    let photosSection = '';
-    if (character.humanPhoto || character.monsterPhoto) {
-      const photosHTML = [];
-      
-      if (character.humanPhoto) {
-        photosHTML.push(`
-          <div class="profile-photo">
-            <img src="${character.humanPhoto}" alt="${character.name} - Human Form">
-            <div class="profile-photo-label">👤 Human Form</div>
-          </div>
-        `);
-      }
-      
-      if (character.monsterPhoto) {
-        photosHTML.push(`
-          <div class="profile-photo">
-            <img src="${character.monsterPhoto}" alt="${character.name} - Monster Form">
-            <div class="profile-photo-label">👹 Monster Form</div>
-          </div>
-        `);
-      }
-      
-      photosSection = `
-        <div class="profile-photos">
-          ${photosHTML.join('')}
-        </div>
-      `;
-    } else {
-      photosSection = `
-        <div class="profile-photos">
-          <div class="profile-photo">
-            <div style="width: 150px; height: 150px; border: 3px dashed #666; border-radius: 10px; display: flex; align-items: center; justify-content: center; background: #2a2a2a;">
-              <div style="color: #666; text-align: center; padding: 1rem;">No photos uploaded</div>
-            </div>
-            <div class="profile-photo-label">📸 No Images</div>
-          </div>
-        </div>
-      `;
-    }
-    replacements['{{PHOTOS_SECTION}}'] = photosSection;
-    
-    // Handle physical stats
-    let humanPhysicalStats = '';
-    if (character.humanHeight || character.humanWeight) {
-      humanPhysicalStats = `
-        <p><strong>Human Height:</strong> ${character.humanHeight || 'Unknown'}</p>
-        <p><strong>Human Weight:</strong> ${character.humanWeight || 'Unknown'}</p>
-      `;
-    }
-    replacements['{{HUMAN_PHYSICAL_STATS}}'] = humanPhysicalStats;
-    
-    let monsterPhysicalStats = '';
-    if (character.monsterHeight || character.monsterWeight) {
-      monsterPhysicalStats = `
-        <p><strong>Monster Height:</strong> ${character.monsterHeight || 'Unknown'}</p>
-        <p><strong>Monster Weight:</strong> ${character.monsterWeight || 'Unknown'}</p>
-      `;
-    }
-    replacements['{{MONSTER_PHYSICAL_STATS}}'] = monsterPhysicalStats;
-    
-    // Add edit password data
-    replacements['{{EDIT_PASSWORD}}'] = character.editPassword || '';
-    replacements['{{CHARACTER_ID}}'] = character._id;
-    
-    // Replace all placeholders
-    let profileHTML = template;
-    for (const [placeholder, value] of Object.entries(replacements)) {
-      profileHTML = profileHTML.replace(new RegExp(placeholder.replace(/[{}]/g, '\\$&'), 'g'), value);
-    }
-    
-    // Create safe filename
-    const safeName = character.name
-      .toLowerCase()
-      .replace(/[^a-z0-9]/g, '-')
-      .replace(/-+/g, '-')
-      .replace(/^-|-$/g, '');
-    
-    // Ensure profiles directory exists
-    const profilesDir = path.join(__dirname, '../../characters/profiles');
-    await fs.mkdir(profilesDir, { recursive: true });
-    
-    // Write profile page
-    const profilePath = path.join(profilesDir, `${safeName}-${character._id}.html`);
-    await fs.writeFile(profilePath, profileHTML, 'utf8');
-    
-    console.log(`✅ Generated profile page: ${safeName}-${character._id}.html`);
-    
-  } catch (error) {
-    console.error('Error generating character profile:', error);
-    // Don't throw error - profile generation failure shouldn't break approval
-  }
-}
-
-// Export the function for use in server.js
-module.exports.generateCharacterProfile = generateCharacterProfile;
 
 /**
  * @swagger
@@ -208,40 +33,81 @@ router.get('/', async (req, res) => {
   try {
     const options = {
       page: parseInt(req.query.page) || 1,
-      limit: parseInt(req.query.limit) || 12,
-      classification: req.query.classification,
-      playbook: req.query.playbook,
-      search: req.query.search,
-      sortBy: req.query.sortBy || 'submittedAt',
-      sortOrder: req.query.sortOrder === 'asc' ? 1 : -1
+      limit: parseInt(req.query.limit) || 10,
+      sort: { submittedAt: -1 }
     };
 
-    const result = await CharacterService.getCharacters(options);
-    res.json(result);
+    const characters = await CharacterService.getApprovedCharacters(options);
+    res.json(characters);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('Error fetching approved characters:', error);
+    res.status(500).json({ error: 'Failed to fetch characters' });
   }
 });
 
-// GET all submissions (moderator only)
+/**
+ * @swagger
+ * /characters/submissions:
+ *   get:
+ *     summary: Get all character submissions (moderator only)
+ *     description: Retrieve all character submissions for moderation
+ *     tags: [Characters]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of character submissions
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden
+ */
 router.get('/submissions', async (req, res) => {
   try {
-    const submissions = await Character.find()
-      .sort({ submittedAt: -1 });
-    res.json(submissions);
+    const options = {
+      page: parseInt(req.query.page) || 1,
+      limit: parseInt(req.query.limit) || 10,
+      sort: { submittedAt: -1 }
+    };
+
+    const characters = await CharacterService.getAllSubmissions(options);
+    res.json(characters);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('Error fetching submissions:', error);
+    res.status(500).json({ error: 'Failed to fetch submissions' });
   }
 });
 
-// GET pending submissions
+/**
+ * @swagger
+ * /characters/pending:
+ *   get:
+ *     summary: Get pending character submissions (moderator only)
+ *     description: Retrieve characters pending approval
+ *     tags: [Characters]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of pending characters
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden
+ */
 router.get('/pending', async (req, res) => {
   try {
-    const pending = await Character.find({ status: 'pending' })
-      .sort({ submittedAt: -1 });
-    res.json(pending);
+    const options = {
+      page: parseInt(req.query.page) || 1,
+      limit: parseInt(req.query.limit) || 10,
+      sort: { submittedAt: -1 }
+    };
+
+    const characters = await CharacterService.getPendingSubmissions(options);
+    res.json(characters);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('Error fetching pending characters:', error);
+    res.status(500).json({ error: 'Failed to fetch pending characters' });
   }
 });
 
@@ -249,91 +115,99 @@ router.get('/pending', async (req, res) => {
  * @swagger
  * /characters/submit:
  *   post:
- *     summary: Submit a new character for approval
- *     description: Submit a new character that will be reviewed by moderators before being made public
+ *     summary: Submit a new character
+ *     description: Submit a new character for moderation
  *     tags: [Characters]
- *     security:
- *       - ApiKeyAuth: []
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Character'
+ *             $ref: '#/components/schemas/CharacterInput'
  *     responses:
  *       201:
  *         description: Character submitted successfully
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Character'
  *       400:
  *         description: Validation error
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
- *       401:
- *         description: Unauthorized - Invalid API key
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
+ *       500:
+ *         description: Server error
  */
 router.post('/submit', validate(characterSchema), async (req, res) => {
   try {
-    console.log('🔍 Received character submission with keys:', Object.keys(req.body));
-    console.log('🔍 Has humanPhoto:', !!req.body.humanPhoto);
-    console.log('🔍 Has monsterPhoto:', !!req.body.monsterPhoto);
-    console.log('🔍 Human photo length:', req.body.humanPhoto ? req.body.humanPhoto.length : 0);
-    console.log('🔍 Monster photo length:', req.body.monsterPhoto ? req.body.monsterPhoto.length : 0);
-    
-    const character = new Character({
+    const characterData = {
       ...req.body,
-      submittedBy: req.body.submittedBy || 'anonymous',
-    });
-    
-    const savedCharacter = await character.save();
-    
-    console.log('✅ Character saved with photo fields:', {
-      hasHumanPhoto: !!savedCharacter.humanPhoto,
-      hasMonsterPhoto: !!savedCharacter.monsterPhoto,
-      humanPhotoLength: savedCharacter.humanPhoto ? savedCharacter.humanPhoto.length : 0,
-      monsterPhotoLength: savedCharacter.monsterPhoto ? savedCharacter.monsterPhoto.length : 0
-    });
+      status: 'pending',
+      submittedAt: new Date()
+    };
+
+    const character = await CharacterService.createCharacter(characterData);
     
     // Emit real-time notification
     const io = req.app.get('io');
     if (io) {
-      io.emit('newSubmission', savedCharacter);
+      io.emit('newSubmission', character);
     }
-    
-    res.status(201).json(savedCharacter);
+
+    res.status(201).json({
+      message: 'Character submitted successfully',
+      character
+    });
   } catch (error) {
-    console.error('❌ Error submitting character:', error);
-    res.status(400).json({ error: error.message });
+    console.error('Error submitting character:', error);
+    res.status(500).json({ error: 'Failed to submit character' });
   }
 });
 
-// PUT approve character
+/**
+ * @swagger
+ * /characters/{id}/approve:
+ *   put:
+ *     summary: Approve a character (moderator only)
+ *     description: Approve a character submission and make it public
+ *     tags: [Characters]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               feedback:
+ *                 type: string
+ *               reviewedBy:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Character approved successfully
+ *       404:
+ *         description: Character not found
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden
+ */
 router.put('/:id/approve', async (req, res) => {
   try {
-    const character = await Character.findByIdAndUpdate(
-      req.params.id,
-      {
-        status: 'approved',
-        reviewedBy: req.body.reviewedBy || 'moderator',
-        reviewedAt: new Date(),
-        feedback: req.body.feedback || '',
-      },
-      { new: true }
-    );
+    const { feedback = '', reviewedBy = 'moderator' } = req.body;
     
+    const character = await CharacterService.approveCharacter(req.params.id, {
+      feedback,
+      reviewedBy,
+      reviewedAt: new Date()
+    });
+
     if (!character) {
       return res.status(404).json({ error: 'Character not found' });
     }
-    
-    // Generate profile page for approved character
+
+    // Generate profile page
     await generateCharacterProfile(character);
     
     // Emit real-time notification
@@ -341,61 +215,134 @@ router.put('/:id/approve', async (req, res) => {
     if (io) {
       io.emit('characterApproved', character);
     }
-    
-    res.json(character);
+
+    res.json({
+      message: 'Character approved successfully',
+      character
+    });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    console.error('Error approving character:', error);
+    res.status(500).json({ error: 'Failed to approve character' });
   }
 });
 
-// PUT reject character
+/**
+ * @swagger
+ * /characters/{id}/reject:
+ *   put:
+ *     summary: Reject a character (moderator only)
+ *     description: Reject a character submission
+ *     tags: [Characters]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               feedback:
+ *                 type: string
+ *                 required: true
+ *               reviewedBy:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Character rejected successfully
+ *       404:
+ *         description: Character not found
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden
+ */
 router.put('/:id/reject', async (req, res) => {
   try {
-    const character = await Character.findByIdAndUpdate(
-      req.params.id,
-      {
-        status: 'rejected',
-        reviewedBy: req.body.reviewedBy || 'moderator',
-        reviewedAt: new Date(),
-        feedback: req.body.feedback || '',
-      },
-      { new: true }
-    );
+    const { feedback, reviewedBy = 'moderator' } = req.body;
     
+    if (!feedback) {
+      return res.status(400).json({ error: 'Feedback is required for rejection' });
+    }
+    
+    const character = await CharacterService.rejectCharacter(req.params.id, {
+      feedback,
+      reviewedBy,
+      reviewedAt: new Date()
+    });
+
     if (!character) {
       return res.status(404).json({ error: 'Character not found' });
     }
-    
+
     // Emit real-time notification
     const io = req.app.get('io');
     if (io) {
       io.emit('characterRejected', character);
     }
-    
-    res.json(character);
+
+    res.json({
+      message: 'Character rejected successfully',
+      character
+    });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    console.error('Error rejecting character:', error);
+    res.status(500).json({ error: 'Failed to reject character' });
   }
 });
 
-// DELETE character
+/**
+ * @swagger
+ * /characters/{id}:
+ *   delete:
+ *     summary: Delete a character (moderator only)
+ *     description: Delete a character submission
+ *     tags: [Characters]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Character deleted successfully
+ *       404:
+ *         description: Character not found
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden
+ */
 router.delete('/:id', async (req, res) => {
   try {
-    const character = await Character.findByIdAndDelete(req.params.id);
-    
+    const character = await CharacterService.deleteCharacter(req.params.id);
+
     if (!character) {
       return res.status(404).json({ error: 'Character not found' });
     }
-    
+
     // Emit real-time notification
     const io = req.app.get('io');
     if (io) {
       io.emit('characterDeleted', character);
     }
-    
-    res.json({ message: 'Character deleted successfully' });
+
+    res.json({
+      message: 'Character deleted successfully',
+      character
+    });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    console.error('Error deleting character:', error);
+    res.status(500).json({ error: 'Failed to delete character' });
   }
 });
 
@@ -403,8 +350,8 @@ router.delete('/:id', async (req, res) => {
  * @swagger
  * /characters/{id}:
  *   get:
- *     summary: Get a specific character by ID
- *     description: Retrieve a single character by their unique ID
+ *     summary: Get a specific character
+ *     description: Retrieve details of a specific character
  *     tags: [Characters]
  *     parameters:
  *       - in: path
@@ -412,7 +359,6 @@ router.delete('/:id', async (req, res) => {
  *         required: true
  *         schema:
  *           type: string
- *         description: Character ID
  *     responses:
  *       200:
  *         description: Character details
@@ -422,32 +368,19 @@ router.delete('/:id', async (req, res) => {
  *               $ref: '#/components/schemas/Character'
  *       404:
  *         description: Character not found
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
  */
 router.get('/:id', async (req, res) => {
   try {
-    const character = await Character.findById(req.params.id);
-    
+    const character = await CharacterService.getCharacterById(req.params.id);
+
     if (!character) {
       return res.status(404).json({ error: 'Character not found' });
     }
-    
-    console.log('🔍 Retrieved character with photos:', {
-      id: character._id,
-      name: character.name,
-      hasHumanPhoto: !!character.humanPhoto,
-      hasMonsterPhoto: !!character.monsterPhoto,
-      humanPhotoLength: character.humanPhoto ? character.humanPhoto.length : 0,
-      monsterPhotoLength: character.monsterPhoto ? character.monsterPhoto.length : 0
-    });
-    
+
     res.json(character);
   } catch (error) {
-    console.error('❌ Error retrieving character:', error);
-    res.status(500).json({ error: error.message });
+    console.error('Error fetching character:', error);
+    res.status(500).json({ error: 'Failed to fetch character' });
   }
 });
 

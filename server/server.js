@@ -188,8 +188,8 @@ app.get('/characters/profiles/:filename', async (req, res) => {
         if (character && character.status === 'approved') {
           console.log('✅ Found approved character, generating profile...');
           
-          // Generate profile using the exported function
-          const { generateCharacterProfile } = require('./routes/characters');
+          // Generate profile using the utility function
+          const { generateCharacterProfile } = require('./utils/profileGenerator');
           await generateCharacterProfile(character);
           
           // Try serving again after a short delay

@@ -3,7 +3,7 @@ const router = express.Router();
 const Character = require('../models/Character');
 const CharacterService = require('../services/characterService');
 const { validate, characterSchema } = require('../middleware/validation');
-const fs = require('fs').promises;
+const { generateCharacterProfile } = require('../utils/profileGenerator');
 const path = require('path');
 
 /**

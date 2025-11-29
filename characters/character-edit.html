@@ -745,13 +745,6 @@
             
             try {
                 const formData = getFormData();
-                console.log('🔍 Debug - Saving character:', { 
-                    characterId, 
-                    editPassword: editPassword ? '***' : 'none',
-                    formDataKeys: Object.keys(formData),
-                    hasMoves: !!formData.moves,
-                    movesCount: formData.moves ? formData.moves.length : 0
-                });
                 const result = await window.characterEditAPI.updateCharacter(characterId, formData, editPassword);
                 
                 showSuccess('Character saved successfully!');

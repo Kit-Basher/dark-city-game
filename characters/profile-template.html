@@ -446,7 +446,7 @@
         function showEditPasswordModal() {
             if (!characterData.editPassword) {
                 // No password set, go directly to edit mode
-                window.location.href = `../../character-edit.html?id=${characterData.id}`;
+                window.location.href = `../character-edit.html?id=${characterData.id}`;
                 return;
             }
             
@@ -466,7 +466,7 @@
             
             if (password === characterData.editPassword) {
                 // Password correct, redirect to edit mode
-                window.location.href = `../../character-edit.html?id=${characterData.id}&editPassword=${password}`;
+                window.location.href = `../character-edit.html?id=${characterData.id}&editPassword=${password}`;
             } else {
                 // Password incorrect
                 alert('Incorrect password. Please try again.');

@@ -410,4 +410,29 @@ router.get('/:id', async (req, res) => {
   }
 });
 
+router.get('/profiles/regenerate', async (req, res) => {
+  try {
+    const Character = require('../models/Character');
+    const { initializeProfiles } = require('../utils/profileGenerator');
+    
+    // Get all approved characters
+    const approvedCharacters = await Character.find({ status: 'approved' });
+    
+    // Regenerate profiles for all approved characters
+    await initializeProfiles();
+    
+    res.json({
+      success: true,
+      message: `Regenerated ${approvedCharacters.length} character profiles`,
+      count: approvedCharacters.length
+    });
+  } catch (error) {
+    console.error('Error regenerating profiles:', error);
+    res.status(500).json({ 
+      error: 'Failed to regenerate profiles',
+      message: error.message 
+    });
+  }
+});
+
 module.exports = router;

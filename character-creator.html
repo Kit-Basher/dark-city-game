@@ -1741,8 +1741,8 @@
                     });
                     console.log('📸 Human photo added, length:', characterData.humanPhoto.length);
                 } else {
-                    delete characterData.humanPhoto;
-                    console.log('⚠️ No human photo file selected - removing field');
+                    characterData.humanPhoto = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg==';
+                    console.log('⚠️ No human photo file selected - using empty 1x1 pixel');
                 }
                 
                 if (monsterPhotoFile) {
@@ -1753,8 +1753,8 @@
                     });
                     console.log('📸 Monster photo added, length:', characterData.monsterPhoto.length);
                 } else {
-                    delete characterData.monsterPhoto;
-                    console.log('⚠️ No monster photo file selected - removing field');
+                    characterData.monsterPhoto = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg==';
+                    console.log('⚠️ No monster photo file selected - using empty 1x1 pixel');
                 }
                 
                 console.log('🔍 Final character data keys:', Object.keys(characterData));
@@ -1791,16 +1791,24 @@
                     const descKey = `moveDesc${i}`;
                     const sourceKey = `move${i}Source`;
                     if (characterData[moveKey]) {
+                        const moveSource = characterData[sourceKey] || characterData.playbook || 'Unknown';
                         moves.push({
                             name: characterData[moveKey],
-                            source: characterData[sourceKey] || characterData.playbook || 'Unknown',
+                            source: moveSource,
                             description: characterData[descKey] || ''
+                        });
+                        console.log(`📝 Move ${i}:`, {
+                            name: characterData[moveKey],
+                            source: moveSource,
+                            sourceFrom: characterData[sourceKey] ? 'template' : (characterData.playbook ? 'playbook' : 'fallback')
                         });
                         delete characterData[moveKey];
                         delete characterData[descKey];
                         delete characterData[sourceKey];
                     }
                 }
+                
+                console.log('🔍 Final moves array:', moves);
                 
                 // Darkest Self is already a string field, no need to convert to move
                 // Just ensure it's included as-is

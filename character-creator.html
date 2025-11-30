@@ -1784,14 +1784,16 @@
                 for (let i = 1; i <= moveCount; i++) {
                     const moveKey = `move${i}`;
                     const descKey = `moveDesc${i}`;
+                    const sourceKey = `move${i}Source`;
                     if (characterData[moveKey]) {
                         moves.push({
                             name: characterData[moveKey],
-                            source: characterData.playbook, // Use playbook as source
+                            source: characterData[sourceKey] || characterData.playbook || 'Unknown',
                             description: characterData[descKey] || ''
                         });
                         delete characterData[moveKey];
                         delete characterData[descKey];
+                        delete characterData[sourceKey];
                     }
                 }
                 

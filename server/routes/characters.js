@@ -134,6 +134,18 @@ router.get('/pending', async (req, res) => {
  */
 router.post('/submit', validate(characterSchema), async (req, res) => {
   try {
+    // Debug logging to see what data is received
+    console.log('🔍 Server received character data:', {
+      name: req.body.name,
+      fatePoints: req.body.fatePoints,
+      fatePointsType: typeof req.body.fatePoints,
+      physicalStress: req.body.physicalStress,
+      physicalStressType: typeof req.body.physicalStress,
+      moves: req.body.moves,
+      movesCount: req.body.moves?.length,
+      moveSources: req.body.moves?.map(m => m.source)
+    });
+
     const characterData = {
       ...req.body,
       status: 'pending',

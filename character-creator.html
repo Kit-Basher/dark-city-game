@@ -1768,12 +1768,13 @@
                     monsterPhotoStart: characterData.monsterPhoto && typeof characterData.monsterPhoto === 'string' ? characterData.monsterPhoto.substring(0, 50) + '...' : 'none'
                 });
                 
-                // Convert numeric fields to strings for server validation
+                // Convert numeric fields to strings for validation
                 const numericFields = ['fatePoints', 'physicalStress', 'mentalStress', 'physicalConsequences', 'mentalConsequences'];
                 numericFields.forEach(field => {
-                    if (characterData[field] !== undefined) {
+                    if (characterData[field] !== undefined && characterData[field] !== null) {
+                        const originalValue = characterData[field];
                         characterData[field] = String(characterData[field]).trim();
-                        console.log(`🔄 Converted ${field} to string:`, characterData[field]);
+                        console.log(`🔄 Converted ${field} from ${originalValue} (type: ${typeof originalValue}) to ${characterData[field]} (type: ${typeof characterData[field]})`);
                     }
                 });
                 
@@ -1807,7 +1808,8 @@
                     const descKey = `moveDesc${i}`;
                     const sourceKey = `move${i}Source`;
                     if (characterData[moveKey]) {
-                        const moveSource = characterData[sourceKey] || characterData.playbook || 'Unknown';
+                        // Use playbook as source since move source fields don't exist as form elements
+                        const moveSource = characterData.playbook || 'Unknown';
                         moves.push({
                             name: characterData[moveKey],
                             source: moveSource,
@@ -1816,11 +1818,8 @@
                         console.log(`📝 Move ${i}:`, {
                             name: characterData[moveKey],
                             source: moveSource,
-                            sourceFrom: characterData[sourceKey] ? 'template' : (characterData.playbook ? 'playbook' : 'fallback')
+                            sourceFrom: 'playbook'
                         });
-                        delete characterData[moveKey];
-                        delete characterData[descKey];
-                        delete characterData[sourceKey];
                     }
                 }
                 

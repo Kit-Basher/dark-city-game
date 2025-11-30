@@ -1843,6 +1843,12 @@
                     scenesCount: characterData.scenes?.length || 0
                 });
                 
+                // Debug all character data types
+                console.log('🔍 All character data types:');
+                Object.keys(characterData).forEach(key => {
+                    console.log(`  ${key}: ${typeof characterData[key]} = ${characterData[key]}`);
+                });
+                
                 console.log('🌐 Submitting to server...');
                 console.log('📤 Character data being sent:', characterData);
                 

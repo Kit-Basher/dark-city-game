@@ -1768,6 +1768,15 @@
                     monsterPhotoStart: characterData.monsterPhoto && typeof characterData.monsterPhoto === 'string' ? characterData.monsterPhoto.substring(0, 50) + '...' : 'none'
                 });
                 
+                // Convert numeric fields to strings for server validation
+                const numericFields = ['fatePoints', 'physicalStress', 'mentalStress', 'physicalConsequences', 'mentalConsequences'];
+                numericFields.forEach(field => {
+                    if (characterData[field] !== undefined) {
+                        characterData[field] = String(characterData[field]);
+                        console.log(`🔄 Converted ${field} to string:`, characterData[field]);
+                    }
+                });
+                
                 // Organize skills data
                 const skills = [];
                 for (let level = 4; level >= 1; level--) {
@@ -1809,6 +1818,18 @@
                 }
                 
                 console.log('🔍 Final moves array:', moves);
+                
+                // Validate each move has required fields
+                moves.forEach((move, index) => {
+                    console.log(`🔍 Move ${index} validation:`, {
+                        hasName: !!move.name,
+                        hasSource: !!move.source,
+                        hasDescription: !!move.description,
+                        nameType: typeof move.name,
+                        sourceType: typeof move.source,
+                        descType: typeof move.description
+                    });
+                });
                 
                 // Darkest Self is already a string field, no need to convert to move
                 // Just ensure it's included as-is

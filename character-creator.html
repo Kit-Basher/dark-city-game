@@ -1699,7 +1699,7 @@
 
         // Submit character form directly to server
         async function submitCharacterForm() {
-            console.log('🚀 Starting character submission...');
+            console.log('🚀 Starting character submission... v2.0');
             
             let characterData = {}; // Declare outside try block
             
@@ -1772,7 +1772,7 @@
                 const numericFields = ['fatePoints', 'physicalStress', 'mentalStress', 'physicalConsequences', 'mentalConsequences'];
                 numericFields.forEach(field => {
                     if (characterData[field] !== undefined) {
-                        characterData[field] = String(characterData[field]);
+                        characterData[field] = String(characterData[field]).trim();
                         console.log(`🔄 Converted ${field} to string:`, characterData[field]);
                     }
                 });

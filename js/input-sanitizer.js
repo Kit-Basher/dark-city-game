@@ -43,7 +43,16 @@ class InputSanitizer {
     if (!url || typeof url !== 'string') return null;
     
     try {
-      // Basic URL validation
+      // Allow data URLs for uploaded photos and http/https for external URLs
+      if (url.startsWith('data:')) {
+        // Basic validation for data URLs
+        if (url.includes('image/') && url.includes('base64,')) {
+          return url;
+        }
+        return null;
+      }
+      
+      // Basic URL validation for http/https
       const parsed = new URL(url);
       
       // Only allow http/https protocols

@@ -803,9 +803,17 @@
                 photoItem.className = 'photo-item';
                 photoItem.innerHTML = `
                     <img src="${photo.url}" alt="${photo.caption || 'Character photo'}">
-                    <button class="photo-remove" onclick="removePhoto(${index})">×</button>
+                    <button class="photo-remove" data-index="${index}">×</button>
                 `;
                 preview.appendChild(photoItem);
+            });
+            
+            // Add event listeners to remove buttons
+            document.querySelectorAll('.photo-remove').forEach(button => {
+                button.addEventListener('click', function() {
+                    const index = parseInt(this.getAttribute('data-index'));
+                    removePhoto(index);
+                });
             });
         }
 

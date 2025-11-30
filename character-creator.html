@@ -1617,76 +1617,277 @@
             }
         });
 
+        // Multiple test character templates
+        const testCharacterTemplates = [
+            {
+                name: 'Vampire Lord',
+                classification: 'Vampire',
+                playbook: 'Unsated',
+                subtype: 'Vampire',
+                apparentAge: '30',
+                actualAge: '450',
+                bio: 'Born in medieval times, rose to become a powerful vampire lord. Commands respect and fear in equal measure.',
+                humanHeight: '6\'2"',
+                humanWeight: '200 lbs',
+                monsterHeight: '9\' tall',
+                monsterWeight: '500 lbs',
+                aspect1: 'Ancient Authority',
+                aspect2: 'Shadow Command',
+                aspect3: 'Blood Magic',
+                physicalStress: '3',
+                mentalStress: '2',
+                physicalConsequences: '2',
+                mentalConsequences: '1',
+                fatePoints: '3',
+                tempAspect1: 'Blood Frenzy',
+                tempAspect2: 'Night Vision',
+                specialResources: 'Ancient castle, blood servants, shadow army, immortal contacts',
+                consequence1: 'Sunlight Weakness',
+                consequence2: 'Blood Addiction',
+                move1: 'Blood Drain',
+                moveDesc1: 'Drain life force from victims',
+                move2: 'Shadow Teleport',
+                moveDesc2: 'Teleport through shadows',
+                move3: 'Mind Control',
+                moveDesc3: 'Control lesser minds',
+                darkestSelf: 'Beast Form',
+                darkestSelfDesc: 'Transform into monstrous vampire beast',
+                connections: 'Childer: Several vampire offspring\nAllies: Dark council\nEnemies: Vampire hunters\nContacts: Criminal underworld',
+                item1: 'Ancient Sword',
+                itemDesc1: 'Enchanted blade passed down through generations',
+                item2: 'Blood Ring',
+                itemDesc2: 'Ring that enhances blood magic',
+                scene1: 'The Embrace - The night I was transformed and given immortality.',
+                sceneChars1: 'My sire, vampire council, mortal victims',
+                // Skills
+                skill4_1: 'Fight',
+                skill4_2: 'Intimidate',
+                skill3_1: 'Will',
+                skill3_2: 'Notice',
+                skill2_1: 'Athletics',
+                skill2_2: 'Stealth',
+                skill1_1: 'Lore',
+                skill1_2: 'Contacts'
+            },
+            {
+                name: 'Street Mage',
+                classification: 'Mage',
+                playbook: 'Gifted',
+                subtype: 'Wizard',
+                apparentAge: '24',
+                actualAge: '28',
+                bio: 'Discovered magical abilities young, now works as a street mage helping the supernatural community.',
+                humanHeight: '5\'8"',
+                humanWeight: '160 lbs',
+                monsterHeight: '6\' tall',
+                monsterWeight: '180 lbs',
+                aspect1: 'Raw Magic',
+                aspect2: 'Quick Learning',
+                aspect3: 'Street Smarts',
+                physicalStress: '2',
+                mentalStress: '3',
+                physicalConsequences: '1',
+                mentalConsequences: '2',
+                fatePoints: '2',
+                tempAspect1: 'Magic Overload',
+                tempAspect2: 'Exhausted',
+                specialResources: 'Magic staff, spell books, hidden sanctum, magical contacts',
+                consequence1: 'Magic Addiction',
+                consequence2: 'Power Burnout',
+                move1: 'Fireball',
+                moveDesc1: 'Cast explosive fire magic',
+                move2: 'Shield',
+                moveDesc2: 'Magical protection barrier',
+                move3: 'Teleport',
+                moveDesc3: 'Short range teleportation',
+                darkestSelf: 'Magic Storm',
+                darkestSelfDesc: 'Lose control and unleash raw magic',
+                connections: 'Mentor: Old wizard\nAllies: Supernatural community\nEnemies: Magic hunters\nContacts: Underground mages',
+                item1: 'Magic Staff',
+                itemDesc1: 'Channel for magical energy',
+                item2: 'Spell Book',
+                itemDesc2: 'Collection of learned spells',
+                scene1: 'First Spell - The day I discovered I could use magic.',
+                sceneChars1: 'My mentor, magical creatures, surprised witnesses',
+                // Skills
+                skill4_1: 'Lore',
+                skill4_2: 'Will',
+                skill3_1: 'Crafting',
+                skill3_2: 'Notice',
+                skill2_1: 'Deceive',
+                skill2_2: 'Empathy',
+                skill1_1: 'Athletics',
+                skill1_2: 'Stealth'
+            },
+            {
+                name: 'Werewolf Alpha',
+                classification: 'Werewolf',
+                playbook: 'Wild',
+                subtype: 'Lycanthrope',
+                apparentAge: '35',
+                actualAge: '42',
+                bio: 'Born werewolf, natural leader of a pack. Struggles to balance human and beast sides.',
+                humanHeight: '6\'4"',
+                humanWeight: '240 lbs',
+                monsterHeight: '8\' tall',
+                monsterWeight: '600 lbs',
+                aspect1: 'Alpha Presence',
+                aspect2: 'Pack Bond',
+                aspect3: 'Beast Strength',
+                physicalStress: '4',
+                mentalStress: '1',
+                physicalConsequences: '3',
+                mentalConsequences: '1',
+                fatePoints: '2',
+                tempAspect1: 'Raging',
+                tempAspect2: 'Pack Protective',
+                specialResources: 'Wolf pack, territory, hunting grounds, pack allies',
+                consequence1: 'Silver Allergy',
+                consequence2: 'Rage Issues',
+                move1: 'Wolf Form',
+                moveDesc1: 'Transform into powerful wolf',
+                move2: 'Pack Howl',
+                moveDesc2: 'Call pack members for help',
+                move3: 'Claw Attack',
+                moveDesc3: 'Deadly claw strike',
+                darkestSelf: 'Full Rage',
+                darkestSelfDesc: 'Completely lose control to beast side',
+                connections: 'Pack: 12 werewolves\nAllies: Other shapeshifters\nEnemies: Hunters\nContacts: Supernatural community',
+                item1: 'Wolf Totem',
+                itemDesc1: 'Symbol of pack leadership',
+                item2: 'Silver Dagger',
+                itemDesc2: 'Weapon that hurts my kind',
+                scene1: 'First Change - The painful night I first transformed.',
+                sceneChars1: 'My pack alpha, terrified humans, my family',
+                // Skills
+                skill4_1: 'Fight',
+                skill4_2: 'Athletics',
+                skill3_1: 'Physique',
+                skill3_2: 'Notice',
+                skill2_1: 'Intimidate',
+                skill2_2: 'Survival',
+                skill1_1: 'Stealth',
+                skill1_2: 'Contacts'
+            },
+            {
+                name: 'Fae Trickster',
+                classification: 'Fae',
+                playbook: 'Fae',
+                subtype: 'Pixie',
+                apparentAge: '19',
+                actualAge: '200',
+                bio: 'Ancient fae who loves playing tricks on mortals. Bound by fae rules and traditions.',
+                humanHeight: '5\'2"',
+                humanWeight: '110 lbs',
+                monsterHeight: '2\' tall',
+                monsterWeight: '30 lbs',
+                aspect1: 'Fae Magic',
+                aspect2: 'Trickster Nature',
+                aspect3: 'Immortal Youth',
+                physicalStress: '1',
+                mentalStress: '3',
+                physicalConsequences: '1',
+                mentalConsequences: '2',
+                fatePoints: '3',
+                tempAspect1: 'Glitter Dust',
+                tempAspect2: 'Invisible',
+                specialResources: 'Fae realm access, magic dust, illusions, fae allies',
+                consequence1: 'Iron Weakness',
+                consequence2: 'Truth Binding',
+                move1: 'Illusion',
+                moveDesc1: 'Create convincing illusions',
+                move2: 'Teleport',
+                moveDesc2: 'Short range fae teleport',
+                move3: 'Glamour',
+                moveDesc3: 'Change appearance and charm others',
+                darkestSelf: 'Fae Rage',
+                darkestSelfDesc: 'Unleash cruel fae nature',
+                connections: 'Court: Summer Fae\nAllies: Other fae beings\nEnemies: Iron users\nContacts: Mortal friends',
+                item1: 'Fae Wand',
+                itemDesc1: 'Channel for fae magic',
+                item2: 'Invisibility Cloak',
+                itemDesc2: 'Fae-made magical garment',
+                scene1: 'Mortal World - My first visit to the human realm.',
+                sceneChars1: 'Fae guides, curious mortals, dangerous ironworkers',
+                // Skills
+                skill4_1: 'Deceive',
+                skill4_2: 'Stealth',
+                skill3_1: 'Empathy',
+                skill3_2: 'Notice',
+                skill2_1: 'Athletics',
+                skill2_2: 'Rapport',
+                skill1_1: 'Lore',
+                skill1_2: 'Will'
+            },
+            {
+                name: 'Demon Hunter',
+                classification: 'Hunter',
+                playbook: 'Mortal',
+                subtype: 'Human',
+                apparentAge: '28',
+                actualAge: '28',
+                bio: 'Trained from youth to hunt supernatural threats. Carries family legacy and burden.',
+                humanHeight: '5\'11"',
+                humanWeight: '180 lbs',
+                monsterHeight: '6\' tall',
+                monsterWeight: '200 lbs',
+                aspect1: 'Hunter Training',
+                aspect2: 'Iron Will',
+                aspect3: 'Supernatural Knowledge',
+                physicalStress: '3',
+                mentalStress: '2',
+                physicalConsequences: '2',
+                mentalConsequences: '1',
+                fatePoints: '2',
+                tempAspect1: 'Wounded',
+                tempAspect2: 'Exhausted',
+                specialResources: 'Hunter weapons, safe houses, hunter network, ancient knowledge',
+                consequence1: 'Trauma',
+                consequence2: 'Obsession',
+                move1: 'Hunter Sense',
+                moveDesc1: 'Detect supernatural presence',
+                move2: 'Weapon Master',
+                moveDesc2: 'Expert with all hunting weapons',
+                move3: 'Holy Protection',
+                moveDesc3: 'Protection against dark forces',
+                darkestSelf: 'Vengeance',
+                darkestSelfDesc: 'Lose self to hunting obsession',
+                connections: 'Family: Hunter lineage\nAllies: Other hunters\nEnemies: Supernatural creatures\nContacts: Church and authorities',
+                item1: 'Blessed Sword',
+                itemDesc1: 'Family heirloom weapon',
+                item2: 'Holy Symbols',
+                itemDesc2: 'Protection against evil',
+                scene1: 'First Hunt - My first supernatural encounter and kill.',
+                sceneChars1: 'My mentor, the monster, terrified witnesses',
+                // Skills
+                skill4_1: 'Shoot',
+                skill4_2: 'Fight',
+                skill3_1: 'Notice',
+                skill3_2: 'Will',
+                skill2_1: 'Athletics',
+                skill2_2: 'Lore',
+                skill1_1: 'Stealth',
+                skill1_2: 'Intimidate'
+            }
+        ];
+
         // Autofill test character for quick testing
         function autofillTestCharacter() {
             try {
                 console.log('🚀 Starting autofill...');
                 
+                // Randomly select a character template
+                const randomTemplate = testCharacterTemplates[Math.floor(Math.random() * testCharacterTemplates.length)];
+                console.log('🎲 Selected template:', randomTemplate.name);
+                
+                // Create test data with unique name
                 const testData = {
-                    // Basic Info
-                    'name': 'Test Character ' + Date.now(),
-                    'apparentAge': '25',
-                    'actualAge': '250',
-                    'classification': 'Vampire',
-                    'playbook': 'Unsated',
-                    'subtype': 'Vampire',
-                    'bio': 'Born in the 15th century, turned into a vampire during a tragic encounter. Has spent centuries learning to control their powers and navigate the supernatural world.',
-                    
-                    // Appearance
-                    'humanHeight': '5\'10"',
-                    'humanWeight': '180 lbs',
-                    'monsterHeight': '8\' tall',
-                    'monsterWeight': '400 lbs',
-                    
-                    // Aspects
-                    'aspect1': 'Ancient Knowledge',
-                    'aspect2': 'Supernatural Speed',
-                    'aspect3': 'Immortal Healing',
-                    
-                    // Stress & Consequences
-                    'physicalStress': '2',
-                    'mentalStress': '1',
-                    'physicalConsequences': '1',
-                    'mentalConsequences': '1',
-                    'fatePoints': '3',
-                    
-                    // Temporary Aspects
-                    'tempAspect1': 'Blood Bond',
-                    'tempAspect2': 'Shadow Walker',
+                    ...randomTemplate,
+                    'name': randomTemplate.name + ' ' + Date.now(),
                     'tempDate1': new Date().toISOString().split('T')[0],
                     'tempDate2': new Date().toISOString().split('T')[0],
-                    
-                    // Special Resources
-                    'specialResources': 'Ancient sword, blood vials, shadow cloak, immortal contacts',
-                    
-                    // Consequences
-                    'consequence1': 'Sunlight Vulnerability',
-                    'consequence2': 'Blood Thirst',
                     'consequenceDate1': new Date().toISOString().split('T')[0],
-                    'consequenceDate2': new Date().toISOString().split('T')[0],
-                    
-                    // Moves
-                    'move1': 'Immortal Healing',
-                    'moveDesc1': 'Heal quickly from wounds',
-                    'move2': 'Shadow Walk',
-                    'moveDesc2': 'Move through shadows',
-                    'move3': 'Mesmerize',
-                    'moveDesc3': 'Control minds with gaze',
-                    'darkestSelf': 'Blood Frenzy',
-                    'darkestSelfDesc': 'Lose control when near blood',
-                    
-                    // Connections
-                    'connections': 'Sire: Ancient Master\nAllies: Vampire Coven\nEnemies: Vampire Hunters\nContacts: Underground Network',
-                    
-                    // Inventory
-                    'item1': 'Ancient Sword',
-                    'itemDesc1': 'Enchanted blade passed down through generations',
-                    'item2': 'Blood Vials',
-                    'itemDesc2': 'Emergency blood supply',
-                    
-                    // Scene
-                    'scene1': 'The First Hunt - My transformation and first taste of blood. Changed my life forever.',
-                    'sceneChars1': 'My sire, innocent victim, vampire hunters'
+                    'consequenceDate2': new Date().toISOString().split('T')[0]
                 };
                 
                 console.log('📝 Test data created:', Object.keys(testData).length, 'fields');
@@ -1719,7 +1920,7 @@
                     }
                 });
                 
-                alert('🚀 Test character loaded successfully! You can now submit to test the server connection.');
+                alert(`🚀 ${randomTemplate.name} test character loaded successfully! (${randomTemplate.classification} - ${randomTemplate.playbook})\n\nYou can now submit to test the server connection.`);
                 
             } catch (error) {
                 console.error('❌ Autofill error:', error);

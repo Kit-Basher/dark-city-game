@@ -17,26 +17,6 @@
             padding: 2rem;
         }
         
-        .edit-header {
-            margin-bottom: 2rem;
-        }
-        
-        .edit-header h1 {
-            font-size: 1.5rem;
-            margin: 0;
-            color: #ff6b35;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 100%;
-        }
-        
-        .edit-header p {
-            margin: 0.25rem 0 0 0;
-            color: #ccc;
-            font-size: 0.9rem;
-        }
-        
         .edit-form {
             display: grid;
             gap: 2rem;
@@ -358,11 +338,6 @@
     </div>
 
     <div class="edit-container">
-        <header class="edit-header">
-            <h1 id="characterNameDisplay">Character Editor</h1>
-            <p id="characterSubtitle">Loading character...</p>
-        </header>
-
         <form id="characterEditForm" class="edit-form">
             <!-- Basic Information -->
             <section class="form-section">
@@ -628,10 +603,6 @@
                 const character = await window.characterEditAPI.getCharacterForEdit(characterId, editPassword);
                 originalCharacterData = character;
                 
-                // Update header
-                document.getElementById('characterNameDisplay').textContent = character.name;
-                document.getElementById('characterSubtitle').textContent = `${character.classification} • ${character.playbook}`;
-                
                 // Populate form
                 populateForm(character);
                 
@@ -794,9 +765,6 @@
                 
                 // Update original data
                 originalCharacterData = result.character;
-                
-                // Update header
-                document.getElementById('characterNameDisplay').textContent = result.character.name;
                 
             } catch (error) {
                 showError('Failed to save character: ' + error.message);

@@ -365,8 +365,8 @@
 
     <div class="edit-container">
         <header class="edit-header">
-            <h1 id="characterNameDisplay">Edit Character</h1>
-            <p id="characterSubtitle">Update your character sheet</p>
+            <h1 id="characterNameDisplay">Character Editor</h1>
+            <p id="characterSubtitle">Loading character...</p>
         </header>
 
         <form id="characterEditForm" class="edit-form">
@@ -635,8 +635,8 @@
                 originalCharacterData = character;
                 
                 // Update header
-                document.getElementById('characterNameDisplay').textContent = `Edit: ${character.name}`;
-                document.getElementById('characterSubtitle').textContent = `${character.classification} ${character.playbook}`;
+                document.getElementById('characterNameDisplay').textContent = character.name;
+                document.getElementById('characterSubtitle').textContent = `${character.classification} • ${character.playbook}`;
                 
                 // Populate form
                 populateForm(character);
@@ -802,7 +802,7 @@
                 originalCharacterData = result.character;
                 
                 // Update header
-                document.getElementById('characterNameDisplay').textContent = `Edit: ${result.character.name}`;
+                document.getElementById('characterNameDisplay').textContent = result.character.name;
                 
             } catch (error) {
                 showError('Failed to save character: ' + error.message);

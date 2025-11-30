@@ -3,934 +3,112 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Character Creator - Dark City RPG</title>
+    <title>Dark City - RPG Game Hub</title>
+    <meta name="description" content="A mysterious urban fantasy RPG where shadows hold secrets and every choice matters.">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌙</text></svg>">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/accessibility.css">
+    <link rel="stylesheet" href="css/accessibility-enhancements.css">
     <link rel="stylesheet" href="css/mobile.css">
-    <style>
-        .character-creator {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 2rem;
-            background: #2a2a2a;
-            border-radius: 10px;
-            margin-top: 2rem;
-        }
-        
-        .form-section {
-            margin-bottom: 2rem;
-            padding: 1.5rem;
-            background: #333;
-            border-radius: 8px;
-            border-left: 4px solid #ff6b35;
-        }
-        
-        .form-section h2 {
-            color: #ff6b35;
-            margin-bottom: 1rem;
-            font-size: 1.5rem;
-        }
-        
-        .form-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1rem;
-            margin-bottom: 1rem;
-        }
-        
-        .form-group {
-            margin-bottom: 1rem;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: #ccc;
-            font-weight: 500;
-        }
-        
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 0.75rem;
-            background: #1a1a1a;
-            border: 2px solid #444;
-            border-radius: 5px;
-            color: white;
-            font-family: inherit;
-            transition: border-color 0.3s ease;
-        }
-        
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: #ff6b35;
-        }
-        
-        .form-group textarea {
-            resize: vertical;
-            min-height: 100px;
-        }
-        
-        .skills-grid {
-            display: grid;
-            gap: 0.5rem;
-            margin: 1rem 0;
-        }
-        
-        .skills-grid .skill-header {
-            font-weight: bold;
-            color: #ff6b35;
-            text-align: center;
-            padding: 0.5rem;
-            background: #444;
-            border-radius: 3px;
-        }
-        
-        .skills-grid .skill-row {
-            display: grid;
-            gap: 0.5rem;
-            align-items: center;
-        }
-        
-        .skills-grid .skill-row.plus4 {
-            grid-template-columns: 60px 1fr;
-        }
-        
-        .skills-grid .skill-row.plus3 {
-            grid-template-columns: 60px 1fr 1fr;
-        }
-        
-        .skills-grid .skill-row.plus2 {
-            grid-template-columns: 60px 1fr 1fr 1fr;
-        }
-        
-        .skills-grid .skill-row.plus1 {
-            grid-template-columns: 60px 1fr 1fr 1fr 1fr;
-        }
-        
-        .skills-grid select {
-            width: 100%;
-            padding: 0.5rem;
-            text-align: center;
-            background: #1a1a1a;
-            border: 1px solid #444;
-            border-radius: 3px;
-            color: white;
-        }
-        
-        .moves-grid {
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 1rem;
-            margin: 1rem 0;
-        }
-        
-        .btn-primary {
-            background: #ff6b35;
-            color: white;
-            padding: 1rem 2rem;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1.1rem;
-            font-weight: bold;
-            transition: background 0.3s ease;
-        }
-        
-        .btn-primary:hover {
-            background: #e55a2b;
-        }
-        
-        .btn-secondary {
-            background: #666;
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-left: 1rem;
-            transition: background 0.3s ease;
-        }
-        
-        .btn-secondary:hover {
-            background: #555;
-        }
-        
-        .photo-upload-section {
-            background: #1a1a1a;
-            padding: 1.5rem;
-            border-radius: 8px;
-            margin: 1rem 0;
-            border: 1px solid #444;
-        }
-        
-        .photo-upload-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-            margin-top: 1rem;
-        }
-        
-        .photo-upload-item {
-            text-align: center;
-        }
-        
-        .photo-upload-item h4 {
-            color: #ff6b35;
-            margin-bottom: 1rem;
-            font-size: 1.1rem;
-        }
-        
-        .photo-preview {
-            width: 200px;
-            height: 200px;
-            border: 2px dashed #666;
-            border-radius: 8px;
-            margin: 1rem auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #2a2a2a;
-            overflow: hidden;
-            position: relative;
-        }
-        
-        .photo-preview img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: cover;
-            border-radius: 6px;
-        }
-        
-        .photo-preview .placeholder {
-            color: #666;
-            font-size: 0.9rem;
-            text-align: center;
-            padding: 1rem;
-        }
-        
-        .file-input-wrapper {
-            position: relative;
-            display: inline-block;
-            cursor: pointer;
-            background: #444;
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 5px;
-            border: 1px solid #666;
-            transition: all 0.3s ease;
-        }
-        
-        .file-input-wrapper:hover {
-            background: #555;
-            border-color: #ff6b35;
-        }
-        
-        .file-input-wrapper input[type="file"] {
-            position: absolute;
-            left: 0;
-            top: 0;
-            opacity: 0;
-            cursor: pointer;
-            width: 100%;
-            height: 100%;
-        }
-        
-        .preview-section {
-            background: #1a1a1a;
-            padding: 2rem;
-            border-radius: 8px;
-            margin-top: 2rem;
-            border: 2px solid #444;
-        }
-        
-        .stats-row {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin: 1rem 0;
-        }
-        
-        .consequences-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-            margin: 1rem 0;
-        }
-        
-        .inventory-grid {
-            display: grid;
-            grid-template-columns: 2fr 3fr;
-            gap: 1rem;
-            margin: 1rem 0;
-        }
-        
-        .scene-archive-grid {
-            display: grid;
-            grid-template-columns: 3fr 2fr;
-            gap: 1rem;
-            margin: 1rem 0;
-        }
-        
-        @media (max-width: 768px) {
-            .character-creator {
-                padding: 1rem;
-                margin-top: 1rem;
-            }
-            
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .skills-grid {
-                grid-template-columns: 50px repeat(3, 1fr);
-            }
-            
-            .moves-grid,
-            .consequences-grid,
-            .inventory-grid,
-            .scene-archive-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="css/components.css">
 </head>
 <body>
     <a href="#main-content" class="skip-to-main">Skip to main content</a>
+    <div class="aria-live" aria-live="polite" aria-atomic="true"></div>
+    <div class="loading-announcement" aria-live="polite" aria-atomic="true"></div>
+    <div class="error-announcement" aria-live="assertive" aria-atomic="true"></div>
+    <div class="success-announcement" aria-live="polite" aria-atomic="true"></div>
     
     <header role="banner">
         <nav role="navigation" aria-label="Main navigation">
             <div class="nav-container">
                 <h1>Dark City</h1>
+                <button class="mobile-menu-toggle" aria-label="Toggle mobile menu" aria-expanded="false">
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                </button>
                 <ul class="nav-links" role="menubar">
-                    <li role="none"><a href="index.html" role="menuitem">Home</a></li>
-                    <li role="none"><a href="character-creator.html" role="menuitem" class="active">Character Creator</a></li>
-                    <li role="none"><a href="characters/gallery.html" role="menuitem">Characters</a></li>
-                    <li role="none"><a href="playbooks/" role="menuitem">Playbooks</a></li>
+                    <li role="none"><a href="#home" role="menuitem">Home</a></li>
+                    <li role="none"><a href="#rules" role="menuitem">Rules</a></li>
+                    <li role="none"><a href="playbooks/index.html" role="menuitem">Playbooks</a></li>
+                    <li role="none"><a href="#characters" role="menuitem">Characters</a></li>
+                    <li role="none"><a href="character-creator.html" role="menuitem">Character Creator</a></li>
+                    <li role="none"><a href="#calendar" role="menuitem">Calendar</a></li>
                 </ul>
             </div>
         </nav>
     </header>
 
     <main role="main" id="main-content">
-        <div class="character-creator">
-            <h1>Character Creator</h1>
-            <p style="color: #ccc; margin-bottom: 2rem;">Fill out your Dark City character sheet below. All fields marked with * are required.</p>
-            
-            <form id="characterForm">
-                <!-- Basic Information -->
-                <section class="form-section">
-                    <h2>🆔 Dark City Citizen ID</h2>
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label for="name">Name *</label>
-                            <input type="text" id="name" name="name" required placeholder="Enter character name">
-                        </div>
-                        <div class="form-group">
-                            <label for="apparentAge">Apparent Age *</label>
-                            <input type="text" id="apparentAge" name="apparentAge" required placeholder="e.g., 25">
-                        </div>
-                        <div class="form-group">
-                            <label for="actualAge">Actual Age</label>
-                            <input type="text" id="actualAge" name="actualAge" placeholder="e.g., 250">
-                        </div>
-                        <div class="form-group">
-                            <label for="playbook">Playbook *</label>
-                            <select id="playbook" name="playbook" required>
-                                <option value="">Select Playbook</option>
-                                <option value="Ageless">Ageless</option>
-                                <option value="Ancient">Ancient</option>
-                                <option value="Aquatic">Aquatic</option>
-                                <option value="Aware">Aware</option>
-                                <option value="Champion">Champion</option>
-                                <option value="Covert">Covert</option>
-                                <option value="Construct">Construct</option>
-                                <option value="Darkling">Darkling</option>
-                                <option value="Fae">Fae</option>
-                                <option value="Gifted">Gifted</option>
-                                <option value="Giant">Giant</option>
-                                <option value="Incarnation">Incarnation</option>
-                                <option value="Legend">Legend</option>
-                                <option value="Mad">Mad</option>
-                                <option value="Mage">Mage</option>
-                                <option value="Mortal">Mortal</option>
-                                <option value="Patron">Patron</option>
-                                <option value="Unsated">Unsated</option>
-                                <option value="Wild">Wild</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="subtype">Subtype *</label>
-                            <input type="text" id="subtype" name="subtype" required placeholder="e.g., Vampire, Werewolf, Wizard">
-                        </div>
-                        <div class="form-group">
-                            <label for="classification">Classification *</label>
-                            <input type="text" id="classification" name="classification" required placeholder="Any classification you want (e.g., Dark Lord, Healer, Scout)">
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Character Bio -->
-                <section class="form-section">
-                    <h2>📖 Character Bio</h2>
-                    <div class="form-group">
-                        <label for="bio">Character Biography *</label>
-                        <textarea id="bio" name="bio" required placeholder="Describe your character's background, personality, and history..."></textarea>
-                    </div>
-                </section>
-
-                <!-- Character Photos -->
-                <section class="form-section">
-                    <h2>📸 Character Photos</h2>
-                    <p style="color: #ccc; margin-bottom: 1rem;">Upload images for your character's human and monster forms. Images will be displayed on your character profile.</p>
-                    
-                    <div class="photo-upload-grid">
-                        <div class="photo-upload-item">
-                            <h4>👤 Human Form</h4>
-                            <div class="photo-preview" id="humanPhotoPreview">
-                                <div class="placeholder">No image uploaded</div>
-                            </div>
-                            <div class="file-input-wrapper">
-                                <input type="file" id="humanPhoto" name="humanPhoto" accept="image/*" onchange="previewPhoto('human')">
-                                📷 Choose Human Photo
-                            </div>
-                        </div>
-                        
-                        <div class="photo-upload-item">
-                            <h4>👹 Monster Form</h4>
-                            <div class="photo-preview" id="monsterPhotoPreview">
-                                <div class="placeholder">No image uploaded</div>
-                            </div>
-                            <div class="file-input-wrapper">
-                                <input type="file" id="monsterPhoto" name="monsterPhoto" accept="image/*" onchange="previewPhoto('monster')">
-                                📷 Choose Monster Photo
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Physical Forms -->
-                <section class="form-section">
-                    <h2>👤 Physical Forms</h2>
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label for="humanHeight">Human Form - Height</label>
-                            <input type="text" id="humanHeight" name="humanHeight" placeholder="e.g., 5'10&quot;">
-                        </div>
-                        <div class="form-group">
-                            <label for="humanWeight">Human Form - Weight</label>
-                            <input type="text" id="humanWeight" name="humanWeight" placeholder="e.g., 180 lbs">
-                        </div>
-                        <div class="form-group">
-                            <label for="monsterHeight">Monster Form - Height</label>
-                            <input type="text" id="monsterHeight" name="monsterHeight" placeholder="e.g., 8' tall">
-                        </div>
-                        <div class="form-group">
-                            <label for="monsterWeight">Monster Form - Weight</label>
-                            <input type="text" id="monsterWeight" name="monsterWeight" placeholder="e.g., 400 lbs">
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Stats -->
-                <section class="form-section">
-                    <h2>⚡ Stats</h2>
-                    
-                    <h3>Character Aspects</h3>
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label for="aspect1">Aspect 1</label>
-                            <input type="text" id="aspect1" name="aspect1" placeholder="e.g., Quick Reflexes">
-                        </div>
-                        <div class="form-group">
-                            <label for="aspect2">Aspect 2</label>
-                            <input type="text" id="aspect2" name="aspect2" placeholder="e.g., Strong Willed">
-                        </div>
-                        <div class="form-group">
-                            <label for="aspect3">Aspect 3</label>
-                            <input type="text" id="aspect3" name="aspect3" placeholder="e.g., Street Smart">
-                        </div>
-                    </div>
-
-                    <h3>Stress & Consequences</h3>
-                    <div class="stats-row">
-                        <div class="form-group">
-                            <label for="physicalStress">Physical Stress</label>
-                            <input type="number" id="physicalStress" name="physicalStress" min="0" max="4" value="0">
-                        </div>
-                        <div class="form-group">
-                            <label for="mentalStress">Mental Stress</label>
-                            <input type="number" id="mentalStress" name="mentalStress" min="0" max="4" value="0">
-                        </div>
-                        <div class="form-group">
-                            <label for="physicalConsequences">Physical Consequences</label>
-                            <input type="number" id="physicalConsequences" name="physicalConsequences" min="0" max="6" value="0">
-                        </div>
-                        <div class="form-group">
-                            <label for="mentalConsequences">Mental Consequences</label>
-                            <input type="number" id="mentalConsequences" name="mentalConsequences" min="0" max="6" value="0">
-                        </div>
-                    </div>
-
-                    <h3>Fate Points</h3>
-                    <div class="form-group">
-                        <label for="fatePoints">Fate Points</label>
-                        <input type="number" id="fatePoints" name="fatePoints" min="0" max="5" value="1">
-                    </div>
-                </section>
-
-                <!-- Skills -->
-                <section class="form-section">
-                    <h2>🛠️ Skills</h2>
-                    <p style="color: #ccc; margin-bottom: 1rem;">Each skill describes a general ability that your character has. Higher numbers represent greater skill.</p>
-                    
-                    <div class="skill-descriptions" style="background: #1a1a1a; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; border: 1px solid #444;">
-                        <h4 style="color: #ff6b35; margin-bottom: 0.5rem;">🛠️ Skill List</h4>
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 0.5rem; font-size: 0.85rem; color: #ccc;">
-                            <div><strong>🏃 Athletics:</strong> Physical fitness, flexibility, reflexes and endurance.</div>
-                            <div><strong>🔓 Burglary:</strong> Stealing things and getting into places.</div>
-                            <div><strong>🤝 Contacts:</strong> Making connections with people and networking.</div>
-                            <div><strong>🔨 Crafting:</strong> Make or repair specific types of things. Pick a vocation.</div>
-                            <div><strong>🎭 Deceive:</strong> Make others believe lies and half-truths, words or body language.</div>
-                            <div><strong>🚗 Drive:</strong> Operating vehicles and things that go fast. Pick what kinds of vehicles.</div>
-                            <div><strong>💝 Empathy:</strong> Being able to spot changes in a person's mood/ bearing or emotion.</div>
-                            <div><strong>⚔️ Fight:</strong> Close-quarters combat, unarmed and with melee weapons.</div>
-                            <div><strong>🔍 Investigate:</strong> Deduce information using concentrated effort and in-depth scrutiny.</div>
-                            <div><strong>📚 Lore:</strong> Knowledge and education, books and study.</div>
-                            <div><strong>👀 Notice:</strong> Perception, the ability to pick out details at a glance.</div>
-                            <div><strong>💪 Physique:</strong> Natural physical aptitude, such as lift and grip strength.</div>
-                            <div><strong>🔥 Provoke:</strong> Eliciting emotional responses, fear, anger, shame, excitement etc.</div>
-                            <div><strong>🗣️ Rapport:</strong> Making connections to people, being liked and trusted.</div>
-                            <div><strong>💰 Wealth:</strong> Access to resources in the game and ability to leverage it.</div>
-                            <div><strong>🏹 Shoot:</strong> Ranged weaponry use, bows, guns etc.</div>
-                            <div><strong>🥷 Stealth:</strong> Avoid detection, hiding in place and moving about.</div>
-                            <div><strong>🛡️ Will:</strong> Mental fortitude and ability to resist social pressure.</div>
-                        </div>
-                    </div>
-                    
-                    <div class="skills-grid">
-                        <!-- +4 Skills: 1 slot -->
-                        <div class="skill-row plus4">
-                            <div class="skill-header">+4</div>
-                            <select name="skill4_1" id="skill4_1">
-                                <option value="">Select Skill</option>
-                                <option value="Athletics">🏃 Athletics</option>
-                                <option value="Burglary">🔓 Burglary</option>
-                                <option value="Contacts">🤝 Contacts</option>
-                                <option value="Crafting">🔨 Crafting</option>
-                                <option value="Deceive">🎭 Deceive</option>
-                                <option value="Drive">🚗 Drive</option>
-                                <option value="Empathy">💝 Empathy</option>
-                                <option value="Fight">⚔️ Fight</option>
-                                <option value="Investigate">🔍 Investigate</option>
-                                <option value="Lore">📚 Lore</option>
-                                <option value="Notice">👀 Notice</option>
-                                <option value="Physique">💪 Physique</option>
-                                <option value="Provoke">🔥 Provoke</option>
-                                <option value="Rapport">🗣️ Rapport</option>
-                                <option value="Wealth">💰 Wealth</option>
-                                <option value="Shoot">🏹 Shoot</option>
-                                <option value="Stealth">🥷 Stealth</option>
-                                <option value="Will">🛡️ Will</option>
-                            </select>
-                        </div>
-                        
-                        <!-- +3 Skills: 2 slots -->
-                        <div class="skill-row plus3">
-                            <div class="skill-header">+3</div>
-                            <select name="skill3_1" id="skill3_1">
-                                <option value="">Select Skill</option>
-                                <option value="Athletics">🏃 Athletics</option>
-                                <option value="Burglary">🔓 Burglary</option>
-                                <option value="Contacts">🤝 Contacts</option>
-                                <option value="Crafting">🔨 Crafting</option>
-                                <option value="Deceive">🎭 Deceive</option>
-                                <option value="Drive">🚗 Drive</option>
-                                <option value="Empathy">💝 Empathy</option>
-                                <option value="Fight">⚔️ Fight</option>
-                                <option value="Investigate">🔍 Investigate</option>
-                                <option value="Lore">📚 Lore</option>
-                                <option value="Notice">👀 Notice</option>
-                                <option value="Physique">💪 Physique</option>
-                                <option value="Provoke">🔥 Provoke</option>
-                                <option value="Rapport">🗣️ Rapport</option>
-                                <option value="Wealth">💰 Wealth</option>
-                                <option value="Shoot">🏹 Shoot</option>
-                                <option value="Stealth">🥷 Stealth</option>
-                                <option value="Will">🛡️ Will</option>
-                            </select>
-                            <select name="skill3_2" id="skill3_2">
-                                <option value="">Select Skill</option>
-                                <option value="Athletics">🏃 Athletics</option>
-                                <option value="Burglary">🔓 Burglary</option>
-                                <option value="Contacts">🤝 Contacts</option>
-                                <option value="Crafting">🔨 Crafting</option>
-                                <option value="Deceive">🎭 Deceive</option>
-                                <option value="Drive">🚗 Drive</option>
-                                <option value="Empathy">💝 Empathy</option>
-                                <option value="Fight">⚔️ Fight</option>
-                                <option value="Investigate">🔍 Investigate</option>
-                                <option value="Lore">📚 Lore</option>
-                                <option value="Notice">👀 Notice</option>
-                                <option value="Physique">💪 Physique</option>
-                                <option value="Provoke">🔥 Provoke</option>
-                                <option value="Rapport">🗣️ Rapport</option>
-                                <option value="Wealth">💰 Wealth</option>
-                                <option value="Shoot">🏹 Shoot</option>
-                                <option value="Stealth">🥷 Stealth</option>
-                                <option value="Will">🛡️ Will</option>
-                            </select>
-                        </div>
-                        
-                        <!-- +2 Skills: 3 slots -->
-                        <div class="skill-row plus2">
-                            <div class="skill-header">+2</div>
-                            <select name="skill2_1" id="skill2_1">
-                                <option value="">Select Skill</option>
-                                <option value="Athletics">🏃 Athletics</option>
-                                <option value="Burglary">🔓 Burglary</option>
-                                <option value="Contacts">🤝 Contacts</option>
-                                <option value="Crafting">🔨 Crafting</option>
-                                <option value="Deceive">🎭 Deceive</option>
-                                <option value="Drive">🚗 Drive</option>
-                                <option value="Empathy">💝 Empathy</option>
-                                <option value="Fight">⚔️ Fight</option>
-                                <option value="Investigate">🔍 Investigate</option>
-                                <option value="Lore">📚 Lore</option>
-                                <option value="Notice">👀 Notice</option>
-                                <option value="Physique">💪 Physique</option>
-                                <option value="Provoke">🔥 Provoke</option>
-                                <option value="Rapport">🗣️ Rapport</option>
-                                <option value="Wealth">💰 Wealth</option>
-                                <option value="Shoot">🏹 Shoot</option>
-                                <option value="Stealth">🥷 Stealth</option>
-                                <option value="Will">🛡️ Will</option>
-                            </select>
-                            <select name="skill2_2" id="skill2_2">
-                                <option value="">Select Skill</option>
-                                <option value="Athletics">🏃 Athletics</option>
-                                <option value="Burglary">🔓 Burglary</option>
-                                <option value="Contacts">🤝 Contacts</option>
-                                <option value="Crafting">🔨 Crafting</option>
-                                <option value="Deceive">🎭 Deceive</option>
-                                <option value="Drive">🚗 Drive</option>
-                                <option value="Empathy">💝 Empathy</option>
-                                <option value="Fight">⚔️ Fight</option>
-                                <option value="Investigate">🔍 Investigate</option>
-                                <option value="Lore">📚 Lore</option>
-                                <option value="Notice">👀 Notice</option>
-                                <option value="Physique">💪 Physique</option>
-                                <option value="Provoke">🔥 Provoke</option>
-                                <option value="Rapport">🗣️ Rapport</option>
-                                <option value="Wealth">💰 Wealth</option>
-                                <option value="Shoot">🏹 Shoot</option>
-                                <option value="Stealth">🥷 Stealth</option>
-                                <option value="Will">🛡️ Will</option>
-                            </select>
-                            <select name="skill2_3" id="skill2_3">
-                                <option value="">Select Skill</option>
-                                <option value="Athletics">🏃 Athletics</option>
-                                <option value="Burglary">🔓 Burglary</option>
-                                <option value="Contacts">🤝 Contacts</option>
-                                <option value="Crafting">🔨 Crafting</option>
-                                <option value="Deceive">🎭 Deceive</option>
-                                <option value="Drive">🚗 Drive</option>
-                                <option value="Empathy">💝 Empathy</option>
-                                <option value="Fight">⚔️ Fight</option>
-                                <option value="Investigate">🔍 Investigate</option>
-                                <option value="Lore">📚 Lore</option>
-                                <option value="Notice">👀 Notice</option>
-                                <option value="Physique">💪 Physique</option>
-                                <option value="Provoke">🔥 Provoke</option>
-                                <option value="Rapport">🗣️ Rapport</option>
-                                <option value="Wealth">💰 Wealth</option>
-                                <option value="Shoot">🏹 Shoot</option>
-                                <option value="Stealth">🥷 Stealth</option>
-                                <option value="Will">🛡️ Will</option>
-                            </select>
-                        </div>
-                        
-                        <!-- +1 Skills: 4 slots -->
-                        <div class="skill-row plus1">
-                            <div class="skill-header">+1</div>
-                            <select name="skill1_1" id="skill1_1">
-                                <option value="">Select Skill</option>
-                                <option value="Athletics">🏃 Athletics</option>
-                                <option value="Burglary">🔓 Burglary</option>
-                                <option value="Contacts">🤝 Contacts</option>
-                                <option value="Crafting">🔨 Crafting</option>
-                                <option value="Deceive">🎭 Deceive</option>
-                                <option value="Drive">🚗 Drive</option>
-                                <option value="Empathy">💝 Empathy</option>
-                                <option value="Fight">⚔️ Fight</option>
-                                <option value="Investigate">🔍 Investigate</option>
-                                <option value="Lore">📚 Lore</option>
-                                <option value="Notice">👀 Notice</option>
-                                <option value="Physique">💪 Physique</option>
-                                <option value="Provoke">🔥 Provoke</option>
-                                <option value="Rapport">🗣️ Rapport</option>
-                                <option value="Wealth">💰 Wealth</option>
-                                <option value="Shoot">🏹 Shoot</option>
-                                <option value="Stealth">🥷 Stealth</option>
-                                <option value="Will">🛡️ Will</option>
-                            </select>
-                            <select name="skill1_2" id="skill1_2">
-                                <option value="">Select Skill</option>
-                                <option value="Athletics">🏃 Athletics</option>
-                                <option value="Burglary">🔓 Burglary</option>
-                                <option value="Contacts">🤝 Contacts</option>
-                                <option value="Crafting">🔨 Crafting</option>
-                                <option value="Deceive">🎭 Deceive</option>
-                                <option value="Drive">🚗 Drive</option>
-                                <option value="Empathy">💝 Empathy</option>
-                                <option value="Fight">⚔️ Fight</option>
-                                <option value="Investigate">🔍 Investigate</option>
-                                <option value="Lore">📚 Lore</option>
-                                <option value="Notice">👀 Notice</option>
-                                <option value="Physique">💪 Physique</option>
-                                <option value="Provoke">🔥 Provoke</option>
-                                <option value="Rapport">🗣️ Rapport</option>
-                                <option value="Wealth">💰 Wealth</option>
-                                <option value="Shoot">🏹 Shoot</option>
-                                <option value="Stealth">🥷 Stealth</option>
-                                <option value="Will">🛡️ Will</option>
-                            </select>
-                            <select name="skill1_3" id="skill1_3">
-                                <option value="">Select Skill</option>
-                                <option value="Athletics">🏃 Athletics</option>
-                                <option value="Burglary">🔓 Burglary</option>
-                                <option value="Contacts">🤝 Contacts</option>
-                                <option value="Crafting">🔨 Crafting</option>
-                                <option value="Deceive">🎭 Deceive</option>
-                                <option value="Drive">🚗 Drive</option>
-                                <option value="Empathy">💝 Empathy</option>
-                                <option value="Fight">⚔️ Fight</option>
-                                <option value="Investigate">🔍 Investigate</option>
-                                <option value="Lore">📚 Lore</option>
-                                <option value="Notice">👀 Notice</option>
-                                <option value="Physique">💪 Physique</option>
-                                <option value="Provoke">🔥 Provoke</option>
-                                <option value="Rapport">🗣️ Rapport</option>
-                                <option value="Wealth">💰 Wealth</option>
-                                <option value="Shoot">🏹 Shoot</option>
-                                <option value="Stealth">🥷 Stealth</option>
-                                <option value="Will">🛡️ Will</option>
-                            </select>
-                            <select name="skill1_4" id="skill1_4">
-                                <option value="">Select Skill</option>
-                                <option value="Athletics">🏃 Athletics</option>
-                                <option value="Burglary">🔓 Burglary</option>
-                                <option value="Contacts">🤝 Contacts</option>
-                                <option value="Crafting">🔨 Crafting</option>
-                                <option value="Deceive">🎭 Deceive</option>
-                                <option value="Drive">🚗 Drive</option>
-                                <option value="Empathy">💝 Empathy</option>
-                                <option value="Fight">⚔️ Fight</option>
-                                <option value="Investigate">🔍 Investigate</option>
-                                <option value="Lore">📚 Lore</option>
-                                <option value="Notice">👀 Notice</option>
-                                <option value="Physique">💪 Physique</option>
-                                <option value="Provoke">🔥 Provoke</option>
-                                <option value="Rapport">🗣️ Rapport</option>
-                                <option value="Wealth">💰 Wealth</option>
-                                <option value="Shoot">🏹 Shoot</option>
-                                <option value="Stealth">🥷 Stealth</option>
-                                <option value="Will">🛡️ Will</option>
-                            </select>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Temporary Aspects -->
-                <section class="form-section">
-                    <h2>🔄 Temporary Aspects & Minor Injuries</h2>
-                    <div id="temporaryAspects">
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label for="tempAspect1">Aspect/Injury 1</label>
-                                <input type="text" id="tempAspect1" name="tempAspect1">
-                            </div>
-                            <div class="form-group">
-                                <label for="tempDate1">Date of Infliction</label>
-                                <input type="date" id="tempDate1" name="tempDate1">
-                            </div>
-                            <div class="form-group">
-                                <label for="tempAspect2">Aspect/Injury 2</label>
-                                <input type="text" id="tempAspect2" name="tempAspect2">
-                            </div>
-                            <div class="form-group">
-                                <label for="tempDate2">Date of Infliction</label>
-                                <input type="date" id="tempDate2" name="tempDate2">
-                            </div>
-                        </div>
-                    </div>
-                    <button type="button" class="btn-secondary" onclick="addTemporaryAspect()">+ Add More</button>
-                </section>
-
-                <!-- Special Resources -->
-                <section class="form-section">
-                    <h2>💎 Special Resources</h2>
-                    <div class="form-group">
-                        <label for="specialResources">Special Resources (FP, mechanic values, etc.)</label>
-                        <textarea id="specialResources" name="specialResources" placeholder="Describe any special resources, mechanics, or unique abilities..."></textarea>
-                    </div>
-                </section>
-
-                <!-- Consequences -->
-                <section class="form-section">
-                    <h2>⚠️ Consequences</h2>
-                    <div id="consequences">
-                        <div class="consequences-grid">
-                            <div class="form-group">
-                                <label for="consequence1">Consequence 1</label>
-                                <input type="text" id="consequence1" name="consequence1">
-                            </div>
-                            <div class="form-group">
-                                <label for="consequenceDate1">Date of Infliction</label>
-                                <input type="date" id="consequenceDate1" name="consequenceDate1">
-                            </div>
-                            <div class="form-group">
-                                <label for="consequence2">Consequence 2</label>
-                                <input type="text" id="consequence2" name="consequence2">
-                            </div>
-                            <div class="form-group">
-                                <label for="consequenceDate2">Date of Infliction</label>
-                                <input type="date" id="consequenceDate2" name="consequenceDate2">
-                            </div>
-                        </div>
-                    </div>
-                    <button type="button" class="btn-secondary" onclick="addConsequence()">+ Add More</button>
-                </section>
-
-                <!-- Moves -->
-                <section class="form-section">
-                    <h2>🎭 Moves</h2>
-                    <div class="moves-grid">
-                        <div class="form-group">
-                            <label for="move1">Move 1</label>
-                            <input type="text" id="move1" name="move1" placeholder="Enter move name">
-                        </div>
-                        <div class="form-group">
-                            <label for="moveDesc1">Description</label>
-                            <input type="text" id="moveDesc1" name="moveDesc1" placeholder="Move description">
-                        </div>
-                        <div class="form-group">
-                            <label for="move2">Move 2</label>
-                            <input type="text" id="move2" name="move2" placeholder="Enter move name">
-                        </div>
-                        <div class="form-group">
-                            <label for="moveDesc2">Description</label>
-                            <input type="text" id="moveDesc2" name="moveDesc2" placeholder="Move description">
-                        </div>
-                        <div class="form-group">
-                            <label for="move3">Move 3</label>
-                            <input type="text" id="move3" name="move3" placeholder="Enter move name">
-                        </div>
-                        <div class="form-group">
-                            <label for="moveDesc3">Description</label>
-                            <input type="text" id="moveDesc3" name="moveDesc3" placeholder="Move description">
-                        </div>
-                        <div class="form-group">
-                            <label for="darkestSelf">Darkest Self</label>
-                            <input type="text" id="darkestSelf" name="darkestSelf" placeholder="Describe your character's darkest self">
-                        </div>
-                        <div class="form-group">
-                            <label for="darkestSelfDesc">Description</label>
-                            <input type="text" id="darkestSelfDesc" name="darkestSelfDesc" placeholder="Darkest self description">
-                        </div>
-                    </div>
-                    <button type="button" class="btn-secondary" onclick="addMove()">+ Add More Moves</button>
-                </section>
-
-                <!-- Connections -->
-                <section class="form-section">
-                    <h2>🔗 Connections</h2>
-                    <div class="form-group">
-                        <label for="connections">Character Connections</label>
-                        <textarea id="connections" name="connections" rows="8" placeholder="Describe your character's relationships, allies, enemies, and important connections..."></textarea>
-                    </div>
-                </section>
-
-                <!-- Inventory -->
-                <section class="form-section">
-                    <h2>🎒 Inventory</h2>
-                    <div id="inventory">
-                        <div class="inventory-grid">
-                            <div class="form-group">
-                                <label for="item1">Item 1</label>
-                                <input type="text" id="item1" name="item1" placeholder="Item name">
-                            </div>
-                            <div class="form-group">
-                                <label for="itemDesc1">Description</label>
-                                <input type="text" id="itemDesc1" name="itemDesc1" placeholder="Item description">
-                            </div>
-                            <div class="form-group">
-                                <label for="item2">Item 2</label>
-                                <input type="text" id="item2" name="item2" placeholder="Item name">
-                            </div>
-                            <div class="form-group">
-                                <label for="itemDesc2">Description</label>
-                                <input type="text" id="itemDesc2" name="itemDesc2" placeholder="Item description">
-                            </div>
-                        </div>
-                    </div>
-                    <button type="button" class="btn-secondary" onclick="addInventoryItem()">+ Add More Items</button>
-                </section>
-
-                <!-- Scene Archive -->
-                <section class="form-section">
-                    <h2>📜 Scene Archive</h2>
-                    <div id="sceneArchive">
-                        <div class="scene-archive-grid">
-                            <div class="form-group">
-                                <label for="scene1">Scene 1 Summary</label>
-                                <textarea id="scene1" name="scene1" placeholder="Scene summary, date, location, stat changes, resources used..."></textarea>
-                            </div>
-                            <div class="form-group">
-                                <label for="sceneChars1">Involved Characters</label>
-                                <input type="text" id="sceneChars1" name="sceneChars1" placeholder="Characters involved in this scene">
-                            </div>
-                        </div>
-                    </div>
-                    <button type="button" class="btn-secondary" onclick="addScene()">+ Add More Scenes</button>
-                </section>
-
-                <!-- Edit Password -->
-                <section class="form-section">
-                    <h2>🔐 Profile Edit Password</h2>
-                    <div class="form-group">
-                        <label for="editPassword">Edit Password (Optional)</label>
-                        <input type="password" id="editPassword" name="editPassword" placeholder="Leave empty to allow anyone to edit, or create a password to protect" autocomplete="new-password">
-                        <small style="color: #888; margin-top: 0.5rem; display: block;">
-                            💡 <strong>Optional:</strong> Leave empty to allow anyone to edit this character, or create a password to restrict editing to only those with the password.
-                        </small>
-                    </div>
-                </section>
-
-                <!-- Form Actions -->
-                <div class="form-actions">
-            <button type="button" class="btn btn-secondary" onclick="autofillTestCharacter()">🚀 Quick Test Character</button>
-            <button type="button" class="btn btn-success" onclick="submitCharacterForm()">📤 Submit to Server</button>
-            <button type="submit" class="btn btn-primary">💾 Save Character Sheet</button>
-            <button type="button" class="btn btn-secondary" onclick="clearForm()">🗑️ Clear Form</button>
-        </div>
-                <div style="text-align: center; margin-top: 3rem;">
-                    <button type="button" class="btn-secondary" onclick="resetForm()">Reset</button>
-                </div>
-            </form>
-
-            <!-- Preview Section (Hidden by default) -->
-            <div id="previewSection" class="preview-section" style="display: none;">
-                <h2>📋 Character Sheet Preview</h2>
-                <div id="previewContent">
-                    <!-- Preview will be generated here -->
+        <section id="home" class="hero" aria-labelledby="hero-title">
+            <div class="hero-content">
+                <h2 id="hero-title">Welcome to Dark City</h2>
+                <p>A mysterious urban fantasy RPG where shadows hold secrets and every choice matters.</p>
+                
+                <!-- Server Rules Block -->
+                <div class="rule-card" style="margin-top: 2rem; max-width: 600px;">
+                    <h3>Server Rules</h3>
+                    <p>Community guidelines and content standards for Dark City.</p>
+                    <a href="rules/server-rules.html" class="btn btn-outline">View Details</a>
                 </div>
             </div>
-        </div>
+        </section>
+
+        <!-- Game Rules Section -->
+        <section id="rules" class="section" aria-labelledby="rules-title">
+            <div class="container">
+                <h2 id="rules-title">Game Rules</h2>
+                <div class="rules-grid" role="grid" aria-label="Rules categories">
+                    <div class="rule-card" role="gridcell">
+                        <h3>How It Works</h3>
+                        <p>Core mechanics, dice rolling, and gameplay systems.</p>
+                        <a href="rules/how-it-works.html" class="btn btn-outline" aria-describedby="how-it-works-desc">View Details</a>
+                        <p id="how-it-works-desc" class="sr-only">Click to view game mechanics and systems</p>
+                    </div>
+                    <div class="rule-card">
+                        <h3>Character Creation</h3>
+                        <p>Complete guide to creating your Dark City character.</p>
+                        <a href="rules/character-creation.html" class="btn btn-outline">View Details</a>
+                    </div>
+                    <div class="rule-card">
+                        <h3>Playing the Game</h3>
+                        <p>How to post, join scenes, and use server features.</p>
+                        <a href="rules/playing-the-game.html" class="btn btn-outline">View Details</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Characters Section -->
+        <section id="characters" class="section">
+            <div class="container">
+                <h2>Character Sheets</h2>
+                <div class="character-actions">
+                    <a href="character-creator.html" class="btn btn-primary">Create New Character</a>
+                    <a href="characters/gallery.html" class="btn btn-secondary">View Characters</a>
+                </div>
+                <div class="characters-grid" id="charactersList">
+                    <!-- Characters will be loaded here from GitHub API -->
+                </div>
+            </div>
+        </section>
+
+        <section id="calendar" class="section">
+            <div class="container">
+                <h2>Community Calendar</h2>
+                <div class="calendar-container">
+                    <div class="calendar-controls">
+                        <button id="prevMonth" class="btn btn-outline">&lt;</button>
+                        <span id="currentMonth"></span>
+                        <button id="nextMonth" class="btn btn-outline">&gt;</button>
+                    </div>
+                    <div class="calendar-grid" id="calendarGrid">
+                        <!-- Calendar will be generated here -->
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
     <footer>
@@ -941,1020 +119,129 @@
 
     <script src="config.js"></script>
     <script src="js/env-loader.js"></script>
-    <script src="js/input-sanitizer.js"></script>
+    <script src="js/performance.js"></script>
     <script src="js/safe-dom.js"></script>
-    <script src="js/server-api.js"></script>
     <script src="js/error-handler.js"></script>
+    <script src="js/simple-calendar.js"></script>
+    <script src="js/accessibility.js"></script>
+    
     <script>
-        // Dynamic form management
-        let tempAspectCount = 2;
-        let consequenceCount = 2;
-        let moveCount = 3;
-        let itemCount = 2;
-        let sceneCount = 1;
-
-        function addTemporaryAspect() {
-            tempAspectCount++;
-            const container = document.getElementById('temporaryAspects');
-            const formGrid = container.querySelector('.form-grid');
+        // Load top 6 most recent characters with caching
+        async function loadRecentCharacters() {
+            const charactersList = document.getElementById('charactersList');
+            const cacheKey = 'recent_characters_6';
             
-            const newAspect = SafeDOM.createHTML('div', { className: 'form-group' }, [
-                SafeDOM.createHTML('label', { for: `tempAspect${tempAspectCount}` }, [`Aspect/Injury ${tempAspectCount}`]),
-                SafeDOM.createElement('input', {
-                    type: 'text',
-                    id: `tempAspect${tempAspectCount}`,
-                    name: `tempAspect${tempAspectCount}`
-                })
-            ]);
+            // Show loading state
+            charactersList.innerHTML = '<p class="text-center text-gray-400">Loading characters...</p>';
             
-            const newDate = SafeDOM.createHTML('div', { className: 'form-group' }, [
-                SafeDOM.createHTML('label', { for: `tempDate${tempAspectCount}` }, ['Date of Infliction']),
-                SafeDOM.createElement('input', {
-                    type: 'date',
-                    id: `tempDate${tempAspectCount}`,
-                    name: `tempDate${tempAspectCount}`
-                })
-            ]);
+            // Announce loading to screen readers
+            announceToScreenReader('Loading characters...', 'loading');
             
-            formGrid.appendChild(newAspect);
-            formGrid.appendChild(newDate);
-        }
-
-        function addConsequence() {
-            consequenceCount++;
-            const container = document.getElementById('consequences');
-            const consequencesGrid = container.querySelector('.consequences-grid');
-            
-            const newConsequence = SafeDOM.createHTML('div', { className: 'form-group' }, [
-                SafeDOM.createHTML('label', { for: `consequence${consequenceCount}` }, [`Consequence ${consequenceCount}`]),
-                SafeDOM.createElement('input', {
-                    type: 'text',
-                    id: `consequence${consequenceCount}`,
-                    name: `consequence${consequenceCount}`
-                })
-            ]);
-            
-            const newDate = SafeDOM.createHTML('div', { className: 'form-group' }, [
-                SafeDOM.createHTML('label', { for: `consequenceDate${consequenceCount}` }, ['Date of Infliction']),
-                SafeDOM.createElement('input', {
-                    type: 'date',
-                    id: `consequenceDate${consequenceCount}`,
-                    name: `consequenceDate${consequenceCount}`
-                })
-            ]);
-            
-            consequencesGrid.appendChild(newConsequence);
-            consequencesGrid.appendChild(newDate);
-        }
-
-        function addMove() {
-            moveCount++;
-            const container = document.querySelector('.moves-grid');
-            
-            const newMove = SafeDOM.createHTML('div', { className: 'form-group' }, [
-                SafeDOM.createHTML('label', { for: `move${moveCount}` }, [`Move ${moveCount}`]),
-                SafeDOM.createElement('input', {
-                    type: 'text',
-                    id: `move${moveCount}`,
-                    name: `move${moveCount}`,
-                    placeholder: 'Enter move name'
-                })
-            ]);
-            
-            const newDesc = SafeDOM.createHTML('div', { className: 'form-group' }, [
-                SafeDOM.createHTML('label', { for: `moveDesc${moveCount}` }, ['Description']),
-                SafeDOM.createElement('input', {
-                    type: 'text',
-                    id: `moveDesc${moveCount}`,
-                    name: `moveDesc${moveCount}`,
-                    placeholder: 'Move description'
-                })
-            ]);
-            
-            container.appendChild(newMove);
-            container.appendChild(newDesc);
-        }
-
-        function addInventoryItem() {
-            itemCount++;
-            const container = document.getElementById('inventory');
-            const inventoryGrid = container.querySelector('.inventory-grid');
-            
-            const newItem = SafeDOM.createHTML('div', { className: 'form-group' }, [
-                SafeDOM.createHTML('label', { for: `item${itemCount}` }, [`Item ${itemCount}`]),
-                SafeDOM.createElement('input', {
-                    type: 'text',
-                    id: `item${itemCount}`,
-                    name: `item${itemCount}`,
-                    placeholder: 'Item name'
-                })
-            ]);
-            
-            const newDesc = SafeDOM.createHTML('div', { className: 'form-group' }, [
-                SafeDOM.createHTML('label', { for: `itemDesc${itemCount}` }, ['Description']),
-                SafeDOM.createElement('input', {
-                    type: 'text',
-                    id: `itemDesc${itemCount}`,
-                    name: `itemDesc${itemCount}`,
-                    placeholder: 'Item description'
-                })
-            ]);
-            
-            inventoryGrid.appendChild(newItem);
-            inventoryGrid.appendChild(newDesc);
-        }
-
-        function addScene() {
-            sceneCount++;
-            const container = document.getElementById('sceneArchive');
-            const sceneGrid = container.querySelector('.scene-archive-grid');
-            
-            const newScene = SafeDOM.createHTML('div', { className: 'form-group' }, [
-                SafeDOM.createHTML('label', { for: `scene${sceneCount}` }, [`Scene ${sceneCount} Summary`]),
-                SafeDOM.createElement('textarea', {
-                    id: `scene${sceneCount}`,
-                    name: `scene${sceneCount}`,
-                    placeholder: 'Scene summary, date, location, stat changes, resources used...'
-                })
-            ]);
-            
-            const newChars = SafeDOM.createHTML('div', { className: 'form-group' }, [
-                SafeDOM.createHTML('label', { for: `sceneChars${sceneCount}` }, ['Involved Characters']),
-                SafeDOM.createElement('input', {
-                    type: 'text',
-                    id: `sceneChars${sceneCount}`,
-                    name: `sceneChars${sceneCount}`,
-                    placeholder: 'Characters involved in this scene'
-                })
-            ]);
-            
-            sceneGrid.appendChild(newScene);
-            sceneGrid.appendChild(newChars);
-        }
-
-        // Photo preview function
-        function previewPhoto(type) {
-            const fileInput = document.getElementById(type + 'Photo');
-            const previewDiv = document.getElementById(type + 'PhotoPreview');
-            
-            if (fileInput.files && fileInput.files[0]) {
-                const reader = new FileReader();
-                
-                reader.onload = function(e) {
-                    previewDiv.innerHTML = `<img src="${e.target.result}" alt="${type} form photo">`;
-                };
-                
-                reader.readAsDataURL(fileInput.files[0]);
-            }
-        }
-
-        function previewCharacter() {
-            const form = document.getElementById('characterForm');
-            const formData = new FormData(form);
-            const previewSection = document.getElementById('previewSection');
-            const previewContent = document.getElementById('previewContent');
-            
-            // Generate preview content
-            let previewHTML = `
-                <h3>${formData.get('name') || 'Unnamed Character'}</h3>
-                <p><strong>Classification:</strong> ${formData.get('classification')}</p>
-                <p><strong>Playbook:</strong> ${formData.get('playbook')}</p>
-                <p><strong>Subtype:</strong> ${formData.get('subtype')}</p>
-                <p><strong>Apparent Age:</strong> ${formData.get('apparentAge')}</p>
-                ${formData.get('actualAge') ? `<p><strong>Actual Age:</strong> ${formData.get('actualAge')}</p>` : ''}
-                <div style="margin-top: 1rem;">
-                    <h4>Biography:</h4>
-                    <p>${formData.get('bio') || 'No biography provided.'}</p>
-                </div>
-            `;
-            
-            previewContent.innerHTML = previewHTML;
-            previewSection.style.display = 'block';
-            previewSection.scrollIntoView({ behavior: 'smooth' });
-        }
-
-        function resetForm() {
-            if (confirm('Are you sure you want to reset the entire form? All data will be lost.')) {
-                document.getElementById('characterForm').reset();
-                document.getElementById('previewSection').style.display = 'none';
-            }
-        }
-
-        // Form submission
-        document.getElementById('characterForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            // Collect form data
-            const formData = new FormData(this);
-            const characterData = {};
-            
-            // Convert FormData to object and organize data
-            for (let [key, value] of formData.entries()) {
-                characterData[key] = value;
-            }
-            
-            // Handle photo uploads
-            const humanPhotoFile = document.getElementById('humanPhoto').files[0];
-            const monsterPhotoFile = document.getElementById('monsterPhoto').files[0];
-            
-            console.log('🔍 Photo file selection:', {
-                hasHumanFile: !!humanPhotoFile,
-                hasMonsterFile: !!monsterPhotoFile,
-                humanFileName: humanPhotoFile ? humanPhotoFile.name : 'none',
-                monsterFileName: monsterPhotoFile ? monsterPhotoFile.name : 'none',
-                humanFileSize: humanPhotoFile ? humanPhotoFile.size : 0,
-                monsterFileSize: monsterPhotoFile ? monsterPhotoFile.size : 0
-            });
-            
-            // Convert photos to base64 synchronously
-            if (humanPhotoFile) {
-                characterData.humanPhoto = await new Promise((resolve) => {
-                    const reader = new FileReader();
-                    reader.onload = (e) => resolve(e.target.result);
-                    reader.readAsDataURL(humanPhotoFile);
-                });
-                console.log('📸 Human photo added, length:', characterData.humanPhoto.length);
-            } else {
-                console.log('⚠️ No human photo file selected');
-            }
-            
-            if (monsterPhotoFile) {
-                characterData.monsterPhoto = await new Promise((resolve) => {
-                    const reader = new FileReader();
-                    reader.onload = (e) => resolve(e.target.result);
-                    reader.readAsDataURL(monsterPhotoFile);
-                });
-                console.log('📸 Monster photo added, length:', characterData.monsterPhoto.length);
-            } else {
-                console.log('⚠️ No monster photo file selected');
-            }
-            
-            console.log('🔍 Final character data keys:', Object.keys(characterData));
-            console.log('🔍 Has humanPhoto:', !!characterData.humanPhoto);
-            console.log('🔍 Has monsterPhoto:', !!characterData.monsterPhoto);
-            console.log('🔍 About to submit character with photo data:', {
-                totalKeys: Object.keys(characterData).length,
-                humanPhotoLength: characterData.humanPhoto ? characterData.humanPhoto.length : 0,
-                monsterPhotoLength: characterData.monsterPhoto ? characterData.monsterPhoto.length : 0,
-                humanPhotoStart: characterData.humanPhoto ? characterData.humanPhoto.substring(0, 50) + '...' : 'none',
-                monsterPhotoStart: characterData.monsterPhoto ? characterData.monsterPhoto.substring(0, 50) + '...' : 'none'
-            });
-            
-            // Organize skills data
-            const skills = [];
-            for (let level = 4; level >= 1; level--) {
-                for (let slot = 1; slot <= 6; slot++) {
-                    const skillKey = `skill${level}_${slot}`;
-                    if (characterData[skillKey]) {
-                        skills.push({
-                            name: characterData[skillKey],
-                            level: level
-                        });
-                        delete characterData[skillKey];
-                    }
-                }
-            }
-            characterData.skills = skills;
-            
-            // Organize moves data
-            const moves = [];
-            for (let i = 1; i <= moveCount; i++) {
-                const moveKey = `move${i}`;
-                const descKey = `moveDesc${i}`;
-                if (characterData[moveKey]) {
-                    moves.push({
-                        name: characterData[moveKey],
-                        source: characterData.playbook, // Use playbook as source
-                        description: characterData[descKey] || ''
-                    });
-                    delete characterData[moveKey];
-                    delete characterData[descKey];
-                }
-            }
-            
-            // Darkest Self is already a string field, no need to convert to move
-            // Just ensure it's included as-is
-            characterData.moves = moves;
-            
-            // Organize temporary aspects
-            const temporaryAspects = [];
-            for (let i = 1; i <= tempAspectCount; i++) {
-                const aspectKey = `tempAspect${i}`;
-                const dateKey = `tempDate${i}`;
-                if (characterData[aspectKey]) {
-                    temporaryAspects.push({
-                        aspect: characterData[aspectKey],
-                        date: characterData[dateKey] || ''
-                    });
-                    delete characterData[aspectKey];
-                    delete characterData[dateKey];
-                }
-            }
-            characterData.temporaryAspects = temporaryAspects;
-            
-            // Organize consequences
-            const consequences = [];
-            for (let i = 1; i <= consequenceCount; i++) {
-                const consequenceKey = `consequence${i}`;
-                const dateKey = `consequenceDate${i}`;
-                if (characterData[consequenceKey]) {
-                    consequences.push({
-                        consequence: characterData[consequenceKey],
-                        date: characterData[dateKey] || ''
-                    });
-                    delete characterData[consequenceKey];
-                    delete characterData[dateKey];
-                }
-            }
-            characterData.consequences = consequences;
-            
-            // Organize inventory
-            const inventory = [];
-            for (let i = 1; i <= itemCount; i++) {
-                const itemKey = `item${i}`;
-                const descKey = `itemDesc${i}`;
-                if (characterData[itemKey]) {
-                    inventory.push({
-                        item: characterData[itemKey],
-                        description: characterData[descKey] || ''
-                    });
-                    delete characterData[itemKey];
-                    delete characterData[descKey];
-                }
-            }
-            characterData.inventory = inventory;
-            
-            // Organize scenes
-            const scenes = [];
-            for (let i = 1; i <= sceneCount; i++) {
-                const sceneKey = `scene${i}`;
-                const charsKey = `sceneChars${i}`;
-                if (characterData[sceneKey]) {
-                    scenes.push({
-                        summary: characterData[sceneKey],
-                        characters: characterData[charsKey] || ''
-                    });
-                    delete characterData[sceneKey];
-                    delete characterData[charsKey];
-                }
-            }
-            characterData.scenes = scenes;
-            
-            // Clean up empty values
-            Object.keys(characterData).forEach(key => {
-                if (!characterData[key] || characterData[key] === '') {
-                    delete characterData[key];
-                }
-            });
-            
-            // Validate required fields
-            const requiredFields = ['name', 'apparentAge', 'classification', 'playbook', 'subtype', 'bio'];
-            const missingFields = requiredFields.filter(field => !characterData[field]);
-            
-            if (missingFields.length > 0) {
-                alert(`Please fill in all required fields: ${missingFields.join(', ')}`);
+            // Check cache first
+            const cachedData = window.apiCache.get(cacheKey);
+            if (cachedData) {
+                renderCharacters(cachedData);
                 return;
             }
             
             try {
-                // Submit to server
-                const serverAPI = new ServerAPI();
-                const result = await serverAPI.submitCharacter(characterData);
-                
-                // Clear draft and form
-                localStorage.removeItem('characterDraft');
-                this.reset();
-                
-                alert('Character sheet submitted successfully! It will be reviewed by moderators and you\'ll be notified of the decision.');
-                
-                // Optionally redirect to management page
-                // window.location.href = 'characters/manage.html';
-                
-            } catch (error) {
-                console.error('Error submitting character to server:', error);
-                
-                // Fallback: Save to localStorage for later submission
-                const timestamp = new Date().toISOString();
-                characterData.submittedAt = timestamp;
-                characterData.id = 'draft_' + Date.now();
-                characterData.status = 'pending_submission';
-                
-                // Get existing drafts
-                const drafts = JSON.parse(localStorage.getItem('characterDrafts') || '[]');
-                drafts.push(characterData);
-                localStorage.setItem('characterDrafts', JSON.stringify(drafts));
-                
-                // Clear current draft
-                localStorage.removeItem('characterDraft');
-                this.reset();
-                
-                // Provide more detailed error message
-                const errorMessage = error.message || 'Unknown error';
-                console.log('Server error details:', errorMessage);
-                
-                alert(`Character sheet saved locally! The server is currently unavailable (${errorMessage}), but your character has been saved and will be submitted when the server is back online. You can continue creating other characters.\n\nYour character ID: ${characterData.id}`);
-            }
-        });
-
-        // Multiple test character templates
-        const testCharacterTemplates = [
-            {
-                name: 'Vampire Lord',
-                classification: 'Vampire',
-                playbook: 'Unsated',
-                subtype: 'Vampire',
-                apparentAge: '30',
-                actualAge: '450',
-                bio: 'Born in medieval times, rose to become a powerful vampire lord. Commands respect and fear in equal measure.',
-                humanHeight: '6\'2"',
-                humanWeight: '200 lbs',
-                monsterHeight: '9\' tall',
-                monsterWeight: '500 lbs',
-                aspect1: 'Ancient Authority',
-                aspect2: 'Shadow Command',
-                aspect3: 'Blood Magic',
-                physicalStress: '3',
-                mentalStress: '2',
-                physicalConsequences: '2',
-                mentalConsequences: '1',
-                fatePoints: '3',
-                tempAspect1: 'Blood Frenzy',
-                tempAspect2: 'Night Vision',
-                specialResources: 'Ancient castle, blood servants, shadow army, immortal contacts',
-                consequence1: 'Sunlight Weakness',
-                consequence2: 'Blood Addiction',
-                move1: 'Blood Drain',
-                moveDesc1: 'Drain life force from victims',
-                move2: 'Shadow Teleport',
-                moveDesc2: 'Teleport through shadows',
-                move3: 'Mind Control',
-                moveDesc3: 'Control lesser minds',
-                darkestSelf: 'Beast Form Monster',
-                darkestSelfDesc: 'Transform into monstrous vampire beast',
-                move1Source: 'Vampire',
-                move2Source: 'Shadow',
-                move3Source: 'Blood',
-                connections: 'Childer: Several vampire offspring\nAllies: Dark council\nEnemies: Vampire hunters\nContacts: Criminal underworld',
-                item1: 'Ancient Sword',
-                itemDesc1: 'Enchanted blade passed down through generations',
-                item2: 'Blood Ring',
-                itemDesc2: 'Ring that enhances blood magic',
-                scene1: 'The Embrace - The night I was transformed and given immortality.',
-                sceneChars1: 'My sire, vampire council, mortal victims',
-                // Skills - only use available slots
-                skill4_1: 'Fight',
-                skill3_1: 'Will',
-                skill3_2: 'Notice',
-                skill2_1: 'Stealth',
-                skill2_2: 'Lore',
-                skill2_3: 'Contacts',
-                skill1_1: 'Athletics',
-                skill1_2: 'Empathy',
-                skill1_3: 'Deceive',
-                skill1_4: 'Physique'
-            },
-            {
-                name: 'Street Mage',
-                classification: 'Wizard',
-                playbook: 'Mage',
-                subtype: 'Wizard',
-                apparentAge: '24',
-                actualAge: '28',
-                bio: 'Discovered magical abilities young, now works as a street mage helping the supernatural community.',
-                humanHeight: '5\'8"',
-                humanWeight: '160 lbs',
-                monsterHeight: '6\' tall',
-                monsterWeight: '180 lbs',
-                aspect1: 'Raw Magic',
-                aspect2: 'Quick Learning',
-                aspect3: 'Street Smarts',
-                physicalStress: '2',
-                mentalStress: '3',
-                physicalConsequences: '1',
-                mentalConsequences: '2',
-                fatePoints: '2',
-                tempAspect1: 'Magic Overload',
-                tempAspect2: 'Exhausted',
-                specialResources: 'Magic staff, spell books, hidden sanctum, magical contacts',
-                consequence1: 'Magic Addiction',
-                consequence2: 'Power Burnout',
-                move1: 'Fireball',
-                moveDesc1: 'Cast explosive fire magic',
-                move2: 'Shield',
-                moveDesc2: 'Magical protection barrier',
-                move3: 'Teleport',
-                moveDesc3: 'Short range teleportation',
-                darkestSelf: 'Magic Storm Chaos',
-                darkestSelfDesc: 'Lose control and unleash raw magic',
-                move1Source: 'Arcane',
-                move2Source: 'Mystic',
-                move3Source: 'Elemental',
-                connections: 'Mentor: Old wizard\nAllies: Supernatural community\nEnemies: Magic hunters\nContacts: Underground mages',
-                item1: 'Magic Staff',
-                itemDesc1: 'Channel for magical energy',
-                item2: 'Spell Book',
-                itemDesc2: 'Collection of learned spells',
-                scene1: 'First Spell - The day I discovered I could use magic.',
-                sceneChars1: 'My mentor, magical creatures, surprised witnesses',
-                // Skills - only use available slots
-                skill4_1: 'Lore',
-                skill3_1: 'Will',
-                skill3_2: 'Notice',
-                skill2_1: 'Crafting',
-                skill2_2: 'Deceive',
-                skill2_3: 'Empathy',
-                skill1_1: 'Athletics',
-                skill1_2: 'Stealth',
-                skill1_3: 'Investigate',
-                skill1_4: 'Rapport'
-            },
-            {
-                name: 'Werewolf Alpha',
-                classification: 'Werewolf',
-                playbook: 'Wild',
-                subtype: 'Lycanthrope',
-                apparentAge: '35',
-                actualAge: '42',
-                bio: 'Born werewolf, natural leader of a pack. Struggles to balance human and beast sides.',
-                humanHeight: '6\'4"',
-                humanWeight: '240 lbs',
-                monsterHeight: '8\' tall',
-                monsterWeight: '600 lbs',
-                aspect1: 'Alpha Presence',
-                aspect2: 'Pack Bond',
-                aspect3: 'Beast Strength',
-                physicalStress: '4',
-                mentalStress: '1',
-                physicalConsequences: '3',
-                mentalConsequences: '1',
-                fatePoints: '2',
-                tempAspect1: 'Raging',
-                tempAspect2: 'Pack Protective',
-                specialResources: 'Wolf pack, territory, hunting grounds, pack allies',
-                consequence1: 'Silver Allergy',
-                consequence2: 'Rage Issues',
-                move1: 'Wolf Form',
-                moveDesc1: 'Transform into powerful wolf',
-                move2: 'Pack Howl',
-                moveDesc2: 'Call pack members for help',
-                move3: 'Claw Attack',
-                moveDesc3: 'Deadly claw strike',
-                darkestSelf: 'Full Rage Beast',
-                darkestSelfDesc: 'Completely lose control to beast side',
-                move1Source: 'Werewolf',
-                move2Source: 'Pack',
-                move3Source: 'Beast',
-                connections: 'Pack: 12 werewolves\nAllies: Other shapeshifters\nEnemies: Hunters\nContacts: Supernatural community',
-                item1: 'Wolf Totem',
-                itemDesc1: 'Symbol of pack leadership',
-                item2: 'Silver Dagger',
-                itemDesc2: 'Weapon that hurts my kind',
-                scene1: 'First Change - The painful night I first transformed.',
-                sceneChars1: 'My pack alpha, terrified humans, my family',
-                // Skills - only use available slots
-                skill4_1: 'Fight',
-                skill3_1: 'Athletics',
-                skill3_2: 'Physique',
-                skill2_1: 'Notice',
-                skill2_2: 'Intimidate',
-                skill2_3: 'Provoke',
-                skill1_1: 'Stealth',
-                skill1_2: 'Contacts',
-                skill1_3: 'Survival',
-                skill1_4: 'Will'
-            },
-            {
-                name: 'Fae Trickster',
-                classification: 'Fairy',
-                playbook: 'Wild',
-                subtype: 'Pixie',
-                apparentAge: '19',
-                actualAge: '200',
-                bio: 'Ancient fae who loves playing tricks on mortals. Bound by fae rules and traditions.',
-                humanHeight: '5\'2"',
-                humanWeight: '110 lbs',
-                monsterHeight: '2\' tall',
-                monsterWeight: '30 lbs',
-                aspect1: 'Fae Magic',
-                aspect2: 'Trickster Nature',
-                aspect3: 'Immortal Youth',
-                physicalStress: '1',
-                mentalStress: '3',
-                physicalConsequences: '1',
-                mentalConsequences: '2',
-                fatePoints: '3',
-                tempAspect1: 'Glitter Dust',
-                tempAspect2: 'Invisible',
-                specialResources: 'Fae realm access, magic dust, illusions, fae allies',
-                consequence1: 'Iron Weakness',
-                consequence2: 'Truth Binding',
-                move1: 'Illusion',
-                moveDesc1: 'Create convincing illusions',
-                move2: 'Teleport',
-                moveDesc2: 'Short range fae teleport',
-                move3: 'Glamour',
-                moveDesc3: 'Change appearance and charm others',
-                darkestSelf: 'Fae Rage Fury',
-                darkestSelfDesc: 'Unleash cruel fae nature',
-                move1Source: 'Fae',
-                move2Source: 'Magic',
-                move3Source: 'Illusion',
-                connections: 'Court: Summer Fae\nAllies: Other fae beings\nEnemies: Iron users\nContacts: Mortal friends',
-                item1: 'Fae Wand',
-                itemDesc1: 'Channel for fae magic',
-                item2: 'Invisibility Cloak',
-                itemDesc2: 'Fae-made magical garment',
-                scene1: 'Mortal World - My first visit to the human realm.',
-                sceneChars1: 'Fae guides, curious mortals, dangerous ironworkers',
-                // Skills - only use available slots
-                skill4_1: 'Deceive',
-                skill3_1: 'Stealth',
-                skill3_2: 'Empathy',
-                skill2_1: 'Athletics',
-                skill2_2: 'Rapport',
-                skill2_3: 'Notice',
-                skill1_1: 'Lore',
-                skill1_2: 'Will',
-                skill1_3: 'Crafting',
-                skill1_4: 'Drive'
-            },
-            {
-                name: 'Demon Hunter',
-                classification: 'Human',
-                playbook: 'Mortal',
-                subtype: 'Human',
-                apparentAge: '28',
-                actualAge: '28',
-                bio: 'Trained from youth to hunt supernatural threats. Carries family legacy and burden.',
-                humanHeight: '5\'11"',
-                humanWeight: '180 lbs',
-                monsterHeight: '6\' tall',
-                monsterWeight: '200 lbs',
-                aspect1: 'Hunter Training',
-                aspect2: 'Iron Will',
-                aspect3: 'Supernatural Knowledge',
-                physicalStress: '3',
-                mentalStress: '2',
-                physicalConsequences: '2',
-                mentalConsequences: '1',
-                fatePoints: '2',
-                tempAspect1: 'Wounded',
-                tempAspect2: 'Exhausted',
-                specialResources: 'Hunter weapons, safe houses, hunter network, ancient knowledge',
-                consequence1: 'Trauma',
-                consequence2: 'Obsession',
-                move1: 'Hunter Sense',
-                moveDesc1: 'Detect supernatural presence',
-                move2: 'Weapon Master',
-                moveDesc2: 'Expert with all hunting weapons',
-                move3: 'Holy Protection',
-                moveDesc3: 'Protection against dark forces',
-                darkestSelf: 'Vengeance Obsession',
-                darkestSelfDesc: 'Lose self to hunting obsession',
-                move1Source: 'Training',
-                move2Source: 'Church',
-                move3Source: 'Holy',
-                connections: 'Family: Hunter lineage\nAllies: Other hunters\nEnemies: Supernatural creatures\nContacts: Church and authorities',
-                item1: 'Blessed Sword',
-                itemDesc1: 'Family heirloom weapon',
-                item2: 'Holy Symbols',
-                itemDesc2: 'Protection against evil',
-                scene1: 'First Hunt - My first supernatural encounter and kill.',
-                sceneChars1: 'My mentor, the monster, terrified witnesses',
-                // Skills - only use available slots
-                skill4_1: 'Shoot',
-                skill3_1: 'Fight',
-                skill3_2: 'Notice',
-                skill2_1: 'Athletics',
-                skill2_2: 'Lore',
-                skill2_3: 'Will',
-                skill1_1: 'Stealth',
-                skill1_2: 'Intimidate',
-                skill1_3: 'Investigate',
-                skill1_4: 'Physique'
-            }
-        ];
-
-        // Autofill test character for quick testing
-        function autofillTestCharacter() {
-            try {
-                console.log('🚀 Starting autofill...');
-                
-                // Randomly select a character template
-                const randomTemplate = testCharacterTemplates[Math.floor(Math.random() * testCharacterTemplates.length)];
-                console.log('🎲 Selected template:', randomTemplate.name);
-                
-                // Create test data with unique name
-                const testData = {
-                    ...randomTemplate,
-                    'name': randomTemplate.name + ' ' + Date.now(),
-                    'tempDate1': new Date().toISOString().split('T')[0],
-                    'tempDate2': new Date().toISOString().split('T')[0],
-                    'consequenceDate1': new Date().toISOString().split('T')[0],
-                    'consequenceDate2': new Date().toISOString().split('T')[0]
-                };
-                
-                console.log('📝 Test data created:', Object.keys(testData).length, 'fields');
-                
-                // Fill in all the test data
-                let filledCount = 0;
-                Object.keys(testData).forEach(key => {
-                    // Skip move source fields - they're not actual form elements
-                    if (key.startsWith('move') && key.endsWith('Source')) {
-                        return;
+                const response = await fetch(`${window.APP_CONFIG.apiURL}/characters?status=approved&limit=6`, {
+                    headers: {
+                        'Authorization': `Bearer ${window.APP_CONFIG.API_KEY}`
                     }
-                    
-                    const element = document.getElementById(key);
-                    if (element) {
-                        // Skip file inputs - they can't be programmatically set
-                        if (element.type === 'file') {
-                            return;
-                        }
-                        element.value = testData[key];
-                        filledCount++;
-                        console.log('✅ Filled:', key, 'with value:', testData[key]);
+                });
+                
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        throw new Error('Authentication failed. Please check your configuration.');
+                    } else if (response.status === 404) {
+                        throw new Error('Character service not available.');
+                    } else if (response.status >= 500) {
+                        throw new Error('Server error. Please try again later.');
                     } else {
-                        console.warn('⚠️ Element not found:', key);
+                        throw new Error(`Failed to load characters (${response.status})`);
                     }
-                });
+                }
                 
-                console.log('✅ Filled', filledCount, 'fields successfully');
+                const data = await response.json();
+                const characters = data.characters || [];
                 
-                // Trigger change events to update any listeners
-                Object.keys(testData).forEach(key => {
-                    const element = document.getElementById(key);
-                    if (element) {
-                        element.dispatchEvent(new Event('change', { bubbles: true }));
-                        element.dispatchEvent(new Event('input', { bubbles: true }));
-                    }
-                });
+                // Cache the results
+                window.apiCache.set(cacheKey, characters);
                 
-                alert(`🚀 ${randomTemplate.name} test character loaded successfully! (${randomTemplate.classification} - ${randomTemplate.playbook})\n\nYou can now submit to test the server connection.`);
+                renderCharacters(characters);
+                
+                // Announce success to screen readers
+                announceToScreenReader(`Loaded ${characters.length} characters`, 'success');
                 
             } catch (error) {
-                console.error('❌ Autofill error:', error);
-                alert('❌ Error autofilling character: ' + error.message);
+                console.error('Error loading characters:', error);
+                charactersList.innerHTML = `
+                    <div class="error-message text-center">
+                        <p class="text-red-400">Error loading characters</p>
+                        <p class="text-gray-400 text-sm">${error.message}</p>
+                        <button onclick="loadRecentCharacters()" class="btn btn-outline mt-2">Retry</button>
+                    </div>
+                `;
+                
+                // Announce error to screen readers
+                announceToScreenReader(`Error loading characters: ${error.message}`, 'error');
             }
         }
-
-        // Submit character form directly to server
-        async function submitCharacterForm() {
-            console.log('🚀 Starting character submission... v2.0');
+        
+        function renderCharacters(characters) {
+            const charactersList = document.getElementById('charactersList');
             
-            let characterData = {}; // Declare outside try block
+            if (characters.length === 0) {
+                charactersList.innerHTML = '<p class="text-center text-gray-400">No characters found. Be the first to create one!</p>';
+                return;
+            }
             
-            try {
-                // Collect form data
-                const form = document.getElementById('characterForm');
-                const formData = new FormData(form);
+            charactersList.innerHTML = characters.map(character => {
+                // Create safe filename for profile link
+                const safeName = character.name
+                    .toLowerCase()
+                    .replace(/[^a-z0-9]/g, '-')
+                    .replace(/-+/g, '-')
+                    .replace(/^-|-$/g, '');
                 
-                console.log('📝 Collecting form data...');
+                // Sanitize character data for display
+                const sanitizedName = character.name ? character.name.replace(/</g, '&lt;').replace(/>/g, '&gt;') : 'Unknown Character';
+                const sanitizedClassification = character.classification ? character.classification.replace(/</g, '&lt;').replace(/>/g, '&gt;') : 'Unknown';
+                const sanitizedPlaybook = character.playbook ? character.playbook.replace(/</g, '&lt;').replace(/>/g, '&gt;') : 'Unknown';
+                const sanitizedBio = character.bio ? character.bio.substring(0, 100).replace(/</g, '&lt;').replace(/>/g, '&gt;') + (character.bio.length > 100 ? '...' : '') : 'No bio provided';
                 
-                // Convert FormData to object and organize data
-                for (let [key, value] of formData.entries()) {
-                    characterData[key] = value;
-                }
-                
-                // Handle photo uploads
-                const humanPhotoFile = document.getElementById('humanPhoto').files[0];
-                const monsterPhotoFile = document.getElementById('monsterPhoto').files[0];
-                
-                // Explicitly set photo fields to handle properly
-                characterData.humanPhoto = '';
-                characterData.monsterPhoto = '';
-                
-                console.log('🔍 Photo file selection:', {
-                    hasHumanFile: !!humanPhotoFile,
-                    hasMonsterFile: !!monsterPhotoFile,
-                    humanFileName: humanPhotoFile ? humanPhotoFile.name : 'none',
-                    monsterFileName: monsterPhotoFile ? monsterPhotoFile.name : 'none',
-                    humanFileSize: humanPhotoFile ? humanPhotoFile.size : 0,
-                    monsterFileSize: monsterPhotoFile ? monsterPhotoFile.size : 0
-                });
-                
-                // Convert photos to base64 synchronously
-                if (humanPhotoFile) {
-                    characterData.humanPhoto = await new Promise((resolve) => {
-                        const reader = new FileReader();
-                        reader.onload = (e) => resolve(e.target.result);
-                        reader.readAsDataURL(humanPhotoFile);
-                    });
-                    console.log('📸 Human photo added, length:', characterData.humanPhoto.length);
-                } else {
-                    characterData.humanPhoto = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg==';
-                    console.log('⚠️ No human photo file selected - using empty 1x1 pixel');
-                }
-                
-                if (monsterPhotoFile) {
-                    characterData.monsterPhoto = await new Promise((resolve) => {
-                        const reader = new FileReader();
-                        reader.onload = (e) => resolve(e.target.result);
-                        reader.readAsDataURL(monsterPhotoFile);
-                    });
-                    console.log('📸 Monster photo added, length:', characterData.monsterPhoto.length);
-                } else {
-                    characterData.monsterPhoto = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg==';
-                    console.log('⚠️ No monster photo file selected - using empty 1x1 pixel');
-                }
-                
-                console.log('🔍 Final character data keys:', Object.keys(characterData));
-                console.log('🔍 Has humanPhoto:', !!characterData.humanPhoto);
-                console.log('🔍 Has monsterPhoto:', !!characterData.monsterPhoto);
-                console.log('🔍 About to submit character with photo data:', {
-                    totalKeys: Object.keys(characterData).length,
-                    humanPhotoLength: characterData.humanPhoto ? characterData.humanPhoto.length : 0,
-                    monsterPhotoLength: characterData.monsterPhoto ? characterData.monsterPhoto.length : 0,
-                    humanPhotoStart: characterData.humanPhoto && typeof characterData.humanPhoto === 'string' ? characterData.humanPhoto.substring(0, 50) + '...' : 'none',
-                    monsterPhotoStart: characterData.monsterPhoto && typeof characterData.monsterPhoto === 'string' ? characterData.monsterPhoto.substring(0, 50) + '...' : 'none'
-                });
-                
-                // Convert numeric fields to strings for server validation
-                const numericFields = ['fatePoints', 'physicalStress', 'mentalStress', 'physicalConsequences', 'mentalConsequences'];
-                numericFields.forEach(field => {
-                    if (characterData[field] !== undefined) {
-                        characterData[field] = String(characterData[field]).trim();
-                        console.log(`🔄 Converted ${field} to string:`, characterData[field]);
-                    }
-                });
-                
-                // Organize skills data - match the new skill slot distribution
-                const skills = [];
-                const skillSlots = {
-                    4: 1,  // +4 skills: 1 slot
-                    3: 2,  // +3 skills: 2 slots  
-                    2: 3,  // +2 skills: 3 slots
-                    1: 4   // +1 skills: 4 slots
-                };
-                
-                for (let level = 4; level >= 1; level--) {
-                    for (let slot = 1; slot <= skillSlots[level]; slot++) {
-                        const skillKey = `skill${level}_${slot}`;
-                        if (characterData[skillKey]) {
-                            skills.push({
-                                name: characterData[skillKey],
-                                level: level
-                            });
-                            delete characterData[skillKey];
-                        }
-                    }
-                }
-                characterData.skills = skills;
-                
-                // Organize moves data
-                const moves = [];
-                for (let i = 1; i <= moveCount; i++) {
-                    const moveKey = `move${i}`;
-                    const descKey = `moveDesc${i}`;
-                    const sourceKey = `move${i}Source`;
-                    if (characterData[moveKey]) {
-                        const moveSource = characterData[sourceKey] || characterData.playbook || 'Unknown';
-                        moves.push({
-                            name: characterData[moveKey],
-                            source: moveSource,
-                            description: characterData[descKey] || ''
-                        });
-                        console.log(`📝 Move ${i}:`, {
-                            name: characterData[moveKey],
-                            source: moveSource,
-                            sourceFrom: characterData[sourceKey] ? 'template' : (characterData.playbook ? 'playbook' : 'fallback')
-                        });
-                        delete characterData[moveKey];
-                        delete characterData[descKey];
-                        delete characterData[sourceKey];
-                    }
-                }
-                
-                console.log('🔍 Final moves array:', moves);
-                
-                // Validate each move has required fields
-                moves.forEach((move, index) => {
-                    console.log(`🔍 Move ${index} validation:`, {
-                        hasName: !!move.name,
-                        hasSource: !!move.source,
-                        hasDescription: !!move.description,
-                        nameType: typeof move.name,
-                        sourceType: typeof move.source,
-                        descType: typeof move.description
-                    });
-                });
-                
-                // Darkest Self is already a string field, no need to convert to move
-                // Just ensure it's included as-is
-                characterData.moves = moves;
-                
-                console.log('✅ Character data organized:', {
-                    name: characterData.name,
-                    playbook: characterData.playbook,
-                    aspectsCount: characterData.aspects?.length || 0,
-                    movesCount: characterData.moves?.length || 0,
-                    scenesCount: characterData.scenes?.length || 0
-                });
-                
-                // Debug all character data types
-                console.log('🔍 All character data types:');
-                Object.keys(characterData).forEach(key => {
-                    console.log(`  ${key}: ${typeof characterData[key]} = ${characterData[key]}`);
-                });
-                
-                console.log('🌐 Submitting to server...');
-                console.log('📤 Character data being sent:', characterData);
-                
-                // Create server API instance
-                const serverAPI = new ServerAPI();
-                console.log('📡 Server API created:', serverAPI);
-                
-                // Submit to server
-                const result = await serverAPI.submitCharacter(characterData);
-                console.log('✅ Server response:', result);
-                
-                // Show success message
-                alert('🎉 Character sheet submitted successfully! It will be reviewed by moderators and you\'ll be notified of the decision.');
-                
-                // Reset form
-                document.getElementById('characterForm').reset();
-                
-                // Redirect to homepage after successful submission
+                return `
+                    <div class="character-card clickable-character" 
+                         role="article"
+                         tabindex="0"
+                         aria-label="Character: ${sanitizedName}, ${sanitizedClassification} - ${sanitizedPlaybook}"
+                         onkeypress="if(event.key==='Enter'||event.key===' ') this.click()"
+                         onclick="window.open('https://dark-city-game-production.up.railway.app/characters/profiles/${safeName}-${character._id}.html', '_blank')">
+                        <h4>${sanitizedName}</h4>
+                        <p class="text-sm">${sanitizedClassification} - ${sanitizedPlaybook}</p>
+                        <p class="text-xs text-gray">${sanitizedBio}</p>
+                        <p class="text-xs text-muted">📄 View full profile</p>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // Load characters when page loads
+        document.addEventListener('DOMContentLoaded', loadRecentCharacters);
+        
+        // Screen reader announcement function
+        function announceToScreenReader(message, type = 'polite') {
+            const announcementElement = document.querySelector(`.${type}-announcement`);
+            if (announcementElement) {
+                announcementElement.textContent = message;
+                // Clear after announcement
                 setTimeout(() => {
-                    window.location.href = 'index.html';
+                    announcementElement.textContent = '';
                 }, 1000);
-                
-            } catch (error) {
-                console.error('❌ Submission error:', error);
-                
-                // Try to extract more detailed error information
-                if (error.message && error.message.includes('Validation failed')) {
-                    console.error('🔍 Full error details:', error);
-                    console.error('🔍 Error message:', error.message);
-                    
-                    // Try to parse the error if it's a response object
-                    if (error.response) {
-                        console.error('🔍 Error response:', error.response);
-                    }
-                    
-                    // Check if this is a fetch error with response data
-                    if (error.error) {
-                        console.error('🔍 Error details object:', error.error);
-                    }
-                    
-                    // Try to get the response text if available
-                    if (error.response && error.response.text) {
-                        try {
-                            const responseText = await error.response.text();
-                            console.error('🔍 Response text:', responseText);
-                        } catch (e) {
-                            console.error('🔍 Could not read response text:', e);
-                        }
-                    }
-                }
-                
-                alert(`❌ Error submitting character: ${error.message}`);
             }
         }
 
-        // Auto-save draft
-        let autoSaveTimer;
-        document.getElementById('characterForm').addEventListener('input', function() {
-            clearTimeout(autoSaveTimer);
-            autoSaveTimer = setTimeout(function() {
-                const formData = new FormData(document.getElementById('characterForm'));
-                const draftData = {};
-                for (let [key, value] of formData.entries()) {
-                    if (value) draftData[key] = value;
-                }
-                localStorage.setItem('characterDraft', JSON.stringify(draftData));
-                console.log('Draft auto-saved');
-            }, 5000); // Auto-save after 5 seconds of inactivity
-        });
-
-        // Load draft on page load
-        window.addEventListener('load', function() {
-            const draft = localStorage.getItem('characterDraft');
-            if (draft) {
-                const draftData = JSON.parse(draft);
-                const form = document.getElementById('characterForm');
-                
-                // Populate form with draft data
-                for (let [key, value] of Object.entries(draftData)) {
-                    const field = form.querySelector(`[name="${key}"]`);
-                    if (field) {
-                        // Skip file inputs - they can't be programmatically set
-                        if (field.type === 'file') {
-                            continue;
-                        }
-                        field.value = value;
-                    }
-                }
-                
-                // Ask user if they want to continue with the draft
-                if (Object.keys(draftData).length > 0) {
-                    const continueDraft = confirm('Found a saved draft. Would you like to continue with it?');
-                    if (!continueDraft) {
-                        localStorage.removeItem('characterDraft');
-                        form.reset();
-                    }
-                }
-            }
-        });
     </script>
 </body>
 </html>

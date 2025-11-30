@@ -22,7 +22,7 @@ const characterSchema = new mongoose.Schema({
   playbook: {
     type: String,
     required: true,
-    enum: ['Mortal', 'Ageless', 'Unsated', 'Wild', 'Mage'],
+    enum: ['Ageless', 'Ancient', 'Aquatic', 'Aware', 'Champion', 'Covert', 'Construct', 'Darkling', 'Fae', 'Gifted', 'Giant', 'Incarnation', 'Legend', 'Mad', 'Mage', 'Mortal', 'Patron', 'Unsated', 'Wild'],
   },
   subtype: {
     type: String,

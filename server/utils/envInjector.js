@@ -9,7 +9,8 @@ const injectEnvIntoHTML = async () => {
         'index.html', 
         'characters/gallery.html', 
         'moderate.html', 
-        'character-creator.html'
+        'character-creator.html',
+        'characters/character-edit.html'
     ];
     
     // Environment variables to inject

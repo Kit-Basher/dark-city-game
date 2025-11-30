@@ -352,7 +352,7 @@
             <p>Please enter the edit password for this character:</p>
             <input type="password" id="editPasswordInput" placeholder="Enter edit password">
             <div class="password-modal-buttons">
-                <button class="btn btn-primary" onclick="submitPassword()">Unlock</button>
+                <button class="btn btn-primary" id="unlockButton">Unlock</button>
             </div>
         </div>
     </div>
@@ -483,7 +483,7 @@
             <!-- Photos -->
             <section class="form-section">
                 <h3>📸 Photos</h3>
-                <div class="photo-upload" onclick="document.getElementById('photoInput').click()">
+                <div class="photo-upload" id="photoUploadButton">
                     <p>📷 Click to upload photos</p>
                     <p style="font-size: 14px; opacity: 0.7;">JPG, PNG, GIF up to 5MB</p>
                 </div>
@@ -508,19 +508,19 @@
                 <div class="moves-list" id="movesList">
                     <!-- Moves will be dynamically added here -->
                 </div>
-                <button type="button" class="btn btn-secondary" onclick="addMove()">+ Add Move</button>
+                <button type="button" class="btn btn-secondary" id="addMoveButton">+ Add Move</button>
             </section>
 
             <!-- Action Buttons -->
             <div class="action-buttons">
                 <button type="submit" class="btn btn-primary">💾 Save Changes</button>
-                <button type="button" class="btn btn-secondary" onclick="changePassword()">🔐 Change Password</button>
+                <button type="button" class="btn btn-secondary" id="changePasswordButton">🔐 Change Password</button>
             </div>
         </form>
     </div>
 
     <!-- Scripts -->
-    <script src="../js/config.js"></script>
+    <script src="../config.js"></script>
     <script src="../js/env-loader.js"></script>
     <script src="../js/input-sanitizer.js"></script>
     <script src="../js/safe-dom.js"></script>
@@ -713,6 +713,14 @@
                     }
                 });
             });
+
+            // Button event listeners (replacing inline onclick handlers)
+            document.getElementById('unlockButton').addEventListener('click', submitPassword);
+            document.getElementById('photoUploadButton').addEventListener('click', () => {
+                document.getElementById('photoInput').click();
+            });
+            document.getElementById('addMoveButton').addEventListener('click', addMove);
+            document.getElementById('changePasswordButton').addEventListener('click', changePassword);
 
             // Photo upload
             document.getElementById('photoInput').addEventListener('change', handlePhotoUpload);

@@ -48,49 +48,52 @@ async function generateCharacterProfile(character) {
         day: 'numeric' 
       }),
       '{{PHOTOS_SECTION}}': (() => {
-        let photosHTML = '';
+        let allPhotos = [];
         
-        // Handle individual photo fields (humanPhoto, monsterPhoto)
-        if (character.humanPhoto || character.monsterPhoto) {
-          photosHTML += '<div class="character-forms">';
-          
-          if (character.humanPhoto) {
-            photosHTML += `
-              <div class="human-form">
-                <h4>Human Form</h4>
-                <img src="${character.humanPhoto}" alt="Human form photo" />
-              </div>
-            `;
-          }
-          
-          if (character.monsterPhoto) {
-            photosHTML += `
-              <div class="monster-form">
-                <h4>Monster Form</h4>
-                <img src="${character.monsterPhoto}" alt="Monster form photo" />
-              </div>
-            `;
-          }
-          
-          photosHTML += '</div>';
+        // Add individual photo fields (humanPhoto, monsterPhoto)
+        if (character.humanPhoto) {
+          allPhotos.push({
+            url: character.humanPhoto,
+            caption: 'Human Form',
+            type: 'form'
+          });
         }
         
-        // Handle photos array
+        if (character.monsterPhoto) {
+          allPhotos.push({
+            url: character.monsterPhoto,
+            caption: 'Monster Form',
+            type: 'form'
+          });
+        }
+        
+        // Add photos array
         if (character.photos && character.photos.length > 0) {
-          photosHTML += character.photos.map(photo => 
-            `<img src="${photo.url}" alt="${photo.caption || 'Character photo'}" />`
-          ).join('');
+          character.photos.forEach(photo => {
+            allPhotos.push({
+              url: photo.url,
+              caption: photo.caption || 'Character photo',
+              type: 'uploaded'
+            });
+          });
         }
         
-        if (photosHTML) {
-          const result = `<div class="profile-photos">
-          <h3>Photos</h3>
-          ${photosHTML}
-        </div>`;
-          return result;
-        } else {
+        if (allPhotos.length === 0) {
           return '<div class="profile-photos"><p>No photos uploaded</p></div>';
         }
+        
+        // Take only first 2 photos for top section
+        const topPhotos = allPhotos.slice(0, 2);
+        const photosHTML = topPhotos.map(photo => 
+          `<div class="profile-photo">
+            <img src="${photo.url}" alt="${photo.caption}" />
+            <div class="profile-photo-label">${photo.caption}</div>
+          </div>`
+        ).join('');
+        
+        return `<div class="profile-photos">
+          ${photosHTML}
+        </div>`;
       })(),
       '{{DARKEST_SELF_SECTION}}': character.darkestSelf ? 
         `<div class="darkest-self">
@@ -120,6 +123,61 @@ async function generateCharacterProfile(character) {
           ${character.werewolfHeight ? `<p>Height: ${character.werewolfHeight}</p>` : ''}
           ${character.werewolfWeight ? `<p>Weight: ${character.werewolfWeight}</p>` : ''}
         </div>` : '',
+      '{{ADDITIONAL_PHOTOS_SECTION}}': (() => {
+        let allPhotos = [];
+        
+        // Add individual photo fields (humanPhoto, monsterPhoto)
+        if (character.humanPhoto) {
+          allPhotos.push({
+            url: character.humanPhoto,
+            caption: 'Human Form',
+            type: 'form'
+          });
+        }
+        
+        if (character.monsterPhoto) {
+          allPhotos.push({
+            url: character.monsterPhoto,
+            caption: 'Monster Form',
+            type: 'form'
+          });
+        }
+        
+        // Add photos array
+        if (character.photos && character.photos.length > 0) {
+          character.photos.forEach(photo => {
+            allPhotos.push({
+              url: photo.url,
+              caption: photo.caption || 'Character photo',
+              type: 'uploaded'
+            });
+          });
+        }
+        
+        // Skip if there are 2 or fewer photos (they're all shown at top)
+        if (allPhotos.length <= 2) {
+          return '';
+        }
+        
+        // Take photos after the first 2
+        const additionalPhotos = allPhotos.slice(2);
+        const photosHTML = additionalPhotos.map(photo => 
+          `<div class="profile-photo">
+            <img src="${photo.url}" alt="${photo.caption}" />
+            <div class="profile-photo-label">${photo.caption}</div>
+          </div>`
+        ).join('');
+        
+        return `
+        <div class="additional-photos-section" style="background: #1a1a1a; padding: 3rem 0; margin-top: 3rem;">
+          <div class="container">
+            <h3 style="text-align: center; color: #ff6b35; margin-bottom: 2rem;">Additional Photos</h3>
+            <div class="profile-photos">
+              ${photosHTML}
+            </div>
+          </div>
+        </div>`;
+      })(),
       '{{CHARACTER_ID}}': character._id || '',
       '{{EDIT_PASSWORD}}': character.editPassword || ''
     };

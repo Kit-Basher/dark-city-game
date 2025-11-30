@@ -516,7 +516,7 @@
                         <!-- +4 Skills: 1 slot -->
                         <div class="skill-row plus4">
                             <div class="skill-header">+4</div>
-                            <select name="skill4_1">
+                            <select name="skill4_1" id="skill4_1">
                                 <option value="">Select Skill</option>
                                 <option value="Athletics">🏃 Athletics</option>
                                 <option value="Burglary">🔓 Burglary</option>
@@ -542,7 +542,7 @@
                         <!-- +3 Skills: 2 slots -->
                         <div class="skill-row plus3">
                             <div class="skill-header">+3</div>
-                            <select name="skill3_1">
+                            <select name="skill3_1" id="skill3_1">
                                 <option value="">Select Skill</option>
                                 <option value="Athletics">🏃 Athletics</option>
                                 <option value="Burglary">🔓 Burglary</option>
@@ -563,7 +563,7 @@
                                 <option value="Stealth">🥷 Stealth</option>
                                 <option value="Will">🛡️ Will</option>
                             </select>
-                            <select name="skill3_2">
+                            <select name="skill3_2" id="skill3_2">
                                 <option value="">Select Skill</option>
                                 <option value="Athletics">🏃 Athletics</option>
                                 <option value="Burglary">🔓 Burglary</option>
@@ -589,7 +589,7 @@
                         <!-- +2 Skills: 3 slots -->
                         <div class="skill-row plus2">
                             <div class="skill-header">+2</div>
-                            <select name="skill2_1">
+                            <select name="skill2_1" id="skill2_1">
                                 <option value="">Select Skill</option>
                                 <option value="Athletics">🏃 Athletics</option>
                                 <option value="Burglary">🔓 Burglary</option>
@@ -610,7 +610,7 @@
                                 <option value="Stealth">🥷 Stealth</option>
                                 <option value="Will">🛡️ Will</option>
                             </select>
-                            <select name="skill2_2">
+                            <select name="skill2_2" id="skill2_2">
                                 <option value="">Select Skill</option>
                                 <option value="Athletics">🏃 Athletics</option>
                                 <option value="Burglary">🔓 Burglary</option>
@@ -631,7 +631,7 @@
                                 <option value="Stealth">🥷 Stealth</option>
                                 <option value="Will">🛡️ Will</option>
                             </select>
-                            <select name="skill2_3">
+                            <select name="skill2_3" id="skill2_3">
                                 <option value="">Select Skill</option>
                                 <option value="Athletics">🏃 Athletics</option>
                                 <option value="Burglary">🔓 Burglary</option>
@@ -657,7 +657,7 @@
                         <!-- +1 Skills: 4 slots -->
                         <div class="skill-row plus1">
                             <div class="skill-header">+1</div>
-                            <select name="skill1_1">
+                            <select name="skill1_1" id="skill1_1">
                                 <option value="">Select Skill</option>
                                 <option value="Athletics">🏃 Athletics</option>
                                 <option value="Burglary">🔓 Burglary</option>
@@ -678,7 +678,7 @@
                                 <option value="Stealth">🥷 Stealth</option>
                                 <option value="Will">🛡️ Will</option>
                             </select>
-                            <select name="skill1_2">
+                            <select name="skill1_2" id="skill1_2">
                                 <option value="">Select Skill</option>
                                 <option value="Athletics">🏃 Athletics</option>
                                 <option value="Burglary">🔓 Burglary</option>
@@ -699,7 +699,7 @@
                                 <option value="Stealth">🥷 Stealth</option>
                                 <option value="Will">🛡️ Will</option>
                             </select>
-                            <select name="skill1_3">
+                            <select name="skill1_3" id="skill1_3">
                                 <option value="">Select Skill</option>
                                 <option value="Athletics">🏃 Athletics</option>
                                 <option value="Burglary">🔓 Burglary</option>
@@ -720,7 +720,7 @@
                                 <option value="Stealth">🥷 Stealth</option>
                                 <option value="Will">🛡️ Will</option>
                             </select>
-                            <select name="skill1_4">
+                            <select name="skill1_4" id="skill1_4">
                                 <option value="">Select Skill</option>
                                 <option value="Athletics">🏃 Athletics</option>
                                 <option value="Burglary">🔓 Burglary</option>
@@ -1389,8 +1389,11 @@
                 moveDesc2: 'Teleport through shadows',
                 move3: 'Mind Control',
                 moveDesc3: 'Control lesser minds',
-                darkestSelf: 'Beast Form',
+                darkestSelf: 'Beast Form Monster',
                 darkestSelfDesc: 'Transform into monstrous vampire beast',
+                move1Source: 'Vampire',
+                move2Source: 'Shadow',
+                move3Source: 'Blood',
                 connections: 'Childer: Several vampire offspring\nAllies: Dark council\nEnemies: Vampire hunters\nContacts: Criminal underworld',
                 item1: 'Ancient Sword',
                 itemDesc1: 'Enchanted blade passed down through generations',
@@ -1441,8 +1444,11 @@
                 moveDesc2: 'Magical protection barrier',
                 move3: 'Teleport',
                 moveDesc3: 'Short range teleportation',
-                darkestSelf: 'Magic Storm',
+                darkestSelf: 'Magic Storm Chaos',
                 darkestSelfDesc: 'Lose control and unleash raw magic',
+                move1Source: 'Arcane',
+                move2Source: 'Mystic',
+                move3Source: 'Elemental',
                 connections: 'Mentor: Old wizard\nAllies: Supernatural community\nEnemies: Magic hunters\nContacts: Underground mages',
                 item1: 'Magic Staff',
                 itemDesc1: 'Channel for magical energy',
@@ -1493,8 +1499,11 @@
                 moveDesc2: 'Call pack members for help',
                 move3: 'Claw Attack',
                 moveDesc3: 'Deadly claw strike',
-                darkestSelf: 'Full Rage',
+                darkestSelf: 'Full Rage Beast',
                 darkestSelfDesc: 'Completely lose control to beast side',
+                move1Source: 'Werewolf',
+                move2Source: 'Pack',
+                move3Source: 'Beast',
                 connections: 'Pack: 12 werewolves\nAllies: Other shapeshifters\nEnemies: Hunters\nContacts: Supernatural community',
                 item1: 'Wolf Totem',
                 itemDesc1: 'Symbol of pack leadership',
@@ -1545,8 +1554,11 @@
                 moveDesc2: 'Short range fae teleport',
                 move3: 'Glamour',
                 moveDesc3: 'Change appearance and charm others',
-                darkestSelf: 'Fae Rage',
+                darkestSelf: 'Fae Rage Fury',
                 darkestSelfDesc: 'Unleash cruel fae nature',
+                move1Source: 'Fae',
+                move2Source: 'Magic',
+                move3Source: 'Illusion',
                 connections: 'Court: Summer Fae\nAllies: Other fae beings\nEnemies: Iron users\nContacts: Mortal friends',
                 item1: 'Fae Wand',
                 itemDesc1: 'Channel for fae magic',
@@ -1597,8 +1609,11 @@
                 moveDesc2: 'Expert with all hunting weapons',
                 move3: 'Holy Protection',
                 moveDesc3: 'Protection against dark forces',
-                darkestSelf: 'Vengeance',
+                darkestSelf: 'Vengeance Obsession',
                 darkestSelfDesc: 'Lose self to hunting obsession',
+                move1Source: 'Training',
+                move2Source: 'Church',
+                move3Source: 'Holy',
                 connections: 'Family: Hunter lineage\nAllies: Other hunters\nEnemies: Supernatural creatures\nContacts: Church and authorities',
                 item1: 'Blessed Sword',
                 itemDesc1: 'Family heirloom weapon',

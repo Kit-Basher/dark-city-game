@@ -180,10 +180,8 @@ router.put('/:id', asyncHandler(async (req, res) => {
       }
     );
 
-    // Regenerate profile if it's an approved character
-    if (updatedCharacter.status === 'approved') {
-      await generateCharacterProfile(updatedCharacter);
-    }
+    // Regenerate profile to test new photo layout
+    await generateCharacterProfile(updatedCharacter);
 
     // Emit real-time update if socket.io is available
     if (req.io) {

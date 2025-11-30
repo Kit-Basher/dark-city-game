@@ -189,6 +189,12 @@ app.get(/^.*\.html$/, (req, res, next) => {
     });
 });
 
+// Serve character creator page
+app.get('/character-creator.html', (req, res) => {
+  const creatorPath = path.join(__dirname, '..', 'character-creator.html');
+  res.sendFile(creatorPath);
+});
+
 // Serve static files from parent directory
 const path = require('path');
 app.use(express.static(path.join(__dirname, '..')));

@@ -132,20 +132,25 @@ router.get('/pending', async (req, res) => {
  *       500:
  *         description: Server error
  */
+// Debug middleware to log incoming request data before validation
+router.post('/submit', (req, res, next) => {
+  console.log('🔍 Server received character data:', {
+    name: req.body.name,
+    fatePoints: req.body.fatePoints,
+    fatePointsType: typeof req.body.fatePoints,
+    physicalStress: req.body.physicalStress,
+    physicalStressType: typeof req.body.physicalStress,
+    mentalStress: req.body.mentalStress,
+    mentalStressType: typeof req.body.mentalStress,
+    moves: req.body.moves,
+    movesCount: req.body.moves?.length,
+    moveSources: req.body.moves?.map(m => m.source)
+  });
+  next();
+});
+
 router.post('/submit', validate(characterSchema), async (req, res) => {
   try {
-    // Debug logging to see what data is received
-    console.log('🔍 Server received character data:', {
-      name: req.body.name,
-      fatePoints: req.body.fatePoints,
-      fatePointsType: typeof req.body.fatePoints,
-      physicalStress: req.body.physicalStress,
-      physicalStressType: typeof req.body.physicalStress,
-      moves: req.body.moves,
-      movesCount: req.body.moves?.length,
-      moveSources: req.body.moves?.map(m => m.source)
-    });
-
     const characterData = {
       ...req.body,
       status: 'pending',

@@ -1659,6 +1659,11 @@
                 // Fill in all the test data
                 let filledCount = 0;
                 Object.keys(testData).forEach(key => {
+                    // Skip move source fields - they're not actual form elements
+                    if (key.startsWith('move') && key.endsWith('Source')) {
+                        return;
+                    }
+                    
                     const element = document.getElementById(key);
                     if (element) {
                         // Skip file inputs - they can't be programmatically set
@@ -1736,8 +1741,8 @@
                     });
                     console.log('📸 Human photo added, length:', characterData.humanPhoto.length);
                 } else {
-                    characterData.humanPhoto = '';
-                    console.log('⚠️ No human photo file selected');
+                    delete characterData.humanPhoto;
+                    console.log('⚠️ No human photo file selected - removing field');
                 }
                 
                 if (monsterPhotoFile) {
@@ -1748,8 +1753,8 @@
                     });
                     console.log('📸 Monster photo added, length:', characterData.monsterPhoto.length);
                 } else {
-                    characterData.monsterPhoto = '';
-                    console.log('⚠️ No monster photo file selected');
+                    delete characterData.monsterPhoto;
+                    console.log('⚠️ No monster photo file selected - removing field');
                 }
                 
                 console.log('🔍 Final character data keys:', Object.keys(characterData));

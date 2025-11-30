@@ -91,7 +91,7 @@
             border-radius: 3px;
         }
         
-        .skills-grid input {
+        .skills-grid select {
             width: 100%;
             padding: 0.5rem;
             text-align: center;
@@ -464,39 +464,545 @@
 
                 <!-- Skills -->
                 <section class="form-section">
-                    <h2>🎯 Skills</h2>
+                    <h2>🛠️ Skills</h2>
+                    <p style="color: #ccc; margin-bottom: 1rem;">Each skill describes a general ability that your character has. Higher numbers represent greater skill.</p>
+                    
+                    <div class="skill-descriptions" style="background: #1a1a1a; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; border: 1px solid #444;">
+                        <h4 style="color: #ff6b35; margin-bottom: 0.5rem;">🛠️ Skill List</h4>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 0.5rem; font-size: 0.85rem; color: #ccc;">
+                            <div><strong>🏃 Athletics:</strong> Physical fitness, flexibility, reflexes and endurance.</div>
+                            <div><strong>🔓 Burglary:</strong> Stealing things and getting into places.</div>
+                            <div><strong>🤝 Contacts:</strong> Making connections with people and networking.</div>
+                            <div><strong>🔨 Crafting:</strong> Make or repair specific types of things. Pick a vocation.</div>
+                            <div><strong>🎭 Deceive:</strong> Make others believe lies and half-truths, words or body language.</div>
+                            <div><strong>🚗 Drive:</strong> Operating vehicles and things that go fast. Pick what kinds of vehicles.</div>
+                            <div><strong>💝 Empathy:</strong> Being able to spot changes in a person's mood/ bearing or emotion.</div>
+                            <div><strong>⚔️ Fight:</strong> Close-quarters combat, unarmed and with melee weapons.</div>
+                            <div><strong>🔍 Investigate:</strong> Deduce information using concentrated effort and in-depth scrutiny.</div>
+                            <div><strong>📚 Lore:</strong> Knowledge and education, books and study.</div>
+                            <div><strong>👀 Notice:</strong> Perception, the ability to pick out details at a glance.</div>
+                            <div><strong>💪 Physique:</strong> Natural physical aptitude, such as lift and grip strength.</div>
+                            <div><strong>🔥 Provoke:</strong> Eliciting emotional responses, fear, anger, shame, excitement etc.</div>
+                            <div><strong>🗣️ Rapport:</strong> Making connections to people, being liked and trusted.</div>
+                            <div><strong>💰 Wealth:</strong> Access to resources in the game and ability to leverage it.</div>
+                            <div><strong>🏹 Shoot:</strong> Ranged weaponry use, bows, guns etc.</div>
+                            <div><strong>🥷 Stealth:</strong> Avoid detection, hiding in place and moving about.</div>
+                            <div><strong>🛡️ Will:</strong> Mental fortitude and ability to resist social pressure.</div>
+                        </div>
+                    </div>
+                    
                     <div class="skills-grid">
                         <div class="skill-header">+4</div>
-                        <input type="text" name="skill4_1" placeholder="Skill name">
-                        <input type="text" name="skill4_2" placeholder="Skill name">
-                        <input type="text" name="skill4_3" placeholder="Skill name">
-                        <input type="text" name="skill4_4" placeholder="Skill name">
-                        <input type="text" name="skill4_5" placeholder="Skill name">
-                        <input type="text" name="skill4_6" placeholder="Skill name">
+                        <select name="skill4_1">
+                            <option value="">Select Skill</option>
+                            <option value="Athletics">🏃 Athletics</option>
+                            <option value="Burglary">🔓 Burglary</option>
+                            <option value="Contacts">🤝 Contacts</option>
+                            <option value="Crafting">🔨 Crafting</option>
+                            <option value="Deceive">🎭 Deceive</option>
+                            <option value="Drive">🚗 Drive</option>
+                            <option value="Empathy">💝 Empathy</option>
+                            <option value="Fight">⚔️ Fight</option>
+                            <option value="Investigate">🔍 Investigate</option>
+                            <option value="Lore">📚 Lore</option>
+                            <option value="Notice">👀 Notice</option>
+                            <option value="Physique">💪 Physique</option>
+                            <option value="Provoke">🔥 Provoke</option>
+                            <option value="Rapport">🗣️ Rapport</option>
+                            <option value="Wealth">💰 Wealth</option>
+                            <option value="Shoot">🏹 Shoot</option>
+                            <option value="Stealth">🥷 Stealth</option>
+                            <option value="Will">🛡️ Will</option>
+                        </select>
+                        <select name="skill4_2">
+                            <option value="">Select Skill</option>
+                            <option value="Athletics">🏃 Athletics</option>
+                            <option value="Burglary">🔓 Burglary</option>
+                            <option value="Contacts">🤝 Contacts</option>
+                            <option value="Crafting">🔨 Crafting</option>
+                            <option value="Deceive">🎭 Deceive</option>
+                            <option value="Drive">🚗 Drive</option>
+                            <option value="Empathy">💝 Empathy</option>
+                            <option value="Fight">⚔️ Fight</option>
+                            <option value="Investigate">🔍 Investigate</option>
+                            <option value="Lore">📚 Lore</option>
+                            <option value="Notice">👀 Notice</option>
+                            <option value="Physique">💪 Physique</option>
+                            <option value="Provoke">🔥 Provoke</option>
+                            <option value="Rapport">🗣️ Rapport</option>
+                            <option value="Wealth">💰 Wealth</option>
+                            <option value="Shoot">🏹 Shoot</option>
+                            <option value="Stealth">🥷 Stealth</option>
+                            <option value="Will">🛡️ Will</option>
+                        </select>
+                        <select name="skill4_3">
+                            <option value="">Select Skill</option>
+                            <option value="Athletics">🏃 Athletics</option>
+                            <option value="Burglary">🔓 Burglary</option>
+                            <option value="Contacts">🤝 Contacts</option>
+                            <option value="Crafting">🔨 Crafting</option>
+                            <option value="Deceive">🎭 Deceive</option>
+                            <option value="Drive">🚗 Drive</option>
+                            <option value="Empathy">💝 Empathy</option>
+                            <option value="Fight">⚔️ Fight</option>
+                            <option value="Investigate">🔍 Investigate</option>
+                            <option value="Lore">📚 Lore</option>
+                            <option value="Notice">👀 Notice</option>
+                            <option value="Physique">💪 Physique</option>
+                            <option value="Provoke">🔥 Provoke</option>
+                            <option value="Rapport">🗣️ Rapport</option>
+                            <option value="Wealth">💰 Wealth</option>
+                            <option value="Shoot">🏹 Shoot</option>
+                            <option value="Stealth">🥷 Stealth</option>
+                            <option value="Will">🛡️ Will</option>
+                        </select>
+                        <select name="skill4_4">
+                            <option value="">Select Skill</option>
+                            <option value="Athletics">🏃 Athletics</option>
+                            <option value="Burglary">🔓 Burglary</option>
+                            <option value="Contacts">🤝 Contacts</option>
+                            <option value="Crafting">🔨 Crafting</option>
+                            <option value="Deceive">🎭 Deceive</option>
+                            <option value="Drive">🚗 Drive</option>
+                            <option value="Empathy">💝 Empathy</option>
+                            <option value="Fight">⚔️ Fight</option>
+                            <option value="Investigate">🔍 Investigate</option>
+                            <option value="Lore">📚 Lore</option>
+                            <option value="Notice">👀 Notice</option>
+                            <option value="Physique">💪 Physique</option>
+                            <option value="Provoke">🔥 Provoke</option>
+                            <option value="Rapport">🗣️ Rapport</option>
+                            <option value="Wealth">💰 Wealth</option>
+                            <option value="Shoot">🏹 Shoot</option>
+                            <option value="Stealth">🥷 Stealth</option>
+                            <option value="Will">🛡️ Will</option>
+                        </select>
+                        <select name="skill4_5">
+                            <option value="">Select Skill</option>
+                            <option value="Athletics">🏃 Athletics</option>
+                            <option value="Burglary">🔓 Burglary</option>
+                            <option value="Contacts">🤝 Contacts</option>
+                            <option value="Crafting">🔨 Crafting</option>
+                            <option value="Deceive">🎭 Deceive</option>
+                            <option value="Drive">🚗 Drive</option>
+                            <option value="Empathy">💝 Empathy</option>
+                            <option value="Fight">⚔️ Fight</option>
+                            <option value="Investigate">🔍 Investigate</option>
+                            <option value="Lore">📚 Lore</option>
+                            <option value="Notice">👀 Notice</option>
+                            <option value="Physique">💪 Physique</option>
+                            <option value="Provoke">🔥 Provoke</option>
+                            <option value="Rapport">🗣️ Rapport</option>
+                            <option value="Wealth">💰 Wealth</option>
+                            <option value="Shoot">🏹 Shoot</option>
+                            <option value="Stealth">🥷 Stealth</option>
+                            <option value="Will">🛡️ Will</option>
+                        </select>
+                        <select name="skill4_6">
+                            <option value="">Select Skill</option>
+                            <option value="Athletics">🏃 Athletics</option>
+                            <option value="Burglary">🔓 Burglary</option>
+                            <option value="Contacts">🤝 Contacts</option>
+                            <option value="Crafting">🔨 Crafting</option>
+                            <option value="Deceive">🎭 Deceive</option>
+                            <option value="Drive">🚗 Drive</option>
+                            <option value="Empathy">💝 Empathy</option>
+                            <option value="Fight">⚔️ Fight</option>
+                            <option value="Investigate">🔍 Investigate</option>
+                            <option value="Lore">📚 Lore</option>
+                            <option value="Notice">👀 Notice</option>
+                            <option value="Physique">💪 Physique</option>
+                            <option value="Provoke">🔥 Provoke</option>
+                            <option value="Rapport">🗣️ Rapport</option>
+                            <option value="Wealth">💰 Wealth</option>
+                            <option value="Shoot">🏹 Shoot</option>
+                            <option value="Stealth">🥷 Stealth</option>
+                            <option value="Will">🛡️ Will</option>
+                        </select>
                         
                         <div class="skill-header">+3</div>
-                        <input type="text" name="skill3_1" placeholder="Skill name">
-                        <input type="text" name="skill3_2" placeholder="Skill name">
-                        <input type="text" name="skill3_3" placeholder="Skill name">
-                        <input type="text" name="skill3_4" placeholder="Skill name">
-                        <input type="text" name="skill3_5" placeholder="Skill name">
-                        <input type="text" name="skill3_6" placeholder="Skill name">
+                        <select name="skill3_1">
+                            <option value="">Select Skill</option>
+                            <option value="Athletics">🏃 Athletics</option>
+                            <option value="Burglary">🔓 Burglary</option>
+                            <option value="Contacts">🤝 Contacts</option>
+                            <option value="Crafting">🔨 Crafting</option>
+                            <option value="Deceive">🎭 Deceive</option>
+                            <option value="Drive">🚗 Drive</option>
+                            <option value="Empathy">💝 Empathy</option>
+                            <option value="Fight">⚔️ Fight</option>
+                            <option value="Investigate">🔍 Investigate</option>
+                            <option value="Lore">📚 Lore</option>
+                            <option value="Notice">👀 Notice</option>
+                            <option value="Physique">💪 Physique</option>
+                            <option value="Provoke">🔥 Provoke</option>
+                            <option value="Rapport">🗣️ Rapport</option>
+                            <option value="Wealth">💰 Wealth</option>
+                            <option value="Shoot">🏹 Shoot</option>
+                            <option value="Stealth">🥷 Stealth</option>
+                            <option value="Will">🛡️ Will</option>
+                        </select>
+                        <select name="skill3_2">
+                            <option value="">Select Skill</option>
+                            <option value="Athletics">🏃 Athletics</option>
+                            <option value="Burglary">🔓 Burglary</option>
+                            <option value="Contacts">🤝 Contacts</option>
+                            <option value="Crafting">🔨 Crafting</option>
+                            <option value="Deceive">🎭 Deceive</option>
+                            <option value="Drive">🚗 Drive</option>
+                            <option value="Empathy">💝 Empathy</option>
+                            <option value="Fight">⚔️ Fight</option>
+                            <option value="Investigate">🔍 Investigate</option>
+                            <option value="Lore">📚 Lore</option>
+                            <option value="Notice">👀 Notice</option>
+                            <option value="Physique">💪 Physique</option>
+                            <option value="Provoke">🔥 Provoke</option>
+                            <option value="Rapport">🗣️ Rapport</option>
+                            <option value="Wealth">💰 Wealth</option>
+                            <option value="Shoot">🏹 Shoot</option>
+                            <option value="Stealth">🥷 Stealth</option>
+                            <option value="Will">🛡️ Will</option>
+                        </select>
+                        <select name="skill3_3">
+                            <option value="">Select Skill</option>
+                            <option value="Athletics">🏃 Athletics</option>
+                            <option value="Burglary">🔓 Burglary</option>
+                            <option value="Contacts">🤝 Contacts</option>
+                            <option value="Crafting">🔨 Crafting</option>
+                            <option value="Deceive">🎭 Deceive</option>
+                            <option value="Drive">🚗 Drive</option>
+                            <option value="Empathy">💝 Empathy</option>
+                            <option value="Fight">⚔️ Fight</option>
+                            <option value="Investigate">🔍 Investigate</option>
+                            <option value="Lore">📚 Lore</option>
+                            <option value="Notice">👀 Notice</option>
+                            <option value="Physique">💪 Physique</option>
+                            <option value="Provoke">🔥 Provoke</option>
+                            <option value="Rapport">🗣️ Rapport</option>
+                            <option value="Wealth">💰 Wealth</option>
+                            <option value="Shoot">🏹 Shoot</option>
+                            <option value="Stealth">🥷 Stealth</option>
+                            <option value="Will">🛡️ Will</option>
+                        </select>
+                        <select name="skill3_4">
+                            <option value="">Select Skill</option>
+                            <option value="Athletics">🏃 Athletics</option>
+                            <option value="Burglary">🔓 Burglary</option>
+                            <option value="Contacts">🤝 Contacts</option>
+                            <option value="Crafting">🔨 Crafting</option>
+                            <option value="Deceive">🎭 Deceive</option>
+                            <option value="Drive">🚗 Drive</option>
+                            <option value="Empathy">💝 Empathy</option>
+                            <option value="Fight">⚔️ Fight</option>
+                            <option value="Investigate">🔍 Investigate</option>
+                            <option value="Lore">📚 Lore</option>
+                            <option value="Notice">👀 Notice</option>
+                            <option value="Physique">💪 Physique</option>
+                            <option value="Provoke">🔥 Provoke</option>
+                            <option value="Rapport">🗣️ Rapport</option>
+                            <option value="Wealth">💰 Wealth</option>
+                            <option value="Shoot">🏹 Shoot</option>
+                            <option value="Stealth">🥷 Stealth</option>
+                            <option value="Will">🛡️ Will</option>
+                        </select>
+                        <select name="skill3_5">
+                            <option value="">Select Skill</option>
+                            <option value="Athletics">🏃 Athletics</option>
+                            <option value="Burglary">🔓 Burglary</option>
+                            <option value="Contacts">🤝 Contacts</option>
+                            <option value="Crafting">🔨 Crafting</option>
+                            <option value="Deceive">🎭 Deceive</option>
+                            <option value="Drive">🚗 Drive</option>
+                            <option value="Empathy">💝 Empathy</option>
+                            <option value="Fight">⚔️ Fight</option>
+                            <option value="Investigate">🔍 Investigate</option>
+                            <option value="Lore">📚 Lore</option>
+                            <option value="Notice">👀 Notice</option>
+                            <option value="Physique">💪 Physique</option>
+                            <option value="Provoke">🔥 Provoke</option>
+                            <option value="Rapport">🗣️ Rapport</option>
+                            <option value="Wealth">💰 Wealth</option>
+                            <option value="Shoot">🏹 Shoot</option>
+                            <option value="Stealth">🥷 Stealth</option>
+                            <option value="Will">🛡️ Will</option>
+                        </select>
+                        <select name="skill3_6">
+                            <option value="">Select Skill</option>
+                            <option value="Athletics">🏃 Athletics</option>
+                            <option value="Burglary">🔓 Burglary</option>
+                            <option value="Contacts">🤝 Contacts</option>
+                            <option value="Crafting">🔨 Crafting</option>
+                            <option value="Deceive">🎭 Deceive</option>
+                            <option value="Drive">🚗 Drive</option>
+                            <option value="Empathy">💝 Empathy</option>
+                            <option value="Fight">⚔️ Fight</option>
+                            <option value="Investigate">🔍 Investigate</option>
+                            <option value="Lore">📚 Lore</option>
+                            <option value="Notice">👀 Notice</option>
+                            <option value="Physique">💪 Physique</option>
+                            <option value="Provoke">🔥 Provoke</option>
+                            <option value="Rapport">🗣️ Rapport</option>
+                            <option value="Wealth">💰 Wealth</option>
+                            <option value="Shoot">🏹 Shoot</option>
+                            <option value="Stealth">🥷 Stealth</option>
+                            <option value="Will">🛡️ Will</option>
+                        </select>
                         
                         <div class="skill-header">+2</div>
-                        <input type="text" name="skill2_1" placeholder="Skill name">
-                        <input type="text" name="skill2_2" placeholder="Skill name">
-                        <input type="text" name="skill2_3" placeholder="Skill name">
-                        <input type="text" name="skill2_4" placeholder="Skill name">
-                        <input type="text" name="skill2_5" placeholder="Skill name">
-                        <input type="text" name="skill2_6" placeholder="Skill name">
+                        <select name="skill2_1">
+                            <option value="">Select Skill</option>
+                            <option value="Athletics">🏃 Athletics</option>
+                            <option value="Burglary">🔓 Burglary</option>
+                            <option value="Contacts">🤝 Contacts</option>
+                            <option value="Crafting">🔨 Crafting</option>
+                            <option value="Deceive">🎭 Deceive</option>
+                            <option value="Drive">🚗 Drive</option>
+                            <option value="Empathy">💝 Empathy</option>
+                            <option value="Fight">⚔️ Fight</option>
+                            <option value="Investigate">🔍 Investigate</option>
+                            <option value="Lore">📚 Lore</option>
+                            <option value="Notice">👀 Notice</option>
+                            <option value="Physique">💪 Physique</option>
+                            <option value="Provoke">🔥 Provoke</option>
+                            <option value="Rapport">🗣️ Rapport</option>
+                            <option value="Wealth">💰 Wealth</option>
+                            <option value="Shoot">🏹 Shoot</option>
+                            <option value="Stealth">🥷 Stealth</option>
+                            <option value="Will">🛡️ Will</option>
+                        </select>
+                        <select name="skill2_2">
+                            <option value="">Select Skill</option>
+                            <option value="Athletics">🏃 Athletics</option>
+                            <option value="Burglary">🔓 Burglary</option>
+                            <option value="Contacts">🤝 Contacts</option>
+                            <option value="Crafting">🔨 Crafting</option>
+                            <option value="Deceive">🎭 Deceive</option>
+                            <option value="Drive">🚗 Drive</option>
+                            <option value="Empathy">💝 Empathy</option>
+                            <option value="Fight">⚔️ Fight</option>
+                            <option value="Investigate">🔍 Investigate</option>
+                            <option value="Lore">📚 Lore</option>
+                            <option value="Notice">👀 Notice</option>
+                            <option value="Physique">💪 Physique</option>
+                            <option value="Provoke">🔥 Provoke</option>
+                            <option value="Rapport">🗣️ Rapport</option>
+                            <option value="Wealth">💰 Wealth</option>
+                            <option value="Shoot">🏹 Shoot</option>
+                            <option value="Stealth">🥷 Stealth</option>
+                            <option value="Will">🛡️ Will</option>
+                        </select>
+                        <select name="skill2_3">
+                            <option value="">Select Skill</option>
+                            <option value="Athletics">🏃 Athletics</option>
+                            <option value="Burglary">🔓 Burglary</option>
+                            <option value="Contacts">🤝 Contacts</option>
+                            <option value="Crafting">🔨 Crafting</option>
+                            <option value="Deceive">🎭 Deceive</option>
+                            <option value="Drive">🚗 Drive</option>
+                            <option value="Empathy">💝 Empathy</option>
+                            <option value="Fight">⚔️ Fight</option>
+                            <option value="Investigate">🔍 Investigate</option>
+                            <option value="Lore">📚 Lore</option>
+                            <option value="Notice">👀 Notice</option>
+                            <option value="Physique">💪 Physique</option>
+                            <option value="Provoke">🔥 Provoke</option>
+                            <option value="Rapport">🗣️ Rapport</option>
+                            <option value="Wealth">💰 Wealth</option>
+                            <option value="Shoot">🏹 Shoot</option>
+                            <option value="Stealth">🥷 Stealth</option>
+                            <option value="Will">🛡️ Will</option>
+                        </select>
+                        <select name="skill2_4">
+                            <option value="">Select Skill</option>
+                            <option value="Athletics">🏃 Athletics</option>
+                            <option value="Burglary">🔓 Burglary</option>
+                            <option value="Contacts">🤝 Contacts</option>
+                            <option value="Crafting">🔨 Crafting</option>
+                            <option value="Deceive">🎭 Deceive</option>
+                            <option value="Drive">🚗 Drive</option>
+                            <option value="Empathy">💝 Empathy</option>
+                            <option value="Fight">⚔️ Fight</option>
+                            <option value="Investigate">🔍 Investigate</option>
+                            <option value="Lore">📚 Lore</option>
+                            <option value="Notice">👀 Notice</option>
+                            <option value="Physique">💪 Physique</option>
+                            <option value="Provoke">🔥 Provoke</option>
+                            <option value="Rapport">🗣️ Rapport</option>
+                            <option value="Wealth">💰 Wealth</option>
+                            <option value="Shoot">🏹 Shoot</option>
+                            <option value="Stealth">🥷 Stealth</option>
+                            <option value="Will">🛡️ Will</option>
+                        </select>
+                        <select name="skill2_5">
+                            <option value="">Select Skill</option>
+                            <option value="Athletics">🏃 Athletics</option>
+                            <option value="Burglary">🔓 Burglary</option>
+                            <option value="Contacts">🤝 Contacts</option>
+                            <option value="Crafting">🔨 Crafting</option>
+                            <option value="Deceive">🎭 Deceive</option>
+                            <option value="Drive">🚗 Drive</option>
+                            <option value="Empathy">💝 Empathy</option>
+                            <option value="Fight">⚔️ Fight</option>
+                            <option value="Investigate">🔍 Investigate</option>
+                            <option value="Lore">📚 Lore</option>
+                            <option value="Notice">👀 Notice</option>
+                            <option value="Physique">💪 Physique</option>
+                            <option value="Provoke">🔥 Provoke</option>
+                            <option value="Rapport">🗣️ Rapport</option>
+                            <option value="Wealth">💰 Wealth</option>
+                            <option value="Shoot">🏹 Shoot</option>
+                            <option value="Stealth">🥷 Stealth</option>
+                            <option value="Will">🛡️ Will</option>
+                        </select>
+                        <select name="skill2_6">
+                            <option value="">Select Skill</option>
+                            <option value="Athletics">🏃 Athletics</option>
+                            <option value="Burglary">🔓 Burglary</option>
+                            <option value="Contacts">🤝 Contacts</option>
+                            <option value="Crafting">🔨 Crafting</option>
+                            <option value="Deceive">🎭 Deceive</option>
+                            <option value="Drive">🚗 Drive</option>
+                            <option value="Empathy">💝 Empathy</option>
+                            <option value="Fight">⚔️ Fight</option>
+                            <option value="Investigate">🔍 Investigate</option>
+                            <option value="Lore">📚 Lore</option>
+                            <option value="Notice">👀 Notice</option>
+                            <option value="Physique">💪 Physique</option>
+                            <option value="Provoke">🔥 Provoke</option>
+                            <option value="Rapport">🗣️ Rapport</option>
+                            <option value="Wealth">💰 Wealth</option>
+                            <option value="Shoot">🏹 Shoot</option>
+                            <option value="Stealth">🥷 Stealth</option>
+                            <option value="Will">🛡️ Will</option>
+                        </select>
                         
                         <div class="skill-header">+1</div>
-                        <input type="text" name="skill1_1" placeholder="Skill name">
-                        <input type="text" name="skill1_2" placeholder="Skill name">
-                        <input type="text" name="skill1_3" placeholder="Skill name">
-                        <input type="text" name="skill1_4" placeholder="Skill name">
-                        <input type="text" name="skill1_5" placeholder="Skill name">
-                        <input type="text" name="skill1_6" placeholder="Skill name">
+                        <select name="skill1_1">
+                            <option value="">Select Skill</option>
+                            <option value="Athletics">🏃 Athletics</option>
+                            <option value="Burglary">🔓 Burglary</option>
+                            <option value="Contacts">🤝 Contacts</option>
+                            <option value="Crafting">🔨 Crafting</option>
+                            <option value="Deceive">🎭 Deceive</option>
+                            <option value="Drive">🚗 Drive</option>
+                            <option value="Empathy">💝 Empathy</option>
+                            <option value="Fight">⚔️ Fight</option>
+                            <option value="Investigate">🔍 Investigate</option>
+                            <option value="Lore">📚 Lore</option>
+                            <option value="Notice">👀 Notice</option>
+                            <option value="Physique">💪 Physique</option>
+                            <option value="Provoke">🔥 Provoke</option>
+                            <option value="Rapport">🗣️ Rapport</option>
+                            <option value="Wealth">💰 Wealth</option>
+                            <option value="Shoot">🏹 Shoot</option>
+                            <option value="Stealth">🥷 Stealth</option>
+                            <option value="Will">🛡️ Will</option>
+                        </select>
+                        <select name="skill1_2">
+                            <option value="">Select Skill</option>
+                            <option value="Athletics">🏃 Athletics</option>
+                            <option value="Burglary">🔓 Burglary</option>
+                            <option value="Contacts">🤝 Contacts</option>
+                            <option value="Crafting">🔨 Crafting</option>
+                            <option value="Deceive">🎭 Deceive</option>
+                            <option value="Drive">🚗 Drive</option>
+                            <option value="Empathy">💝 Empathy</option>
+                            <option value="Fight">⚔️ Fight</option>
+                            <option value="Investigate">🔍 Investigate</option>
+                            <option value="Lore">📚 Lore</option>
+                            <option value="Notice">👀 Notice</option>
+                            <option value="Physique">💪 Physique</option>
+                            <option value="Provoke">🔥 Provoke</option>
+                            <option value="Rapport">🗣️ Rapport</option>
+                            <option value="Wealth">💰 Wealth</option>
+                            <option value="Shoot">🏹 Shoot</option>
+                            <option value="Stealth">🥷 Stealth</option>
+                            <option value="Will">🛡️ Will</option>
+                        </select>
+                        <select name="skill1_3">
+                            <option value="">Select Skill</option>
+                            <option value="Athletics">🏃 Athletics</option>
+                            <option value="Burglary">🔓 Burglary</option>
+                            <option value="Contacts">🤝 Contacts</option>
+                            <option value="Crafting">🔨 Crafting</option>
+                            <option value="Deceive">🎭 Deceive</option>
+                            <option value="Drive">🚗 Drive</option>
+                            <option value="Empathy">💝 Empathy</option>
+                            <option value="Fight">⚔️ Fight</option>
+                            <option value="Investigate">🔍 Investigate</option>
+                            <option value="Lore">📚 Lore</option>
+                            <option value="Notice">👀 Notice</option>
+                            <option value="Physique">💪 Physique</option>
+                            <option value="Provoke">🔥 Provoke</option>
+                            <option value="Rapport">🗣️ Rapport</option>
+                            <option value="Wealth">💰 Wealth</option>
+                            <option value="Shoot">🏹 Shoot</option>
+                            <option value="Stealth">🥷 Stealth</option>
+                            <option value="Will">🛡️ Will</option>
+                        </select>
+                        <select name="skill1_4">
+                            <option value="">Select Skill</option>
+                            <option value="Athletics">🏃 Athletics</option>
+                            <option value="Burglary">🔓 Burglary</option>
+                            <option value="Contacts">🤝 Contacts</option>
+                            <option value="Crafting">🔨 Crafting</option>
+                            <option value="Deceive">🎭 Deceive</option>
+                            <option value="Drive">🚗 Drive</option>
+                            <option value="Empathy">💝 Empathy</option>
+                            <option value="Fight">⚔️ Fight</option>
+                            <option value="Investigate">🔍 Investigate</option>
+                            <option value="Lore">📚 Lore</option>
+                            <option value="Notice">👀 Notice</option>
+                            <option value="Physique">💪 Physique</option>
+                            <option value="Provoke">🔥 Provoke</option>
+                            <option value="Rapport">🗣️ Rapport</option>
+                            <option value="Wealth">💰 Wealth</option>
+                            <option value="Shoot">🏹 Shoot</option>
+                            <option value="Stealth">🥷 Stealth</option>
+                            <option value="Will">🛡️ Will</option>
+                        </select>
+                        <select name="skill1_5">
+                            <option value="">Select Skill</option>
+                            <option value="Athletics">🏃 Athletics</option>
+                            <option value="Burglary">🔓 Burglary</option>
+                            <option value="Contacts">🤝 Contacts</option>
+                            <option value="Crafting">🔨 Crafting</option>
+                            <option value="Deceive">🎭 Deceive</option>
+                            <option value="Drive">🚗 Drive</option>
+                            <option value="Empathy">💝 Empathy</option>
+                            <option value="Fight">⚔️ Fight</option>
+                            <option value="Investigate">🔍 Investigate</option>
+                            <option value="Lore">📚 Lore</option>
+                            <option value="Notice">👀 Notice</option>
+                            <option value="Physique">💪 Physique</option>
+                            <option value="Provoke">🔥 Provoke</option>
+                            <option value="Rapport">🗣️ Rapport</option>
+                            <option value="Wealth">💰 Wealth</option>
+                            <option value="Shoot">🏹 Shoot</option>
+                            <option value="Stealth">🥷 Stealth</option>
+                            <option value="Will">🛡️ Will</option>
+                        </select>
+                        <select name="skill1_6">
+                            <option value="">Select Skill</option>
+                            <option value="Athletics">🏃 Athletics</option>
+                            <option value="Burglary">🔓 Burglary</option>
+                            <option value="Contacts">🤝 Contacts</option>
+                            <option value="Crafting">🔨 Crafting</option>
+                            <option value="Deceive">🎭 Deceive</option>
+                            <option value="Drive">🚗 Drive</option>
+                            <option value="Empathy">💝 Empathy</option>
+                            <option value="Fight">⚔️ Fight</option>
+                            <option value="Investigate">🔍 Investigate</option>
+                            <option value="Lore">📚 Lore</option>
+                            <option value="Notice">👀 Notice</option>
+                            <option value="Physique">💪 Physique</option>
+                            <option value="Provoke">🔥 Provoke</option>
+                            <option value="Rapport">🗣️ Rapport</option>
+                            <option value="Wealth">💰 Wealth</option>
+                            <option value="Shoot">🏹 Shoot</option>
+                            <option value="Stealth">🥷 Stealth</option>
+                            <option value="Will">🛡️ Will</option>
+                        </select>
                     </div>
                 </section>
 

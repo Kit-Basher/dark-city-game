@@ -89,18 +89,12 @@ class InputSanitizer {
     return num;
   }
 
-  // Validate classification/playbook values
+  // Validate classification values (now free text)
   static sanitizeClassification(value) {
     if (!value || typeof value !== 'string') return 'Unknown';
     
-    const validClassifications = [
-      'Mortal', 'Gifted', 'Mage', 'Fae', 'Ancient', 'Wild', 'Unsated',
-      'Legend', 'Incarnation', 'Patron', 'Champion', 'Darkling', 'Mad',
-      'Aware', 'Covert', 'Aquatic', 'Giant', 'Ageless', 'Construct'
-    ];
-    
     const clean = value.trim();
-    return validClassifications.includes(clean) ? clean : 'Unknown';
+    return clean.length > 0 ? clean : 'Unknown';
   }
 
   // Validate email format

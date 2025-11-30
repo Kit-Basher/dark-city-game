@@ -304,6 +304,91 @@
                 font-size: 2rem;
             }
         }
+        
+        /* Photo Lightbox Styles */
+        .photo-lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .photo-lightbox[aria-hidden="false"] {
+            opacity: 1;
+        }
+        
+        .lightbox-content {
+            position: relative;
+            max-width: 90%;
+            max-height: 90%;
+            text-align: center;
+        }
+        
+        .lightbox-content img {
+            max-width: 100%;
+            max-height: 80vh;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+        }
+        
+        .lightbox-close {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            background: #ff6b35;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s ease;
+        }
+        
+        .lightbox-close:hover {
+            background: #ff8c42;
+        }
+        
+        .lightbox-caption {
+            margin-top: 1rem;
+            color: #fff;
+            font-size: 1rem;
+            text-align: center;
+        }
+        
+        @media (max-width: 768px) {
+            .lightbox-content {
+                max-width: 95%;
+                max-height: 95%;
+            }
+            
+            .lightbox-close {
+                top: -35px;
+                right: 10px;
+                width: 28px;
+                height: 28px;
+                font-size: 16px;
+            }
+            
+            .lightbox-caption {
+                font-size: 0.9rem;
+                padding: 0 1rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -404,6 +489,92 @@
     <script src="../js/config.js"></script>
     <script src="../js/safe-dom.js"></script>
     <script src="../js/accessibility.js"></script>
+
+    <!-- Photo Lightbox Modal -->
+    <div id="photoLightbox" class="photo-lightbox" role="dialog" aria-modal="true" aria-labelledby="lightbox-title">
+        <div class="lightbox-content">
+            <button class="lightbox-close" aria-label="Close photo view">&times;</button>
+            <img id="lightbox-image" src="" alt="" role="img">
+            <div id="lightbox-caption" class="lightbox-caption"></div>
+        </div>
+    </div>
+
+    <script>
+        // Photo lightbox functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const lightbox = document.getElementById('photoLightbox');
+            const lightboxImage = document.getElementById('lightbox-image');
+            const lightboxCaption = document.getElementById('lightbox-caption');
+            const closeButton = lightbox.querySelector('.lightbox-close');
+            
+            // Add click handlers to all profile photos
+            function setupPhotoHandlers() {
+                const photos = document.querySelectorAll('.profile-photo img, .additional-photos-section .profile-photo img');
+                photos.forEach(photo => {
+                    photo.style.cursor = 'pointer';
+                    photo.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        openLightbox(this.src, this.alt || 'Character photo');
+                    });
+                });
+            }
+            
+            // Open lightbox
+            function openLightbox(src, caption) {
+                lightboxImage.src = src;
+                lightboxImage.alt = caption;
+                lightboxCaption.textContent = caption;
+                lightbox.style.display = 'flex';
+                lightbox.setAttribute('aria-hidden', 'false');
+                document.body.style.overflow = 'hidden'; // Prevent background scrolling
+                lightboxImage.focus();
+            }
+            
+            // Close lightbox
+            function closeLightbox() {
+                lightbox.style.display = 'none';
+                lightbox.setAttribute('aria-hidden', 'true');
+                document.body.style.overflow = ''; // Restore scrolling
+            }
+            
+            // Event listeners
+            closeButton.addEventListener('click', closeLightbox);
+            
+            lightbox.addEventListener('click', function(e) {
+                if (e.target === lightbox) {
+                    closeLightbox();
+                }
+            });
+            
+            // Keyboard accessibility
+            document.addEventListener('keydown', function(e) {
+                if (lightbox.style.display === 'flex') {
+                    if (e.key === 'Escape' || e.key === 'Esc') {
+                        closeLightbox();
+                    }
+                }
+            });
+            
+            // Setup handlers on page load
+            setupPhotoHandlers();
+            
+            // Re-setup handlers if additional photos are loaded dynamically
+            if (window.MutationObserver) {
+                const observer = new MutationObserver(function(mutations) {
+                    mutations.forEach(function(mutation) {
+                        if (mutation.addedNodes.length) {
+                            setupPhotoHandlers();
+                        }
+                    });
+                });
+                
+                observer.observe(document.body, {
+                    childList: true,
+                    subtree: true
+                });
+            }
+        });
+    </script>
     
     <!-- Password Modal -->
     <div id="passwordModal" class="password-modal">

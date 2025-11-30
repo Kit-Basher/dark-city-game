@@ -1777,10 +1777,17 @@
                     }
                 });
                 
-                // Organize skills data
+                // Organize skills data - match the new skill slot distribution
                 const skills = [];
+                const skillSlots = {
+                    4: 1,  // +4 skills: 1 slot
+                    3: 2,  // +3 skills: 2 slots  
+                    2: 3,  // +2 skills: 3 slots
+                    1: 4   // +1 skills: 4 slots
+                };
+                
                 for (let level = 4; level >= 1; level--) {
-                    for (let slot = 1; slot <= 6; slot++) {
+                    for (let slot = 1; slot <= skillSlots[level]; slot++) {
                         const skillKey = `skill${level}_${slot}`;
                         if (characterData[skillKey]) {
                             skills.push({
@@ -1873,7 +1880,18 @@
                 
             } catch (error) {
                 console.error('❌ Submission error:', error);
-                console.error('❌ Error submitting character to server:', error);
+                
+                // Try to extract more detailed error information
+                if (error.message && error.message.includes('Validation failed')) {
+                    console.error('🔍 Full error details:', error);
+                    console.error('🔍 Error message:', error.message);
+                    
+                    // Try to parse the error if it's a response object
+                    if (error.response) {
+                        console.error('🔍 Error response:', error.response);
+                    }
+                }
+                
                 alert(`❌ Error submitting character: ${error.message}`);
             }
         }

@@ -23,12 +23,18 @@
             padding: 1rem 1.5rem;
             margin-bottom: 1.5rem;
             border: 2px solid #ff6b35;
+            overflow: hidden;
+            word-wrap: break-word;
         }
         
         .edit-header h1 {
             font-size: 1.5rem;
             margin: 0;
             color: #ff6b35;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
         }
         
         .edit-header p {
@@ -373,19 +379,6 @@
                         <input type="text" id="name" name="name" required maxlength="50">
                     </div>
                     <div class="form-group">
-                        <label for="classification">Classification *</label>
-                        <select id="classification" name="classification" required>
-                            <option value="">Select Classification</option>
-                            <option value="Vampire">Vampire</option>
-                            <option value="Werewolf">Werewolf</option>
-                            <option value="Human">Human</option>
-                            <option value="Ghost">Ghost</option>
-                            <option value="Wizard">Wizard</option>
-                            <option value="Fairy">Fairy</option>
-                            <option value="Other">Other</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
                         <label for="playbook">Playbook *</label>
                         <select id="playbook" name="playbook" required>
                             <option value="">Select Playbook</option>
@@ -412,7 +405,11 @@
                     </div>
                     <div class="form-group">
                         <label for="subtype">Subtype *</label>
-                        <input type="text" id="subtype" name="subtype" required maxlength="50">
+                        <input type="text" id="subtype" name="subtype" required maxlength="50" placeholder="e.g., Vampire, Werewolf, Wizard">
+                    </div>
+                    <div class="form-group">
+                        <label for="classification">Classification *</label>
+                        <input type="text" id="classification" name="classification" required maxlength="50" placeholder="Any classification you want (e.g., Dark Lord, Healer, Scout)">
                     </div>
                 </div>
             </section>

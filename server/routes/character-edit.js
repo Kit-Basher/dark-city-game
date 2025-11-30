@@ -64,7 +64,10 @@ router.get('/:id', asyncHandler(async (req, res) => {
       });
     }
 
-    res.json(character);
+    res.json({
+      ...character.toObject(),
+      isModeratorAccess: hasApiKey
+    });
   } catch (error) {
     console.error('Error fetching character for editing:', error);
     res.status(500).json({ error: 'Failed to fetch character' });
@@ -147,8 +150,8 @@ router.put('/:id', asyncHandler(async (req, res) => {
 
     // Prevent changing certain fields if not authorized (moderator only)
     if (!hasApiKey) {
-      // Regular users can't change status, reviewedBy, reviewedAt, feedback
-      const restrictedFields = ['status', 'reviewedBy', 'reviewedAt', 'feedback', 'submittedBy', 'submittedAt'];
+      // Regular users can't change status, reviewedBy, reviewedAt, feedback, editPassword
+      const restrictedFields = ['status', 'reviewedBy', 'reviewedAt', 'feedback', 'submittedBy', 'submittedAt', 'editPassword'];
       restrictedFields.forEach(field => {
         if (updateData[field] !== undefined) {
           delete updateData[field];

@@ -383,6 +383,18 @@
                 </div>
             </section>
 
+            <!-- Moderator Only Section -->
+            <section class="form-section" id="moderatorSection" style="display: none;">
+                <h3>🔐 Moderator Controls</h3>
+                <div class="form-group">
+                    <label for="editPassword">Edit Password</label>
+                    <input type="text" id="editPassword" name="editPassword" placeholder="Set new edit password (leave blank to remove)">
+                    <small style="color: #999; font-size: 0.9rem; display: block; margin-top: 0.25rem;">
+                        Only moderators can change this. Use to help users who forgot their password.
+                    </small>
+                </div>
+            </section>
+
             <!-- Physical Description -->
             <section class="form-section">
                 <h3>👤 Physical Description</h3>
@@ -603,6 +615,11 @@
                 const character = await window.characterEditAPI.getCharacterForEdit(characterId, editPassword);
                 originalCharacterData = character;
                 
+                // Show moderator section if accessed via API key
+                if (character.isModeratorAccess) {
+                    document.getElementById('moderatorSection').style.display = 'block';
+                }
+                
                 // Populate form
                 populateForm(character);
                 
@@ -650,6 +667,11 @@
             
             document.getElementById('humanPhoto').value = character.humanPhoto || '';
             document.getElementById('monsterPhoto').value = character.monsterPhoto || '';
+            
+            // Moderator fields (only populate if moderator access)
+            if (character.isModeratorAccess) {
+                document.getElementById('editPassword').value = character.editPassword || '';
+            }
             
             // Moves
             displayMoves(character.moves || []);
@@ -746,6 +768,7 @@
                 mentalStress: document.getElementById('mentalStress').value,
                 humanPhoto: document.getElementById('humanPhoto').value,
                 monsterPhoto: document.getElementById('monsterPhoto').value,
+                editPassword: document.getElementById('editPassword').value,
                 photos: characterPhotos,
                 moves: getMovesData()
             };

@@ -173,9 +173,14 @@
                                 <p class="text-sm text-gray-400">${character.classification} • ${character.playbook}</p>
                                 <p class="text-sm text-gray-500 mt-2">Submitted: ${new Date(character.submittedAt).toLocaleDateString()}</p>
                             </div>
-                            <button onclick="openReviewModal('${character._id}')" class="bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-sm">
-                                <i class="fas fa-eye"></i> Review
-                            </button>
+                            <div class="flex gap-2">
+                                <button onclick="editCharacter('${character._id}')" class="bg-orange-600 hover:bg-orange-700 px-3 py-1 rounded text-sm" title="Edit Character">
+                                    <i class="fas fa-edit"></i> Edit
+                                </button>
+                                <button onclick="openReviewModal('${character._id}')" class="bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-sm">
+                                    <i class="fas fa-eye"></i> Review
+                                </button>
+                            </div>
                         </div>
                     </div>
                 `).join('');
@@ -223,7 +228,10 @@
                                 <p class="text-sm text-gray-500 mt-1">Approved by: ${character.reviewedBy}</p>
                                 ${character.feedback ? `<p class="text-sm text-blue-400 mt-2">"${character.feedback}"</p>` : ''}
                             </div>
-                            <div class="text-right">
+                            <div class="flex gap-2">
+                                <button onclick="editCharacter('${character._id}')" class="bg-orange-600 hover:bg-orange-700 px-3 py-1 rounded text-sm" title="Edit Character">
+                                    <i class="fas fa-edit"></i> Edit
+                                </button>
                                 <span class="text-xs text-green-400">
                                     <i class="fas fa-check-circle"></i> Approved
                                 </span>
@@ -626,6 +634,13 @@
                 console.error('Error viewing character:', error);
                 alert('Error loading character details');
             }
+        }
+
+        // Edit character with moderator access
+        function editCharacter(characterId) {
+            // Open edit page in new tab with moderator access
+            const editUrl = `characters/character-edit.html?id=${characterId}`;
+            window.open(editUrl, '_blank');
         }
 
         // Initialize the page

@@ -1858,6 +1858,18 @@
                 console.log('🌐 Submitting to server...');
                 console.log('📤 Character data being sent:', characterData);
                 
+                // Debug: Verify the exact data being sent
+                console.log('🔍 FINAL CHECK before send:', {
+                    fatePoints: characterData.fatePoints,
+                    fatePointsType: typeof characterData.fatePoints,
+                    physicalStress: characterData.physicalStress,
+                    physicalStressType: typeof characterData.physicalStress,
+                    mentalStress: characterData.mentalStress,
+                    mentalStressType: typeof characterData.mentalStress,
+                    moves: characterData.moves,
+                    moveSources: characterData.moves?.map(m => m.source)
+                });
+                
                 // Create server API instance
                 const serverAPI = new ServerAPI();
                 console.log('📡 Server API created:', serverAPI);

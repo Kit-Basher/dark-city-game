@@ -36,6 +36,9 @@ class ErrorHandler {
                     error.status = response.status;
                     error.data = errorData;
                     console.log('🔍 Server error details:', errorData);
+                    console.log('🔍 Error details:', errorData.details);
+                    console.log('🔍 Error fields:', errorData.fields);
+                    console.log('🔍 Full error object:', JSON.stringify(errorData, null, 2));
                     throw error;
                 }
                 

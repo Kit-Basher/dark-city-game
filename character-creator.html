@@ -1890,6 +1890,21 @@
                     if (error.response) {
                         console.error('🔍 Error response:', error.response);
                     }
+                    
+                    // Check if this is a fetch error with response data
+                    if (error.error) {
+                        console.error('🔍 Error details object:', error.error);
+                    }
+                    
+                    // Try to get the response text if available
+                    if (error.response && error.response.text) {
+                        try {
+                            const responseText = await error.response.text();
+                            console.error('🔍 Response text:', responseText);
+                        } catch (e) {
+                            console.error('🔍 Could not read response text:', e);
+                        }
+                    }
                 }
                 
                 alert(`❌ Error submitting character: ${error.message}`);

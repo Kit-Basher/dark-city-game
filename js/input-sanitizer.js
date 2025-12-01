@@ -78,15 +78,16 @@ class InputSanitizer {
       .filter(photo => photo.url); // Only keep photos with valid URLs
   }
 
-  // Validate numeric fields
-  static sanitizeNumber(value, min = 0, max = 100, defaultValue = 0) {
-    const num = parseInt(value, 10);
+  // Validate numeric fields as strings (for server validation compatibility)
+  static sanitizeNumberString(value, min = 0, max = 100, defaultValue = '0') {
+    const str = String(value || '').trim();
+    const num = parseInt(str, 10);
     
     if (isNaN(num)) return defaultValue;
-    if (num < min) return min;
-    if (num > max) return max;
+    if (num < min) return String(min);
+    if (num > max) return String(max);
     
-    return num;
+    return str; // Return as string, not number
   }
 
   // Validate classification values (now free text)
@@ -122,37 +123,104 @@ class InputSanitizer {
   // Comprehensive character data validation
   static validateCharacterData(characterData) {
     const sanitized = {
+      // Basic character info
       name: this.sanitizeCharacterName(characterData.name),
       classification: this.sanitizeClassification(characterData.classification),
       playbook: this.sanitizeCharacterName(characterData.playbook),
       subtype: this.sanitizeCharacterName(characterData.subtype),
       bio: this.sanitizeBio(characterData.bio),
-      fatePoints: this.sanitizeNumber(characterData.fatePoints, 0, 10, 1),
-      physicalStress: this.sanitizeNumber(characterData.physicalStress, 0, 10, 2),
-      mentalStress: this.sanitizeNumber(characterData.mentalStress, 0, 10, 2),
+      
+      // Numeric fields as strings (for server validation)
+      fatePoints: this.sanitizeNumberString(characterData.fatePoints, 0, 10, '1'),
+      physicalStress: this.sanitizeNumberString(characterData.physicalStress, 0, 10, '2'),
+      mentalStress: this.sanitizeNumberString(characterData.mentalStress, 0, 10, '2'),
+      physicalConsequences: this.sanitizeNumberString(characterData.physicalConsequences, 0, 5, '0'),
+      mentalConsequences: this.sanitizeNumberString(characterData.mentalConsequences, 0, 5, '0'),
+      
+      // Character details
       apparentAge: this.sanitizeCharacterName(characterData.apparentAge),
       actualAge: this.sanitizeCharacterName(characterData.actualAge),
-      photos: this.sanitizePhotos(characterData.photos),
-      humanPhoto: this.sanitizeUrl(characterData.humanPhoto),
-      monsterPhoto: this.sanitizeUrl(characterData.monsterPhoto),
-      darkestSelf: this.sanitizeBio(characterData.darkestSelf),
       humanHeight: this.sanitizeCharacterName(characterData.humanHeight),
       humanWeight: this.sanitizeCharacterName(characterData.humanWeight),
-      werewolfHeight: this.sanitizeCharacterName(characterData.werewolfHeight),
-      werewolfWeight: this.sanitizeCharacterName(characterData.werewolfWeight)
+      monsterHeight: this.sanitizeCharacterName(characterData.monsterHeight),
+      monsterWeight: this.sanitizeCharacterName(characterData.monsterWeight),
+      
+      // Photos (sanitize URLs)
+      humanPhoto: this.sanitizeUrl(characterData.humanPhoto),
+      monsterPhoto: this.sanitizeUrl(characterData.monsterPhoto),
+      
+      // Character aspects and powers
+      aspect1: this.sanitizeHtml(characterData.aspect1 || ''),
+      aspect2: this.sanitizeHtml(characterData.aspect2 || ''),
+      aspect3: this.sanitizeHtml(characterData.aspect3 || ''),
+      darkestSelf: this.sanitizeBio(characterData.darkestSelf),
+      darkestSelfDesc: this.sanitizeBio(characterData.darkestSelfDesc),
+      specialResources: this.sanitizeHtml(characterData.specialResources || ''),
+      connections: this.sanitizeHtml(characterData.connections || ''),
+      
+      // Temporary aspects and consequences
+      tempAspect1: this.sanitizeHtml(characterData.tempAspect1 || ''),
+      tempAspect2: this.sanitizeHtml(characterData.tempAspect2 || ''),
+      consequence1: this.sanitizeHtml(characterData.consequence1 || ''),
+      consequence2: this.sanitizeHtml(characterData.consequence2 || ''),
+      
+      // Dates
+      tempDate1: this.sanitizeCharacterName(characterData.tempDate1),
+      tempDate2: this.sanitizeCharacterName(characterData.tempDate2),
+      consequenceDate1: this.sanitizeCharacterName(characterData.consequenceDate1),
+      consequenceDate2: this.sanitizeCharacterName(characterData.consequenceDate2)
     };
 
-    // Validate moves array
+    // Validate moves array - preserve source field
     if (Array.isArray(characterData.moves)) {
       sanitized.moves = characterData.moves
         .filter(move => move && typeof move === 'object')
         .map(move => ({
           name: this.sanitizeCharacterName(move.name),
-          description: this.sanitizeBio(move.description)
+          description: this.sanitizeBio(move.description),
+          source: this.sanitizeCharacterName(move.source) // Preserve source field
         }))
-        .filter(move => move.name && move.description);
+        .filter(move => move.name && move.description && move.source);
     } else {
       sanitized.moves = [];
+    }
+
+    // Validate skills array
+    if (Array.isArray(characterData.skills)) {
+      sanitized.skills = characterData.skills
+        .filter(skill => skill && typeof skill === 'object')
+        .map(skill => ({
+          name: this.sanitizeCharacterName(skill.name),
+          value: this.sanitizeNumberString(skill.value, 1, 4, '1')
+        }))
+        .filter(skill => skill.name && skill.value);
+    } else {
+      sanitized.skills = [];
+    }
+
+    // Validate items
+    for (let i = 1; i <= 10; i++) {
+      const itemKey = `item${i}`;
+      const descKey = `itemDesc${i}`;
+      if (characterData[itemKey]) {
+        sanitized[itemKey] = this.sanitizeHtml(characterData[itemKey]);
+        sanitized[descKey] = this.sanitizeHtml(characterData[descKey] || '');
+      }
+    }
+
+    // Validate scenes
+    for (let i = 1; i <= 10; i++) {
+      const sceneKey = `scene${i}`;
+      const charsKey = `sceneChars${i}`;
+      if (characterData[sceneKey]) {
+        sanitized[sceneKey] = this.sanitizeHtml(characterData[sceneKey]);
+        sanitized[charsKey] = this.sanitizeHtml(characterData[charsKey] || '');
+      }
+    }
+
+    // Edit password (if present)
+    if (characterData.editPassword) {
+      sanitized.editPassword = this.sanitizeCharacterName(characterData.editPassword);
     }
 
     return sanitized;

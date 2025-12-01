@@ -47,9 +47,8 @@ class ServerAPI {
                 throw new Error('Invalid character data provided');
             }
 
-            // Skip InputSanitizer for already processed character data
-            // The character creator already handles proper string conversion and data organization
-            const sanitizedData = characterData;
+            const sanitizedData = window.InputSanitizer ? 
+                window.InputSanitizer.validateCharacterData(characterData) : characterData;
 
             const response = await fetch(`${this.baseURL}/characters/submit`, {
                 method: 'POST',

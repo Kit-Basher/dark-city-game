@@ -267,6 +267,12 @@ app.get('/test-submission.js', (req, res) => {
   res.sendFile(require('path').join(__dirname, '../test-submission.js'));
 });
 
+// Log deployed commit for debugging
+logger.info('Starting server', {
+    gitCommit: process.env.RAILWAY_GIT_COMMIT_SHA || 'unknown',
+    version: process.env.npm_package_version || '1.0.0'
+});
+
 // Store io instance for use in routes
 app.set('io', io);
 

@@ -56,6 +56,17 @@ router.get('/debug', (req, res) => {
   });
 });
 
+// Public status ping
+router.get('/status-ping', (req, res) => {
+  res.json({
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+    gitCommit: process.env.RAILWAY_GIT_COMMIT_SHA || 'unknown',
+    nodeEnv: process.env.NODE_ENV,
+    version: require('../../package.json').version
+  });
+});
+
 /**
  * @swagger
  * /characters/submissions:

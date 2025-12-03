@@ -1,6 +1,9 @@
 const Character = require('../models/Character');
 const { logger, structuredLogger } = require('../config/logging');
-const cacheService = require('./cacheService');
+
+// Simple in-memory cache for character queries
+const characterCache = new Map();
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
 
 class CharacterService {
     // Optimized character retrieval with pagination
@@ -17,6 +20,20 @@ class CharacterService {
             submittedBy,
             useCache = true
         } = options;
+
+        // Create cache key for non-search queries
+        const cacheKey = !search ? JSON.stringify({ status, page, limit, sortBy, sortOrder, classification, playbook, submittedBy }) : null;
+        
+        // Check cache first (only for non-search queries)
+        if (cacheKey && characterCache.has(cacheKey)) {
+            const cached = characterCache.get(cacheKey);
+            if (Date.now() - cached.timestamp < CACHE_TTL) {
+                console.log('📋 Cache hit for characters query');
+                return cached.data;
+            } else {
+                characterCache.delete(cacheKey);
+            }
+        }
 
         try {
             // Build query
@@ -44,6 +61,9 @@ class CharacterService {
             // Execute query with pagination
             const skip = (page - 1) * limit;
             
+            // Performance logging
+            const startTime = Date.now();
+            
             const [characters, total] = await Promise.all([
                 Character
                     .find(query)
@@ -54,6 +74,20 @@ class CharacterService {
                     .exec(),
                 Character.countDocuments(query)
             ]);
+
+            const queryTime = Date.now() - startTime;
+            console.log(`🐌 Character query performance: ${queryTime}ms for ${characters.length} characters (total: ${total})`);
+            
+            if (queryTime > 1000) {
+                console.warn('⚠️ Slow character query detected:', {
+                    queryTime,
+                    query,
+                    sort,
+                    skip,
+                    limit,
+                    total
+                });
+            }
 
             const result = {
                 characters,
@@ -66,6 +100,15 @@ class CharacterService {
                     hasPrev: page > 1
                 }
             };
+
+            // Cache the result (only for non-search queries)
+            if (cacheKey) {
+                characterCache.set(cacheKey, {
+                    data: result,
+                    timestamp: Date.now()
+                });
+                console.log('📝 Cached characters query');
+            }
 
             // Log database operation
             structuredLogger.logDatabase('find', 'characters', {

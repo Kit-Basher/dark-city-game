@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Character 1764137824401 - Dark City RPG Character Profile</title>
+    <meta name="description" content="Test Character 1764137824401 - Vampire Unsated in Dark City RPG">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/accessibility.css">
+    <link rel="stylesheet" href="../../css/mobile.css">
+    <style>
+        .profile-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .profile-header {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 2px solid #ff6b35;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .profile-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ff6b35, #f7931e, #ff6b35);
+        }
+        
+        .profile-photos {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .profile-photo {
+            text-align: center;
+        }
+        
+        .profile-photo img {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 3px solid #ff6b35;
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+        }
+        
+        .profile-photo-label {
+            color: #999;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        
+        .edit-profile-btn {
+            background: #ff6b35;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            transition: background 0.3s ease;
+        }
+        
+        .edit-profile-btn:hover {
+            background: #e55a2b;
+        }
+        
+        .password-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .password-modal-content {
+            background: #2a2a2a;
+            padding: 2rem;
+            border-radius: 10px;
+            border: 2px solid #ff6b35;
+            max-width: 400px;
+            width: 90%;
+        }
+        
+        .password-modal h3 {
+            color: #ff6b35;
+            margin-bottom: 1rem;
+        }
+        
+        .password-modal input {
+            width: 100%;
+            padding: 0.5rem;
+            background: #1a1a1a;
+            border: 1px solid #666;
+            color: white;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+        }
+        
+        .password-modal-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+        
+        .password-modal-buttons button {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .password-modal-buttons .confirm {
+            background: #ff6b35;
+            color: white;
+        }
+        
+        .password-modal-buttons .cancel {
+            background: #666;
+            color: white;
+        }
+        
+        .profile-name {
+            font-size: 2.5rem;
+            color: #ff6b35;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+        
+        .profile-title {
+            font-size: 1.2rem;
+            color: #ccc;
+            margin-bottom: 1rem;
+        }
+        
+        .profile-badges {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+        
+        .badge {
+            background: #444;
+            color: #fff;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            border: 1px solid #666;
+        }
+        
+        .badge.playbook {
+            background: #ff6b35;
+            border-color: #ff8c42;
+        }
+        
+        .badge.classification {
+            background: #4a90e2;
+            border-color: #6ba3f5;
+        }
+        
+        .profile-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+        
+        .profile-main {
+            background: #1a1a1a;
+            border-radius: 10px;
+            padding: 2rem;
+            border: 1px solid #444;
+        }
+        
+        .profile-sidebar {
+            background: #1a1a1a;
+            border-radius: 10px;
+            padding: 2rem;
+            border: 1px solid #444;
+        }
+        
+        .section-title {
+            color: #ff6b35;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid #ff6b35;
+            padding-bottom: 0.5rem;
+        }
+        
+        .bio-section {
+            margin-bottom: 2rem;
+        }
+        
+        .bio-text {
+            color: #ccc;
+            line-height: 1.6;
+            font-size: 1.1rem;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-item {
+            background: #2d2d2d;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #444;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            color: #ff6b35;
+            font-weight: bold;
+        }
+        
+        .stat-label {
+            color: #999;
+            font-size: 0.9rem;
+            margin-top: 0.25rem;
+        }
+        
+        .moves-section, .skills-section {
+            margin-bottom: 2rem;
+        }
+        
+        .move-item, .skill-item {
+            background: #2d2d2d;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border: 1px solid #444;
+        }
+        
+        .move-name, .skill-name {
+            color: #f7931e;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        
+        .move-description, .skill-description {
+            color: #ccc;
+            font-size: 0.9rem;
+        }
+        
+        .join-date {
+            background: #2d2d2d;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #444;
+            margin-bottom: 1rem;
+        }
+        
+        .join-date-text {
+            color: #999;
+            font-size: 0.9rem;
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-bottom: 2rem;
+            color: #ff6b35;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        .back-link:hover {
+            color: #ff8c42;
+        }
+        
+        @media (max-width: 768px) {
+            .profile-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .profile-name {
+                font-size: 2rem;
+            }
+        }
+        
+        /* Photo Lightbox Styles */
+        .photo-lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .photo-lightbox[aria-hidden="false"] {
+            opacity: 1;
+        }
+        
+        .lightbox-content {
+            position: relative;
+            max-width: 90%;
+            max-height: 90%;
+            text-align: center;
+        }
+        
+        .lightbox-content img {
+            max-width: 100%;
+            max-height: 80vh;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+        }
+        
+        .lightbox-close {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            background: #ff6b35;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s ease;
+        }
+        
+        .lightbox-close:hover {
+            background: #ff8c42;
+        }
+        
+        .lightbox-caption {
+            margin-top: 1rem;
+            color: #fff;
+            font-size: 1rem;
+            text-align: center;
+        }
+        
+        @media (max-width: 768px) {
+            .lightbox-content {
+                max-width: 95%;
+                max-height: 95%;
+            }
+            
+            .lightbox-close {
+                top: -35px;
+                right: 10px;
+                width: 28px;
+                height: 28px;
+                font-size: 16px;
+            }
+            
+            .lightbox-caption {
+                font-size: 0.9rem;
+                padding: 0 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="#main-content" class="skip-to-main">Skip to main content</a>
+    
+    <header role="banner">
+        <nav role="navigation" aria-label="Main navigation">
+            <div class="nav-container">
+                <h1><a href="../../index.html" style="color: #ff6b35; text-decoration: none;">Dark City</a></h1>
+                <button class="mobile-menu-toggle" aria-label="Toggle mobile menu" aria-expanded="false">
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                </button>
+                <ul class="nav-links" role="menubar">
+                    <li role="none"><a href="../../index.html" role="menuitem">Home</a></li>
+                    <li role="none"><a href="../../rules/server-rules.html" role="menuitem">Rules</a></li>
+                    <li role="none"><a href="../../playbooks/index.html" role="menuitem">Playbooks</a></li>
+                    <li role="none"><a href="../../characters/gallery.html" role="menuitem">Characters</a></li>
+                    <li role="none"><a href="../../character-creator.html" role="menuitem">Character Creator</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <main role="main" id="main-content">
+        <div class="profile-container">
+            <a href="../gallery.html" class="back-link">← Back to Character Gallery</a>
+            
+            <div class="profile-header">
+                <div class="profile-photos"><p>No photos uploaded</p></div>
+                <h1 class="profile-name">Test Character 1764137824401</h1>
+                <p class="profile-title">Vampire • Unsated</p>
+                <button id="editProfileBtn" class="edit-profile-btn">✏️ Edit Profile</button>
+            </div>
+            
+            <div class="profile-content">
+                <div class="profile-main">
+                    <div class="bio-section">
+                        <h2 class="section-title">Biography</h2>
+                        <p class="bio-text">Born in the 15th century, turned into a vampire during a tragic encounter. Has spent centuries learning to control their powers and navigate the supernatural world.</p>
+                    </div>
+                    
+                    <div class="darkest-self">
+          <h3>Darkest Self</h3>
+          <p>Blood Frenzy</p>
+        </div>
+                    
+                    <div class="moves">
+          <h3>Moves</h3>
+          <div class="move">
+              <h4>Immortal Healing</h4>
+              <p>Heal quickly from wounds</p>
+            </div><div class="move">
+              <h4>Shadow Walk</h4>
+              <p>Move through shadows</p>
+            </div><div class="move">
+              <h4>Mesmerize</h4>
+              <p>Control minds with gaze</p>
+            </div>
+        </div>
+                    
+                    
+                </div>
+                
+                <div class="profile-sidebar">
+                    <div class="join-date">
+                        <p class="join-date-text">🎭 Joined Dark City</p>
+                        <p class="join-date-text" style="font-size: 1.2rem; color: #ff6b35; font-weight: bold;">November 26, 2025</p>
+                    </div>
+                    
+                    <h3 class="section-title">Character Stats</h3>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-value">3</div>
+                            <div class="stat-label">Fate Points</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">2</div>
+                            <div class="stat-label">Physical Stress</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">1</div>
+                            <div class="stat-label">Mental Stress</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">25</div>
+                            <div class="stat-label">Apparent Age</div>
+                        </div>
+                    </div>
+                    
+                    <h3 class="section-title">Physical Details</h3>
+                    <div style="color: #ccc; line-height: 1.6;">
+                        <p><strong>Apparent Age:</strong> 25</p>
+                        <p><strong>Actual Age:</strong> 250</p>
+                        <div class="human-stats">
+          <h3>Human Form</h3>
+          <p>Height: 5'10"</p>
+          <p>Weight: 180 lbs</p>
+        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Additional Photos Section -->
+    
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Dark City RPG. Built with GitHub Pages.</p>
+        </div>
+    </footer>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/safe-dom.js"></script>
+    <script src="../js/accessibility.js"></script>
+
+    <!-- Photo Lightbox Modal -->
+    <div id="photoLightbox" class="photo-lightbox" role="dialog" aria-modal="true" aria-labelledby="lightbox-title">
+        <div class="lightbox-content">
+            <button class="lightbox-close" aria-label="Close photo view">&times;</button>
+            <img id="lightbox-image" src="" alt="" role="img">
+            <div id="lightbox-caption" class="lightbox-caption"></div>
+        </div>
+    </div>
+
+    <script>
+        // Photo lightbox functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const lightbox = document.getElementById('photoLightbox');
+            const lightboxImage = document.getElementById('lightbox-image');
+            const lightboxCaption = document.getElementById('lightbox-caption');
+            const closeButton = lightbox.querySelector('.lightbox-close');
+            
+            // Add click handlers to all profile photos
+            function setupPhotoHandlers() {
+                const photos = document.querySelectorAll('.profile-photo img, .additional-photos-section .profile-photo img');
+                photos.forEach(photo => {
+                    photo.style.cursor = 'pointer';
+                    photo.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        openLightbox(this.src, this.alt || 'Character photo');
+                    });
+                });
+            }
+            
+            // Open lightbox
+            function openLightbox(src, caption) {
+                lightboxImage.src = src;
+                lightboxImage.alt = caption;
+                lightboxCaption.textContent = caption;
+                lightbox.style.display = 'flex';
+                lightbox.setAttribute('aria-hidden', 'false');
+                document.body.style.overflow = 'hidden'; // Prevent background scrolling
+                lightboxImage.focus();
+            }
+            
+            // Close lightbox
+            function closeLightbox() {
+                lightbox.style.display = 'none';
+                lightbox.setAttribute('aria-hidden', 'true');
+                document.body.style.overflow = ''; // Restore scrolling
+            }
+            
+            // Event listeners
+            closeButton.addEventListener('click', closeLightbox);
+            
+            lightbox.addEventListener('click', function(e) {
+                if (e.target === lightbox) {
+                    closeLightbox();
+                }
+            });
+            
+            // Keyboard accessibility
+            document.addEventListener('keydown', function(e) {
+                if (lightbox.style.display === 'flex') {
+                    if (e.key === 'Escape' || e.key === 'Esc') {
+                        closeLightbox();
+                    }
+                }
+            });
+            
+            // Setup handlers on page load
+            setupPhotoHandlers();
+            
+            // Re-setup handlers if additional photos are loaded dynamically
+            if (window.MutationObserver) {
+                const observer = new MutationObserver(function(mutations) {
+                    mutations.forEach(function(mutation) {
+                        if (mutation.addedNodes.length) {
+                            setupPhotoHandlers();
+                        }
+                    });
+                });
+                
+                observer.observe(document.body, {
+                    childList: true,
+                    subtree: true
+                });
+            }
+        });
+    </script>
+    
+    <!-- Password Modal -->
+    <div id="passwordModal" class="password-modal">
+        <div class="password-modal-content">
+            <h3>🔐 Enter Edit Password</h3>
+            <p>This character is protected with an edit password. Please enter the password to continue.</p>
+            <input type="password" id="passwordInput" placeholder="Enter edit password">
+            <div class="password-modal-buttons">
+                <button id="cancelPasswordBtn" class="cancel">Cancel</button>
+                <button id="unlockEditBtn" class="confirm">Unlock Edit</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const characterData = {
+            name: 'Test Character 1764137824401',
+            id: '69269b64da007807a8ba0d14',
+            editPassword: ''
+        };
+        
+        // Add event listeners instead of inline onclick handlers
+        document.addEventListener('DOMContentLoaded', function() {
+            // Edit profile button
+            const editBtn = document.getElementById('editProfileBtn');
+            if (editBtn) {
+                editBtn.addEventListener('click', showEditPasswordModal);
+            }
+            
+            // Password modal buttons
+            const cancelBtn = document.getElementById('cancelPasswordBtn');
+            const unlockBtn = document.getElementById('unlockEditBtn');
+            
+            if (cancelBtn) {
+                cancelBtn.addEventListener('click', closePasswordModal);
+            }
+            
+            if (unlockBtn) {
+                unlockBtn.addEventListener('click', verifyPassword);
+            }
+        });
+        
+        function showEditPasswordModal() {
+            if (!characterData.editPassword) {
+                // No password set, go directly to edit mode
+                window.location.href = `../character-edit.html?id=${characterData.id}`;
+                return;
+            }
+            
+            // Show password modal
+            document.getElementById('passwordModal').style.display = 'flex';
+            document.getElementById('passwordInput').value = '';
+            document.getElementById('passwordInput').focus();
+        }
+        
+        function closePasswordModal() {
+            document.getElementById('passwordModal').style.display = 'none';
+            document.getElementById('passwordInput').value = '';
+        }
+        
+        function verifyPassword() {
+            const password = document.getElementById('passwordInput').value;
+            
+            if (password === characterData.editPassword) {
+                // Password correct, redirect to edit mode
+                window.location.href = `../character-edit.html?id=${characterData.id}&editPassword=${password}`;
+            } else {
+                // Password incorrect
+                alert('Incorrect password. Please try again.');
+                document.getElementById('passwordInput').value = '';
+                document.getElementById('passwordInput').focus();
+            }
+        }
+        
+        // Allow Enter key to submit password
+        document.getElementById('passwordInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                verifyPassword();
+            }
+        });
+        
+        // Allow Escape key to close modal
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closePasswordModal();
+            }
+        });
+    </script>
+</body>
+</html>

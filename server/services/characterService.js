@@ -19,21 +19,6 @@ class CharacterService {
         } = options;
 
         try {
-            // Generate cache key
-            const cacheKey = cacheService.constructor.generateQueryHash({
-                status, page, limit, sortBy, sortOrder,
-                classification, playbook, search, submittedBy
-            });
-
-            // Try cache first
-            if (useCache && !search) { // Don't cache search results for too long
-                const cached = await cacheService.getCharacters(cacheKey);
-                if (cached) {
-                    structuredLogger.logDatabase('cache_hit', 'characters', { cacheKey });
-                    return cached;
-                }
-            }
-
             // Build query
             const query = { status };
             
@@ -81,12 +66,6 @@ class CharacterService {
                     hasPrev: page > 1
                 }
             };
-
-            // Cache the result (shorter TTL for search results)
-            if (useCache) {
-                const ttl = search ? 300 : 1800; // 5 min for search, 30 min for regular
-                await cacheService.setCharacters(cacheKey, result, ttl);
-            }
 
             // Log database operation
             structuredLogger.logDatabase('find', 'characters', {

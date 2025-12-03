@@ -45,6 +45,17 @@ router.get('/', async (req, res) => {
   }
 });
 
+// Debug endpoint to verify deployed version
+router.get('/debug', (req, res) => {
+  res.json({
+    message: 'Debug info',
+    timestamp: new Date().toISOString(),
+    gitCommit: process.env.RAILWAY_GIT_COMMIT_SHA || 'unknown',
+    nodeEnv: process.env.NODE_ENV,
+    version: require('../../package.json').version
+  });
+});
+
 /**
  * @swagger
  * /characters/submissions:

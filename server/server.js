@@ -306,6 +306,19 @@ app.get('/', (req, res) => {
   });
 });
 
+// Public status ping that also reports the API key hint and commit
+app.get('/status-ping', (req, res) => {
+  res.json({
+    status: 'ok',
+    message: 'Status ping - public endpoint',
+    timestamp: new Date().toISOString(),
+    gitCommit: process.env.RAILWAY_GIT_COMMIT_SHA || 'unknown',
+    apiKeyHint: process.env.API_KEY || 'not set',
+    nodeEnv: process.env.NODE_ENV,
+    version: process.env.npm_package_version || '1.0.0'
+  });
+});
+
 // Health check endpoint
 app.get('/health', applyRateLimiting('publicEndpoints'), async (req, res) => {
     try {

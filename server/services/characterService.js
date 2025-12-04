@@ -1,12 +1,7 @@
 const Character = require('../models/Character');
-const { logger, structuredLogger } = require('../config/logging');
-
-// Simple in-memory cache for character queries
-const characterCache = new Map();
-const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+const { structuredLogger } = require('../config/logging');
 
 class CharacterService {
-    // Optimized character retrieval with pagination
     static async getCharacters(options = {}) {
         const {
             status = 'approved',
@@ -16,519 +11,67 @@ class CharacterService {
             sortOrder = -1,
             classification,
             playbook,
-            search,
-            submittedBy,
-            useCache = true
+            submittedBy
         } = options;
 
-        // Create cache key for non-search queries
-        const cacheKey = !search ? JSON.stringify({ status, page, limit, sortBy, sortOrder, classification, playbook, submittedBy }) : null;
-        
-        // Check cache first (only for non-search queries)
-        if (cacheKey && characterCache.has(cacheKey)) {
-            const cached = characterCache.get(cacheKey);
-            if (Date.now() - cached.timestamp < CACHE_TTL) {
-                console.log('📋 Cache hit for characters query');
-                return cached.data;
-            } else {
-                characterCache.delete(cacheKey);
-            }
-        }
+        const query = {};
+        if (status) query.status = status;
+        if (classification) query.classification = classification;
+        if (playbook) query.playbook = playbook;
+        if (submittedBy) query.submittedBy = submittedBy;
 
-        try {
-            // Build query
-            const query = { status };
-            
-            if (classification) query.classification = classification;
-            if (playbook) query.playbook = playbook;
-            if (submittedBy) query.submittedBy = submittedBy;
-            
-            // Add text search if provided
-            if (search) {
-                query.$text = { $search: search };
-            }
+        const sort = { [sortBy]: sortOrder };
+        const skip = (page - 1) * limit;
 
-            // Build sort options
-            const sort = {};
-            if (search) {
-                // For text search, sort by relevance first, then by date
-                sort.score = { $meta: 'textScore' };
-                sort[sortBy] = sortOrder;
-            } else {
-                sort[sortBy] = sortOrder;
-            }
+        const findStart = Date.now();
+        const characters = await Character.find(query)
+            .sort(sort)
+            .skip(skip)
+            .limit(limit)
+            .lean()
+            .exec();
+        const findTime = Date.now() - findStart;
 
-            // Execute query with pagination
-            const skip = (page - 1) * limit;
-            
-            // Performance logging
-            const startTime = Date.now();
-            
-            const [characters, total] = await Promise.all([
-                Character
-                    .find(query)
-                    .sort(sort)
-                    .skip(skip)
-                    .limit(limit)
-                    .lean() // Use lean for better performance
-                    .exec(),
-                Character.countDocuments(query)
-            ]);
+        const countStart = Date.now();
+        const total = await Character.countDocuments(query);
+        const countTime = Date.now() - countStart;
 
-            const queryTime = Date.now() - startTime;
-            console.log(`🐌 Character query performance: ${queryTime}ms for ${characters.length} characters (total: ${total})`);
-            
-            if (queryTime > 1000) {
-                console.warn('⚠️ Slow character query detected:', {
-                    queryTime,
-                    query,
-                    sort,
-                    skip,
-                    limit,
-                    total
-                });
-            }
+        structuredLogger.logPerformance('characters_find', findTime, 'ms', { query, sort, skip, limit });
+        structuredLogger.logPerformance('characters_count', countTime, 'ms', { query });
+        structuredLogger.logPerformance('characters_total', findTime + countTime, 'ms', { total, page, limit });
 
-            const result = {
-                characters,
-                pagination: {
-                    page,
-                    limit,
-                    total,
-                    pages: Math.ceil(total / limit),
-                    hasNext: page * limit < total,
-                    hasPrev: page > 1
-                }
-            };
-
-            // Cache the result (only for non-search queries)
-            if (cacheKey) {
-                characterCache.set(cacheKey, {
-                    data: result,
-                    timestamp: Date.now()
-                });
-                console.log('📝 Cached characters query');
-            }
-
-            // Log database operation
-            structuredLogger.logDatabase('find', 'characters', {
-                query: JSON.stringify(query),
-                results: characters.length,
-                total,
+        return {
+            characters,
+            pagination: {
                 page,
                 limit,
-                cached: false
-            });
-
-            return result;
-        } catch (error) {
-            structuredLogger.logError(error, { operation: 'getCharacters', options });
-            throw error;
-        }
+                total,
+                pages: Math.max(1, Math.ceil(total / limit)),
+                hasNext: page * limit < total,
+                hasPrev: page > 1
+            }
+        };
     }
 
-    // Optimized character submission
-    static async createCharacter(characterData, userId) {
-        try {
-            // Handle editPassword - if empty string, set to null for no password protection
-            if (characterData.editPassword === '') {
-                characterData.editPassword = null;
-            } else if (!characterData.editPassword) {
-                // Generate random password if none provided
-                characterData.editPassword = Math.random().toString(36).substring(2, 10);
-            }
-
-            const character = new Character({
-                ...characterData,
-                submittedBy: userId || 'anonymous'
-            });
-
-            const savedCharacter = await character.save();
-
-            // Invalidate relevant caches
-            await cacheService.invalidateCharacter(savedCharacter._id);
-            await cacheService.invalidateStatistics();
-
-            // Log the submission
-            structuredLogger.logCharacterSubmission(savedCharacter, userId);
-
-            return savedCharacter;
-        } catch (error) {
-            structuredLogger.logError(error, { 
-                operation: 'createCharacter', 
-                userId,
-                characterName: characterData.name 
-            });
-            throw error;
-        }
-    }
-
-    // Optimized character approval/rejection
-    static async moderateCharacter(characterId, action, moderatorId, feedback = '') {
-        try {
-            console.log('🔧 Moderation: Starting', { characterId, action, moderatorId });
-            
-            // Convert action to proper status value
-            const statusMap = {
-                'approve': 'approved',
-                'reject': 'rejected'
-            };
-            const status = statusMap[action] || action;
-            
-            console.log('🔧 Moderation: Converting action', { action, status });
-            
-            const updateData = {
-                status: status,
-                reviewedBy: moderatorId,
-                reviewedAt: new Date(),
-                feedback
-            };
-
-            console.log('🔧 Moderation: Updating character with data:', updateData);
-            const character = await Character.findByIdAndUpdate(
-                characterId,
-                updateData,
-                { new: true, runValidators: true }
-            ).lean().exec();
-
-            if (!character) {
-                console.log('🔧 Moderation: Character not found');
-                throw new Error('Character not found');
-            }
-
-            console.log('🔧 Moderation: Character updated successfully:', character.name);
-
-            // Log the moderation action (with error handling)
-            try {
-                if (action === 'approved') {
-                    structuredLogger.logCharacterApproval(character, moderatorId);
-                } else {
-                    structuredLogger.logBusiness('character_rejected', {
-                        characterId: character._id,
-                        characterName: character.name,
-                        rejectedBy: moderatorId,
-                        feedback
-                    });
-                }
-                console.log('🔧 Moderation: Logging completed');
-            } catch (logError) {
-                console.warn('🔧 Moderation: Logging failed:', logError.message);
-                // Don't fail the moderation if logging fails
-            }
-
-            console.log('🔧 Moderation: Operation completed successfully');
-            return character;
-        } catch (error) {
-            console.error('🔧 Moderation: Error occurred:', error);
-            
-            // Log error (with error handling)
-            try {
-                structuredLogger.logError(error, { 
-                    operation: 'moderateCharacter', 
-                    characterId, 
-                    action, 
-                    moderatorId 
-                });
-            } catch (logError) {
-                console.warn('🔧 Moderation: Error logging failed:', logError.message);
-            }
-            
-            throw error;
-        }
-    }
-
-    // Get character statistics
-    static async getStatistics(useCache = true) {
-        try {
-            // Try cache first
-            if (useCache) {
-                const cached = await cacheService.getStatistics();
-                if (cached) {
-                    structuredLogger.logDatabase('cache_hit', 'statistics', {});
-                    return cached;
-                }
-            }
-
-            const pipeline = [
-                {
-                    $group: {
-                        _id: '$status',
-                        count: { $sum: 1 }
-                    }
-                }
-            ];
-
-            const statusStats = await Character.aggregate(pipeline);
-
-            const classificationStats = await Character.aggregate([
-                {
-                    $group: {
-                        _id: '$classification',
-                        count: { $sum: 1 }
-                    }
-                },
-                {
-                    $sort: { count: -1 }
-                }
-            ]);
-
-            const playbookStats = await Character.aggregate([
-                {
-                    $group: {
-                        _id: '$playbook',
-                        count: { $sum: 1 }
-                    }
-                },
-                {
-                    $sort: { count: -1 }
-                }
-            ]);
-
-            const recentActivity = await Character.aggregate([
-                {
-                    $match: {
-                        submittedAt: {
-                            $gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) // Last 7 days
-                        }
-                    }
-                },
-                {
-                    $group: {
-                        _id: {
-                            $dateToString: {
-                                format: '%Y-%m-%d',
-                                date: '$submittedAt'
-                            }
-                        },
-                        submitted: { $sum: 1 }
-                    }
-                },
-                {
-                    $sort: { _id: 1 }
-                }
-            ]);
-
-            const stats = {
-                byStatus: statusStats.reduce((acc, stat) => {
-                    acc[stat._id] = stat.count;
-                    return acc;
-                }, {}),
-                byClassification: classificationStats,
-                byPlaybook: playbookStats,
-                recentActivity,
-                total: await Character.countDocuments()
-            };
-
-            // Cache the statistics
-            if (useCache) {
-                await cacheService.setStatistics(stats);
-            }
-
-            structuredLogger.logDatabase('aggregate', 'characters', {
-                operation: 'statistics',
-                resultCount: stats.total,
-                cached: false
-            });
-
-            return stats;
-        } catch (error) {
-            structuredLogger.logError(error, { operation: 'getStatistics' });
-            throw error;
-        }
-    }
-
-    // Search characters with advanced filtering
-    static async searchCharacters(searchOptions) {
-        const {
-            query,
-            filters = {},
-            page = 1,
-            limit = 12,
-            sortBy = 'submittedAt',
-            sortOrder = -1
-        } = searchOptions;
-
-        try {
-            // Build search query
-            const searchQuery = {
-                status: 'approved'
-            };
-
-            // Add text search
-            if (query) {
-                searchQuery.$text = { $search: query };
-            }
-
-            // Add filters
-            Object.keys(filters).forEach(key => {
-                if (filters[key] && filters[key].length > 0) {
-                    if (Array.isArray(filters[key])) {
-                        searchQuery[key] = { $in: filters[key] };
-                    } else {
-                        searchQuery[key] = filters[key];
-                    }
-                }
-            });
-
-            // Build sort
-            const sort = {};
-            if (query) {
-                sort.score = { $meta: 'textScore' };
-            }
-            sort[sortBy] = sortOrder;
-
-            // Execute search
-            const skip = (page - 1) * limit;
-            
-            const [characters, total] = await Promise.all([
-                Character
-                    .find(searchQuery)
-                    .sort(sort)
-                    .skip(skip)
-                    .limit(limit)
-                    .lean()
-                    .exec(),
-                Character.countDocuments(searchQuery)
-            ]);
-
-            return {
-                characters,
-                pagination: {
-                    page,
-                    limit,
-                    total,
-                    pages: Math.ceil(total / limit),
-                    hasNext: page * limit < total,
-                    hasPrev: page > 1
-                },
-                searchQuery,
-                filters
-            };
-        } catch (error) {
-            structuredLogger.logError(error, { 
-                operation: 'searchCharacters', 
-                searchOptions 
-            });
-            throw error;
-        }
-    }
-
-    // Get character by ID with error handling
-    static async getCharacterById(characterId) {
-        try {
-            const character = await Character.findById(characterId).lean().exec();
-            
-            if (!character) {
-                throw new Error('Character not found');
-            }
-
-            return character;
-        } catch (error) {
-            structuredLogger.logError(error, { 
-                operation: 'getCharacterById', 
-                characterId 
-            });
-            throw error;
-        }
-    }
-
-    // Bulk operations for moderation
-    static async bulkModerate(characterIds, action, moderatorId, feedback = '') {
-        try {
-            const updateData = {
-                status: action,
-                reviewedBy: moderatorId,
-                reviewedAt: new Date(),
-                feedback
-            };
-
-            const result = await Character.updateMany(
-                { _id: { $in: characterIds } },
-                updateData
-            );
-
-            // Log bulk operation
-            structuredLogger.logBusiness('bulk_moderation', {
-                action,
-                moderatorId,
-                characterCount: result.modifiedCount,
-                characterIds
-            });
-
-            return result;
-        } catch (error) {
-            structuredLogger.logError(error, { 
-                operation: 'bulkModerate', 
-                characterIds, 
-                action, 
-                moderatorId 
-            });
-            throw error;
-        }
-    }
-
-    // Convenience methods for specific status queries
     static async getApprovedCharacters(options = {}) {
         return this.getCharacters({ ...options, status: 'approved' });
-    }
-
-    static async getAllSubmissions(options = {}) {
-        return this.getCharacters({ ...options, status: null }); // Get all statuses
     }
 
     static async getPendingSubmissions(options = {}) {
         return this.getCharacters({ ...options, status: 'pending' });
     }
 
-    static async approveCharacter(characterId, options = {}) {
-        return this.moderateCharacter(characterId, 'approve', options.reviewedBy, options.feedback);
+    static async getAllSubmissions(options = {}) {
+        return this.getCharacters({ ...options, status: null });
     }
 
-    static async rejectCharacter(characterId, options = {}) {
-        return this.moderateCharacter(characterId, 'reject', options.reviewedBy, options.feedback);
+    static async createCharacter(characterData) {
+        const character = new Character(characterData);
+        return character.save();
     }
 
     static async deleteCharacter(characterId) {
-        try {
-            console.log('🗑️ Character Deletion: Starting for ID:', characterId);
-            
-            const character = await Character.findByIdAndDelete(characterId);
-            console.log('🗑️ Character Deletion: Found and deleted character:', character?.name || 'Not found');
-            
-            if (!character) {
-                console.log('🗑️ Character Deletion: Character not found');
-                return null;
-            }
-
-            // Clear cache (with error handling)
-            try {
-                await cacheService.clearPattern('characters:*');
-                console.log('🗑️ Character Deletion: Cache cleared');
-            } catch (cacheError) {
-                console.warn('🗑️ Character Deletion: Cache clear failed:', cacheError.message);
-                // Don't fail the deletion if cache clear fails
-            }
-            
-            // Log success (with error handling)
-            try {
-                structuredLogger.logInfo('Character deleted successfully', {
-                    characterId,
-                    characterName: character.name
-                });
-            } catch (logError) {
-                console.warn('🗑️ Character Deletion: Structured logging failed:', logError.message);
-            }
-
-            console.log('🗑️ Character Deletion: Operation completed successfully');
-            return character;
-        } catch (error) {
-            logger.error('Error deleting character:', error);
-            structuredLogger.logError(error, { 
-                operation: 'deleteCharacter', 
-                characterId 
-            });
-            throw error;
-        }
+        return Character.findByIdAndDelete(characterId).lean().exec();
     }
 }
 

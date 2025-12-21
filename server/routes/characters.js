@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const Character = require('../models/Character');
+const { structuredLogger } = require('../config/logging');
+const { getModeratorPassword, setModeratorPassword, DEFAULT_PASSWORD } = require('../config/moderatorPassword');
 const CharacterService = require('../services/characterService');
 const { validate, characterSchema } = require('../middleware/validation');
 const { generateCharacterProfile } = require('../utils/profileGenerator');
@@ -234,7 +235,13 @@ router.post('/submit', validate(characterSchema), async (req, res) => {
  */
 router.put('/:id/approve', async (req, res) => {
   try {
-    const { feedback = '', reviewedBy = 'moderator' } = req.body;
+    const { moderatorPassword, feedback = '', reviewedBy = 'moderator' } = req.body;
+    const expectedPassword = await getModeratorPassword();
+    
+    // Verify moderator password
+    if (!moderatorPassword || moderatorPassword !== expectedPassword) {
+      return res.status(401).json({ error: 'Invalid moderator password' });
+    }
     
     const character = await CharacterService.approveCharacter(req.params.id, {
       feedback,
@@ -320,7 +327,13 @@ router.put('/:id/approve', async (req, res) => {
  */
 router.put('/:id/reject', async (req, res) => {
   try {
-    const { feedback, reviewedBy = 'moderator' } = req.body;
+    const { moderatorPassword, feedback, reviewedBy = 'moderator' } = req.body;
+    const expectedPassword = await getModeratorPassword();
+    
+    // Verify moderator password
+    if (!moderatorPassword || moderatorPassword !== expectedPassword) {
+      return res.status(401).json({ error: 'Invalid moderator password' });
+    }
     
     if (!feedback) {
       return res.status(400).json({ error: 'Feedback is required for rejection' });
@@ -471,6 +484,483 @@ router.get('/profiles/regenerate', async (req, res) => {
       error: 'Failed to regenerate profiles',
       message: error.message 
     });
+  }
+});
+
+/**
+ * @swagger
+ * /characters/{id}/edit:
+ *   put:
+ *     summary: Edit a character
+ *     description: Update character details with edit password or moderator password
+ *     tags: [Characters]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               editPassword:
+ *                 type: string
+ *                 description: Character edit password
+ *               moderatorPassword:
+ *                 type: string
+ *                 description: Moderator override password
+ *               characterData:
+ *                 type: object
+ *                 description: Character data to update
+ *     responses:
+ *       200:
+ *         description: Character updated successfully
+ *       401:
+ *         description: Invalid password
+ *       404:
+ *         description: Character not found
+ */
+router.put('/:id/edit', async (req, res) => {
+  try {
+    const { editPassword, moderatorPassword, ...characterData } = req.body;
+    
+    // Allow moderator override
+    if (moderatorPassword === (process.env.MODERATOR_PASSWORD || 'test123')) {
+      // Moderator can edit without character password
+      const character = await CharacterService.updateCharacter(req.params.id, characterData, null);
+      return res.json({
+        message: 'Character updated successfully by moderator',
+        character
+      });
+    }
+    
+    // Regular user must provide edit password
+    if (!editPassword) {
+      return res.status(401).json({ error: 'Edit password required' });
+    }
+    
+    const character = await CharacterService.updateCharacter(req.params.id, characterData, editPassword);
+    
+    res.json({
+      message: 'Character updated successfully',
+      character
+    });
+  } catch (error) {
+    console.error('Error editing character:', error);
+    
+    if (error.message === 'Invalid edit password') {
+      return res.status(401).json({ error: 'Invalid edit password' });
+    }
+    
+    if (error.message === 'Character not found') {
+      return res.status(404).json({ error: 'Character not found' });
+    }
+    
+    res.status(500).json({ error: 'Failed to update character' });
+  }
+});
+
+/**
+ * @swagger
+ * /characters/moderator/password:
+ *   post:
+ *     summary: Update moderator password
+ *     description: Change the moderator password (requires current password)
+ *     tags: [Characters]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               currentPassword:
+ *                 type: string
+ *               newPassword:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Password updated successfully
+ *       401:
+ *         description: Invalid current password
+ */
+router.post('/moderator/password', async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    
+    // Verify current password
+    if (currentPassword !== (process.env.MODERATOR_PASSWORD || 'test123')) {
+      return res.status(401).json({ error: 'Invalid current password' });
+    }
+    
+    if (!newPassword || newPassword.length < 4) {
+      return res.status(400).json({ error: 'New password must be at least 4 characters' });
+    }
+    
+    const expectedPassword = await getModeratorPassword();
+    
+    if (currentPassword !== expectedPassword) {
+      return res.status(401).json({ error: 'Invalid current password' });
+    }
+
+    await setModeratorPassword(newPassword);
+    
+    res.json({
+      message: 'Moderator password updated successfully',
+      note: 'Password change will take effect on next server restart'
+    });
+  } catch (error) {
+    console.error('Error updating moderator password:', error);
+    res.status(500).json({ error: 'Failed to update password' });
+  }
+});
+
+/**
+ * @swagger
+ * /characters/{id}/edit:
+ *   get:
+ *     summary: Get character for editing
+ *     description: Retrieve character data for editing (requires edit password or API key)
+ *     tags: [Characters]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: editPassword
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Character data retrieved successfully
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Character not found
+ */
+router.get('/:id/edit', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { editPassword } = req.query;
+
+    const character = await CharacterService.getCharacterById(id);
+    
+    if (!character) {
+      return res.status(404).json({ error: 'Character not found' });
+    }
+
+    // Check authorization - either API key for moderators or edit password for owners
+    const hasApiKey = req.headers.authorization && req.headers.authorization.startsWith('Bearer ');
+    const hasValidPassword = editPassword && character.editPassword === editPassword;
+    const hasNoPasswordProtection = !character.editPassword;
+    
+    if (!hasApiKey && !hasValidPassword && !hasNoPasswordProtection) {
+      return res.status(401).json({ 
+        error: 'Unauthorized',
+        message: 'Valid edit password or authorization required'
+      });
+    }
+
+    res.json({
+      ...character.toObject(),
+      isModeratorAccess: hasApiKey
+    });
+  } catch (error) {
+    console.error('Error fetching character for editing:', error);
+    res.status(500).json({ error: 'Failed to fetch character' });
+  }
+});
+
+/**
+ * @swagger
+ * /characters/{id}/edit:
+ *   put:
+ *     summary: Update character
+ *     description: Update an existing character's data (requires edit password or API key)
+ *     tags: [Characters]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: editPassword
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *     responses:
+ *       200:
+ *         description: Character updated successfully
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Character not found
+ */
+router.put('/:id/edit', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { editPassword } = req.query;
+    const updateData = req.body;
+
+    const character = await CharacterService.getCharacterById(id);
+    
+    if (!character) {
+      return res.status(404).json({ error: 'Character not found' });
+    }
+
+    // Check authorization
+    const hasApiKey = req.headers.authorization && req.headers.authorization.startsWith('Bearer ');
+    const hasValidPassword = editPassword && character.editPassword === editPassword;
+    
+    if (!hasApiKey && !hasValidPassword) {
+      return res.status(401).json({ 
+        error: 'Unauthorized',
+        message: 'Valid edit password or authorization required'
+      });
+    }
+
+    // Prevent changing certain fields if not authorized (moderator only)
+    if (!hasApiKey) {
+      const restrictedFields = ['status', 'reviewedBy', 'reviewedAt', 'feedback', 'submittedBy', 'submittedAt', 'editPassword'];
+      restrictedFields.forEach(field => {
+        if (updateData[field] !== undefined) {
+          delete updateData[field];
+        }
+      });
+    }
+
+    // Handle missing move sources
+    if (updateData.moves && Array.isArray(updateData.moves)) {
+      updateData.moves = updateData.moves.map(move => {
+        if (!move.source && move.name) {
+          move.source = character.playbook || 'Custom';
+        }
+        return move;
+      });
+    }
+
+    // Update the character
+    const updatedCharacter = await CharacterService.updateCharacter(id, updateData, editPassword);
+
+    // Regenerate profile
+    try {
+      await generateCharacterProfile(updatedCharacter);
+    } catch (profileError) {
+      console.warn('Profile generation failed:', profileError.message);
+    }
+
+    // Emit real-time update
+    try {
+      const io = req.app.get('io');
+      if (io) {
+        io.emit('characterUpdated', {
+          characterId: id,
+          updatedBy: hasApiKey ? 'moderator' : 'owner',
+          timestamp: new Date()
+        });
+      }
+    } catch (wsError) {
+      console.warn('WebSocket emission failed:', wsError.message);
+    }
+
+    res.json({
+      success: true,
+      message: 'Character updated successfully',
+      character: updatedCharacter
+    });
+
+  } catch (error) {
+    console.error('Error updating character:', error);
+    
+    if (error.message === 'Invalid edit password') {
+      return res.status(401).json({ error: 'Invalid edit password' });
+    }
+    
+    if (error.message === 'Character not found') {
+      return res.status(404).json({ error: 'Character not found' });
+    }
+    
+    res.status(500).json({ error: 'Failed to update character' });
+  }
+});
+
+/**
+ * @swagger
+ * /characters/{id}/edit-password:
+ *   post:
+ *     summary: Change character edit password
+ *     description: Change the edit password for a character (requires current password)
+ *     tags: [Characters]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - currentPassword
+ *               - newPassword
+ *             properties:
+ *               currentPassword:
+ *                 type: string
+ *               newPassword:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Password changed successfully
+ *       400:
+ *         description: Invalid input
+ *       401:
+ *         description: Invalid current password
+ *       404:
+ *         description: Character not found
+ */
+router.post('/:id/edit-password', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { currentPassword, newPassword } = req.body;
+
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({ 
+        error: 'Current password and new password are required' 
+      });
+    }
+
+    if (newPassword.length < 4) {
+      return res.status(400).json({ 
+        error: 'New password must be at least 4 characters long' 
+      });
+    }
+
+    const character = await CharacterService.getCharacterById(id);
+    
+    if (!character) {
+      return res.status(404).json({ error: 'Character not found' });
+    }
+
+    if (character.editPassword !== currentPassword) {
+      return res.status(401).json({ error: 'Invalid current password' });
+    }
+
+    // Update password
+    await CharacterService.updateCharacter(id, { editPassword: newPassword }, currentPassword);
+
+    res.json({
+      success: true,
+      message: 'Edit password changed successfully'
+    });
+
+  } catch (error) {
+    console.error('Error changing edit password:', error);
+    res.status(500).json({ error: 'Failed to change edit password' });
+  }
+});
+
+/**
+ * @swagger
+ * /characters/{id}/duplicate:
+ *   post:
+ *     summary: Duplicate character
+ *     description: Create a copy of an existing character (requires edit password)
+ *     tags: [Characters]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - editPassword
+ *               - newName
+ *             properties:
+ *               editPassword:
+ *                 type: string
+ *               newName:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Character duplicated successfully
+ *       400:
+ *         description: Invalid input
+ *       401:
+ *         description: Invalid edit password
+ *       404:
+ *         description: Character not found
+ */
+router.post('/:id/duplicate', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { editPassword, newName } = req.body;
+
+    if (!editPassword || !newName) {
+      return res.status(400).json({ 
+        error: 'Edit password and new name are required' 
+      });
+    }
+
+    const originalCharacter = await CharacterService.getCharacterById(id);
+    
+    if (!originalCharacter) {
+      return res.status(404).json({ error: 'Character not found' });
+    }
+
+    if (originalCharacter.editPassword !== editPassword) {
+      return res.status(401).json({ error: 'Invalid edit password' });
+    }
+
+    // Create a copy of the character
+    const characterData = originalCharacter.toObject();
+    delete characterData._id;
+    delete characterData.__v;
+    delete characterData.createdAt;
+    delete characterData.updatedAt;
+    
+    // Update fields for the duplicate
+    characterData.name = newName;
+    characterData.status = 'pending';
+    characterData.reviewedBy = null;
+    characterData.reviewedAt = null;
+    characterData.feedback = null;
+    characterData.submittedAt = new Date();
+    
+    // Generate new edit password
+    characterData.editPassword = Math.random().toString(36).substring(2, 10);
+
+    const duplicatedCharacter = await CharacterService.createCharacter(characterData);
+
+    res.status(201).json({
+      success: true,
+      message: 'Character duplicated successfully',
+      character: duplicatedCharacter
+    });
+
+  } catch (error) {
+    console.error('Error duplicating character:', error);
+    res.status(500).json({ error: 'Failed to duplicate character' });
   }
 });
 

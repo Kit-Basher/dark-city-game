@@ -7,7 +7,7 @@ class CharacterEditAPI {
     // Get character data for editing
     async getCharacterForEdit(characterId, editPassword) {
         try {
-            const url = new URL(`${this.baseURL}/characters/${characterId}`, window.location.origin);
+            const url = new URL(`${this.baseURL}/characters/${characterId}/edit`, window.location.origin);
             if (editPassword) {
                 url.searchParams.set('editPassword', editPassword);
             }
@@ -41,7 +41,7 @@ class CharacterEditAPI {
             const sanitizedData = window.InputSanitizer ? 
                 window.InputSanitizer.validateCharacterData(updateData) : updateData;
 
-            const url = new URL(`${this.baseURL}/characters/${characterId}`, window.location.origin);
+            const url = new URL(`${this.baseURL}/characters/${characterId}/edit`, window.location.origin);
             if (editPassword) {
                 url.searchParams.set('editPassword', editPassword);
             }

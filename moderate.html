@@ -27,6 +27,32 @@ window.ENV.CALENDAR_MONTHS_TO_LOAD = '3';
 window.ENV.MAX_CHARACTERS_PER_PAGE = '12';
 window.ENV.ALLOWED_ORIGINS = 'http://localhost:3000,http://localhost:8080,https://kit-basher.github.io';
 </script>
+    <script>
+window.ENV = window.ENV || {};
+window.ENV.API_KEY = '860de3877c2de19b8c88f34c34b71580';
+window.ENV.JWT_SECRET = 'vEahCndVJYE4s/hkNuJ9EMW3xjfgWh+kq+XmYumxAsQ=';
+window.ENV.NODE_ENV = 'development';
+window.ENV.REPO_OWNER = 'Kit-Basher';
+window.ENV.REPO_NAME = 'dark-city-game';
+window.ENV.ENABLE_GITHUB_INTEGRATION = 'false';
+window.ENV.ENABLE_DISCORD_NOTIFICATIONS = 'false';
+window.ENV.CALENDAR_MONTHS_TO_LOAD = '3';
+window.ENV.MAX_CHARACTERS_PER_PAGE = '12';
+window.ENV.ALLOWED_ORIGINS = 'http://localhost:3000,http://localhost:8080,https://kit-basher.github.io';
+</script>
+    <script>
+window.ENV = window.ENV || {};
+window.ENV.API_KEY = '860de3877c2de19b8c88f34c34b71580';
+window.ENV.JWT_SECRET = 'vEahCndVJYE4s/hkNuJ9EMW3xjfgWh+kq+XmYumxAsQ=';
+window.ENV.NODE_ENV = 'development';
+window.ENV.REPO_OWNER = 'Kit-Basher';
+window.ENV.REPO_NAME = 'dark-city-game';
+window.ENV.ENABLE_GITHUB_INTEGRATION = 'false';
+window.ENV.ENABLE_DISCORD_NOTIFICATIONS = 'false';
+window.ENV.CALENDAR_MONTHS_TO_LOAD = '3';
+window.ENV.MAX_CHARACTERS_PER_PAGE = '12';
+window.ENV.ALLOWED_ORIGINS = 'http://localhost:3000,http://localhost:8080,https://kit-basher.github.io';
+</script>
     <meta charset="UTF-8">
     <title>Moderator Panel - Dark City RPG</title>
     <meta name="description" content="Moderator panel for reviewing and managing character submissions">
@@ -80,6 +106,26 @@ window.ENV.ALLOWED_ORIGINS = 'http://localhost:3000,http://localhost:8080,https:
             </section>
         </div>
 
+        <!-- Moderator Password Management -->
+        <section class="bg-gray-800 rounded-lg p-6 mt-8">
+            <h2 class="text-2xl font-semibold text-purple-400 mb-4">
+                <i class="fas fa-key"></i> Moderator Settings
+            </h2>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium mb-2">Current Moderator Password</label>
+                    <input type="password" id="current-password" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2" placeholder="Enter current password">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-2">New Moderator Password</label>
+                    <input type="password" id="new-password" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2" placeholder="Enter new password (min 4 chars)">
+                </div>
+                <button onclick="updateModeratorPassword()" class="bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-lg font-semibold">
+                    <i class="fas fa-key"></i> Update Password
+                </button>
+            </div>
+        </section>
+
         <!-- All Approved Characters Section -->
         <section class="bg-gray-800 rounded-lg p-6 mt-8">
             <h2 class="text-2xl font-semibold text-blue-400 mb-4">
@@ -117,6 +163,13 @@ window.ENV.ALLOWED_ORIGINS = 'http://localhost:3000,http://localhost:8080,https:
                             <div>
                                 <label class="block text-sm font-medium mb-2">Feedback (optional)</label>
                                 <textarea id="feedback-text" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2" rows="3" placeholder="Add feedback for the player..."></textarea>
+                            </div>
+                            
+                            <div class="flex space-x-4">
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">Moderator Password</label>
+                                    <input type="password" id="moderator-password" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2" placeholder="test123">
+                                </div>
                             </div>
                             
                             <div class="flex space-x-4">
@@ -361,6 +414,12 @@ window.ENV.ALLOWED_ORIGINS = 'http://localhost:3000,http://localhost:8080,https:
             
             try {
                 const feedback = document.getElementById('feedback-text').value;
+                const moderatorPassword = document.getElementById('moderator-password').value;
+                
+                if (!moderatorPassword) {
+                    alert('Moderator password is required');
+                    return;
+                }
                 
                 // Disable buttons to prevent multiple clicks
                 const approveBtn = document.querySelector('button[onclick="approveCharacter()"]');
@@ -382,6 +441,7 @@ window.ENV.ALLOWED_ORIGINS = 'http://localhost:3000,http://localhost:8080,https:
                         'Authorization': `Bearer ${window.APP_CONFIG.API_KEY}`
                     },
                     body: JSON.stringify({
+                        moderatorPassword,
                         reviewedBy: 'moderator',
                         feedback: feedback
                     })
@@ -424,15 +484,52 @@ window.ENV.ALLOWED_ORIGINS = 'http://localhost:3000,http://localhost:8080,https:
             }
         }
 
-        // Reject character (placeholder - would need rejection endpoint)
-        function rejectCharacter() {
+        // Reject character
+        async function rejectCharacter() {
             if (!currentCharacter) return;
             
             const feedback = document.getElementById('feedback-text').value;
+            const moderatorPassword = document.getElementById('moderator-password').value;
+            
+            if (!feedback) {
+                alert('Feedback is required for rejection');
+                return;
+            }
+            
+            if (!moderatorPassword) {
+                alert('Moderator password is required');
+                return;
+            }
+            
             const confirmed = confirm(`Are you sure you want to reject "${currentCharacter.name}"?`);
             if (!confirmed) return;
             
-            alert('Rejection feature coming soon! For now, you can delete characters instead.');
+            try {
+                const response = await fetch(`${window.APP_CONFIG.apiURL}/characters/${currentCharacter._id}/reject`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${window.APP_CONFIG.API_KEY}`
+                    },
+                    body: JSON.stringify({
+                        moderatorPassword,
+                        feedback,
+                        reviewedBy: 'moderator'
+                    })
+                });
+                
+                if (response.ok) {
+                    alert(`Character "${currentCharacter.name}" rejected with feedback.`);
+                    closeReviewModal();
+                    loadPendingCharacters();
+                } else {
+                    const error = await response.json();
+                    alert(`Error rejecting character: ${error.error}`);
+                }
+            } catch (error) {
+                console.error('Error rejecting character:', error);
+                alert('Error rejecting character. Please try again.');
+            }
         }
 
         // Load all approved characters (with delete functionality)

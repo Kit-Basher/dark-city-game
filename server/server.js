@@ -10,7 +10,6 @@ const axios = require('axios');
 
 const connectDB = require('./config/database');
 const characterRoutes = require('./routes/characters');
-const characterEditRoutes = require('./routes/character-edit');
 const { ApiKeyAuth } = require('./middleware/auth');
 const { errorHandler } = require('./middleware/errorHandler');
 const { specs, swaggerUi } = require('./config/swagger');
@@ -202,7 +201,7 @@ app.use(express.static(path.join(__dirname, '..')));
 
 // Serve character profile pages
 app.get('/characters/profiles/:filename', async (req, res) => {
-  const profilePath = path.join(process.cwd(), '..', 'characters', 'profiles', req.params.filename); // Go up from /app/server to /app
+  const profilePath = path.join(__dirname, '..', 'characters', 'profiles', req.params.filename);
   
   // Try to serve the file first
   res.sendFile(profilePath, async (err) => {
@@ -281,7 +280,6 @@ const healthChecker = new HealthChecker();
 
 // Routes
 app.use('/api/characters', characterRoutes);
-app.use('/api/characters', characterEditRoutes);
 
 // API Documentation
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs, {

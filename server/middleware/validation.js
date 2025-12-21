@@ -161,7 +161,7 @@ const characterSchema = Joi.object({
                     .integer()
                     .min(1)
                     .max(4)
-                    .required()
+                    .default(1)
                     .messages({
                         'number.base': 'Skill level must be a number',
                         'number.integer': 'Skill level must be an integer',

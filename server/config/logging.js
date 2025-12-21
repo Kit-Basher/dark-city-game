@@ -36,7 +36,7 @@ const logger = winston.createLogger({
                 winston.format.colorize(),
                 winston.format.simple()
             ),
-            level: process.env.NODE_ENV === 'production' ? 'warn' : 'debug'
+            level: process.env.NODE_ENV === 'production' ? 'info' : 'debug'
         }),
         
         // Daily rotating file for all logs

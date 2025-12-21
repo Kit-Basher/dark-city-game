@@ -73,6 +73,67 @@ class CharacterService {
     static async deleteCharacter(characterId) {
         return Character.findByIdAndDelete(characterId).lean().exec();
     }
+
+    static async getCharacterById(characterId) {
+        return Character.findById(characterId).lean().exec();
+    }
+
+    static async approveCharacter(characterId, reviewData = {}) {
+        const { feedback, reviewedBy, reviewedAt } = reviewData;
+        
+        const character = await Character.findByIdAndUpdate(
+            characterId,
+            {
+                status: 'approved',
+                feedback: feedback || '',
+                reviewedBy: reviewedBy || 'moderator',
+                reviewedAt: reviewedAt || new Date()
+            },
+            { new: true }
+        ).lean().exec();
+        
+        return character;
+    }
+
+    static async rejectCharacter(characterId, reviewData = {}) {
+        const { feedback, reviewedBy, reviewedAt } = reviewData;
+        
+        if (!feedback) {
+            throw new Error('Feedback is required for rejection');
+        }
+        
+        const character = await Character.findByIdAndUpdate(
+            characterId,
+            {
+                status: 'rejected',
+                feedback,
+                reviewedBy: reviewedBy || 'moderator',
+                reviewedAt: reviewedAt || new Date()
+            },
+            { new: true }
+        ).lean().exec();
+        
+        return character;
+    }
+
+    static async updateCharacter(characterId, updateData, editPassword = null) {
+        const character = await Character.findById(characterId);
+        
+        if (!character) {
+            throw new Error('Character not found');
+        }
+        
+        // Check edit password if character has one
+        if (character.editPassword && character.editPassword !== editPassword) {
+            throw new Error('Invalid edit password');
+        }
+        
+        // Don't allow status changes through editing
+        const { status, reviewedBy, reviewedAt, feedback, ...allowedUpdates } = updateData;
+        
+        Object.assign(character, allowedUpdates);
+        return character.save();
+    }
 }
 
 module.exports = CharacterService;

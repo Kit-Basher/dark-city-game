@@ -8,6 +8,7 @@ const injectEnvIntoHTML = async () => {
     const htmlFiles = [
         'index.html', 
         'characters/gallery.html', 
+        'characters/manage.html',
         'moderate.html', 
         'character-creator.html',
         'characters/character-edit.html'
@@ -17,6 +18,7 @@ const injectEnvIntoHTML = async () => {
     const envVars = {
         'API_KEY': process.env.API_KEY || '860de3877c2de19b8c88f34c34b71580',
         'JWT_SECRET': process.env.JWT_SECRET || 'vEahCndVJYE4s/hkNuJ9EMW3xjfgWh+kq+XmYumxAsQ=',
+        'MODERATOR_PASSWORD': process.env.MODERATOR_PASSWORD || 'test123',
         'NODE_ENV': process.env.NODE_ENV || 'production',
         'REPO_OWNER': process.env.REPO_OWNER || 'Kit-Basher',
         'REPO_NAME': process.env.REPO_NAME || 'dark-city-game',

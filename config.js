@@ -39,6 +39,7 @@ window.APP_CONFIG = {
     // API Configuration
     API_BASE_URL: '/api',
     API_KEY: window.ENV.API_KEY || (isProduction ? '860de3877c2de19b8c88f34c34b71580' : null),
+    MODERATOR_PASSWORD: window.ENV.MODERATOR_PASSWORD || 'test123',
     
     // Feature Flags
     ENABLE_GITHUB_INTEGRATION: window.ENV.ENABLE_GITHUB_INTEGRATION === 'true',

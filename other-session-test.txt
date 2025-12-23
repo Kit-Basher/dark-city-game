@@ -1,0 +1,1 @@
+Testing if JSON parsing errors returned in other session

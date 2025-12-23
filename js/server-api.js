@@ -153,6 +153,7 @@ class ServerAPI {
                     'Authorization': window.APP_CONFIG?.API_KEY ? `Bearer ${window.APP_CONFIG.API_KEY}` : ''
                 },
                 body: JSON.stringify({ 
+                    moderatorPassword: window.APP_CONFIG?.MODERATOR_PASSWORD || 'test123',
                     feedback: sanitizedFeedback, 
                     reviewedBy: sanitizedReviewedBy 
                 })
@@ -190,6 +191,7 @@ class ServerAPI {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({ 
+                    moderatorPassword: window.APP_CONFIG?.MODERATOR_PASSWORD || 'test123',
                     feedback: sanitizedFeedback, 
                     reviewedBy: sanitizedReviewedBy 
                 })

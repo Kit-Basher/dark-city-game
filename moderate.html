@@ -7,91 +7,272 @@
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/components.css">
     <style>
+        :root {
+            --success-color: #4CAF50;
+            --danger-color: #f44336;
+            --info-color: #2196F3;
+            --warning-color: #ff9800;
+            --border-radius: 8px;
+            --transition: all 0.3s ease;
+            --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --card-hover-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', sans-serif;
+            line-height: 1.6;
+        }
+
         .moderation-container {
             max-width: 1200px;
             margin: 2rem auto;
-            padding: 0 1rem;
+            padding: 0 1.5rem;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .header h1 {
+            margin: 0;
+            color: var(--heading-color);
+            font-size: 2.2rem;
+        }
+
+        .header .subtitle {
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+            font-size: 1.1rem;
         }
         
         .section {
             background: var(--card-bg);
-            border-radius: 8px;
-            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            padding: 1.75rem;
             margin-bottom: 2rem;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+        }
+
+        .section:hover {
+            box-shadow: var(--card-hover-shadow);
+        }
+
+        .section h2 {
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            color: var(--heading-color);
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
         }
         
         .character-card {
             background: var(--bg-color);
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            padding: 1rem;
+            border-left: 4px solid var(--border-color);
+            border-radius: var(--border-radius);
+            padding: 1.25rem;
             margin-bottom: 1rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            transition: var(--transition);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
         }
+
+        .character-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .character-card.pending { border-left-color: var(--warning-color); }
+        .character-card.approved { border-left-color: var(--success-color); }
+        .character-card.rejected { border-left-color: var(--danger-color); }
         
         .character-info {
             flex: 1;
+            min-width: 0;
+        }
+
+        .character-info h3 {
+            margin: 0 0 0.5rem 0;
+            color: var(--heading-color);
+            font-size: 1.2rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .character-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .character-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
         }
         
         .character-actions {
             display: flex;
-            gap: 0.5rem;
+            gap: 0.75rem;
+            flex-shrink: 0;
+            flex-wrap: wrap;
+            justify-content: flex-end;
         }
         
         .btn {
-            padding: 0.5rem 1rem;
+            padding: 0.6rem 1.2rem;
             border: none;
-            border-radius: 4px;
+            border-radius: 6px;
             cursor: pointer;
             font-weight: 600;
-            transition: all 0.2s;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .btn i {
+            font-size: 1rem;
         }
         
         .btn-approve {
-            background-color: #4CAF50;
+            background-color: var(--success-color);
             color: white;
         }
         
         .btn-reject {
-            background-color: #f44336;
+            background-color: var(--danger-color);
             color: white;
         }
         
         .btn-edit {
-            background-color: #2196F3;
+            background-color: var(--info-color);
             color: white;
         }
         
         .btn:hover {
             opacity: 0.9;
-            transform: translateY(-1px);
+            transform: translateY(-2px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn:active {
+            transform: translateY(0);
         }
         
         .empty-state {
             text-align: center;
-            padding: 2rem;
+            padding: 3rem 2rem;
             color: var(--text-muted);
+            font-style: italic;
+        }
+
+        .loading {
+            display: flex;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .loading::after {
+            content: '';
+            width: 2rem;
+            height: 2rem;
+            border: 3px solid var(--border-color);
+            border-top-color: var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
         
         .tabs {
             display: flex;
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
             border-bottom: 1px solid var(--border-color);
+            flex-wrap: wrap;
+            gap: 0.5rem;
         }
         
         .tab {
             padding: 0.75rem 1.5rem;
             cursor: pointer;
-            border-bottom: 2px solid transparent;
-            margin-right: 0.5rem;
+            border-bottom: 3px solid transparent;
+            font-weight: 500;
+            color: var(--text-muted);
+            transition: var(--transition);
+            border-radius: 4px 4px 0 0;
+            margin-bottom: -1px;
         }
         
+        .tab:hover {
+            color: var(--text-color);
+            background-color: rgba(0, 0, 0, 0.03);
+        }
+
         .tab.active {
-            border-bottom: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
             font-weight: 600;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-pending { background-color: #fff3e0; color: #f57c00; }
+        .status-approved { background-color: #e8f5e9; color: #2e7d32; }
+        .status-rejected { background-color: #ffebee; color: #c62828; }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .character-card {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .character-actions {
+                width: 100%;
+                justify-content: flex-start;
+                flex-wrap: wrap;
+            }
+
+            .btn {
+                flex: 1;
+                justify-content: center;
+                min-width: 100px;
+            }
+
+            .tabs {
+                overflow-x: auto;
+                padding-bottom: 0.5rem;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .tab {
+                white-space: nowrap;
+            }
         }
     </style>
 </head>
@@ -103,36 +284,45 @@
         </header>
         
         <div class="tabs">
-            <div class="tab active" data-tab="pending">Pending Review</div>
-            <div class="tab" data-tab="approved">Approved</div>
-            <div class="tab" data-tab="rejected">Rejected</div>
+            <div class="tab active" data-tab="pending">
+                <i class="fas fa-clock"></i> Pending Review
+                <span class="badge" id="pending-count">0</span>
+            </div>
+            <div class="tab" data-tab="approved">
+                <i class="fas fa-check-circle"></i> Approved
+                <span class="badge" id="approved-count">0</span>
+            </div>
+            <div class="tab" data-tab="rejected">
+                <i class="fas fa-times-circle"></i> Rejected
+                <span class="badge" id="rejected-count">0</span>
+            </div>
         </div>
         
         <div class="section" id="pending-section">
-            <h2>Pending Characters</h2>
+            <h2><i class="fas fa-clock"></i> Pending Review</h2>
             <div id="pending-characters">
-                <div class="empty-state">Loading pending characters...</div>
+                <div class="loading"></div>
             </div>
         </div>
         
         <div class="section" id="approved-section" style="display: none;">
-            <h2>Approved Characters</h2>
+            <h2><i class="fas fa-check-circle"></i> Approved Characters</h2>
             <div id="approved-characters">
-                <div class="empty-state">No approved characters found.</div>
+                <div class="loading"></div>
             </div>
         </div>
         
         <div class="section" id="rejected-section" style="display: none;">
-            <h2>Rejected Characters</h2>
+            <h2><i class="fas fa-times-circle"></i> Rejected Characters</h2>
             <div id="rejected-characters">
-                <div class="empty-state">No rejected characters found.</div>
+                <div class="loading"></div>
             </div>
         </div>
         
         <div class="section">
-            <h2>Moderation Log</h2>
+            <h2><i class="fas fa-history"></i> Recent Activity</h2>
             <div id="moderation-log">
-                <div class="empty-state">No moderation actions logged yet.</div>
+                <div class="empty-state">No recent activity to display</div>
             </div>
         </div>
     </div>
@@ -163,35 +353,89 @@
             });
         });
 
+        // Format date to relative time (e.g., '2 hours ago')
+        function formatRelativeTime(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const diffInSeconds = Math.floor((now - date) / 1000);
+            
+            if (diffInSeconds < 60) return 'just now';
+            if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}m ago`;
+            if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}h ago`;
+            if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)}d ago`;
+            return date.toLocaleDateString();
+        }
+
+        // Render character card
+        function renderCharacterCard(character, status) {
+            const card = document.createElement('div');
+            card.className = `character-card ${status}`;
+            
+            const statusBadge = status === 'pending' ? 
+                '<span class="status-badge status-pending">Pending</span>' :
+                status === 'approved' ?
+                '<span class="status-badge status-approved">Approved</span>' :
+                '<span class="status-badge status-rejected">Rejected</span>';
+            
+            const actionButtons = status === 'pending' ? `
+                <button class="btn btn-approve" onclick="moderateCharacter('${character._id}', 'approve')">
+                    <i class="fas fa-check"></i> Approve
+                </button>
+                <button class="btn btn-reject" onclick="moderateCharacter('${character._id}', 'reject')">
+                    <i class="fas fa-times"></i> Reject
+                </button>` : 
+                status === 'approved' ? `
+                <button class="btn btn-reject" onclick="moderateCharacter('${character._id}', 'reject')">
+                    <i class="fas fa-undo"></i> Revoke
+                </button>` : `
+                <button class="btn btn-approve" onclick="moderateCharacter('${character._id}', 'approve')">
+                    <i class="fas fa-redo"></i> Re-approve
+                </button>`;
+            
+            card.innerHTML = `
+                <div class="character-info">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem;">
+                        <h3 title="${character.name || 'Unnamed Character'}">${character.name || 'Unnamed Character'}</h3>
+                        ${statusBadge}
+                    </div>
+                    <div class="character-meta">
+                        <span title="Submitted by"><i class="fas fa-user"></i> ${character.submittedBy || 'Unknown'}</span>
+                        <span title="Submitted on"><i class="far fa-clock"></i> ${formatRelativeTime(character.createdAt)}</span>
+                        ${character.reviewedBy ? `<span title="Reviewed by"><i class="fas fa-user-shield"></i> ${character.reviewedBy}</span>` : ''}
+                    </div>
+                    ${character.feedback ? `<p style="margin: 0.5rem 0 0; font-size: 0.9em; color: var(--text-muted);">
+                        <i class="fas fa-comment-alt"></i> ${character.feedback}
+                    </p>` : ''}
+                </div>
+                <div class="character-actions">
+                    ${actionButtons}
+                    <button class="btn btn-edit" onclick="viewCharacter('${character._id}')">
+                        <i class="fas fa-eye"></i> View
+                    </button>
+                </div>
+            `;
+            return card;
+        }
+
         // Load pending characters
         async function loadPendingCharacters() {
+            const container = document.getElementById('pending-characters');
+            container.innerHTML = '<div class="loading"></div>';
+            
             try {
                 const response = await fetch('/api/characters/pending');
+                if (!response.ok) throw new Error('Failed to load pending characters');
                 const characters = await response.json();
                 
-                const container = document.getElementById('pending-characters');
+                container.innerHTML = '';
                 if (characters.length === 0) {
-                    container.innerHTML = '<div class="empty-state">No pending characters found.</div>';
+                    container.innerHTML = '<div class="empty-state">No pending characters found. All caught up! 🎉</div>';
                     return;
                 }
                 
-                container.innerHTML = '';
+                document.getElementById('pending-count').textContent = characters.length;
                 characters.forEach(character => {
-                    const characterElement = document.createElement('div');
-                    characterElement.className = 'character-card';
-                    characterElement.innerHTML = `
-                        <div class="character-info">
-                            <h3>${character.name || 'Unnamed Character'}</h3>
-                            <p>Submitted by: ${character.submittedBy || 'Unknown'}</p>
-                            <p>Submitted on: ${new Date(character.createdAt).toLocaleDateString()}</p>
-                        </div>
-                        <div class="character-actions">
-                            <button class="btn btn-approve" onclick="moderateCharacter('${character._id}', 'approve')">Approve</button>
-                            <button class="btn btn-reject" onclick="moderateCharacter('${character._id}', 'reject')">Reject</button>
-                            <button class="btn btn-edit" onclick="viewCharacter('${character._id}')">View</button>
-                        </div>
-                    `;
-                    container.appendChild(characterElement);
+                    container.appendChild(renderCharacterCard(character, 'pending'));
                 });
             } catch (error) {
                 console.error('Error loading pending characters:', error);
@@ -203,7 +447,8 @@
         // Load approved characters
         async function loadApprovedCharacters() {
             try {
-                const response = await fetch('/api/characters/approved');
+                const response = await fetch('/api/characters?status=approved');
+                if (!response.ok) throw new Error('Failed to load approved characters');
                 const characters = await response.json();
                 
                 const container = document.getElementById('approved-characters');
@@ -239,7 +484,8 @@
         // Load rejected characters
         async function loadRejectedCharacters() {
             try {
-                const response = await fetch('/api/characters/rejected');
+                const response = await fetch('/api/characters?status=rejected');
+                if (!response.ok) throw new Error('Failed to load rejected characters');
                 const characters = await response.json();
                 
                 const container = document.getElementById('rejected-characters');
@@ -273,18 +519,138 @@
             }
         }
         
+        // Show a styled password prompt
+        async function showPasswordPrompt(action) {
+            return new Promise((resolve) => {
+                const modal = document.createElement('div');
+                modal.style.position = 'fixed';
+                modal.style.top = '0';
+                modal.style.left = '0';
+                modal.style.width = '100%';
+                modal.style.height = '100%';
+                modal.style.backgroundColor = 'rgba(0,0,0,0.5)';
+                modal.style.display = 'flex';
+                modal.style.justifyContent = 'center';
+                modal.style.alignItems = 'center';
+                modal.style.zIndex = '1000';
+                
+                const dialog = document.createElement('div');
+                dialog.style.background = 'var(--card-bg)';
+                dialog.style.padding = '2rem';
+                dialog.style.borderRadius = 'var(--border-radius)';
+                dialog.style.boxShadow = '0 10px 25px rgba(0,0,0,0.2)';
+                dialog.style.width = '90%';
+                dialog.style.maxWidth = '500px';
+                
+                const title = document.createElement('h3');
+                title.textContent = action === 'approve' ? 'Approve Character' : 'Reject Character';
+                title.style.marginTop = '0';
+                title.style.color = 'var(--heading-color)';
+                
+                const passwordLabel = document.createElement('label');
+                passwordLabel.textContent = 'Moderator Password:';
+                passwordLabel.style.display = 'block';
+                passwordLabel.style.marginBottom = '0.5rem';
+                passwordLabel.style.fontWeight = '500';
+                
+                const passwordInput = document.createElement('input');
+                passwordInput.type = 'password';
+                passwordInput.style.width = '100%';
+                passwordInput.style.padding = '0.75rem';
+                passwordInput.style.marginBottom = '1.5rem';
+                passwordInput.style.border = '1px solid var(--border-color)';
+                passwordInput.style.borderRadius = '4px';
+                passwordInput.style.fontSize = '1rem';
+                
+                let reasonInput;
+                if (action === 'reject') {
+                    const reasonLabel = document.createElement('label');
+                    reasonLabel.textContent = 'Reason for rejection (optional):';
+                    reasonLabel.style.display = 'block';
+                    reasonLabel.style.marginBottom = '0.5rem';
+                    reasonLabel.style.fontWeight = '500';
+                    
+                    reasonInput = document.createElement('textarea');
+                    reasonInput.rows = 3;
+                    reasonInput.style.width = '100%';
+                    reasonInput.style.padding = '0.75rem';
+                    reasonInput.style.marginBottom = '1.5rem';
+                    reasonInput.style.border = '1px solid var(--border-color)';
+                    reasonInput.style.borderRadius = '4px';
+                    reasonInput.style.fontSize = '1rem';
+                    reasonInput.style.resize = 'vertical';
+                }
+                
+                const buttonContainer = document.createElement('div');
+                buttonContainer.style.display = 'flex';
+                buttonContainer.style.justifyContent = 'flex-end';
+                buttonContainer.style.gap = '0.75rem';
+                
+                const cancelButton = document.createElement('button');
+                cancelButton.textContent = 'Cancel';
+                cancelButton.className = 'btn';
+                cancelButton.style.background = 'var(--border-color)';
+                cancelButton.onclick = () => {
+                    document.body.removeChild(modal);
+                    resolve({ cancelled: true });
+                };
+                
+                const confirmButton = document.createElement('button');
+                confirmButton.textContent = action === 'approve' ? 'Approve' : 'Reject';
+                confirmButton.className = `btn ${action === 'approve' ? 'btn-approve' : 'btn-reject'}`;
+                confirmButton.onclick = () => {
+                    const result = {
+                        password: passwordInput.value,
+                        reason: reasonInput?.value || ''
+                    };
+                    document.body.removeChild(modal);
+                    resolve(result);
+                };
+                
+                buttonContainer.appendChild(cancelButton);
+                buttonContainer.appendChild(confirmButton);
+                
+                dialog.appendChild(title);
+                dialog.appendChild(passwordLabel);
+                dialog.appendChild(passwordInput);
+                if (action === 'reject') {
+                    dialog.appendChild(reasonLabel);
+                    dialog.appendChild(reasonInput);
+                }
+                dialog.appendChild(buttonContainer);
+                
+                modal.appendChild(dialog);
+                document.body.appendChild(modal);
+                
+                // Focus the password input
+                passwordInput.focus();
+            });
+        }
+
         // Moderate character
         async function moderateCharacter(characterId, action) {
-            const reason = action === 'reject' ? prompt('Please provide a reason for rejection:') : '';
-            if (action === 'reject' && reason === null) return; // User cancelled
+            try {
+                const result = await showPasswordPrompt(action);
+                if (result.cancelled) return;
+                
+                const { password, reason } = result;
+                if (!password) {
+                    showNotification('Password is required', 'error');
+                    return;
+                }
             
             try {
-                const response = await fetch(`/api/characters/${characterId}/moderate`, {
-                    method: 'POST',
+                const endpoint = action === 'approve' ? 'approve' : 'reject';
+                const response = await fetch(`/api/characters/${characterId}/${endpoint}`, {
+                    method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ action, reason })
+                    body: JSON.stringify({ 
+                        moderatorPassword,
+                        feedback: reason || '',
+                        reviewedBy: 'moderator'
+                    })
                 });
                 
                 if (response.ok) {
@@ -304,6 +670,45 @@
             }
         }
         
+        // Show notification
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.style.position = 'fixed';
+            notification.style.bottom = '20px';
+            notification.style.right = '20px';
+            notification.style.padding = '1rem 1.5rem';
+            notification.style.borderRadius = 'var(--border-radius)';
+            notification.style.background = type === 'error' ? 'var(--danger-color)' : 
+                                          type === 'success' ? 'var(--success-color)' : 'var(--info-color)';
+            notification.style.color = 'white';
+            notification.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+            notification.style.zIndex = '1000';
+            notification.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
+            notification.style.transform = 'translateY(20px)';
+            notification.style.opacity = '0';
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            // Trigger animation
+            setTimeout(() => {
+                notification.style.transform = 'translateY(0)';
+                notification.style.opacity = '1';
+            }, 10);
+            
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                notification.style.transform = 'translateY(20px)';
+                notification.style.opacity = '0';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }, 5000);
+        }
+
         // View character details
         function viewCharacter(characterId) {
             window.open(`/characters/profile/${characterId}`, '_blank');
@@ -311,28 +716,59 @@
         
         // Initialize the page
         document.addEventListener('DOMContentLoaded', () => {
+            // Add Font Awesome for icons
+            const fontAwesome = document.createElement('link');
+            fontAwesome.rel = 'stylesheet';
+            fontAwesome.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css';
+            document.head.appendChild(fontAwesome);
+            
             // Load pending characters by default
             loadPendingCharacters();
             
-            // Check for authentication
+            // Set up tab switching
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // Update active tab
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    
+                    // Show corresponding section
+                    document.getElementById('pending-section').style.display = 'none';
+                    document.getElementById('approved-section').style.display = 'none';
+                    document.getElementById('rejected-section').style.display = 'none';
+                    
+                    if (tab.dataset.tab === 'pending') {
+                        document.getElementById('pending-section').style.display = 'block';
+                        loadPendingCharacters();
+                    } else if (tab.dataset.tab === 'approved') {
+                        document.getElementById('approved-section').style.display = 'block';
+                        loadApprovedCharacters();
+                    } else if (tab.dataset.tab === 'rejected') {
+                        document.getElementById('rejected-section').style.display = 'block';
+                        loadRejectedCharacters();
+                    }
+                });
+            });
+            
+            // Check for authentication (minimal check)
             checkAuth();
         });
         
         // Check if user is authenticated as moderator
         async function checkAuth() {
-            try {
-                const response = await fetch('/api/auth/me');
-                if (!response.ok) {
-                    window.location.href = '/login?redirect=' + encodeURIComponent(window.location.pathname);
-                }
-                const user = await response.json();
-                if (!user.permissions || !user.permissions.includes('moderate')) {
-                    alert('You do not have permission to access this page.');
-                    window.location.href = '/';
-                }
-            } catch (error) {
-                console.error('Auth check failed:', error);
-                window.location.href = '/login?redirect=' + encodeURIComponent(window.location.pathname);
+            // Minimal check - just log for debugging
+            console.log('Moderation page loaded - page is publicly accessible');
+            
+            // Add a small note about moderation actions requiring password
+            const header = document.querySelector('.header');
+            if (header) {
+                const note = document.createElement('p');
+                note.className = 'auth-note';
+                note.style.marginTop = '0.5rem';
+                note.style.fontSize = '0.9rem';
+                note.style.color = 'var(--text-muted)';
+                note.innerHTML = '<i class="fas fa-lock"></i> Moderation actions require password';
+                header.appendChild(note);
             }
         }
     </script>

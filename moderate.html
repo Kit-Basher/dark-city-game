@@ -168,7 +168,7 @@
         async function fetchWithAuth(url, options = {}) {
             const headers = {
                 'Content-Type': 'application/json',
-                'x-api-key': window.APP_CONFIG?.API_KEY || '860de3877c2de19b8c88f34c34b71580' // Fallback to hardcoded key
+                'Authorization': `Bearer ${window.APP_CONFIG?.API_KEY || '860de3877c2de19b8c88f34c34b71580'}`
             };
             
             if (options.headers) {
@@ -350,7 +350,7 @@
             try {
                 const response = await fetch('/api/auth/me', {
                     headers: {
-                        'x-api-key': window.APP_CONFIG?.API_KEY || '860de3877c2de19b8c88f34c34b71580'
+                        'Authorization': `Bearer ${window.APP_CONFIG?.API_KEY || '860de3877c2de19b8c88f34c34b71580'}`
                     }
                 });
                 

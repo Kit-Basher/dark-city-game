@@ -348,18 +348,9 @@
         // Check if user is authenticated as moderator
         async function checkAuth() {
             try {
-                const response = await fetch('/api/auth/me', {
-                    headers: {
-                        'Authorization': `Bearer ${window.APP_CONFIG?.API_KEY || '860de3877c2de19b8c88f34c34b71580'}`
-                    }
-                });
-                
-                if (response.ok) {
-                    const user = await response.json();
-                    if (user.permissions && user.permissions.includes('moderate')) {
-                        return true;
-                    }
-                }
+                // Skip the auth check since the endpoint doesn't exist
+                // We'll still allow viewing but show a warning about read-only mode
+                console.warn('Auth endpoint not available, proceeding in read-only mode');
                 return false;
             } catch (error) {
                 console.warn('Auth check failed, proceeding without authentication', error);

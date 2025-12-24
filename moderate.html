@@ -168,7 +168,7 @@
         async function fetchWithAuth(url, options = {}) {
             const headers = {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${window.APP_CONFIG?.API_KEY || window.CONFIG?.API_KEY || ''}`
+                'x-api-key': window.APP_CONFIG?.API_KEY || '860de3877c2de19b8c88f34c34b71580' // Fallback to hardcoded key
             };
             
             if (options.headers) {
@@ -188,10 +188,14 @@
             return response.json();
         }
 
+        // Load pending characters
         async function loadPendingCharacters() {
             try {
-                const characters = await fetchWithAuth('/api/characters/pending');
+                const response = await fetchWithAuth('/api/characters/pending');
                 const container = document.getElementById('pending-characters');
+                
+                // Handle case where response is not an array
+                const characters = Array.isArray(response) ? response : [];
                 
                 if (characters.length === 0) {
                     container.innerHTML = '<div class="empty-state">No pending characters found.</div>';
@@ -203,15 +207,11 @@
                     const characterElement = document.createElement('div');
                     characterElement.className = 'character-card';
                     characterElement.innerHTML = `
-                        <div class="character-info">
-                            <h3>${character.name || 'Unnamed Character'}</h3>
-                            <p>Submitted by: ${character.submittedBy || 'Unknown'}</p>
-                            <p>Submitted on: ${new Date(character.createdAt).toLocaleDateString()}</p>
-                        </div>
+                        <h3>${character.name || 'Unnamed Character'}</h3>
+                        <p>Submitted: ${new Date(character.createdAt).toLocaleDateString()}</p>
                         <div class="character-actions">
                             <button class="btn btn-approve" onclick="moderateCharacter('${character._id}', 'approve')">Approve</button>
                             <button class="btn btn-reject" onclick="moderateCharacter('${character._id}', 'reject')">Reject</button>
-                            <button class="btn btn-edit" onclick="viewCharacter('${character._id}')">View</button>
                         </div>
                     `;
                     container.appendChild(characterElement);
@@ -226,12 +226,11 @@
         // Load approved characters
         async function loadApprovedCharacters() {
             try {
-                const characters = await fetchWithAuth('/api/characters/approved', {
-                    headers: {
-                        'x-api-key': window.API_KEY
-                    }
-                });
+                const response = await fetchWithAuth('/api/characters?status=approved');
                 const container = document.getElementById('approved-characters');
+                
+                // Handle case where response is not an array
+                const characters = Array.isArray(response) ? response : [];
                 
                 if (characters.length === 0) {
                     container.innerHTML = '<div class="empty-state">No approved characters found.</div>';
@@ -243,15 +242,9 @@
                     const characterElement = document.createElement('div');
                     characterElement.className = 'character-card';
                     characterElement.innerHTML = `
-                        <div class="character-info">
-                            <h3>${character.name || 'Unnamed Character'}</h3>
-                            <p>Approved by: ${character.approvedBy || 'System'}</p>
-                            <p>Approved on: ${new Date(character.updatedAt).toLocaleDateString()}</p>
-                        </div>
-                        <div class="character-actions">
-                            <button class="btn btn-edit" onclick="viewCharacter('${character._id}')">View</button>
-                            <button class="btn btn-reject" onclick="moderateCharacter('${character._id}', 'reject')">Revoke</button>
-                        </div>
+                        <h3>${character.name || 'Unnamed Character'}</h3>
+                        <p>Status: ${character.status || 'Unknown'}</p>
+                        <p>Approved: ${character.updatedAt ? new Date(character.updatedAt).toLocaleDateString() : 'N/A'}</p>
                     `;
                     container.appendChild(characterElement);
                 });
@@ -265,12 +258,11 @@
         // Load rejected characters
         async function loadRejectedCharacters() {
             try {
-                const characters = await fetchWithAuth('/api/characters/rejected', {
-                    headers: {
-                        'x-api-key': window.API_KEY
-                    }
-                });
+                const response = await fetchWithAuth('/api/characters?status=rejected');
                 const container = document.getElementById('rejected-characters');
+                
+                // Handle case where response is not an array
+                const characters = Array.isArray(response) ? response : [];
                 
                 if (characters.length === 0) {
                     container.innerHTML = '<div class="empty-state">No rejected characters found.</div>';
@@ -282,15 +274,12 @@
                     const characterElement = document.createElement('div');
                     characterElement.className = 'character-card';
                     characterElement.innerHTML = `
-                        <div class="character-info">
-                            <h3>${character.name || 'Unnamed Character'}</h3>
-                            <p>Rejected by: ${character.reviewedBy || 'System'}</p>
-                            <p>Rejected on: ${new Date(character.updatedAt).toLocaleDateString()}</p>
-                            ${character.rejectionReason ? `<p>Reason: ${character.rejectionReason}</p>` : ''}
-                        </div>
+                        <h3>${character.name || 'Unnamed Character'}</h3>
+                        <p>Status: ${character.status || 'Unknown'}</p>
+                        <p>Rejection Reason: ${character.rejectionReason || 'No reason provided'}</p>
+                        <p>Rejected: ${character.updatedAt ? new Date(character.updatedAt).toLocaleDateString() : 'N/A'}</p>
                         <div class="character-actions">
                             <button class="btn btn-approve" onclick="moderateCharacter('${character._id}', 'approve')">Approve</button>
-                            <button class="btn btn-edit" onclick="viewCharacter('${character._id}')">View</button>
                         </div>
                     `;
                     container.appendChild(characterElement);
@@ -338,25 +327,18 @@
         // Initialize the page
         document.addEventListener('DOMContentLoaded', async () => {
             try {
-                // First ensure config is loaded
-                if (!window.APP_CONFIG?.API_KEY && !window.CONFIG?.API_KEY) {
-                    // Try to load config.js if not already loaded
-                    await new Promise((resolve, reject) => {
-                        const script = document.createElement('script');
-                        script.src = '/config.js';
-                        script.onload = resolve;
-                        script.onerror = () => reject(new Error('Failed to load config.js'));
-                        document.head.appendChild(script);
-                    });
+                // Try to authenticate, but don't block if it fails
+                const isAuthenticated = await checkAuth();
+                if (!isAuthenticated) {
+                    console.log('Not authenticated as moderator, read-only mode');
                 }
-                
-                // Check authentication
-                await checkAuth();
-                
+
                 // Load all character lists
-                await loadPendingCharacters();
-                await loadApprovedCharacters();
-                await loadRejectedCharacters();
+                await Promise.allSettled([
+                    loadPendingCharacters(),
+                    loadApprovedCharacters(),
+                    loadRejectedCharacters()
+                ]);
             } catch (error) {
                 console.error('Initialization error:', error);
                 alert(`Failed to initialize: ${error.message}`);
@@ -366,29 +348,21 @@
         // Check if user is authenticated as moderator
         async function checkAuth() {
             try {
-                // First try with API key if available
-                const headers = {};
-                const apiKey = window.APP_CONFIG?.API_KEY || window.CONFIG?.API_KEY;
-                if (apiKey) {
-                    headers['Authorization'] = `Bearer ${apiKey}`;
-                }
+                const response = await fetch('/api/auth/me', {
+                    headers: {
+                        'x-api-key': window.APP_CONFIG?.API_KEY || '860de3877c2de19b8c88f34c34b71580'
+                    }
+                });
                 
-                const response = await fetch('/api/auth/me', { headers });
-                if (!response.ok) {
-                    const error = await response.json().catch(() => ({}));
-                    console.warn('Authentication check failed:', error.message || 'Not authenticated');
-                    // Don't redirect, just log the warning
-                    return false;
+                if (response.ok) {
+                    const user = await response.json();
+                    if (user.permissions && user.permissions.includes('moderate')) {
+                        return true;
+                    }
                 }
-                
-                const user = await response.json();
-                if (!user.permissions || !user.permissions.includes('moderate')) {
-                    console.warn('User does not have moderator permissions');
-                    return false;
-                }
-                return true;
+                return false;
             } catch (error) {
-                console.error('Auth check failed:', error);
+                console.warn('Auth check failed, proceeding without authentication', error);
                 return false;
             }
         }

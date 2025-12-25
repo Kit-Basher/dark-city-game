@@ -270,6 +270,34 @@ app.get('/characters/profiles/:filename', async (req, res) => {
   });
 });
 
+// Serve character profile by ID (for moderator view links)
+app.get('/characters/profile/:id', async (req, res) => {
+  try {
+    const Character = require('./models/Character');
+    const character = await Character.findById(req.params.id);
+    
+    if (!character) {
+      return res.status(404).json({
+        error: 'Character not found',
+        message: `Character with ID ${req.params.id} does not exist`
+      });
+    }
+    
+    // Generate the expected filename
+    const characterName = character.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+    const filename = `${characterName}-${req.params.id}.html`;
+    
+    // Redirect to the actual profile file
+    res.redirect(302, `/characters/profiles/${filename}`);
+  } catch (error) {
+    console.error('Error in character profile redirect:', error);
+    res.status(500).json({
+      error: 'Server error',
+      message: 'Failed to retrieve character profile'
+    });
+  }
+});
+
 // Specific route for character builder
 // Character builder page removed - route deleted
 

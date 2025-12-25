@@ -426,6 +426,64 @@ router.delete('/:id', async (req, res) => {
 
 /**
  * @swagger
+ * /characters/{id}/edit:
+ *   get:
+ *     summary: Get character for editing
+ *     description: Retrieve character data for editing (requires edit password or API key)
+ *     tags: [Characters]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: editPassword
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Character data retrieved successfully
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Character not found
+ */
+router.get('/:id/edit', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { editPassword } = req.query;
+
+    const character = await CharacterService.getCharacterById(id);
+    
+    if (!character) {
+      return res.status(404).json({ error: 'Character not found' });
+    }
+
+    // Check authorization - either API key for moderators or edit password for owners
+    const hasApiKey = req.headers.authorization && req.headers.authorization.startsWith('Bearer ');
+    const hasValidPassword = editPassword && character.editPassword === editPassword;
+    const hasNoPasswordProtection = !character.editPassword;
+    
+    if (!hasApiKey && !hasValidPassword && !hasNoPasswordProtection) {
+      return res.status(401).json({ 
+        error: 'Unauthorized',
+        message: 'Valid edit password or authorization required'
+      });
+    }
+
+    res.json({
+      ...character.toObject(),
+      isModeratorAccess: hasApiKey
+    });
+  } catch (error) {
+    console.error('Error fetching character for editing:', error);
+    res.status(500).json({ error: 'Failed to fetch character' });
+  }
+});
+
+/**
+ * @swagger
  * /characters/{id}:
  *   get:
  *     summary: Get a specific character
@@ -678,64 +736,6 @@ router.post('/moderator/auth', async (req, res) => {
   } catch (error) {
     console.error('Error authenticating moderator:', error);
     res.status(500).json({ error: 'Authentication failed' });
-  }
-});
-
-/**
- * @swagger
- * /characters/{id}/edit:
- *   get:
- *     summary: Get character for editing
- *     description: Retrieve character data for editing (requires edit password or API key)
- *     tags: [Characters]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *       - in: query
- *         name: editPassword
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Character data retrieved successfully
- *       401:
- *         description: Unauthorized
- *       404:
- *         description: Character not found
- */
-router.get('/:id/edit', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { editPassword } = req.query;
-
-    const character = await CharacterService.getCharacterById(id);
-    
-    if (!character) {
-      return res.status(404).json({ error: 'Character not found' });
-    }
-
-    // Check authorization - either API key for moderators or edit password for owners
-    const hasApiKey = req.headers.authorization && req.headers.authorization.startsWith('Bearer ');
-    const hasValidPassword = editPassword && character.editPassword === editPassword;
-    const hasNoPasswordProtection = !character.editPassword;
-    
-    if (!hasApiKey && !hasValidPassword && !hasNoPasswordProtection) {
-      return res.status(401).json({ 
-        error: 'Unauthorized',
-        message: 'Valid edit password or authorization required'
-      });
-    }
-
-    res.json({
-      ...character.toObject(),
-      isModeratorAccess: hasApiKey
-    });
-  } catch (error) {
-    console.error('Error fetching character for editing:', error);
-    res.status(500).json({ error: 'Failed to fetch character' });
   }
 });
 

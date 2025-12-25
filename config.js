@@ -16,7 +16,7 @@ const environments = {
 };
 
 // Auto-detect environment
-const isProduction = window.location.hostname.includes('github.io') || window.location.hostname.includes('render.com') || window.location.hostname.includes('railway.app');
+const isProduction = window.location.hostname.includes('github.io') || window.location.hostname.includes('railway.app');
 const currentEnv = isProduction ? 'production' : 'development';
 
 // Load environment variables

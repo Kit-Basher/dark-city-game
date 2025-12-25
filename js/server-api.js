@@ -54,7 +54,7 @@ class ServerAPI {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': window.APP_CONFIG?.API_KEY ? `Bearer ${window.APP_CONFIG.API_KEY}` : ''
+                    'Authorization': `Bearer ${window.APP_CONFIG?.API_KEY || '860de3877c2de19b8c88f34c34b71580'}`
                 },
                 body: JSON.stringify(sanitizedData)
             });
@@ -77,7 +77,7 @@ class ServerAPI {
         try {
             const response = await fetch(`${this.baseURL}/characters`, {
                 headers: {
-                    'Authorization': window.APP_CONFIG?.API_KEY ? `Bearer ${window.APP_CONFIG.API_KEY}` : ''
+                    'Authorization': `Bearer ${window.APP_CONFIG?.API_KEY || '860de3877c2de19b8c88f34c34b71580'}`
                 }
             });
             if (!response.ok) {
@@ -118,7 +118,7 @@ class ServerAPI {
         try {
             const response = await fetch(`${this.baseURL}/characters/pending`, {
                 headers: {
-                    'Authorization': window.APP_CONFIG?.API_KEY ? `Bearer ${window.APP_CONFIG.API_KEY}` : ''
+                    'Authorization': `Bearer ${window.APP_CONFIG?.API_KEY || '860de3877c2de19b8c88f34c34b71580'}`
                 }
             });
             if (!response.ok) {
@@ -150,7 +150,7 @@ class ServerAPI {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': window.APP_CONFIG?.API_KEY ? `Bearer ${window.APP_CONFIG.API_KEY}` : ''
+                    'Authorization': `Bearer ${window.APP_CONFIG?.API_KEY || '860de3877c2de19b8c88f34c34b71580'}`
                 },
                 body: JSON.stringify({ 
                     moderatorPassword: window.APP_CONFIG?.MODERATOR_PASSWORD || 'test123',

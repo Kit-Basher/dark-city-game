@@ -4,8 +4,8 @@
 // Environment Configuration
 const environments = {
     production: {
-        apiURL: 'https://dark-city-game-production.up.railway.app/api',
-        socketURL: 'https://dark-city-game-production.up.railway.app',
+        apiURL: 'https://dark-city-3-0-reborn.onrender.com/api',
+        socketURL: 'https://dark-city-3-0-reborn.onrender.com',
         NODE_ENV: 'production'
     },
     development: {
@@ -16,7 +16,7 @@ const environments = {
 };
 
 // Auto-detect environment
-const isProduction = window.location.hostname.includes('github.io') || window.location.hostname.includes('railway.app');
+const isProduction = window.location.hostname.includes('github.io') || window.location.hostname.includes('render.com');
 const currentEnv = isProduction ? 'production' : 'development';
 
 // Load environment variables

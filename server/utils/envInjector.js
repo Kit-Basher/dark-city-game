@@ -26,7 +26,7 @@ const injectEnvIntoHTML = async () => {
         'ENABLE_DISCORD_NOTIFICATIONS': process.env.ENABLE_DISCORD_NOTIFICATIONS || 'false',
         'CALENDAR_MONTHS_TO_LOAD': process.env.CALENDAR_MONTHS_TO_LOAD || '3',
         'MAX_CHARACTERS_PER_PAGE': process.env.MAX_CHARACTERS_PER_PAGE || '12',
-        'ALLOWED_ORIGINS': process.env.ALLOWED_ORIGINS || 'https://kit-basher.github.io,https://dark-city-game-production.up.railway.app'
+        'ALLOWED_ORIGINS': process.env.ALLOWED_ORIGINS || 'https://kit-basher.github.io,https://dark-city-3-0-reborn.onrender.com'
     };
     
     // Generate script tag with environment variables

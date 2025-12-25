@@ -621,6 +621,68 @@ router.post('/moderator/password', async (req, res) => {
 
 /**
  * @swagger
+ * /characters/moderator/auth:
+ *   post:
+ *     summary: Authenticate as moderator
+ *     description: Verify moderator credentials for access to moderation features
+ *     tags: [Characters]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - password
+ *             properties:
+ *               password:
+ *                 type: string
+ *                 description: Moderator password
+ *     responses:
+ *       200:
+ *         description: Authentication successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ *       401:
+ *         description: Invalid password
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
+router.post('/moderator/auth', async (req, res) => {
+  try {
+    const { password } = req.body;
+    
+    if (!password) {
+      return res.status(400).json({ error: 'Password required' });
+    }
+    
+    const expectedPassword = await getModeratorPassword();
+    
+    if (password !== expectedPassword) {
+      return res.status(401).json({ error: 'Invalid moderator password' });
+    }
+    
+    res.json({
+      success: true,
+      message: 'Moderator authentication successful'
+    });
+  } catch (error) {
+    console.error('Error authenticating moderator:', error);
+    res.status(500).json({ error: 'Authentication failed' });
+  }
+});
+
+/**
+ * @swagger
  * /characters/{id}/edit:
  *   get:
  *     summary: Get character for editing

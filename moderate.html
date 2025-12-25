@@ -93,6 +93,59 @@
             border-bottom: 2px solid var(--primary-color);
             font-weight: 600;
         }
+        
+        .auth-status {
+            margin-top: 1rem;
+            padding: 0.75rem;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+        }
+        
+        .auth-status.authenticated {
+            border-color: #4CAF50;
+            background: rgba(76, 175, 80, 0.1);
+        }
+        
+        .auth-status.unauthenticated {
+            border-color: #ff9800;
+            background: rgba(255, 152, 0, 0.1);
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background: var(--bg-color);
+            color: var(--text-color);
+            font-size: 1rem;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.2);
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
     </style>
 </head>
 <body>
@@ -100,7 +153,27 @@
         <header class="header">
             <h1>Moderator Panel</h1>
             <p class="subtitle">Review and manage character submissions</p>
+            <div id="auth-status" class="auth-status">
+                <span id="auth-message">Checking authentication...</span>
+                <button id="auth-button" class="btn btn-edit" onclick="showLoginForm()">Login</button>
+                <button id="logout-button" class="btn btn-reject" onclick="logout()" style="display: none;">Logout</button>
+            </div>
         </header>
+        
+        <!-- Login Form (hidden by default) -->
+        <div id="login-form" class="section" style="display: none;">
+            <h2>Moderator Login</h2>
+            <form id="moderator-login-form" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label for="moderator-password">Moderator Password:</label>
+                    <input type="password" id="moderator-password" required class="form-input">
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-approve">Login</button>
+                    <button type="button" class="btn btn-reject" onclick="hideLoginForm()">Cancel</button>
+                </div>
+            </form>
+        </div>
         
         <div class="tabs">
             <div class="tab active" data-tab="pending">Pending Review</div>
@@ -225,8 +298,10 @@
                         </div>
                         <div class="character-actions">
                             <button class="btn btn-edit" onclick="viewCharacter('${character._id}')">View</button>
-                            <button class="btn btn-approve" onclick="moderateCharacter('${character._id}', 'approve')">Approve</button>
-                            <button class="btn btn-reject" onclick="moderateCharacter('${character._id}', 'reject')">Reject</button>
+                            ${isAuthenticated() ? `
+                                <button class="btn btn-approve" onclick="moderateCharacter('${character._id}', 'approve')">Approve</button>
+                                <button class="btn btn-reject" onclick="moderateCharacter('${character._id}', 'reject')">Reject</button>
+                            ` : ''}
                         </div>
                     `;
                     container.appendChild(characterElement);
@@ -316,7 +391,9 @@
                         </div>
                         <div class="character-actions">
                             <button class="btn btn-edit" onclick="viewCharacter('${character._id}')">View</button>
-                            <button class="btn btn-approve" onclick="moderateCharacter('${character._id}', 'approve')">Approve</button>
+                            ${isAuthenticated() ? `
+                                <button class="btn btn-approve" onclick="moderateCharacter('${character._id}', 'approve')">Approve</button>
+                            ` : ''}
                         </div>
                     `;
                     container.appendChild(characterElement);
@@ -330,6 +407,13 @@
         
         // Moderate character
         async function moderateCharacter(characterId, action) {
+            // Check if user is authenticated
+            if (!isAuthenticated()) {
+                alert('You must be logged in as a moderator to perform this action.');
+                showLoginForm();
+                return;
+            }
+            
             const reason = action === 'reject' ? prompt('Please provide a reason for rejection:') : '';
             if (action === 'reject' && reason === null) return; // User cancelled
             
@@ -385,14 +469,112 @@
         // Check if user is authenticated as moderator
         async function checkAuth() {
             try {
-                // Skip the auth check since the endpoint doesn't exist
-                // We'll still allow viewing but show a warning about read-only mode
-                console.warn('Auth endpoint not available, proceeding in read-only mode');
-                return false;
+                const token = localStorage.getItem('moderator_token');
+                if (!token) {
+                    updateAuthStatus(false);
+                    return false;
+                }
+                
+                // Verify token by checking moderator auth endpoint
+                const response = await fetchWithAuth('/api/characters/moderator/auth', {
+                    method: 'POST',
+                    body: JSON.stringify({ password: token })
+                });
+                
+                if (response.success) {
+                    updateAuthStatus(true);
+                    return true;
+                } else {
+                    localStorage.removeItem('moderator_token');
+                    updateAuthStatus(false);
+                    return false;
+                }
             } catch (error) {
                 console.warn('Auth check failed, proceeding without authentication', error);
+                localStorage.removeItem('moderator_token');
+                updateAuthStatus(false);
                 return false;
             }
+        }
+        
+        // Check if user is authenticated as moderator
+        function isAuthenticated() {
+            return localStorage.getItem('moderator_token') !== null;
+        }
+        
+        // Update authentication status UI
+        function updateAuthStatus(isAuthenticated) {
+            const authStatus = document.getElementById('auth-status');
+            const authMessage = document.getElementById('auth-message');
+            const authButton = document.getElementById('auth-button');
+            const logoutButton = document.getElementById('logout-button');
+            
+            if (isAuthenticated) {
+                authStatus.className = 'auth-status authenticated';
+                authMessage.textContent = 'Authenticated as moderator';
+                authButton.style.display = 'none';
+                logoutButton.style.display = 'block';
+            } else {
+                authStatus.className = 'auth-status unauthenticated';
+                authMessage.textContent = 'Not authenticated (read-only mode)';
+                authButton.style.display = 'block';
+                logoutButton.style.display = 'none';
+            }
+        }
+        
+        // Show login form
+        function showLoginForm() {
+            document.getElementById('login-form').style.display = 'block';
+            document.getElementById('moderator-password').focus();
+        }
+        
+        // Hide login form
+        function hideLoginForm() {
+            document.getElementById('login-form').style.display = 'none';
+            document.getElementById('moderator-password').value = '';
+        }
+        
+        // Handle login form submission
+        async function handleLogin(event) {
+            event.preventDefault();
+            
+            const password = document.getElementById('moderator-password').value;
+            
+            try {
+                const response = await fetchWithAuth('/api/characters/moderator/auth', {
+                    method: 'POST',
+                    body: JSON.stringify({ password })
+                });
+                
+                if (response.success) {
+                    localStorage.setItem('moderator_token', password);
+                    updateAuthStatus(true);
+                    hideLoginForm();
+                    alert('Login successful! You now have moderator access.');
+                    // Reload character data to enable moderation actions
+                    const activeTab = document.querySelector('.tab.active');
+                    if (activeTab.dataset.tab === 'pending') loadPendingCharacters();
+                    else if (activeTab.dataset.tab === 'approved') loadApprovedCharacters();
+                    else if (activeTab.dataset.tab === 'rejected') loadRejectedCharacters();
+                } else {
+                    alert('Invalid password. Please try again.');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                alert('Login failed. Please try again.');
+            }
+        }
+        
+        // Logout
+        function logout() {
+            localStorage.removeItem('moderator_token');
+            updateAuthStatus(false);
+            alert('Logged out successfully. You are now in read-only mode.');
+            // Reload character data to disable moderation actions
+            const activeTab = document.querySelector('.tab.active');
+            if (activeTab.dataset.tab === 'pending') loadPendingCharacters();
+            else if (activeTab.dataset.tab === 'approved') loadApprovedCharacters();
+            else if (activeTab.dataset.tab === 'rejected') loadRejectedCharacters();
         }
     </script>
 </body>

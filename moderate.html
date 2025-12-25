@@ -431,8 +431,16 @@
                 const moderatorPassword = localStorage.getItem('moderator_token');
                 const endpoint = action === 'approve' ? `/characters/${characterId}/approve` : `/characters/${characterId}/reject`;
                 
-                const response = await fetchWithAuth(endpoint, {
+                // Make the request directly since fetchWithAuth returns parsed data
+                const baseURL = window.APP_CONFIG ? window.APP_CONFIG.apiURL : '/api';
+                const fullUrl = endpoint.startsWith('http') ? endpoint : `${baseURL}${endpoint}`;
+                
+                const response = await fetch(fullUrl, {
                     method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${window.APP_CONFIG?.API_KEY || '860de3877c2de19b8c88f34c34b71580'}`
+                    },
                     body: JSON.stringify({ 
                         moderatorPassword,
                         feedback: reason,
@@ -440,7 +448,7 @@
                     })
                 });
                 
-                if (response.ok || response.status === 200) {
+                if (response.ok) {
                     alert(`Character ${action}ed successfully!`);
                     // Reload the current tab
                     const activeTab = document.querySelector('.tab.active');

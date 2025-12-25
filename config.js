@@ -4,8 +4,8 @@
 // Environment Configuration
 const environments = {
     production: {
-        apiURL: 'https://dark-city-3-0-reborn.onrender.com/api',
-        socketURL: 'https://dark-city-3-0-reborn.onrender.com',
+        apiURL: 'https://dark-city-game-production.up.railway.app/api',
+        socketURL: 'https://dark-city-game-production.up.railway.app',
         NODE_ENV: 'production'
     },
     development: {

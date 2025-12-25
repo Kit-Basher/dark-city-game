@@ -136,6 +136,7 @@ app.use(cors({
           'http://127.0.0.1:3000',
           'http://127.0.0.1:8080',
           'https://kit-basher.github.io', // Replace with your GitHub Pages URL
+          'https://dark-city-3-0-reborn.onrender.com', // Render deployment URL
           process.env.FRONTEND_URL // Additional frontend URL from environment
         ].filter(Boolean);
     

@@ -713,7 +713,7 @@ window.ENV.ALLOWED_ORIGINS = 'http://localhost:3000,http://localhost:8080,https:
                     ` : ''}
                     
                     <div style="text-align: center; margin-top: 2rem;">
-                        <button data-profile-url="https://dark-city-game-production.up.railway.app/characters/profiles/${createSafeFilename(character)}" class="btn btn-primary profile-link-btn" style="background: #ff6b35; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 5px; cursor: pointer; margin-right: 1rem;">
+                        <button data-profile-url="${window.APP_CONFIG.apiURL ? window.APP_CONFIG.apiURL.replace('/api', '') + '/characters/profiles/' + createSafeFilename(character) : '/characters/profiles/' + createSafeFilename(character)}" class="btn btn-primary profile-link-btn" style="background: #ff6b35; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 5px; cursor: pointer; margin-right: 1rem;">
                             📄 View Full Profile
                         </button>
                         <p><small>Character submitted on ${new Date(character.submittedAt || character.createdAt).toLocaleDateString()}</small></p>
@@ -723,7 +723,7 @@ window.ENV.ALLOWED_ORIGINS = 'http://localhost:3000,http://localhost:8080,https:
             
             modalContent.innerHTML = detailHTML;
             console.log('🔍 Gallery: Modal content set, showing modal...');
-            console.log('🔍 Gallery: Profile URL should be:', `https://dark-city-game-production.up.railway.app/characters/profiles/${createSafeFilename(character)}`);
+            console.log('🔍 Gallery: Profile URL should be:', `${window.APP_CONFIG.apiURL ? window.APP_CONFIG.apiURL.replace('/api', '') + '/characters/profiles/' + createSafeFilename(character) : '/characters/profiles/' + createSafeFilename(character)}`);
             
             // Add event listener for profile link button
             const profileBtn = modalContent.querySelector('.profile-link-btn');

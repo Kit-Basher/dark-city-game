@@ -140,6 +140,11 @@ app.use(cors({
           process.env.FRONTEND_URL // Additional frontend URL from environment
         ].filter(Boolean);
     
+    // Always ensure Render URL is included (fallback for env var issues)
+    if (allowedOrigins.indexOf('https://dark-city-3-0-reborn.onrender.com') === -1) {
+      allowedOrigins.push('https://dark-city-3-0-reborn.onrender.com');
+    }
+    
     if (allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
     } else {

@@ -239,16 +239,20 @@
         // Load pending characters
         // Helper function to make authenticated requests
         async function fetchWithAuth(url, options = {}) {
+            // Use proper base URL configuration like ServerAPI does
+            const baseURL = window.APP_CONFIG ? window.APP_CONFIG.apiURL : '/api';
+            const fullUrl = url.startsWith('http') ? url : `${baseURL}${url}`;
+            
             const headers = {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${window.APP_CONFIG?.API_KEY || '860de3877c2de19b8c88f34c34b71580'}`
+                'Authorization': window.APP_CONFIG?.API_KEY ? `Bearer ${window.APP_CONFIG.API_KEY}` : ''
             };
             
             if (options.headers) {
                 Object.assign(headers, options.headers);
             }
             
-            const response = await fetch(url, {
+            const response = await fetch(fullUrl, {
                 ...options,
                 headers
             });
@@ -258,14 +262,16 @@
                 throw new Error(error.message || 'Request failed');
             }
             
-            return response.json();
+            const data = await response.json();
+            // Handle both response formats: direct array or wrapped in object
+            return data.characters || data;
         }
 
         // Load pending characters
         async function loadPendingCharacters() {
             try {
                 console.log('Loading pending characters...');
-                const response = await fetchWithAuth('/api/characters/pending');
+                const response = await fetchWithAuth('/characters/pending');
                 const container = document.getElementById('pending-characters');
                 
                 console.log('Response received:', response);
@@ -316,7 +322,7 @@
         // Load approved characters
         async function loadApprovedCharacters() {
             try {
-                const response = await fetchWithAuth('/api/characters?status=approved');
+                const response = await fetchWithAuth('/characters?status=approved');
                 const container = document.getElementById('approved-characters');
                 
                 // Handle case where response is not an array
@@ -360,7 +366,7 @@
         // Load rejected characters
         async function loadRejectedCharacters() {
             try {
-                const response = await fetchWithAuth('/api/characters?status=rejected');
+                const response = await fetchWithAuth('/characters?status=rejected');
                 const container = document.getElementById('rejected-characters');
                 
                 // Handle case where response is not an array
@@ -418,7 +424,7 @@
             if (action === 'reject' && reason === null) return; // User cancelled
             
             try {
-                const response = await fetchWithAuth(`/api/characters/${characterId}/moderate`, {
+                const response = await fetchWithAuth(`/characters/${characterId}/moderate`, {
                     method: 'POST',
                     body: JSON.stringify({ action, reason })
                 });
@@ -476,7 +482,7 @@
                 }
                 
                 // Verify token by checking moderator auth endpoint
-                const response = await fetchWithAuth('/api/characters/moderator/auth', {
+                const response = await fetchWithAuth('/characters/moderator/auth', {
                     method: 'POST',
                     body: JSON.stringify({ password: token })
                 });
@@ -541,7 +547,7 @@
             const password = document.getElementById('moderator-password').value;
             
             try {
-                const response = await fetchWithAuth('/api/characters/moderator/auth', {
+                const response = await fetchWithAuth('/characters/moderator/auth', {
                     method: 'POST',
                     body: JSON.stringify({ password })
                 });

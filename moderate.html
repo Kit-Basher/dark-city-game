@@ -191,11 +191,15 @@
         // Load pending characters
         async function loadPendingCharacters() {
             try {
+                console.log('Loading pending characters...');
                 const response = await fetchWithAuth('/api/characters/pending');
                 const container = document.getElementById('pending-characters');
                 
+                console.log('Response received:', response);
+                
                 // Handle case where response is not an array
                 const characters = Array.isArray(response) ? response : [];
+                console.log('Characters found:', characters.length);
                 
                 if (characters.length === 0) {
                     container.innerHTML = '<div class="empty-state">No pending characters found.</div>';
@@ -203,13 +207,24 @@
                 }
                 
                 container.innerHTML = '';
-                characters.forEach(character => {
+                characters.forEach((character, index) => {
+                    console.log(`Character ${index}:`, character);
                     const characterElement = document.createElement('div');
                     characterElement.className = 'character-card';
+                    
+                    // Extract character name from various possible fields
+                    const characterName = character.characterName || character.name || 'Unnamed Character';
+                    const submittedDate = character.submittedAt || character.createdAt || character.createdAt;
+                    
                     characterElement.innerHTML = `
-                        <h3>${character.name || 'Unnamed Character'}</h3>
-                        <p>Submitted: ${new Date(character.createdAt).toLocaleDateString()}</p>
+                        <div class="character-info">
+                            <h3>${characterName}</h3>
+                            <p><strong>Type:</strong> ${character.characterType || 'Unknown'}</p>
+                            <p><strong>Submitted:</strong> ${submittedDate ? new Date(submittedDate).toLocaleDateString() : 'Unknown'}</p>
+                            ${character.backstory ? `<p><strong>Backstory:</strong> ${character.backstory.substring(0, 100)}${character.backstory.length > 100 ? '...' : ''}</p>` : ''}
+                        </div>
                         <div class="character-actions">
+                            <button class="btn btn-edit" onclick="viewCharacter('${character._id}')">View</button>
                             <button class="btn btn-approve" onclick="moderateCharacter('${character._id}', 'approve')">Approve</button>
                             <button class="btn btn-reject" onclick="moderateCharacter('${character._id}', 'reject')">Reject</button>
                         </div>
@@ -241,10 +256,22 @@
                 characters.forEach(character => {
                     const characterElement = document.createElement('div');
                     characterElement.className = 'character-card';
+                    
+                    // Extract character name from various possible fields
+                    const characterName = character.characterName || character.name || 'Unnamed Character';
+                    const updatedDate = character.updatedAt || character.approvedAt || character.createdAt;
+                    
                     characterElement.innerHTML = `
-                        <h3>${character.name || 'Unnamed Character'}</h3>
-                        <p>Status: ${character.status || 'Unknown'}</p>
-                        <p>Approved: ${character.updatedAt ? new Date(character.updatedAt).toLocaleDateString() : 'N/A'}</p>
+                        <div class="character-info">
+                            <h3>${characterName}</h3>
+                            <p><strong>Type:</strong> ${character.characterType || 'Unknown'}</p>
+                            <p><strong>Status:</strong> ${character.status || 'Unknown'}</p>
+                            <p><strong>Approved:</strong> ${updatedDate ? new Date(updatedDate).toLocaleDateString() : 'N/A'}</p>
+                            ${character.backstory ? `<p><strong>Backstory:</strong> ${character.backstory.substring(0, 100)}${character.backstory.length > 100 ? '...' : ''}</p>` : ''}
+                        </div>
+                        <div class="character-actions">
+                            <button class="btn btn-edit" onclick="viewCharacter('${character._id}')">View</button>
+                        </div>
                     `;
                     container.appendChild(characterElement);
                 });
@@ -273,12 +300,22 @@
                 characters.forEach(character => {
                     const characterElement = document.createElement('div');
                     characterElement.className = 'character-card';
+                    
+                    // Extract character name from various possible fields
+                    const characterName = character.characterName || character.name || 'Unnamed Character';
+                    const updatedDate = character.updatedAt || character.rejectedAt || character.createdAt;
+                    
                     characterElement.innerHTML = `
-                        <h3>${character.name || 'Unnamed Character'}</h3>
-                        <p>Status: ${character.status || 'Unknown'}</p>
-                        <p>Rejection Reason: ${character.rejectionReason || 'No reason provided'}</p>
-                        <p>Rejected: ${character.updatedAt ? new Date(character.updatedAt).toLocaleDateString() : 'N/A'}</p>
+                        <div class="character-info">
+                            <h3>${characterName}</h3>
+                            <p><strong>Type:</strong> ${character.characterType || 'Unknown'}</p>
+                            <p><strong>Status:</strong> ${character.status || 'Unknown'}</p>
+                            <p><strong>Rejection Reason:</strong> ${character.rejectionReason || 'No reason provided'}</p>
+                            <p><strong>Rejected:</strong> ${updatedDate ? new Date(updatedDate).toLocaleDateString() : 'N/A'}</p>
+                            ${character.backstory ? `<p><strong>Backstory:</strong> ${character.backstory.substring(0, 100)}${character.backstory.length > 100 ? '...' : ''}</p>` : ''}
+                        </div>
                         <div class="character-actions">
+                            <button class="btn btn-edit" onclick="viewCharacter('${character._id}')">View</button>
                             <button class="btn btn-approve" onclick="moderateCharacter('${character._id}', 'approve')">Approve</button>
                         </div>
                     `;
@@ -297,12 +334,12 @@
             if (action === 'reject' && reason === null) return; // User cancelled
             
             try {
-                await fetchWithAuth(`/api/characters/${characterId}/moderate`, {
+                const response = await fetchWithAuth(`/api/characters/${characterId}/moderate`, {
                     method: 'POST',
                     body: JSON.stringify({ action, reason })
                 });
                 
-                if (response.ok) {
+                if (response.ok || response.status === 200) {
                     alert(`Character ${action}ed successfully!`);
                     // Reload the current tab
                     const activeTab = document.querySelector('.tab.active');

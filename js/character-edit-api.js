@@ -14,7 +14,7 @@ class CharacterEditAPI {
 
             const response = await fetch(url, {
                 headers: {
-                    'Authorization': window.APP_CONFIG?.API_KEY ? `Bearer ${window.APP_CONFIG.API_KEY}` : ''
+                    'Authorization': `Bearer ${window.APP_CONFIG?.API_KEY || '860de3877c2de19b8c88f34c34b71580'}`
                 }
             });
 
@@ -50,7 +50,7 @@ class CharacterEditAPI {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': window.APP_CONFIG?.API_KEY ? `Bearer ${window.APP_CONFIG.API_KEY}` : ''
+                    'Authorization': `Bearer ${window.APP_CONFIG?.API_KEY || '860de3877c2de19b8c88f34c34b71580'}`
                 },
                 body: JSON.stringify(sanitizedData)
             });
@@ -82,7 +82,7 @@ class CharacterEditAPI {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': window.APP_CONFIG?.API_KEY ? `Bearer ${window.APP_CONFIG.API_KEY}` : ''
+                    'Authorization': `Bearer ${window.APP_CONFIG?.API_KEY || '860de3877c2de19b8c88f34c34b71580'}`
                 },
                 body: JSON.stringify({
                     currentPassword: window.InputSanitizer ? 
@@ -118,7 +118,7 @@ class CharacterEditAPI {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': window.APP_CONFIG?.API_KEY ? `Bearer ${window.APP_CONFIG.API_KEY}` : ''
+                    'Authorization': `Bearer ${window.APP_CONFIG?.API_KEY || '860de3877c2de19b8c88f34c34b71580'}`
                 },
                 body: JSON.stringify({
                     editPassword: window.InputSanitizer ? 

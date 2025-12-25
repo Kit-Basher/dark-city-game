@@ -164,6 +164,10 @@
         <div id="login-form" class="section" style="display: none;">
             <h2>Moderator Login</h2>
             <form id="moderator-login-form" onsubmit="handleLogin(event)">
+                <div class="form-group" style="display: none;">
+                    <label for="moderator-username">Username:</label>
+                    <input type="text" id="moderator-username" value="moderator" class="form-input" autocomplete="username">
+                </div>
                 <div class="form-group">
                     <label for="moderator-password">Moderator Password:</label>
                     <input type="password" id="moderator-password" required class="form-input" autocomplete="new-password">
@@ -424,9 +428,16 @@
             if (action === 'reject' && reason === null) return; // User cancelled
             
             try {
-                const response = await fetchWithAuth(`/characters/${characterId}/moderate`, {
-                    method: 'POST',
-                    body: JSON.stringify({ action, reason })
+                const moderatorPassword = localStorage.getItem('moderator_token');
+                const endpoint = action === 'approve' ? `/characters/${characterId}/approve` : `/characters/${characterId}/reject`;
+                
+                const response = await fetchWithAuth(endpoint, {
+                    method: 'PUT',
+                    body: JSON.stringify({ 
+                        moderatorPassword,
+                        feedback: reason,
+                        reviewedBy: 'moderator'
+                    })
                 });
                 
                 if (response.ok || response.status === 200) {

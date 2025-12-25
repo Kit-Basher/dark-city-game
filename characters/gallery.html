@@ -305,7 +305,7 @@ window.ENV.ALLOWED_ORIGINS = 'http://localhost:3000,http://localhost:8080,https:
                 <h1>Dark City</h1>
                 <ul class="nav-links" role="menubar">
                     <li role="none"><a href="../index.html" role="menuitem">Home</a></li>
-                    <li role="none"><a href="https://dark-city-game-production.up.railway.app/character-creator.html" role="menuitem">Create Character</a></li>
+                    <li role="none"><a href="/character-creator.html" role="menuitem">Create Character</a></li>
                     <li role="none"><a href="../playbooks/index.html" role="menuitem">Playbooks</a></li>
                     <li role="none"><a href="../rules/server-rules.html" role="menuitem">Rules</a></li>
                 </ul>
@@ -346,7 +346,7 @@ window.ENV.ALLOWED_ORIGINS = 'http://localhost:3000,http://localhost:8080,https:
             </div>
             
             <div id="noCharactersMessage" class="no-characters" style="display: none;">
-                No approved characters found. Be the first to <a href="https://dark-city-game-production.up.railway.app/character-creator.html">create a character</a>!
+                No approved characters found. Be the first to <a href="/character-creator.html">create a character</a>!
             </div>
         </div>
     </main>
@@ -745,7 +745,7 @@ window.ENV.ALLOWED_ORIGINS = 'http://localhost:3000,http://localhost:8080,https:
             
             try {
                 // Fetch character data
-                const response = await fetch(`https://dark-city-game-production.up.railway.app/api/characters/${characterId}`, {
+                const response = await fetch(`${window.APP_CONFIG.apiURL}/characters/${characterId}`, {
                     headers: {
                         'Authorization': `Bearer ${window.APP_CONFIG.API_KEY}`
                     }

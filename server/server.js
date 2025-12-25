@@ -189,6 +189,12 @@ app.get(/^.*\.html$/, (req, res, next) => {
     });
 });
 
+// Serve moderate page
+app.get('/moderate', (req, res) => {
+  const moderatePath = path.join(__dirname, '..', 'moderate.html');
+  res.sendFile(moderatePath);
+});
+
 // Serve character creator page
 app.get('/character-creator.html', (req, res) => {
   const creatorPath = path.join(__dirname, '..', 'character-creator.html');

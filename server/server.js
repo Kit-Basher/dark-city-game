@@ -274,7 +274,7 @@ app.get('/test-submission.js', (req, res) => {
 
 // Log deployed commit for debugging
 logger.info('Starting server', {
-    gitCommit: process.env.RAILWAY_GIT_COMMIT_SHA || 'unknown',
+    gitCommit: process.env.GIT_COMMIT_SHA || 'unknown',
     version: process.env.npm_package_version || '1.0.0'
 });
 
@@ -316,7 +316,7 @@ app.get('/status-ping', (req, res) => {
     status: 'ok',
     message: 'Status ping - public endpoint',
     timestamp: new Date().toISOString(),
-    gitCommit: process.env.RAILWAY_GIT_COMMIT_SHA || 'unknown',
+    gitCommit: process.env.GIT_COMMIT_SHA || 'unknown',
     apiKeyHint: process.env.API_KEY || 'not set',
     nodeEnv: process.env.NODE_ENV,
     version: process.env.npm_package_version || '1.0.0'

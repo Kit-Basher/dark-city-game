@@ -27,7 +27,7 @@ async function initializeProfiles() {
 
 async function generateCharacterProfile(character) {
   try {
-    // Read the template (use absolute path for Railway)
+    // Read the template (use absolute path for production deployment)
     const templatePath = path.join(process.cwd(), '..', 'characters', 'profile-template.html'); // Go up from /app/server to /app
     const template = await fs.readFile(templatePath, 'utf8');
     
@@ -196,7 +196,7 @@ async function generateCharacterProfile(character) {
       .replace(/-+/g, '-')
       .replace(/^-|-$/g, '');
     
-    // Ensure profiles directory exists (use absolute path for Railway)
+    // Ensure profiles directory exists (use absolute path for production deployment)
     const profilesDir = path.join(process.cwd(), '..', 'characters', 'profiles'); // Go up from /app/server to /app
     await fs.mkdir(profilesDir, { recursive: true });
     

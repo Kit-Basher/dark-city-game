@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const connectDB = async () => {
   try {
-    // Check for Railway's MongoDB URLs in order of preference
+    // Check for MongoDB URLs in order of preference
     const mongoUri = process.env.MONGO_PUBLIC_URL || 
                      process.env.MONGO_URL || 
                      process.env.MONGODB_URI || 

@@ -60,82 +60,102 @@ window.APP_CONFIG = {
 };
 ```
 
-### 2. Railway (Full Stack)
+### 2. Render (Backend API)
 
 #### Prerequisites
-- Railway account
+- Render account
 - Node.js 18+
-- MongoDB database (Railway provides)
+- MongoDB database (external service like MongoDB Atlas)
 
 #### Setup Steps
 
-1. **Install Railway CLI**
-   ```bash
-   npm install -g @railway/cli
-   railway login
+1. **Create Render Account**
+   - Sign up at https://render.com
+   - Create a new Web Service
+
+2. **Connect Repository**
+   - Connect your GitHub repository
+   - Select the `dark-city-game` project
+
+3. **Configure Build Settings**
+   - Build Command: `cd server && npm install`
+   - Start Command: `cd server && npm start`
+
+4. **Set Environment Variables**
+   In Render dashboard, add these environment variables:
+   ```
+   NODE_ENV=production
+   PORT=8080
+   MONGODB_URI=your_mongodb_connection_string
+   API_KEY=your-secure-api-key
+   JWT_SECRET=your-jwt-secret
+   MODERATOR_PASSWORD=your-moderator-password
+   ALLOWED_ORIGINS=https://kit-basher.github.io,https://your-app-name.onrender.com
    ```
 
-2. **Initialize Project**
-   ```bash
-   cd dark-city-game
-   railway init
-   ```
+5. **Deploy**
+   - Push changes to GitHub
+   - Render will auto-deploy
 
-3. **Configure Environment Variables**
-   ```bash
-   railway variables set NODE_ENV=production
-   railway variables set PORT=3000
-   railway variables set MONGODB_URI=mongodb://mongo:27017/darkcity
-   railway variables set API_KEY=your-secure-api-key
-   railway variables set DISCORD_WEBHOOK_URL=your-webhook-url
-   railway variables set JWT_SECRET=your-jwt-secret
-   ```
+#### Render Configuration
 
-4. **Deploy**
-   ```bash
-   railway up
-   ```
-
-5. **Configure Custom Domain**
-   ```bash
-   railway domains add yourdomain.com
-   ```
-
-#### Railway Configuration Files
-
-**railway.toml**
-```toml
-[build]
-builder = "NIXPACKS"
-
-[deploy]
-healthcheckPath = "/api/health"
-healthcheckTimeout = 300
-restartPolicyType = "ON_FAILURE"
-restartPolicyMaxRetries = 10
-
-[[services]]
-name = "web"
-source = "."
-healthcheckPath = "/api/health"
-healthcheckTimeout = 300
+**render.yaml** (optional - for configuration as code)
+```yaml
+services:
+  - type: web
+    name: dark-city-api
+    env: node
+    buildCommand: cd server && npm install
+    startCommand: cd server && npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 8080
 ```
 
-**package.json scripts**
-```json
-{
-  "scripts": {
-    "start": "node server/server.js",
-    "build": "npm install",
-    "dev": "nodemon server/server.js"
-  }
-}
-```
-
-### 3. Vercel (Frontend + Serverless)
+### 3. GitHub Pages (Frontend)
 
 #### Prerequisites
-- Vercel account
+- GitHub account
+- Repository with frontend code
+
+#### Setup Steps
+
+1. **Enable GitHub Pages**
+   - Go to repository Settings
+   - Scroll to Pages section
+   - Select source: Deploy from a branch
+   - Choose main branch and / (root)
+
+2. **Configure Custom Domain** (optional)
+   ```
+   CNAME: yourdomain.com
+   ```
+
+#### GitHub Pages Configuration
+
+**.github/workflows/deploy.yml** (optional - for automated deployment)
+```yaml
+name: Deploy to GitHub Pages
+on:
+  push:
+    branches: [ main ]
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./
+```
 - Vercel CLI
 
 #### Setup Steps

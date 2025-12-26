@@ -422,7 +422,6 @@
                 {{PHOTOS_SECTION}}
                 <h1 class="profile-name">{{CHARACTER_NAME}}</h1>
                 <p class="profile-title">{{CLASSIFICATION}} • {{PLAYBOOK}}</p>
-                <button id="editProfileBtn" class="edit-profile-btn">✏️ Edit Profile</button>
             </div>
             
             <div class="profile-content">
@@ -473,6 +472,10 @@
                         {{MONSTER_PHYSICAL_STATS}}
                     </div>
                 </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 2rem;">
+                <button id="editProfileBtn" class="edit-profile-btn">✏️ Edit</button>
             </div>
         </div>
     </main>
@@ -631,10 +634,9 @@
         async function verifyPassword() {
             const password = document.getElementById('passwordInput').value;
 
-            // If user left it blank, just try opening edit page.
-            // character-edit.html will prompt again if password is required.
             if (!password) {
-                window.location.href = `../character-edit.html?id=${characterData.id}`;
+                alert('Please enter your edit password.');
+                document.getElementById('passwordInput').focus();
                 return;
             }
 

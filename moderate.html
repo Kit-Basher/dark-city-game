@@ -467,8 +467,8 @@
         
         // View character details
         function viewCharacter(characterId) {
-            // Open character in a new tab with the edit interface (works for both pending and approved characters)
-            window.open(`/characters/character-edit.html?id=${characterId}&viewMode=true`, '_blank');
+            // Open the normal public character page (same view as everyone else)
+            window.open(`/characters/profile/${characterId}`, '_blank');
         }
         
         // Initialize the page

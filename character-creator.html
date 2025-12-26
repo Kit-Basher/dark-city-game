@@ -968,10 +968,10 @@ window.ENV.ALLOWED_ORIGINS = 'http://localhost:3000,http://localhost:8080,https:
                 <section class="form-section">
                     <h2>🔐 Profile Edit Password</h2>
                     <div class="form-group">
-                        <label for="editPassword">Edit Password (Optional)</label>
-                        <input type="password" id="editPassword" name="editPassword" placeholder="Leave empty to allow anyone to edit, or create a password to protect" autocomplete="new-password">
+                        <label for="editPassword">Edit Password *</label>
+                        <input type="password" id="editPassword" name="editPassword" required minlength="4" placeholder="Create a password to protect editing" autocomplete="new-password">
                         <small style="color: #888; margin-top: 0.5rem; display: block;">
-                            💡 <strong>Optional:</strong> Leave empty to allow anyone to edit this character, or create a password to restrict editing to only those with the password.
+                            💡 <strong>Required:</strong> You will need this password to edit your character later.
                         </small>
                     </div>
                 </section>
@@ -1948,17 +1948,34 @@ window.ENV.ALLOWED_ORIGINS = 'http://localhost:3000,http://localhost:8080,https:
                 const result = await serverAPI.submitCharacter(characterData);
                 console.log('✅ Server response:', result);
                 
-                // Show success message
-                alert('🎉 Character sheet submitted successfully! It will be reviewed by moderators and you\'ll be notified of the decision.');
+                // Show success message and keep the player on the page so they can continue editing.
+                const submittedCharacterId = result?.character?._id;
+                const profileUrl = result?.profileUrl || (submittedCharacterId ? `/characters/profile/${submittedCharacterId}` : null);
                 
-                // Reset form
-                document.getElementById('characterForm').reset();
+                const existingNotice = document.getElementById('submissionNotice');
+                if (existingNotice) existingNotice.remove();
                 
-                // Redirect to homepage after successful submission
-                setTimeout(() => {
-                    window.location.href = 'index.html';
-                }, 1000);
+                const notice = document.createElement('div');
+                notice.id = 'submissionNotice';
+                notice.style.marginTop = '1rem';
+                notice.style.padding = '1rem';
+                notice.style.border = '2px solid #4CAF50';
+                notice.style.borderRadius = '8px';
+                notice.style.background = 'rgba(76, 175, 80, 0.1)';
+                notice.style.color = '#fff';
+                notice.innerHTML = `
+                    <div style="font-weight: 700; margin-bottom: 0.5rem;">Submitted! Please wait for a moderator response.</div>
+                    ${profileUrl ? `<div style="margin-bottom: 0.5rem;"><a href="${profileUrl}" target="_blank" rel="noopener noreferrer" style="color: #ff6b35; text-decoration: underline;">View your character page</a></div>` : ''}
+                    <div style="color: #ccc; font-size: 0.95rem;">To edit later, open your character page and click <strong>Edit</strong>.</div>
+                `;
                 
+                const actions = document.querySelector('.form-actions');
+                if (actions && actions.parentNode) {
+                    actions.parentNode.insertBefore(notice, actions.nextSibling);
+                } else {
+                    document.body.appendChild(notice);
+                }
+            
             } catch (error) {
                 console.error('❌ Submission error:', error);
                 

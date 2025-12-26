@@ -230,9 +230,9 @@ app.get('/characters/profiles/:filename', async (req, res) => {
         const Character = require('./models/Character');
         const character = await Character.findById(characterId);
         
-        if (character && character.status === 'approved') {
+        if (character && (character.status === 'approved' || character.status === 'pending')) {
           if (logger) {
-            logger.info('Generating profile on-demand for approved character:', { characterId });
+            logger.info('Generating profile on-demand for character:', { characterId, status: character.status });
           }
           
           // Generate profile using the utility function

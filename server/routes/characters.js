@@ -181,6 +181,14 @@ router.post('/submit', validate(characterSchema), async (req, res) => {
     };
 
     const character = await CharacterService.createCharacter(characterData);
+
+    // Generate profile page immediately (pending characters should have a view-only page)
+    try {
+      await generateCharacterProfile(character);
+    } catch (profileError) {
+      console.warn('Submit: Profile generation failed:', profileError.message);
+      // Don't fail submission if profile generation fails
+    }
     
     // Emit real-time notification
     const io = req.app.get('io');
@@ -190,7 +198,8 @@ router.post('/submit', validate(characterSchema), async (req, res) => {
 
     res.status(201).json({
       message: 'Character submitted successfully',
-      character
+      character,
+      profileUrl: `/characters/profile/${character._id}`
     });
   } catch (error) {
     console.error('Error submitting character:', error);

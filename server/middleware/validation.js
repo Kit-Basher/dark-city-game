@@ -221,6 +221,17 @@ const characterSchema = Joi.object({
         .default('anonymous')
         .messages({
             'string.max': 'Submitted by name cannot exceed 100 characters'
+        }),
+
+    editPassword: Joi.string()
+        .trim()
+        .min(4)
+        .max(50)
+        .required()
+        .messages({
+            'string.empty': 'Edit password is required',
+            'string.min': 'Edit password must be at least 4 characters long',
+            'string.max': 'Edit password cannot exceed 50 characters'
         })
 });
 

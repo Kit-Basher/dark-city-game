@@ -65,7 +65,7 @@ router.get('/:id', asyncHandler(async (req, res) => {
     }
 
     res.json({
-      ...character.toObject(),
+      ...character,
       isModeratorAccess: hasApiKey
     });
   } catch (error) {
@@ -362,7 +362,7 @@ router.post('/:id/duplicate', asyncHandler(async (req, res) => {
     }
 
     // Create a copy of the character
-    const characterData = originalCharacter.toObject();
+    const characterData = { ...originalCharacter };
     delete characterData._id;
     delete characterData.__v;
     delete characterData.createdAt;

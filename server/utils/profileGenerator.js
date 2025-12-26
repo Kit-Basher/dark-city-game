@@ -178,8 +178,7 @@ async function generateCharacterProfile(character) {
           </div>
         </div>`;
       })(),
-      '{{CHARACTER_ID}}': character._id || '',
-      '{{EDIT_PASSWORD}}': character.editPassword || ''
+      '{{CHARACTER_ID}}': character._id || ''
     };
     
     // Replace placeholders in template

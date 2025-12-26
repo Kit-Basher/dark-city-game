@@ -1,5 +1,6 @@
 const Character = require('../models/Character');
 const { structuredLogger } = require('../config/logging');
+const cacheService = require('./cacheService');
 
 class CharacterService {
     static async getCharacters(options = {}) {
@@ -13,6 +14,17 @@ class CharacterService {
             playbook,
             submittedBy
         } = options;
+
+        const cacheKey = `characters:${JSON.stringify(options)}`;
+        
+        // Try cache first for approved characters
+        if (status === 'approved') {
+            const cached = await cacheService.get(cacheKey);
+            if (cached) {
+                structuredLogger.logPerformance('characters_find_cache', 1, 'ms', { cacheKey });
+                return cached;
+            }
+        }
 
         const query = {};
         if (status) query.status = status;
@@ -40,7 +52,7 @@ class CharacterService {
         structuredLogger.logPerformance('characters_count', countTime, 'ms', { query });
         structuredLogger.logPerformance('characters_total', findTime + countTime, 'ms', { total, page, limit });
 
-        return {
+        const result = {
             characters,
             pagination: {
                 page,
@@ -51,6 +63,13 @@ class CharacterService {
                 hasPrev: page > 1
             }
         };
+
+        // Cache approved characters for 5 minutes
+        if (status === 'approved') {
+            await cacheService.set(cacheKey, result, 300);
+        }
+
+        return result;
     }
 
     static async getApprovedCharacters(options = {}) {
@@ -124,7 +143,8 @@ class CharacterService {
         }
         
         // Check edit password if character has one
-        if (character.editPassword && character.editPassword !== editPassword) {
+        // If editPassword is null, treat as privileged update (moderator override)
+        if (editPassword !== null && character.editPassword && character.editPassword !== editPassword) {
             throw new Error('Invalid edit password');
         }
         

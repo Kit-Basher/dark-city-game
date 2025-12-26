@@ -592,8 +592,7 @@
     <script>
         const characterData = {
             name: '{{CHARACTER_NAME}}',
-            id: '{{CHARACTER_ID}}',
-            editPassword: '{{EDIT_PASSWORD}}'
+            id: '{{CHARACTER_ID}}'
         };
         
         // Add event listeners instead of inline onclick handlers
@@ -618,12 +617,6 @@
         });
         
         function showEditPasswordModal() {
-            if (!characterData.editPassword) {
-                // No password set, go directly to edit mode
-                window.location.href = `../character-edit.html?id=${characterData.id}`;
-                return;
-            }
-            
             // Show password modal
             document.getElementById('passwordModal').style.display = 'flex';
             document.getElementById('passwordInput').value = '';
@@ -635,14 +628,35 @@
             document.getElementById('passwordInput').value = '';
         }
         
-        function verifyPassword() {
+        async function verifyPassword() {
             const password = document.getElementById('passwordInput').value;
-            
-            if (password === characterData.editPassword) {
-                // Password correct, redirect to edit mode
-                window.location.href = `../character-edit.html?id=${characterData.id}&editPassword=${password}`;
-            } else {
-                // Password incorrect
+
+            // If user left it blank, just try opening edit page.
+            // character-edit.html will prompt again if password is required.
+            if (!password) {
+                window.location.href = `../character-edit.html?id=${characterData.id}`;
+                return;
+            }
+
+            try {
+                const baseURL = window.APP_CONFIG ? window.APP_CONFIG.apiURL : '/api';
+                const url = new URL(`${baseURL}/characters/${characterData.id}/edit`, window.location.origin);
+                url.searchParams.set('editPassword', password);
+
+                const response = await fetch(url, {
+                    headers: {
+                        'Authorization': `Bearer ${window.APP_CONFIG?.API_KEY || '860de3877c2de19b8c88f34c34b71580'}`
+                    },
+                    signal: AbortSignal.timeout(10000)
+                });
+
+                if (!response.ok) {
+                    throw new Error('Invalid password');
+                }
+
+                // Password correct (either character password OR master password)
+                window.location.href = `../character-edit.html?id=${characterData.id}&editPassword=${encodeURIComponent(password)}`;
+            } catch (error) {
                 alert('Incorrect password. Please try again.');
                 document.getElementById('passwordInput').value = '';
                 document.getElementById('passwordInput').focus();

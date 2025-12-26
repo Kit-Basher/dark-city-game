@@ -458,6 +458,14 @@ window.ENV.ALLOWED_ORIGINS = 'http://localhost:3000,http://localhost:8080,https:
                         Only moderators can change this. Use to help users who forgot their password.
                     </small>
                 </div>
+                <div class="form-group" style="margin-top: 1rem;">
+                    <label for="moderatorFeedback">Moderator Feedback</label>
+                    <textarea id="moderatorFeedback" name="moderatorFeedback" maxlength="1000" rows="4" placeholder="Optional feedback for approval. Required for rejection."></textarea>
+                </div>
+                <div class="action-buttons" style="margin-top: 1rem;">
+                    <button type="button" class="btn btn-primary" id="moderatorApproveButton">Approve</button>
+                    <button type="button" class="btn btn-danger" id="moderatorRejectButton">Reject</button>
+                </div>
             </section>
 
             <!-- Physical Description -->
@@ -641,9 +649,80 @@ window.ENV.ALLOWED_ORIGINS = 'http://localhost:3000,http://localhost:8080,https:
             }
         }
 
+        // Check if user is authenticated as moderator
+        function isAuthenticated() {
+            return localStorage.getItem('moderator_token') !== null;
+        }
+
+        // Verify moderator token (same logic as moderate.html)
+        async function checkAuth() {
+            try {
+                const token = localStorage.getItem('moderator_token');
+                if (!token) return false;
+
+                const baseURL = window.APP_CONFIG ? window.APP_CONFIG.apiURL : '/api';
+                const fullUrl = `${baseURL}/characters/moderator/auth`;
+
+                const response = await fetch(fullUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${window.APP_CONFIG?.API_KEY || '860de3877c2de19b8c88f34c34b71580'}`
+                    },
+                    body: JSON.stringify({ password: token }),
+                    signal: AbortSignal.timeout(5000)
+                });
+
+                if (!response.ok) {
+                    localStorage.removeItem('moderator_token');
+                    return false;
+                }
+
+                const data = await response.json().catch(() => ({}));
+                if (data && data.success) return true;
+
+                localStorage.removeItem('moderator_token');
+                return false;
+            } catch (error) {
+                console.warn('Moderator auth check failed:', error.message);
+                return false;
+            }
+        }
+
+        // Enable form for moderator editing
+        function enableFormForModerator() {
+            // Enable all form inputs if they were disabled
+            const inputs = document.querySelectorAll('input, select, textarea');
+            inputs.forEach(input => {
+                input.disabled = false;
+                input.style.backgroundColor = '';
+                input.style.cursor = '';
+            });
+            
+            // Show save buttons
+            const saveButton = document.querySelector('button[type="submit"]');
+            if (saveButton) {
+                saveButton.style.display = 'inline-block';
+            }
+            
+            // Add moderator indicator
+            const header = document.querySelector('.edit-container h1') || document.querySelector('h1');
+            if (header && !header.innerHTML.includes('(Moderator)')) {
+                header.innerHTML += ' <span style="color: #ff6b35; font-size: 0.8em; font-weight: normal;">(Moderator Access)</span>';
+            }
+        }
+
         // Try loading character without password first
         async function tryLoadCharacterWithoutPassword() {
             try {
+                // First check if user is moderator - if so, they can edit without password
+                const authed = await checkAuth();
+                if (authed) {
+                    await loadCharacter();
+                    return;
+                }
+                
+                // Try loading without password for unprotected characters
                 await loadCharacter();
             } catch (error) {
                 if (error.message.includes('Unauthorized') || error.message.includes('authorization required')) {
@@ -677,7 +756,7 @@ window.ENV.ALLOWED_ORIGINS = 'http://localhost:3000,http://localhost:8080,https:
                 return;
             }
 
-            // Validate password
+            // Validate password (supports both character password and master password)
             const isValid = await window.characterEditAPI.validateEditPassword(characterId, password);
             
             if (isValid) {
@@ -716,16 +795,23 @@ window.ENV.ALLOWED_ORIGINS = 'http://localhost:3000,http://localhost:8080,https:
                 const character = await window.characterEditAPI.getCharacterForEdit(characterId, editPassword);
                 originalCharacterData = character;
                 
-                // Show moderator section if accessed via API key
-                if (character.isModeratorAccess) {
+                // Check if user is moderator
+                const isModerator = await checkAuth();
+                
+                // Show moderator section if user is moderator
+                if (isModerator) {
                     document.getElementById('moderatorSection').style.display = 'block';
+                    // Enable all form fields for moderator editing
+                    enableFormForModerator();
                 }
                 
                 // Populate form
                 populateForm(character);
                 
-                // Setup auto-save
-                setupAutoSave();
+                // Setup auto-save (only for non-view modes)
+                if (!document.querySelector('input[disabled]')) {
+                    setupAutoSave();
+                }
                 
                 // Setup real-time updates
                 setupRealTimeUpdates();
@@ -807,8 +893,67 @@ window.ENV.ALLOWED_ORIGINS = 'http://localhost:3000,http://localhost:8080,https:
             document.getElementById('addMoveButton').addEventListener('click', addMove);
             document.getElementById('changePasswordButton').addEventListener('click', changePassword);
 
+            // Moderator actions
+            const approveBtn = document.getElementById('moderatorApproveButton');
+            if (approveBtn) approveBtn.addEventListener('click', () => moderateCharacter('approve'));
+            const rejectBtn = document.getElementById('moderatorRejectButton');
+            if (rejectBtn) rejectBtn.addEventListener('click', () => moderateCharacter('reject'));
+
             // Photo upload
             document.getElementById('photoInput').addEventListener('change', handlePhotoUpload);
+        }
+
+        async function moderateCharacter(action) {
+            const authed = await checkAuth();
+            if (!authed) {
+                showError('Not authenticated as moderator. Please log in on the moderator panel first.');
+                return;
+            }
+
+            const moderatorPassword = localStorage.getItem('moderator_token');
+            const feedbackEl = document.getElementById('moderatorFeedback');
+            const feedback = (feedbackEl ? feedbackEl.value : '').trim();
+
+            if (action === 'reject' && !feedback) {
+                showError('Feedback is required for rejection.');
+                return;
+            }
+
+            const endpoint = action === 'approve'
+                ? `/characters/${characterId}/approve`
+                : `/characters/${characterId}/reject`;
+
+            const baseURL = window.APP_CONFIG ? window.APP_CONFIG.apiURL : '/api';
+            const fullUrl = `${baseURL}${endpoint}`;
+
+            showLoading(true);
+            try {
+                const response = await fetch(fullUrl, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${window.APP_CONFIG?.API_KEY || '860de3877c2de19b8c88f34c34b71580'}`
+                    },
+                    body: JSON.stringify({
+                        moderatorPassword,
+                        feedback,
+                        reviewedBy: 'moderator'
+                    }),
+                    signal: AbortSignal.timeout(30000)
+                });
+
+                if (!response.ok) {
+                    const err = await response.json().catch(() => ({}));
+                    throw new Error(err.error || err.message || `HTTP ${response.status}`);
+                }
+
+                showSuccess(`Character ${action}d successfully!`);
+                await loadCharacter();
+            } catch (error) {
+                showError(`Failed to ${action} character: ${error.message}`);
+            } finally {
+                showLoading(false);
+            }
         }
 
         // Setup auto-save
@@ -851,6 +996,8 @@ window.ENV.ALLOWED_ORIGINS = 'http://localhost:3000,http://localhost:8080,https:
 
         // Get form data
         function getFormData() {
+            const moderatorSection = document.getElementById('moderatorSection');
+            const includeModeratorFields = moderatorSection && moderatorSection.style.display !== 'none';
             const formData = {
                 name: document.getElementById('name').value,
                 classification: document.getElementById('classification').value,
@@ -869,10 +1016,13 @@ window.ENV.ALLOWED_ORIGINS = 'http://localhost:3000,http://localhost:8080,https:
                 mentalStress: document.getElementById('mentalStress').value,
                 humanPhoto: document.getElementById('humanPhoto').value,
                 monsterPhoto: document.getElementById('monsterPhoto').value,
-                editPassword: document.getElementById('editPassword').value,
                 photos: characterPhotos,
                 moves: getMovesData()
             };
+
+            if (includeModeratorFields) {
+                formData.newEditPassword = document.getElementById('editPassword').value;
+            }
             
             return formData;
         }

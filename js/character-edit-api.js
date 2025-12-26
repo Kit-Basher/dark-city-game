@@ -7,7 +7,7 @@ class CharacterEditAPI {
     // Get character data for editing
     async getCharacterForEdit(characterId, editPassword) {
         try {
-            const url = new URL(`${this.baseURL}/characters/${characterId}/edit`, window.location.origin);
+            const url = new URL(`${this.baseURL}/api/characters/${characterId}/edit`, window.location.origin);
             if (editPassword) {
                 url.searchParams.set('editPassword', editPassword);
             }
@@ -15,7 +15,8 @@ class CharacterEditAPI {
             const response = await fetch(url, {
                 headers: {
                     'Authorization': `Bearer ${window.APP_CONFIG?.API_KEY || '860de3877c2de19b8c88f34c34b71580'}`
-                }
+                },
+                signal: AbortSignal.timeout(30000) // 30 second timeout
             });
 
             if (!response.ok) {
@@ -41,7 +42,7 @@ class CharacterEditAPI {
             const sanitizedData = window.InputSanitizer ? 
                 window.InputSanitizer.validateCharacterData(updateData) : updateData;
 
-            const url = new URL(`${this.baseURL}/characters/${characterId}/edit`, window.location.origin);
+            const url = new URL(`${this.baseURL}/api/characters/${characterId}/edit`, window.location.origin);
             if (editPassword) {
                 url.searchParams.set('editPassword', editPassword);
             }
@@ -52,7 +53,8 @@ class CharacterEditAPI {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${window.APP_CONFIG?.API_KEY || '860de3877c2de19b8c88f34c34b71580'}`
                 },
-                body: JSON.stringify(sanitizedData)
+                body: JSON.stringify(sanitizedData),
+                signal: AbortSignal.timeout(30000) // 30 second timeout
             });
 
             if (!response.ok) {

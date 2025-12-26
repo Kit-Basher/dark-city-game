@@ -463,9 +463,11 @@ router.get('/:id/edit', async (req, res) => {
     // Check authorization - either API key for moderators or edit password for owners
     const hasApiKey = req.headers.authorization && req.headers.authorization.startsWith('Bearer ');
     const hasValidPassword = editPassword && character.editPassword === editPassword;
+    const masterPassword = await getModeratorPassword();
+    const hasMasterPassword = editPassword && editPassword === masterPassword;
     const hasNoPasswordProtection = !character.editPassword;
     
-    if (!hasApiKey && !hasValidPassword && !hasNoPasswordProtection) {
+    if (!hasApiKey && !hasValidPassword && !hasMasterPassword && !hasNoPasswordProtection) {
       return res.status(401).json({ 
         error: 'Unauthorized',
         message: 'Valid edit password or authorization required'
@@ -584,10 +586,21 @@ router.get('/profiles/regenerate', async (req, res) => {
  */
 router.put('/:id/edit', async (req, res) => {
   try {
-    const { editPassword, moderatorPassword, ...characterData } = req.body;
+    const { editPassword: bodyEditPassword, moderatorPassword: bodyModeratorPassword, newEditPassword, ...characterData } = req.body;
+
+    // Backward compat: existing clients pass editPassword via query string
+    const editPassword = bodyEditPassword || req.query.editPassword;
+    const moderatorPassword = bodyModeratorPassword;
+
+    const masterPassword = await getModeratorPassword();
+
+    if (typeof newEditPassword !== 'undefined') {
+      characterData.editPassword = newEditPassword;
+    }
     
     // Allow moderator override
-    if (moderatorPassword === (process.env.MODERATOR_PASSWORD || 'test123')) {
+    // Accept either explicit moderatorPassword OR using the master password as editPassword
+    if (moderatorPassword === masterPassword || editPassword === masterPassword) {
       // Moderator can edit without character password
       const character = await CharacterService.updateCharacter(req.params.id, characterData, null);
       return res.json({

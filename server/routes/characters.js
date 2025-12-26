@@ -5,6 +5,7 @@ const { getModeratorPassword, setModeratorPassword, DEFAULT_PASSWORD } = require
 const CharacterService = require('../services/characterService');
 const { validate, characterSchema } = require('../middleware/validation');
 const { generateCharacterProfile } = require('../utils/profileGenerator');
+const fs = require('fs').promises;
 const path = require('path');
 
 /**
@@ -401,12 +402,31 @@ router.put('/:id/reject', async (req, res) => {
  */
 router.delete('/:id', async (req, res) => {
   try {
+    const { moderatorPassword } = req.body || {};
+    const expectedPassword = await getModeratorPassword();
+
+    if (!moderatorPassword || moderatorPassword !== expectedPassword) {
+      return res.status(401).json({ error: 'Invalid moderator password' });
+    }
+
     console.log('🗑️ Route: Delete request for character ID:', req.params.id);
     const character = await CharacterService.deleteCharacter(req.params.id);
     console.log('🗑️ Route: Delete result:', character ? 'Success' : 'Character not found');
 
     if (!character) {
       return res.status(404).json({ error: 'Character not found' });
+    }
+
+    try {
+      const profilesDir = path.join(process.cwd(), '..', 'characters', 'profiles');
+      const suffix = `-${req.params.id}.html`;
+      const files = await fs.readdir(profilesDir).catch(() => []);
+      const matches = files.filter((f) => f.endsWith(suffix));
+      await Promise.all(
+        matches.map((f) => fs.unlink(path.join(profilesDir, f)).catch(() => null))
+      );
+    } catch (fileError) {
+      console.warn('🗑️ Route: Failed to delete profile file(s):', fileError.message);
     }
 
     // Emit real-time notification (with error handling)

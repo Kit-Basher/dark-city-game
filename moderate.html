@@ -183,6 +183,7 @@
             <div class="tab active" data-tab="pending">Pending Review</div>
             <div class="tab" data-tab="approved">Approved</div>
             <div class="tab" data-tab="rejected">Rejected</div>
+            <div class="tab" data-tab="maintenance">Maintenance</div>
         </div>
         
         <div class="section" id="pending-section">
@@ -203,6 +204,17 @@
             <h2>Rejected Characters</h2>
             <div id="rejected-characters">
                 <div class="empty-state">No rejected characters found.</div>
+            </div>
+        </div>
+
+        <div class="section" id="maintenance-section" style="display: none;">
+            <h2>Maintenance</h2>
+            <div class="form-group">
+                <label for="maintenance-search">Search (name / id):</label>
+                <input type="text" id="maintenance-search" class="form-input" placeholder="Type to filter...">
+            </div>
+            <div id="maintenance-characters">
+                <div class="empty-state">Loading characters...</div>
             </div>
         </div>
         
@@ -226,6 +238,7 @@
                 document.getElementById('pending-section').style.display = 'none';
                 document.getElementById('approved-section').style.display = 'none';
                 document.getElementById('rejected-section').style.display = 'none';
+                document.getElementById('maintenance-section').style.display = 'none';
                 
                 if (tab.dataset.tab === 'pending') {
                     document.getElementById('pending-section').style.display = 'block';
@@ -236,9 +249,112 @@
                 } else if (tab.dataset.tab === 'rejected') {
                     document.getElementById('rejected-section').style.display = 'block';
                     loadRejectedCharacters();
+                } else if (tab.dataset.tab === 'maintenance') {
+                    document.getElementById('maintenance-section').style.display = 'block';
+                    loadMaintenanceCharacters();
                 }
             });
         });
+
+        let maintenanceCharacters = [];
+
+        async function loadMaintenanceCharacters() {
+            try {
+                const response = await fetchWithAuth('/characters/submissions?limit=100');
+                maintenanceCharacters = Array.isArray(response) ? response : [];
+                renderMaintenanceCharacters();
+            } catch (error) {
+                console.error('Error loading maintenance characters:', error);
+                document.getElementById('maintenance-characters').innerHTML =
+                    `<div class="empty-state">Error loading characters: ${error.message || 'Please try again later'}</div>`;
+            }
+        }
+
+        function renderMaintenanceCharacters() {
+            const container = document.getElementById('maintenance-characters');
+            const query = (document.getElementById('maintenance-search')?.value || '').toLowerCase().trim();
+
+            const filtered = maintenanceCharacters.filter(c => {
+                const name = (c.characterName || c.name || '').toLowerCase();
+                const id = (c._id || '').toLowerCase();
+                return !query || name.includes(query) || id.includes(query);
+            });
+
+            if (filtered.length === 0) {
+                container.innerHTML = '<div class="empty-state">No characters match your search.</div>';
+                return;
+            }
+
+            container.innerHTML = '';
+            filtered.forEach((character) => {
+                const characterElement = document.createElement('div');
+                characterElement.className = 'character-card';
+                const characterName = character.characterName || character.name || 'Unnamed Character';
+                const submittedDate = character.submittedAt || character.createdAt;
+                
+                characterElement.innerHTML = `
+                    <div class="character-info">
+                        <h3>${characterName}</h3>
+                        <p><strong>Status:</strong> ${character.status || 'Unknown'}</p>
+                        <p><strong>ID:</strong> ${character._id || 'Unknown'}</p>
+                        <p><strong>Submitted:</strong> ${submittedDate ? new Date(submittedDate).toLocaleDateString() : 'Unknown'}</p>
+                    </div>
+                    <div class="character-actions">
+                        <button class="btn btn-edit" onclick="viewCharacter('${character._id}')">View</button>
+                        ${isAuthenticated() ? `<button class="btn btn-reject" onclick="deleteCharacter('${character._id}', '${characterName.replace(/'/g, "\\'")}')">Delete</button>` : ''}
+                    </div>
+                `;
+                container.appendChild(characterElement);
+            });
+        }
+
+        const maintenanceSearch = document.getElementById('maintenance-search');
+        if (maintenanceSearch) {
+            maintenanceSearch.addEventListener('input', () => {
+                renderMaintenanceCharacters();
+            });
+        }
+
+        async function deleteCharacter(characterId, characterName) {
+            if (!isAuthenticated()) {
+                alert('You must be logged in as a moderator to perform this action.');
+                showLoginForm();
+                return;
+            }
+
+            const ok = confirm(`Delete "${characterName}"? This cannot be undone.`);
+            if (!ok) return;
+
+            try {
+                const moderatorPassword = localStorage.getItem('moderator_token');
+                const baseURL = window.APP_CONFIG ? window.APP_CONFIG.apiURL : '/api';
+                const fullUrl = `${baseURL}/characters/${characterId}`;
+
+                const response = await fetch(fullUrl, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${window.APP_CONFIG?.API_KEY || '860de3877c2de19b8c88f34c34b71580'}`
+                    },
+                    body: JSON.stringify({ moderatorPassword })
+                });
+
+                if (!response.ok) {
+                    const error = await response.json().catch(() => ({}));
+                    throw new Error(error.error || error.message || 'Failed to delete character');
+                }
+
+                alert('Character deleted successfully.');
+                await loadMaintenanceCharacters();
+                const activeTab = document.querySelector('.tab.active');
+                if (activeTab?.dataset?.tab === 'pending') loadPendingCharacters();
+                else if (activeTab?.dataset?.tab === 'approved') loadApprovedCharacters();
+                else if (activeTab?.dataset?.tab === 'rejected') loadRejectedCharacters();
+            } catch (error) {
+                console.error('Error deleting character:', error);
+                alert(`Error: ${error.message}`);
+            }
+        }
 
         // Load pending characters
         // Helper function to make authenticated requests

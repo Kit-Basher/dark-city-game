@@ -475,7 +475,7 @@
             </div>
 
             <div style="text-align: center; margin-top: 2rem;">
-                <button id="editProfileBtn" class="edit-profile-btn">✏️ Edit</button>
+                <button id="editProfileBtn" class="edit-profile-btn" type="button">✏️ Edit</button>
             </div>
         </div>
     </main>
@@ -586,8 +586,8 @@
             <p>This character is protected with an edit password. Please enter the password to continue.</p>
             <input type="password" id="passwordInput" placeholder="Enter edit password">
             <div class="password-modal-buttons">
-                <button id="cancelPasswordBtn" class="cancel">Cancel</button>
-                <button id="unlockEditBtn" class="confirm">Unlock Edit</button>
+                <button id="cancelPasswordBtn" class="cancel" type="button">Cancel</button>
+                <button id="unlockEditBtn" class="confirm" type="button">Unlock Edit</button>
             </div>
         </div>
     </div>
@@ -631,7 +631,11 @@
             document.getElementById('passwordInput').value = '';
         }
         
-        async function verifyPassword() {
+        async function verifyPassword(e) {
+            if (e && typeof e.preventDefault === 'function') {
+                e.preventDefault();
+            }
+
             const password = document.getElementById('passwordInput').value;
 
             if (!password) {
@@ -666,9 +670,10 @@
         }
         
         // Allow Enter key to submit password
-        document.getElementById('passwordInput').addEventListener('keypress', function(e) {
+        document.getElementById('passwordInput').addEventListener('keydown', function(e) {
             if (e.key === 'Enter') {
-                verifyPassword();
+                e.preventDefault();
+                verifyPassword(e);
             }
         });
         

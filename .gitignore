@@ -147,3 +147,5 @@ draft_*
 # Cache directories
 .cache/
 .parcel-cache/
+
+monitoring app/

@@ -12,6 +12,15 @@
             margin: 2rem auto;
             padding: 0 1rem;
         }
+
+        .moderation-container > header.header {
+            position: static;
+            top: auto;
+            width: auto;
+            z-index: auto;
+            background: transparent;
+            box-shadow: none;
+        }
         
         .section {
             background: var(--card-bg);
@@ -472,6 +481,7 @@
                         </div>
                         <div class="character-actions">
                             <button class="btn btn-edit" onclick="viewCharacter('${character._id}')">View</button>
+                            ${isAuthenticated() ? `<button class="btn btn-reject" onclick="deleteCharacter('${character._id}', '${characterName.replace(/'/g, "\\'")}')">Delete</button>` : ''}
                         </div>
                     `;
                     container.appendChild(characterElement);

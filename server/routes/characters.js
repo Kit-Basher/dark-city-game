@@ -33,14 +33,23 @@ const path = require('path');
  */
 router.get('/', async (req, res) => {
   try {
+    const status = typeof req.query.status === 'string' ? req.query.status.trim() : undefined;
     const options = {
+      status: status && status.length ? status : 'approved',
       page: parseInt(req.query.page) || 1,
       limit: parseInt(req.query.limit) || 10,
-      sort: { submittedAt: -1 }
+      sortBy: req.query.sortBy || 'submittedAt',
+      sortOrder: parseInt(req.query.sortOrder) || -1
     };
 
-    const characters = await CharacterService.getApprovedCharacters(options);
-    res.json(characters);
+    let result;
+    if (options.status === 'all' || options.status === 'any' || options.status === 'null') {
+      result = await CharacterService.getAllSubmissions(options);
+    } else {
+      result = await CharacterService.getCharacters(options);
+    }
+
+    res.json(result);
   } catch (error) {
     console.error('Error fetching approved characters:', error);
     res.status(500).json({ error: 'Failed to fetch characters' });

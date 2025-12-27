@@ -2004,8 +2004,31 @@ window.ENV.ALLOWED_ORIGINS = 'http://localhost:3000,http://localhost:8080,https:
                         }
                     }
                 }
-                
-                alert(`❌ Error submitting character: ${error.message}`);
+
+                const existingNotice = document.getElementById('submissionNotice');
+                if (existingNotice) existingNotice.remove();
+
+                const notice = document.createElement('div');
+                notice.id = 'submissionNotice';
+                notice.style.marginTop = '1rem';
+                notice.style.padding = '1rem';
+                notice.style.border = '2px solid #e74c3c';
+                notice.style.borderRadius = '8px';
+                notice.style.background = 'rgba(231, 76, 60, 0.1)';
+                notice.style.color = '#fff';
+
+                const message = (error && error.message) ? String(error.message) : 'Unknown error';
+                notice.innerHTML = `
+                    <div style="font-weight: 700; margin-bottom: 0.5rem;">Could not submit your character.</div>
+                    <div style="color: #ffd0d0; white-space: pre-wrap;">${message}</div>
+                `;
+
+                const actions = document.querySelector('.form-actions');
+                if (actions && actions.parentNode) {
+                    actions.parentNode.insertBefore(notice, actions.nextSibling);
+                } else {
+                    document.body.appendChild(notice);
+                }
             }
         }
 

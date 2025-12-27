@@ -60,9 +60,30 @@ class ServerAPI {
             });
 
             if (!response.ok) {
-                const errorText = await response.text();
-                console.error('Server response error:', response.status, errorText);
-                throw new Error(`Server responded with ${response.status}: ${errorText}`);
+                const contentType = response.headers.get('content-type') || '';
+                let errorBody = null;
+                let errorText = '';
+
+                if (contentType.includes('application/json')) {
+                    errorBody = await response.json().catch(() => null);
+                }
+
+                if (!errorBody) {
+                    errorText = await response.text().catch(() => '');
+                }
+
+                const message =
+                    errorBody?.details ||
+                    errorBody?.error ||
+                    errorBody?.message ||
+                    errorText ||
+                    `Server responded with ${response.status}`;
+
+                const err = new Error(message);
+                err.status = response.status;
+                err.error = errorBody;
+                console.error('Server response error:', response.status, errorBody || errorText);
+                throw err;
             }
 
             return await response.json();

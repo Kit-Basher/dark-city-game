@@ -406,10 +406,10 @@ window.ENV.ALLOWED_ORIGINS = 'http://localhost:3000,http://localhost:8080,https:
         <form id="characterEditForm" class="edit-form">
             <!-- Basic Information -->
             <section class="form-section">
-                <h3>📝 Basic Information</h3>
+                <h3>🎭 Character Type & Role</h3>
                 <div class="form-grid">
                     <div class="form-group">
-                        <label for="name">Character Name *</label>
+                        <label for="playbook">Playbook *</label>
                         <input type="text" id="name" name="name" required maxlength="50">
                     </div>
                     <div class="form-group">
@@ -445,26 +445,6 @@ window.ENV.ALLOWED_ORIGINS = 'http://localhost:3000,http://localhost:8080,https:
                         <label for="classification">Classification *</label>
                         <input type="text" id="classification" name="classification" required maxlength="50" placeholder="Any classification you want (e.g., Dark Lord, Healer, Scout)">
                     </div>
-                </div>
-            </section>
-
-            <!-- Moderator Only Section -->
-            <section class="form-section" id="moderatorSection" style="display: none;">
-                <h3>🔐 Moderator Controls</h3>
-                <div class="form-group">
-                    <label for="editPassword">Edit Password</label>
-                    <input type="text" id="editPassword" name="editPassword" placeholder="Set new edit password (leave blank to remove)">
-                    <small style="color: #999; font-size: 0.9rem; display: block; margin-top: 0.25rem;">
-                        Only moderators can change this. Use to help users who forgot their password.
-                    </small>
-                </div>
-                <div class="form-group" style="margin-top: 1rem;">
-                    <label for="moderatorFeedback">Moderator Feedback</label>
-                    <textarea id="moderatorFeedback" name="moderatorFeedback" maxlength="1000" rows="4" placeholder="Optional feedback for approval. Required for rejection."></textarea>
-                </div>
-                <div class="action-buttons" style="margin-top: 1rem;">
-                    <button type="button" class="btn btn-primary" id="moderatorApproveButton">Approve</button>
-                    <button type="button" class="btn btn-danger" id="moderatorRejectButton">Reject</button>
                 </div>
             </section>
 
@@ -797,10 +777,8 @@ window.ENV.ALLOWED_ORIGINS = 'http://localhost:3000,http://localhost:8080,https:
                 
                 // Check if user is moderator
                 const isModerator = await checkAuth();
-                
-                // Show moderator section if user is moderator
+
                 if (isModerator) {
-                    document.getElementById('moderatorSection').style.display = 'block';
                     // Enable all form fields for moderator editing
                     enableFormForModerator();
                 }
@@ -855,11 +833,6 @@ window.ENV.ALLOWED_ORIGINS = 'http://localhost:3000,http://localhost:8080,https:
             document.getElementById('humanPhoto').value = character.humanPhoto || '';
             document.getElementById('monsterPhoto').value = character.monsterPhoto || '';
             
-            // Moderator fields (only populate if moderator access)
-            if (character.isModeratorAccess) {
-                document.getElementById('editPassword').value = character.editPassword || '';
-            }
-            
             // Moves
             displayMoves(character.moves || []);
         }
@@ -893,67 +866,8 @@ window.ENV.ALLOWED_ORIGINS = 'http://localhost:3000,http://localhost:8080,https:
             document.getElementById('addMoveButton').addEventListener('click', addMove);
             document.getElementById('changePasswordButton').addEventListener('click', changePassword);
 
-            // Moderator actions
-            const approveBtn = document.getElementById('moderatorApproveButton');
-            if (approveBtn) approveBtn.addEventListener('click', () => moderateCharacter('approve'));
-            const rejectBtn = document.getElementById('moderatorRejectButton');
-            if (rejectBtn) rejectBtn.addEventListener('click', () => moderateCharacter('reject'));
-
             // Photo upload
             document.getElementById('photoInput').addEventListener('change', handlePhotoUpload);
-        }
-
-        async function moderateCharacter(action) {
-            const authed = await checkAuth();
-            if (!authed) {
-                showError('Not authenticated as moderator. Please log in on the moderator panel first.');
-                return;
-            }
-
-            const moderatorPassword = localStorage.getItem('moderator_token');
-            const feedbackEl = document.getElementById('moderatorFeedback');
-            const feedback = (feedbackEl ? feedbackEl.value : '').trim();
-
-            if (action === 'reject' && !feedback) {
-                showError('Feedback is required for rejection.');
-                return;
-            }
-
-            const endpoint = action === 'approve'
-                ? `/characters/${characterId}/approve`
-                : `/characters/${characterId}/reject`;
-
-            const baseURL = window.APP_CONFIG ? window.APP_CONFIG.apiURL : '/api';
-            const fullUrl = `${baseURL}${endpoint}`;
-
-            showLoading(true);
-            try {
-                const response = await fetch(fullUrl, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${window.APP_CONFIG?.API_KEY || '860de3877c2de19b8c88f34c34b71580'}`
-                    },
-                    body: JSON.stringify({
-                        moderatorPassword,
-                        feedback,
-                        reviewedBy: 'moderator'
-                    }),
-                    signal: AbortSignal.timeout(30000)
-                });
-
-                if (!response.ok) {
-                    const err = await response.json().catch(() => ({}));
-                    throw new Error(err.error || err.message || `HTTP ${response.status}`);
-                }
-
-                showSuccess(`Character ${action}d successfully!`);
-                await loadCharacter();
-            } catch (error) {
-                showError(`Failed to ${action} character: ${error.message}`);
-            } finally {
-                showLoading(false);
-            }
         }
 
         // Setup auto-save
@@ -996,8 +910,6 @@ window.ENV.ALLOWED_ORIGINS = 'http://localhost:3000,http://localhost:8080,https:
 
         // Get form data
         function getFormData() {
-            const moderatorSection = document.getElementById('moderatorSection');
-            const includeModeratorFields = moderatorSection && moderatorSection.style.display !== 'none';
             const formData = {
                 name: document.getElementById('name').value,
                 classification: document.getElementById('classification').value,
@@ -1019,10 +931,6 @@ window.ENV.ALLOWED_ORIGINS = 'http://localhost:3000,http://localhost:8080,https:
                 photos: characterPhotos,
                 moves: getMovesData()
             };
-
-            if (includeModeratorFields) {
-                formData.newEditPassword = document.getElementById('editPassword').value;
-            }
             
             return formData;
         }

@@ -5,8 +5,29 @@ const { getModeratorPassword, setModeratorPassword, DEFAULT_PASSWORD } = require
 const CharacterService = require('../services/characterService');
 const { validate, characterSchema } = require('../middleware/validation');
 const { generateCharacterProfile } = require('../utils/profileGenerator');
+const bcrypt = require('bcryptjs');
 const fs = require('fs').promises;
 const path = require('path');
+
+async function requireModerator(req, res) {
+  const provided =
+    req.headers['x-moderator-password'] ||
+    req.headers['x-moderator-token'] ||
+    req.body?.moderatorPassword;
+
+  const expectedPassword = await getModeratorPassword();
+  if (!provided || provided !== expectedPassword) {
+    res.status(401).json({ error: 'Invalid moderator password' });
+    return false;
+  }
+  return true;
+}
+
+function omitSensitiveCharacterFields(character) {
+  if (!character || typeof character !== 'object') return character;
+  const { editPassword, ...rest } = character;
+  return rest;
+}
 
 /**
  * @swagger
@@ -97,6 +118,9 @@ router.get('/status-ping', (req, res) => {
  */
 router.get('/submissions', async (req, res) => {
   try {
+    const ok = await requireModerator(req, res);
+    if (!ok) return;
+
     const options = {
       page: parseInt(req.query.page) || 1,
       limit: parseInt(req.query.limit) || 10,
@@ -130,6 +154,9 @@ router.get('/submissions', async (req, res) => {
  */
 router.get('/pending', async (req, res) => {
   try {
+    const ok = await requireModerator(req, res);
+    if (!ok) return;
+
     const options = {
       page: parseInt(req.query.page) || 1,
       limit: parseInt(req.query.limit) || 10,
@@ -492,20 +519,27 @@ router.get('/:id/edit', async (req, res) => {
     const { id } = req.params;
     const { editPassword } = req.query;
 
-    const character = await CharacterService.getCharacterById(id);
+    const characterDoc = await CharacterService.getCharacterDocById(id);
+    const character = characterDoc ? characterDoc.toObject() : null;
     
     if (!character) {
       return res.status(404).json({ error: 'Character not found' });
     }
 
-    // Check authorization - either API key for moderators or edit password for owners
-    const hasApiKey = req.headers.authorization && req.headers.authorization.startsWith('Bearer ');
-    const hasValidPassword = editPassword && character.editPassword === editPassword;
+    // Check authorization - either moderator password OR character edit password OR no password
     const masterPassword = await getModeratorPassword();
     const hasMasterPassword = editPassword && editPassword === masterPassword;
+    const hasModeratorHeader =
+      typeof req.headers['x-moderator-password'] === 'string' &&
+      req.headers['x-moderator-password'] === masterPassword;
     const hasNoPasswordProtection = !character.editPassword;
+
+    const hasValidPassword =
+      editPassword && characterDoc
+        ? await CharacterService.verifyAndMaybeUpgradeEditPassword(characterDoc, editPassword)
+        : false;
     
-    if (!hasApiKey && !hasValidPassword && !hasMasterPassword && !hasNoPasswordProtection) {
+    if (!hasValidPassword && !hasMasterPassword && !hasModeratorHeader && !hasNoPasswordProtection) {
       return res.status(401).json({ 
         error: 'Unauthorized',
         message: 'Valid edit password or authorization required'
@@ -513,8 +547,8 @@ router.get('/:id/edit', async (req, res) => {
     }
 
     res.json({
-      ...character,
-      isModeratorAccess: hasApiKey
+      ...omitSensitiveCharacterFields(character),
+      isModeratorAccess: hasMasterPassword || hasModeratorHeader
     });
   } catch (error) {
     console.error('Error fetching character for editing:', error);
@@ -553,7 +587,7 @@ router.get('/:id', async (req, res) => {
       return res.status(404).json({ error: 'Character not found' });
     }
 
-    res.json(character);
+    res.json(omitSensitiveCharacterFields(character));
   } catch (error) {
     console.error('Error fetching character:', error);
     res.status(500).json({ error: 'Failed to fetch character' });
@@ -562,6 +596,9 @@ router.get('/:id', async (req, res) => {
 
 router.get('/profiles/regenerate', async (req, res) => {
   try {
+    const ok = await requireModerator(req, res);
+    if (!ok) return;
+
     const Character = require('../models/Character');
     const { initializeProfiles } = require('../utils/profileGenerator');
     
@@ -700,11 +737,6 @@ router.put('/:id/edit', async (req, res) => {
 router.post('/moderator/password', async (req, res) => {
   try {
     const { currentPassword, newPassword } = req.body;
-    
-    // Verify current password
-    if (currentPassword !== (process.env.MODERATOR_PASSWORD || 'test123')) {
-      return res.status(401).json({ error: 'Invalid current password' });
-    }
     
     if (!newPassword || newPassword.length < 4) {
       return res.status(400).json({ error: 'New password must be at least 4 characters' });
@@ -963,18 +995,24 @@ router.post('/:id/edit-password', async (req, res) => {
       });
     }
 
-    const character = await CharacterService.getCharacterById(id);
+    const characterDoc = await CharacterService.getCharacterDocById(id);
+    const character = characterDoc ? characterDoc.toObject() : null;
     
     if (!character) {
       return res.status(404).json({ error: 'Character not found' });
     }
 
-    if (character.editPassword !== currentPassword) {
+    const ok = characterDoc
+      ? await CharacterService.verifyAndMaybeUpgradeEditPassword(characterDoc, currentPassword)
+      : false;
+
+    if (!ok) {
       return res.status(401).json({ error: 'Invalid current password' });
     }
 
-    // Update password
-    await CharacterService.updateCharacter(id, { editPassword: newPassword }, currentPassword);
+    const saltRounds = parseInt(process.env.BCRYPT_ROUNDS) || 12;
+    characterDoc.editPassword = await bcrypt.hash(newPassword, saltRounds);
+    await characterDoc.save();
 
     res.json({
       success: true,
@@ -1035,13 +1073,18 @@ router.post('/:id/duplicate', async (req, res) => {
       });
     }
 
-    const originalCharacter = await CharacterService.getCharacterById(id);
+    const originalCharacterDoc = await CharacterService.getCharacterDocById(id);
+    const originalCharacter = originalCharacterDoc ? originalCharacterDoc.toObject() : null;
     
     if (!originalCharacter) {
       return res.status(404).json({ error: 'Character not found' });
     }
 
-    if (originalCharacter.editPassword !== editPassword) {
+    const ok = originalCharacterDoc
+      ? await CharacterService.verifyAndMaybeUpgradeEditPassword(originalCharacterDoc, editPassword)
+      : false;
+
+    if (!ok) {
       return res.status(401).json({ error: 'Invalid edit password' });
     }
 
@@ -1060,15 +1103,18 @@ router.post('/:id/duplicate', async (req, res) => {
     characterData.feedback = null;
     characterData.submittedAt = new Date();
     
-    // Generate new edit password
-    characterData.editPassword = Math.random().toString(36).substring(2, 10);
+    // Generate new edit password (return plaintext once; store hash)
+    const newEditPassword = Math.random().toString(36).substring(2, 10);
+    const saltRounds = parseInt(process.env.BCRYPT_ROUNDS) || 12;
+    characterData.editPassword = await bcrypt.hash(newEditPassword, saltRounds);
 
     const duplicatedCharacter = await CharacterService.createCharacter(characterData);
 
     res.status(201).json({
       success: true,
       message: 'Character duplicated successfully',
-      character: duplicatedCharacter
+      character: omitSensitiveCharacterFields(duplicatedCharacter.toObject ? duplicatedCharacter.toObject() : duplicatedCharacter),
+      newEditPassword
     });
 
   } catch (error) {

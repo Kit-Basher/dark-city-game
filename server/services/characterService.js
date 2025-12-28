@@ -1,8 +1,33 @@
 const Character = require('../models/Character');
 const { structuredLogger } = require('../config/logging');
 const cacheService = require('./cacheService');
+const bcrypt = require('bcryptjs');
 
 class CharacterService {
+    static isBcryptHash(value) {
+        return typeof value === 'string' && value.startsWith('$2');
+    }
+
+    static async verifyAndMaybeUpgradeEditPassword(characterDoc, providedPassword) {
+        if (!characterDoc || !characterDoc.editPassword) return false;
+        if (!providedPassword) return false;
+
+        // If stored as bcrypt hash
+        if (this.isBcryptHash(characterDoc.editPassword)) {
+            return bcrypt.compare(providedPassword, characterDoc.editPassword);
+        }
+
+        // Legacy plaintext password
+        if (characterDoc.editPassword === providedPassword) {
+            const saltRounds = parseInt(process.env.BCRYPT_ROUNDS) || 12;
+            characterDoc.editPassword = await bcrypt.hash(providedPassword, saltRounds);
+            await characterDoc.save();
+            return true;
+        }
+
+        return false;
+    }
+
     static async getCharacters(options = {}) {
         const {
             status = 'approved',
@@ -97,6 +122,10 @@ class CharacterService {
         return Character.findById(characterId).lean().exec();
     }
 
+    static async getCharacterDocById(characterId) {
+        return Character.findById(characterId);
+    }
+
     static async approveCharacter(characterId, reviewData = {}) {
         const { feedback, reviewedBy, reviewedAt } = reviewData;
         
@@ -144,8 +173,11 @@ class CharacterService {
         
         // Check edit password if character has one
         // If editPassword is null, treat as privileged update (moderator override)
-        if (editPassword !== null && character.editPassword && character.editPassword !== editPassword) {
-            throw new Error('Invalid edit password');
+        if (editPassword !== null && character.editPassword) {
+            const ok = await this.verifyAndMaybeUpgradeEditPassword(character, editPassword);
+            if (!ok) {
+                throw new Error('Invalid edit password');
+            }
         }
         
         // Don't allow status changes through editing

@@ -1,71 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script>
-window.ENV = window.ENV || {};
-window.ENV.API_KEY = '860de3877c2de19b8c88f34c34b71580';
-window.ENV.JWT_SECRET = 'vEahCndVJYE4s/hkNuJ9EMW3xjfgWh+kq+XmYumxAsQ=';
-window.ENV.NODE_ENV = 'development';
-window.ENV.REPO_OWNER = 'Kit-Basher';
-window.ENV.REPO_NAME = 'dark-city-game';
-window.ENV.ENABLE_GITHUB_INTEGRATION = 'false';
-window.ENV.ENABLE_DISCORD_NOTIFICATIONS = 'false';
-window.ENV.CALENDAR_MONTHS_TO_LOAD = '3';
-window.ENV.MAX_CHARACTERS_PER_PAGE = '12';
-window.ENV.ALLOWED_ORIGINS = 'http://localhost:3000,http://localhost:8080,https://kit-basher.github.io';
-</script>
-    <script>
-window.ENV = window.ENV || {};
-window.ENV.API_KEY = '860de3877c2de19b8c88f34c34b71580';
-window.ENV.JWT_SECRET = 'vEahCndVJYE4s/hkNuJ9EMW3xjfgWh+kq+XmYumxAsQ=';
-window.ENV.NODE_ENV = 'development';
-window.ENV.REPO_OWNER = 'Kit-Basher';
-window.ENV.REPO_NAME = 'dark-city-game';
-window.ENV.ENABLE_GITHUB_INTEGRATION = 'false';
-window.ENV.ENABLE_DISCORD_NOTIFICATIONS = 'false';
-window.ENV.CALENDAR_MONTHS_TO_LOAD = '3';
-window.ENV.MAX_CHARACTERS_PER_PAGE = '12';
-window.ENV.ALLOWED_ORIGINS = 'http://localhost:3000,http://localhost:8080,https://kit-basher.github.io';
-</script>
-    <script>
-window.ENV = window.ENV || {};
-window.ENV.API_KEY = '860de3877c2de19b8c88f34c34b71580';
-window.ENV.JWT_SECRET = 'vEahCndVJYE4s/hkNuJ9EMW3xjfgWh+kq+XmYumxAsQ=';
-window.ENV.NODE_ENV = 'development';
-window.ENV.REPO_OWNER = 'Kit-Basher';
-window.ENV.REPO_NAME = 'dark-city-game';
-window.ENV.ENABLE_GITHUB_INTEGRATION = 'false';
-window.ENV.ENABLE_DISCORD_NOTIFICATIONS = 'false';
-window.ENV.CALENDAR_MONTHS_TO_LOAD = '3';
-window.ENV.MAX_CHARACTERS_PER_PAGE = '12';
-window.ENV.ALLOWED_ORIGINS = 'http://localhost:3000,http://localhost:8080,https://kit-basher.github.io';
-</script>
-    <script>
-window.ENV = window.ENV || {};
-window.ENV.API_KEY = '860de3877c2de19b8c88f34c34b71580';
-window.ENV.JWT_SECRET = 'vEahCndVJYE4s/hkNuJ9EMW3xjfgWh+kq+XmYumxAsQ=';
-window.ENV.NODE_ENV = 'development';
-window.ENV.REPO_OWNER = 'Kit-Basher';
-window.ENV.REPO_NAME = 'dark-city-game';
-window.ENV.ENABLE_GITHUB_INTEGRATION = 'false';
-window.ENV.ENABLE_DISCORD_NOTIFICATIONS = 'false';
-window.ENV.CALENDAR_MONTHS_TO_LOAD = '3';
-window.ENV.MAX_CHARACTERS_PER_PAGE = '12';
-window.ENV.ALLOWED_ORIGINS = 'http://localhost:3000,http://localhost:8080,https://kit-basher.github.io';
-</script>
-    <script>
-window.ENV = window.ENV || {};
-window.ENV.API_KEY = '860de3877c2de19b8c88f34c34b71580';
-window.ENV.JWT_SECRET = 'vEahCndVJYE4s/hkNuJ9EMW3xjfgWh+kq+XmYumxAsQ=';
-window.ENV.NODE_ENV = 'development';
-window.ENV.REPO_OWNER = 'Kit-Basher';
-window.ENV.REPO_NAME = 'dark-city-game';
-window.ENV.ENABLE_GITHUB_INTEGRATION = 'false';
-window.ENV.ENABLE_DISCORD_NOTIFICATIONS = 'false';
-window.ENV.CALENDAR_MONTHS_TO_LOAD = '3';
-window.ENV.MAX_CHARACTERS_PER_PAGE = '12';
-window.ENV.ALLOWED_ORIGINS = 'http://localhost:3000,http://localhost:8080,https://kit-basher.github.io';
-</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dark City - RPG Game Hub</title>
@@ -209,11 +144,7 @@ window.ENV.ALLOWED_ORIGINS = 'http://localhost:3000,http://localhost:8080,https:
             }
             
             try {
-                const response = await fetch(`${window.APP_CONFIG.apiURL}/characters?status=approved&limit=6`, {
-                    headers: {
-                        'Authorization': `Bearer ${window.APP_CONFIG.API_KEY}`
-                    }
-                });
+                const response = await fetch(`${window.APP_CONFIG.apiURL}/characters?status=approved&limit=6`);
                 
                 if (!response.ok) {
                     if (response.status === 401) {
@@ -240,13 +171,29 @@ window.ENV.ALLOWED_ORIGINS = 'http://localhost:3000,http://localhost:8080,https:
                 
             } catch (error) {
                 console.error('Error loading characters:', error);
-                charactersList.innerHTML = `
-                    <div class="error-message text-center">
-                        <p class="text-red-400">Error loading characters</p>
-                        <p class="text-gray-400 text-sm">${error.message}</p>
-                        <button onclick="loadRecentCharacters()" class="btn btn-outline mt-2">Retry</button>
-                    </div>
-                `;
+
+                charactersList.textContent = '';
+                const wrapper = document.createElement('div');
+                wrapper.className = 'error-message text-center';
+
+                const title = document.createElement('p');
+                title.className = 'text-red-400';
+                title.textContent = 'Error loading characters';
+                wrapper.appendChild(title);
+
+                const msg = document.createElement('p');
+                msg.className = 'text-gray-400 text-sm';
+                msg.textContent = error.message;
+                wrapper.appendChild(msg);
+
+                const retry = document.createElement('button');
+                retry.className = 'btn btn-outline mt-2';
+                retry.type = 'button';
+                retry.textContent = 'Retry';
+                retry.addEventListener('click', () => loadRecentCharacters());
+                wrapper.appendChild(retry);
+
+                charactersList.appendChild(wrapper);
                 
                 // Announce error to screen readers
                 announceToScreenReader(`Error loading characters: ${error.message}`, 'error');
@@ -255,6 +202,16 @@ window.ENV.ALLOWED_ORIGINS = 'http://localhost:3000,http://localhost:8080,https:
         
         function renderCharacters(characters) {
             const charactersList = document.getElementById('charactersList');
+
+            const escapeForAttr = (value) => {
+                if (value === null || value === undefined) return '';
+                return String(value)
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#39;');
+            };
             
             if (characters.length === 0) {
                 charactersList.innerHTML = '<p class="text-center text-gray-400">No characters found. Be the first to create one!</p>';
@@ -270,10 +227,11 @@ window.ENV.ALLOWED_ORIGINS = 'http://localhost:3000,http://localhost:8080,https:
                     .replace(/^-|-$/g, '');
                 
                 // Sanitize character data for display
-                const sanitizedName = character.name ? character.name.replace(/</g, '&lt;').replace(/>/g, '&gt;') : 'Unknown Character';
-                const sanitizedClassification = character.classification ? character.classification.replace(/</g, '&lt;').replace(/>/g, '&gt;') : 'Unknown';
-                const sanitizedPlaybook = character.playbook ? character.playbook.replace(/</g, '&lt;').replace(/>/g, '&gt;') : 'Unknown';
-                const sanitizedBio = character.bio ? character.bio.substring(0, 100).replace(/</g, '&lt;').replace(/>/g, '&gt;') + (character.bio.length > 100 ? '...' : '') : 'No bio provided';
+                const sanitizedName = escapeForAttr(character.name || 'Unknown Character');
+                const sanitizedClassification = escapeForAttr(character.classification || 'Unknown');
+                const sanitizedPlaybook = escapeForAttr(character.playbook || 'Unknown');
+                const bioText = character.bio ? character.bio.substring(0, 100) + (character.bio.length > 100 ? '...' : '') : 'No bio provided';
+                const sanitizedBio = escapeForAttr(bioText);
                 
                 return `
                     <div class="character-card clickable-character" 

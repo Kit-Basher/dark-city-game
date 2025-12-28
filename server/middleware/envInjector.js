@@ -7,8 +7,6 @@ const injectEnvVars = (req, res, next) => {
         if (typeof data === 'string' && data.includes('<html')) {
             // Environment variables to inject
             const envVars = {
-                'API_KEY': process.env.API_KEY || '',
-                'JWT_SECRET': process.env.JWT_SECRET || '',
                 'NODE_ENV': process.env.NODE_ENV || 'development',
                 'REPO_OWNER': process.env.REPO_OWNER || 'Kit-Basher',
                 'REPO_NAME': process.env.REPO_NAME || 'dark-city-game',

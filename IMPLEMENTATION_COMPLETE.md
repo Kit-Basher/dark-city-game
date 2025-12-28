@@ -3,8 +3,8 @@
 ## ✅ All Next Steps Implemented
 
 ### 1. **Secure Secrets Generated**
-- **API Key**: `860de3877c2de19b8c88f34c34b71580`
-- **JWT Secret**: `vEahCndVJYE4s/hkNuJ9EMW3xjfgWh+kq+XmYumxAsQ=`
+- **API Key**: `generate-for-your-environment`
+- **JWT Secret**: `generate-for-your-environment`
 - Updated both `.env.example` and `server/.env` files
 
 ### 2. **Input Sanitizer Integration**

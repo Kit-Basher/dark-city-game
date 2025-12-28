@@ -1,71 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script>
-window.ENV = window.ENV || {};
-window.ENV.API_KEY = '860de3877c2de19b8c88f34c34b71580';
-window.ENV.JWT_SECRET = 'vEahCndVJYE4s/hkNuJ9EMW3xjfgWh+kq+XmYumxAsQ=';
-window.ENV.NODE_ENV = 'development';
-window.ENV.REPO_OWNER = 'Kit-Basher';
-window.ENV.REPO_NAME = 'dark-city-game';
-window.ENV.ENABLE_GITHUB_INTEGRATION = 'false';
-window.ENV.ENABLE_DISCORD_NOTIFICATIONS = 'false';
-window.ENV.CALENDAR_MONTHS_TO_LOAD = '3';
-window.ENV.MAX_CHARACTERS_PER_PAGE = '12';
-window.ENV.ALLOWED_ORIGINS = 'http://localhost:3000,http://localhost:8080,https://kit-basher.github.io';
-</script>
-    <script>
-window.ENV = window.ENV || {};
-window.ENV.API_KEY = '860de3877c2de19b8c88f34c34b71580';
-window.ENV.JWT_SECRET = 'vEahCndVJYE4s/hkNuJ9EMW3xjfgWh+kq+XmYumxAsQ=';
-window.ENV.NODE_ENV = 'development';
-window.ENV.REPO_OWNER = 'Kit-Basher';
-window.ENV.REPO_NAME = 'dark-city-game';
-window.ENV.ENABLE_GITHUB_INTEGRATION = 'false';
-window.ENV.ENABLE_DISCORD_NOTIFICATIONS = 'false';
-window.ENV.CALENDAR_MONTHS_TO_LOAD = '3';
-window.ENV.MAX_CHARACTERS_PER_PAGE = '12';
-window.ENV.ALLOWED_ORIGINS = 'http://localhost:3000,http://localhost:8080,https://kit-basher.github.io';
-</script>
-    <script>
-window.ENV = window.ENV || {};
-window.ENV.API_KEY = '860de3877c2de19b8c88f34c34b71580';
-window.ENV.JWT_SECRET = 'vEahCndVJYE4s/hkNuJ9EMW3xjfgWh+kq+XmYumxAsQ=';
-window.ENV.NODE_ENV = 'development';
-window.ENV.REPO_OWNER = 'Kit-Basher';
-window.ENV.REPO_NAME = 'dark-city-game';
-window.ENV.ENABLE_GITHUB_INTEGRATION = 'false';
-window.ENV.ENABLE_DISCORD_NOTIFICATIONS = 'false';
-window.ENV.CALENDAR_MONTHS_TO_LOAD = '3';
-window.ENV.MAX_CHARACTERS_PER_PAGE = '12';
-window.ENV.ALLOWED_ORIGINS = 'http://localhost:3000,http://localhost:8080,https://kit-basher.github.io';
-</script>
-    <script>
-window.ENV = window.ENV || {};
-window.ENV.API_KEY = '860de3877c2de19b8c88f34c34b71580';
-window.ENV.JWT_SECRET = 'vEahCndVJYE4s/hkNuJ9EMW3xjfgWh+kq+XmYumxAsQ=';
-window.ENV.NODE_ENV = 'development';
-window.ENV.REPO_OWNER = 'Kit-Basher';
-window.ENV.REPO_NAME = 'dark-city-game';
-window.ENV.ENABLE_GITHUB_INTEGRATION = 'false';
-window.ENV.ENABLE_DISCORD_NOTIFICATIONS = 'false';
-window.ENV.CALENDAR_MONTHS_TO_LOAD = '3';
-window.ENV.MAX_CHARACTERS_PER_PAGE = '12';
-window.ENV.ALLOWED_ORIGINS = 'http://localhost:3000,http://localhost:8080,https://kit-basher.github.io';
-</script>
-    <script>
-window.ENV = window.ENV || {};
-window.ENV.API_KEY = '860de3877c2de19b8c88f34c34b71580';
-window.ENV.JWT_SECRET = 'vEahCndVJYE4s/hkNuJ9EMW3xjfgWh+kq+XmYumxAsQ=';
-window.ENV.NODE_ENV = 'development';
-window.ENV.REPO_OWNER = 'Kit-Basher';
-window.ENV.REPO_NAME = 'dark-city-game';
-window.ENV.ENABLE_GITHUB_INTEGRATION = 'false';
-window.ENV.ENABLE_DISCORD_NOTIFICATIONS = 'false';
-window.ENV.CALENDAR_MONTHS_TO_LOAD = '3';
-window.ENV.MAX_CHARACTERS_PER_PAGE = '12';
-window.ENV.ALLOWED_ORIGINS = 'http://localhost:3000,http://localhost:8080,https://kit-basher.github.io';
-</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Character - Dark City RPG</title>
@@ -568,7 +503,11 @@ window.ENV.ALLOWED_ORIGINS = 'http://localhost:3000,http://localhost:8080,https:
         let characterPhotos = [];
 
         // Initialize on page load
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Initialize APIs
+            window.characterEditAPI = new CharacterEditAPI();
+            window.serverAPI = new ServerAPI();
+            
             // Get character ID from URL
             const urlParams = new URLSearchParams(window.location.search);
             characterId = urlParams.get('id');
@@ -580,7 +519,30 @@ window.ENV.ALLOWED_ORIGINS = 'http://localhost:3000,http://localhost:8080,https:
             }
 
             // Check if edit password is in URL
-            editPassword = urlParams.get('editPassword');
+            const legacyEditPassword = urlParams.get('editPassword');
+            if (legacyEditPassword && characterId) {
+                try {
+                    sessionStorage.setItem(`editPassword:${characterId}`, legacyEditPassword);
+                } catch (e) {
+                    // ignore storage errors
+                }
+
+                try {
+                    const cleanUrl = new URL(window.location.href);
+                    cleanUrl.searchParams.delete('editPassword');
+                    window.history.replaceState({}, document.title, cleanUrl.toString());
+                } catch (e) {
+                    // ignore url cleanup errors
+                }
+            }
+
+            if (characterId) {
+                try {
+                    editPassword = sessionStorage.getItem(`editPassword:${characterId}`);
+                } catch (e) {
+                    editPassword = null;
+                }
+            }
             
             // If in view mode, disable all form inputs and hide save buttons
             if (viewMode) {
@@ -647,7 +609,7 @@ window.ENV.ALLOWED_ORIGINS = 'http://localhost:3000,http://localhost:8080,https:
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${window.APP_CONFIG?.API_KEY || '860de3877c2de19b8c88f34c34b71580'}`
+                        'X-Moderator-Password': token
                     },
                     body: JSON.stringify({ password: token }),
                     signal: AbortSignal.timeout(5000)
@@ -741,6 +703,11 @@ window.ENV.ALLOWED_ORIGINS = 'http://localhost:3000,http://localhost:8080,https:
             
             if (isValid) {
                 editPassword = password;
+                try {
+                    sessionStorage.setItem(`editPassword:${characterId}`, password);
+                } catch (e) {
+                    // ignore storage errors
+                }
                 hidePasswordModal();
                 loadCharacter();
             } else {
@@ -1093,10 +1060,16 @@ window.ENV.ALLOWED_ORIGINS = 'http://localhost:3000,http://localhost:8080,https:
                 await window.characterEditAPI.changeEditPassword(characterId, currentPassword, newPassword);
                 
                 editPassword = newPassword;
+                try {
+                    sessionStorage.setItem(`editPassword:${characterId}`, newPassword);
+                } catch (e) {
+                    // ignore storage errors
+                }
                 showSuccess('Edit password changed successfully!');
                 
             } catch (error) {
-                showError('Failed to change password: ' + error.message);
+                console.error('Error changing password:', error);
+                showError(error.message || 'Failed to change password');
             } finally {
                 showLoading(false);
             }

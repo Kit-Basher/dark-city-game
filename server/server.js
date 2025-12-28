@@ -10,21 +10,18 @@ const axios = require('axios');
 
 const connectDB = require('./config/database');
 const characterRoutes = require('./routes/characters');
-const { ApiKeyAuth } = require('./middleware/auth');
 const { errorHandler } = require('./middleware/errorHandler');
 const { specs, swaggerUi } = require('./config/swagger');
 const { applyRateLimiting, rateLimitStats } = require('./middleware/rateLimiting');
 const HealthChecker = require('./middleware/health');
 const { logger, structuredLogger, requestLogger } = require('./config/logging');
 const injectEnvVars = require('./middleware/envInjector');
-const { injectEnvIntoHTML } = require('./utils/envInjector');
 const { initializeProfiles } = require('./utils/profileGenerator');
 
 // Connect to MongoDB
 connectDB();
 
-// Inject environment variables into HTML files
-injectEnvIntoHTML().catch(console.error);
+// Injecting secrets into static HTML is unsafe; do not mutate HTML files at runtime.
 
 // Initialize character profiles after database connection
 setTimeout(() => {
@@ -169,15 +166,6 @@ app.use('/health', applyRateLimiting('publicEndpoints'));
 
 // General API rate limiting (fallback)
 app.use('/api', applyRateLimiting('general'));
-
-// Initialize authentication
-const apiAuth = new ApiKeyAuth();
-
-// Apply authentication to API routes (with health check exceptions)
-app.use('/api', (req, res, next) => {
-    if (req.path === '/health' || req.path === '/ready' || req.path === '/live') return next();
-    return apiAuth.authenticate()(req, res, next);
-});
 
 // Request logging middleware
 app.use(requestLogger);
@@ -351,7 +339,6 @@ app.get('/status-ping', (req, res) => {
     message: 'Status ping - public endpoint',
     timestamp: new Date().toISOString(),
     gitCommit: process.env.GIT_COMMIT_SHA || 'unknown',
-    apiKeyHint: process.env.API_KEY || 'not set',
     nodeEnv: process.env.NODE_ENV,
     version: process.env.npm_package_version || '1.0.0'
   });

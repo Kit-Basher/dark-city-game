@@ -53,8 +53,7 @@ class ServerAPI {
             const response = await fetch(`${this.baseURL}/characters/submit`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${window.APP_CONFIG?.API_KEY || '860de3877c2de19b8c88f34c34b71580'}`
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(sanitizedData)
             });
@@ -96,11 +95,7 @@ class ServerAPI {
     // Get all approved characters (for main page)
     async getApprovedCharacters() {
         try {
-            const response = await fetch(`${this.baseURL}/characters`, {
-                headers: {
-                    'Authorization': `Bearer ${window.APP_CONFIG?.API_KEY || '860de3877c2de19b8c88f34c34b71580'}`
-                }
-            });
+            const response = await fetch(`${this.baseURL}/characters`);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
@@ -117,11 +112,11 @@ class ServerAPI {
     // Get all submissions (moderator only)
     async getAllSubmissions() {
         try {
-            const response = await fetch(`${this.baseURL}/characters/submissions`, {
-                headers: {
-                    'Authorization': window.CONFIG?.API_KEY || window.APP_CONFIG?.API_KEY ? `Bearer ${window.CONFIG?.API_KEY || window.APP_CONFIG?.API_KEY}` : ''
-                }
-            });
+            const moderatorPassword = localStorage.getItem('moderator_token');
+            const headers = {};
+            if (moderatorPassword) headers['X-Moderator-Password'] = moderatorPassword;
+
+            const response = await fetch(`${this.baseURL}/characters/submissions`, { headers });
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
@@ -137,11 +132,11 @@ class ServerAPI {
     // Get pending submissions (moderator)
     async getPendingSubmissions() {
         try {
-            const response = await fetch(`${this.baseURL}/characters/pending`, {
-                headers: {
-                    'Authorization': `Bearer ${window.APP_CONFIG?.API_KEY || '860de3877c2de19b8c88f34c34b71580'}`
-                }
-            });
+            const moderatorPassword = localStorage.getItem('moderator_token');
+            const headers = {};
+            if (moderatorPassword) headers['X-Moderator-Password'] = moderatorPassword;
+
+            const response = await fetch(`${this.baseURL}/characters/pending`, { headers });
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
@@ -167,14 +162,18 @@ class ServerAPI {
             const sanitizedReviewedBy = window.InputSanitizer ? 
                 window.InputSanitizer.sanitizeCharacterName(reviewedBy) : reviewedBy;
 
+            const moderatorPassword = localStorage.getItem('moderator_token');
+            if (!moderatorPassword) {
+                throw new Error('Moderator password required');
+            }
+
             const response = await fetch(`${this.baseURL}/characters/${characterId}/approve`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${window.APP_CONFIG?.API_KEY || '860de3877c2de19b8c88f34c34b71580'}`
+                    'X-Moderator-Password': moderatorPassword
                 },
                 body: JSON.stringify({ 
-                    moderatorPassword: window.APP_CONFIG?.MODERATOR_PASSWORD || 'test123',
                     feedback: sanitizedFeedback, 
                     reviewedBy: sanitizedReviewedBy 
                 })
@@ -206,13 +205,18 @@ class ServerAPI {
             const sanitizedReviewedBy = window.InputSanitizer ? 
                 window.InputSanitizer.sanitizeCharacterName(reviewedBy) : reviewedBy;
 
+            const moderatorPassword = localStorage.getItem('moderator_token');
+            if (!moderatorPassword) {
+                throw new Error('Moderator password required');
+            }
+
             const response = await fetch(`${this.baseURL}/characters/${characterId}/reject`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
+                    'X-Moderator-Password': moderatorPassword
                 },
                 body: JSON.stringify({ 
-                    moderatorPassword: window.APP_CONFIG?.MODERATOR_PASSWORD || 'test123',
                     feedback: sanitizedFeedback, 
                     reviewedBy: sanitizedReviewedBy 
                 })

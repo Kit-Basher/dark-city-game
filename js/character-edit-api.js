@@ -13,9 +13,6 @@ class CharacterEditAPI {
             }
 
             const response = await fetch(url, {
-                headers: {
-                    'Authorization': `Bearer ${window.APP_CONFIG?.API_KEY || '860de3877c2de19b8c88f34c34b71580'}`
-                },
                 signal: AbortSignal.timeout(30000) // 30 second timeout
             });
 
@@ -42,18 +39,17 @@ class CharacterEditAPI {
             const sanitizedData = window.InputSanitizer ? 
                 window.InputSanitizer.validateCharacterData(updateData) : updateData;
 
-            const url = new URL(`${this.baseURL}/characters/${characterId}/edit`, window.location.origin);
-            if (editPassword) {
-                url.searchParams.set('editPassword', editPassword);
-            }
+            const url = `${this.baseURL}/characters/${characterId}/edit`;
 
             const response = await fetch(url, {
                 method: 'PUT',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${window.APP_CONFIG?.API_KEY || '860de3877c2de19b8c88f34c34b71580'}`
+                    'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(sanitizedData),
+                body: JSON.stringify({
+                    ...sanitizedData,
+                    ...(editPassword ? { editPassword } : {})
+                }),
                 signal: AbortSignal.timeout(30000) // 30 second timeout
             });
 
@@ -83,8 +79,7 @@ class CharacterEditAPI {
             const response = await fetch(`${this.baseURL}/characters/${characterId}/edit-password`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${window.APP_CONFIG?.API_KEY || '860de3877c2de19b8c88f34c34b71580'}`
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
                     currentPassword: window.InputSanitizer ? 
@@ -119,8 +114,7 @@ class CharacterEditAPI {
             const response = await fetch(`${this.baseURL}/characters/${characterId}/duplicate`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${window.APP_CONFIG?.API_KEY || '860de3877c2de19b8c88f34c34b71580'}`
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
                     editPassword: window.InputSanitizer ? 

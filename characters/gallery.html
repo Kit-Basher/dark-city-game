@@ -1,71 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script>
-window.ENV = window.ENV || {};
-window.ENV.API_KEY = '860de3877c2de19b8c88f34c34b71580';
-window.ENV.JWT_SECRET = 'vEahCndVJYE4s/hkNuJ9EMW3xjfgWh+kq+XmYumxAsQ=';
-window.ENV.NODE_ENV = 'development';
-window.ENV.REPO_OWNER = 'Kit-Basher';
-window.ENV.REPO_NAME = 'dark-city-game';
-window.ENV.ENABLE_GITHUB_INTEGRATION = 'false';
-window.ENV.ENABLE_DISCORD_NOTIFICATIONS = 'false';
-window.ENV.CALENDAR_MONTHS_TO_LOAD = '3';
-window.ENV.MAX_CHARACTERS_PER_PAGE = '12';
-window.ENV.ALLOWED_ORIGINS = 'http://localhost:3000,http://localhost:8080,https://kit-basher.github.io';
-</script>
-    <script>
-window.ENV = window.ENV || {};
-window.ENV.API_KEY = '860de3877c2de19b8c88f34c34b71580';
-window.ENV.JWT_SECRET = 'vEahCndVJYE4s/hkNuJ9EMW3xjfgWh+kq+XmYumxAsQ=';
-window.ENV.NODE_ENV = 'development';
-window.ENV.REPO_OWNER = 'Kit-Basher';
-window.ENV.REPO_NAME = 'dark-city-game';
-window.ENV.ENABLE_GITHUB_INTEGRATION = 'false';
-window.ENV.ENABLE_DISCORD_NOTIFICATIONS = 'false';
-window.ENV.CALENDAR_MONTHS_TO_LOAD = '3';
-window.ENV.MAX_CHARACTERS_PER_PAGE = '12';
-window.ENV.ALLOWED_ORIGINS = 'http://localhost:3000,http://localhost:8080,https://kit-basher.github.io';
-</script>
-    <script>
-window.ENV = window.ENV || {};
-window.ENV.API_KEY = '860de3877c2de19b8c88f34c34b71580';
-window.ENV.JWT_SECRET = 'vEahCndVJYE4s/hkNuJ9EMW3xjfgWh+kq+XmYumxAsQ=';
-window.ENV.NODE_ENV = 'development';
-window.ENV.REPO_OWNER = 'Kit-Basher';
-window.ENV.REPO_NAME = 'dark-city-game';
-window.ENV.ENABLE_GITHUB_INTEGRATION = 'false';
-window.ENV.ENABLE_DISCORD_NOTIFICATIONS = 'false';
-window.ENV.CALENDAR_MONTHS_TO_LOAD = '3';
-window.ENV.MAX_CHARACTERS_PER_PAGE = '12';
-window.ENV.ALLOWED_ORIGINS = 'http://localhost:3000,http://localhost:8080,https://kit-basher.github.io';
-</script>
-    <script>
-window.ENV = window.ENV || {};
-window.ENV.API_KEY = '860de3877c2de19b8c88f34c34b71580';
-window.ENV.JWT_SECRET = 'vEahCndVJYE4s/hkNuJ9EMW3xjfgWh+kq+XmYumxAsQ=';
-window.ENV.NODE_ENV = 'development';
-window.ENV.REPO_OWNER = 'Kit-Basher';
-window.ENV.REPO_NAME = 'dark-city-game';
-window.ENV.ENABLE_GITHUB_INTEGRATION = 'false';
-window.ENV.ENABLE_DISCORD_NOTIFICATIONS = 'false';
-window.ENV.CALENDAR_MONTHS_TO_LOAD = '3';
-window.ENV.MAX_CHARACTERS_PER_PAGE = '12';
-window.ENV.ALLOWED_ORIGINS = 'http://localhost:3000,http://localhost:8080,https://kit-basher.github.io';
-</script>
-    <script>
-window.ENV = window.ENV || {};
-window.ENV.API_KEY = '860de3877c2de19b8c88f34c34b71580';
-window.ENV.JWT_SECRET = 'vEahCndVJYE4s/hkNuJ9EMW3xjfgWh+kq+XmYumxAsQ=';
-window.ENV.NODE_ENV = 'development';
-window.ENV.REPO_OWNER = 'Kit-Basher';
-window.ENV.REPO_NAME = 'dark-city-game';
-window.ENV.ENABLE_GITHUB_INTEGRATION = 'false';
-window.ENV.ENABLE_DISCORD_NOTIFICATIONS = 'false';
-window.ENV.CALENDAR_MONTHS_TO_LOAD = '3';
-window.ENV.MAX_CHARACTERS_PER_PAGE = '12';
-window.ENV.ALLOWED_ORIGINS = 'http://localhost:3000,http://localhost:8080,https://kit-basher.github.io';
-</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Character Gallery - Dark City RPG</title>
@@ -599,11 +534,18 @@ window.ENV.ALLOWED_ORIGINS = 'http://localhost:3000,http://localhost:8080,https:
             
             const info = document.createElement('div');
             info.className = 'character-info';
-            info.innerHTML = `
-                <p>Playbook: ${character.playbook || 'Unknown'}</p>
-                <p>Classification: ${character.classification || 'Unknown'}</p>
-                <p>Age: ${character.apparentAge || 'Unknown'}</p>
-            `;
+
+            const playbookP = document.createElement('p');
+            playbookP.textContent = `Playbook: ${character.playbook || 'Unknown'}`;
+            info.appendChild(playbookP);
+
+            const classificationP = document.createElement('p');
+            classificationP.textContent = `Classification: ${character.classification || 'Unknown'}`;
+            info.appendChild(classificationP);
+
+            const ageP = document.createElement('p');
+            ageP.textContent = `Age: ${character.apparentAge || 'Unknown'}`;
+            info.appendChild(ageP);
             
             card.appendChild(statusBadge);
             card.appendChild(name);
@@ -633,107 +575,153 @@ window.ENV.ALLOWED_ORIGINS = 'http://localhost:3000,http://localhost:8080,https:
             console.log('🔍 Gallery: Showing character detail for:', character.name);
             const modal = document.getElementById('characterModal');
             const modalContent = document.getElementById('modalCharacterDetails');
-            
-            const detailHTML = `
-                <div class="character-detail">
-                    <h2>${character.name || 'Unnamed Character'}</h2>
-                    
-                    <div class="info-grid">
-                        <div class="info-item">
-                            <strong>Playbook:</strong> ${character.playbook || 'Unknown'}
-                        </div>
-                        <div class="info-item">
-                            <strong>Classification:</strong> ${character.classification || 'Unknown'}
-                        </div>
-                        <div class="info-item">
-                            <strong>Subtype:</strong> ${character.subtype || 'None'}
-                        </div>
-                        <div class="info-item">
-                            <strong>Apparent Age:</strong> ${character.apparentAge || 'Unknown'}
-                        </div>
-                        ${character.actualAge ? `
-                        <div class="info-item">
-                            <strong>Actual Age:</strong> ${character.actualAge}
-                        </div>
-                        ` : ''}
-                        <div class="info-item">
-                            <strong>Fate Points:</strong> ${character.fatePoints || '1'}/5
-                        </div>
-                    </div>
-                    
-                    <div class="bio-section">
-                        <h3>Biography</h3>
-                        <p>${character.bio || 'No biography available.'}</p>
-                    </div>
-                    
-                    ${character.humanHeight || character.humanWeight ? `
-                    <div class="info-grid">
-                        <div class="info-item">
-                            <strong>Human Form - Height:</strong> ${character.humanHeight || 'Unknown'}
-                        </div>
-                        <div class="info-item">
-                            <strong>Human Form - Weight:</strong> ${character.humanWeight || 'Unknown'}
-                        </div>
-                        ${character.monsterHeight ? `
-                        <div class="info-item">
-                            <strong>Monster Form - Height:</strong> ${character.monsterHeight}
-                        </div>
-                        ` : ''}
-                        ${character.monsterWeight ? `
-                        <div class="info-item">
-                            <strong>Monster Form - Weight:</strong> ${character.monsterWeight}
-                        </div>
-                        ` : ''}
-                    </div>
-                    ` : ''}
-                    
-                    ${character.skills && Object.keys(character.skills).length > 0 ? `
-                    <div class="skills-section">
-                        <h3>Skills</h3>
-                        <div class="skills-grid">
-                            ${Object.entries(character.skills).map(([skill, level]) => 
-                                `<div class="skill-level"><strong>${level}:</strong> ${skill}</div>`
-                            ).join('')}
-                        </div>
-                    </div>
-                    ` : ''}
-                    
-                    ${character.specialResources ? `
-                    <div class="bio-section">
-                        <h3>Special Resources</h3>
-                        <p>${character.specialResources}</p>
-                    </div>
-                    ` : ''}
-                    
-                    ${character.connections ? `
-                    <div class="bio-section">
-                        <h3>Connections</h3>
-                        <p>${character.connections}</p>
-                    </div>
-                    ` : ''}
-                    
-                    <div style="text-align: center; margin-top: 2rem;">
-                        <button data-profile-url="${window.APP_CONFIG.apiURL ? window.APP_CONFIG.apiURL.replace('/api', '') + '/characters/profiles/' + createSafeFilename(character) : '/characters/profiles/' + createSafeFilename(character)}" class="btn btn-primary profile-link-btn" style="background: #ff6b35; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 5px; cursor: pointer; margin-right: 1rem;">
-                            📄 View Full Profile
-                        </button>
-                        <p><small>Character submitted on ${new Date(character.submittedAt || character.createdAt).toLocaleDateString()}</small></p>
-                    </div>
-                </div>
-            `;
-            
-            modalContent.innerHTML = detailHTML;
+
+            modalContent.textContent = '';
+
+            const detail = document.createElement('div');
+            detail.className = 'character-detail';
+
+            const title = document.createElement('h2');
+            title.textContent = character.name || 'Unnamed Character';
+            detail.appendChild(title);
+
+            const infoGrid = document.createElement('div');
+            infoGrid.className = 'info-grid';
+
+            const makeInfoItem = (label, value) => {
+                const item = document.createElement('div');
+                item.className = 'info-item';
+                const strong = document.createElement('strong');
+                strong.textContent = label;
+                item.appendChild(strong);
+                item.appendChild(document.createTextNode(` ${value}`));
+                return item;
+            };
+
+            infoGrid.appendChild(makeInfoItem('Playbook:', character.playbook || 'Unknown'));
+            infoGrid.appendChild(makeInfoItem('Classification:', character.classification || 'Unknown'));
+            infoGrid.appendChild(makeInfoItem('Subtype:', character.subtype || 'None'));
+            infoGrid.appendChild(makeInfoItem('Apparent Age:', character.apparentAge || 'Unknown'));
+
+            if (character.actualAge) {
+                infoGrid.appendChild(makeInfoItem('Actual Age:', character.actualAge));
+            }
+
+            infoGrid.appendChild(makeInfoItem('Fate Points:', `${character.fatePoints || '1'}/5`));
+            detail.appendChild(infoGrid);
+
+            const bioSection = document.createElement('div');
+            bioSection.className = 'bio-section';
+            const bioH3 = document.createElement('h3');
+            bioH3.textContent = 'Biography';
+            const bioP = document.createElement('p');
+            bioP.textContent = character.bio || 'No biography available.';
+            bioSection.appendChild(bioH3);
+            bioSection.appendChild(bioP);
+            detail.appendChild(bioSection);
+
+            if (character.humanHeight || character.humanWeight || character.monsterHeight || character.monsterWeight) {
+                const formGrid = document.createElement('div');
+                formGrid.className = 'info-grid';
+                if (character.humanHeight || character.humanWeight) {
+                    formGrid.appendChild(makeInfoItem('Human Form - Height:', character.humanHeight || 'Unknown'));
+                    formGrid.appendChild(makeInfoItem('Human Form - Weight:', character.humanWeight || 'Unknown'));
+                }
+                if (character.monsterHeight) {
+                    formGrid.appendChild(makeInfoItem('Monster Form - Height:', character.monsterHeight));
+                }
+                if (character.monsterWeight) {
+                    formGrid.appendChild(makeInfoItem('Monster Form - Weight:', character.monsterWeight));
+                }
+                detail.appendChild(formGrid);
+            }
+
+            if (character.skills && Object.keys(character.skills).length > 0) {
+                const skillsSection = document.createElement('div');
+                skillsSection.className = 'skills-section';
+                const skillsH3 = document.createElement('h3');
+                skillsH3.textContent = 'Skills';
+                skillsSection.appendChild(skillsH3);
+
+                const skillsGrid = document.createElement('div');
+                skillsGrid.className = 'skills-grid';
+                Object.entries(character.skills).forEach(([skill, level]) => {
+                    const skillEl = document.createElement('div');
+                    skillEl.className = 'skill-level';
+                    const strong = document.createElement('strong');
+                    strong.textContent = `${level}:`;
+                    skillEl.appendChild(strong);
+                    skillEl.appendChild(document.createTextNode(` ${skill}`));
+                    skillsGrid.appendChild(skillEl);
+                });
+
+                skillsSection.appendChild(skillsGrid);
+                detail.appendChild(skillsSection);
+            }
+
+            if (character.specialResources) {
+                const resourcesSection = document.createElement('div');
+                resourcesSection.className = 'bio-section';
+                const h3 = document.createElement('h3');
+                h3.textContent = 'Special Resources';
+                const p = document.createElement('p');
+                p.textContent = character.specialResources;
+                resourcesSection.appendChild(h3);
+                resourcesSection.appendChild(p);
+                detail.appendChild(resourcesSection);
+            }
+
+            if (character.connections) {
+                const connectionsSection = document.createElement('div');
+                connectionsSection.className = 'bio-section';
+                const h3 = document.createElement('h3');
+                h3.textContent = 'Connections';
+                const p = document.createElement('p');
+                p.textContent = character.connections;
+                connectionsSection.appendChild(h3);
+                connectionsSection.appendChild(p);
+                detail.appendChild(connectionsSection);
+            }
+
+            const footer = document.createElement('div');
+            footer.style.textAlign = 'center';
+            footer.style.marginTop = '2rem';
+
+            const profileUrl = window.APP_CONFIG.apiURL ?
+                window.APP_CONFIG.apiURL.replace('/api', '') + '/characters/profiles/' + createSafeFilename(character) :
+                '/characters/profiles/' + createSafeFilename(character);
+
+            const profileBtn = document.createElement('button');
+            profileBtn.className = 'btn btn-primary profile-link-btn';
+            profileBtn.style.background = '#ff6b35';
+            profileBtn.style.color = 'white';
+            profileBtn.style.border = 'none';
+            profileBtn.style.padding = '0.75rem 1.5rem';
+            profileBtn.style.borderRadius = '5px';
+            profileBtn.style.cursor = 'pointer';
+            profileBtn.style.marginRight = '1rem';
+            profileBtn.setAttribute('data-profile-url', profileUrl);
+            profileBtn.textContent = '📄 View Full Profile';
+            footer.appendChild(profileBtn);
+
+            const submittedP = document.createElement('p');
+            const small = document.createElement('small');
+            small.textContent = `Character submitted on ${new Date(character.submittedAt || character.createdAt).toLocaleDateString()}`;
+            submittedP.appendChild(small);
+            footer.appendChild(submittedP);
+
+            detail.appendChild(footer);
+            modalContent.appendChild(detail);
+
             console.log('🔍 Gallery: Modal content set, showing modal...');
             console.log('🔍 Gallery: Profile URL should be:', `${window.APP_CONFIG.apiURL ? window.APP_CONFIG.apiURL.replace('/api', '') + '/characters/profiles/' + createSafeFilename(character) : '/characters/profiles/' + createSafeFilename(character)}`);
             
             // Add event listener for profile link button
-            const profileBtn = modalContent.querySelector('.profile-link-btn');
-            if (profileBtn) {
-                profileBtn.addEventListener('click', () => {
-                    const profileUrl = profileBtn.getAttribute('data-profile-url');
-                    console.log('🔍 Gallery: Opening profile URL:', profileUrl);
-                    window.open(profileUrl, '_blank');
-                });
-            }
+            profileBtn.addEventListener('click', () => {
+                const url = profileBtn.getAttribute('data-profile-url');
+                console.log('🔍 Gallery: Opening profile URL:', url);
+                window.open(url, '_blank');
+            });
             
             modal.style.display = 'block';
             console.log('🔍 Gallery: Modal should now be visible');
@@ -745,11 +733,7 @@ window.ENV.ALLOWED_ORIGINS = 'http://localhost:3000,http://localhost:8080,https:
             
             try {
                 // Fetch character data
-                const response = await fetch(`${window.APP_CONFIG.apiURL}/characters/${characterId}`, {
-                    headers: {
-                        'Authorization': `Bearer ${window.APP_CONFIG.API_KEY}`
-                    }
-                });
+                const response = await fetch(`${window.APP_CONFIG.apiURL}/characters/${characterId}`);
                 
                 if (!response.ok) {
                     throw new Error('Failed to load character details');

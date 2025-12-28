@@ -650,9 +650,6 @@
                 url.searchParams.set('editPassword', password);
 
                 const response = await fetch(url, {
-                    headers: {
-                        'Authorization': `Bearer ${window.APP_CONFIG?.API_KEY || '860de3877c2de19b8c88f34c34b71580'}`
-                    },
                     signal: AbortSignal.timeout(10000)
                 });
 
@@ -661,7 +658,12 @@
                 }
 
                 // Password correct (either character password OR master password)
-                window.location.href = `../character-edit.html?id=${characterData.id}&editPassword=${encodeURIComponent(password)}`;
+                try {
+                    sessionStorage.setItem(`editPassword:${characterData.id}`, password);
+                } catch (e) {
+                    // ignore storage errors
+                }
+                window.location.href = `../character-edit.html?id=${characterData.id}`;
             } catch (error) {
                 alert('Incorrect password. Please try again.');
                 document.getElementById('passwordInput').value = '';

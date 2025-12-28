@@ -274,8 +274,12 @@
                 renderMaintenanceCharacters();
             } catch (error) {
                 console.error('Error loading maintenance characters:', error);
-                document.getElementById('maintenance-characters').innerHTML =
-                    `<div class="empty-state">Error loading characters: ${error.message || 'Please try again later'}</div>`;
+                const container = document.getElementById('maintenance-characters');
+                container.textContent = '';
+                const el = document.createElement('div');
+                el.className = 'empty-state';
+                el.textContent = `Error loading characters: ${error.message || 'Please try again later'}`;
+                container.appendChild(el);
             }
         }
 
@@ -290,29 +294,70 @@
             });
 
             if (filtered.length === 0) {
-                container.innerHTML = '<div class="empty-state">No characters match your search.</div>';
+                container.textContent = '';
+                const el = document.createElement('div');
+                el.className = 'empty-state';
+                el.textContent = 'No characters match your search.';
+                container.appendChild(el);
                 return;
             }
 
-            container.innerHTML = '';
+            container.textContent = '';
             filtered.forEach((character) => {
                 const characterElement = document.createElement('div');
                 characterElement.className = 'character-card';
                 const characterName = character.characterName || character.name || 'Unnamed Character';
                 const submittedDate = character.submittedAt || character.createdAt;
-                
-                characterElement.innerHTML = `
-                    <div class="character-info">
-                        <h3>${characterName}</h3>
-                        <p><strong>Status:</strong> ${character.status || 'Unknown'}</p>
-                        <p><strong>ID:</strong> ${character._id || 'Unknown'}</p>
-                        <p><strong>Submitted:</strong> ${submittedDate ? new Date(submittedDate).toLocaleDateString() : 'Unknown'}</p>
-                    </div>
-                    <div class="character-actions">
-                        <button class="btn btn-edit" onclick="viewCharacter('${character._id}')">View</button>
-                        ${isAuthenticated() ? `<button class="btn btn-reject" onclick="deleteCharacter('${character._id}', '${characterName.replace(/'/g, "\\'")}')">Delete</button>` : ''}
-                    </div>
-                `;
+
+                const info = document.createElement('div');
+                info.className = 'character-info';
+
+                const h3 = document.createElement('h3');
+                h3.textContent = characterName;
+                info.appendChild(h3);
+
+                const statusP = document.createElement('p');
+                const statusStrong = document.createElement('strong');
+                statusStrong.textContent = 'Status:';
+                statusP.appendChild(statusStrong);
+                statusP.appendChild(document.createTextNode(` ${character.status || 'Unknown'}`));
+                info.appendChild(statusP);
+
+                const idP = document.createElement('p');
+                const idStrong = document.createElement('strong');
+                idStrong.textContent = 'ID:';
+                idP.appendChild(idStrong);
+                idP.appendChild(document.createTextNode(` ${character._id || 'Unknown'}`));
+                info.appendChild(idP);
+
+                const submittedP = document.createElement('p');
+                const submittedStrong = document.createElement('strong');
+                submittedStrong.textContent = 'Submitted:';
+                submittedP.appendChild(submittedStrong);
+                submittedP.appendChild(document.createTextNode(` ${submittedDate ? new Date(submittedDate).toLocaleDateString() : 'Unknown'}`));
+                info.appendChild(submittedP);
+
+                const actions = document.createElement('div');
+                actions.className = 'character-actions';
+
+                const viewBtn = document.createElement('button');
+                viewBtn.className = 'btn btn-edit';
+                viewBtn.type = 'button';
+                viewBtn.textContent = 'View';
+                viewBtn.addEventListener('click', () => viewCharacter(character._id));
+                actions.appendChild(viewBtn);
+
+                if (isAuthenticated()) {
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.className = 'btn btn-reject';
+                    deleteBtn.type = 'button';
+                    deleteBtn.textContent = 'Delete';
+                    deleteBtn.addEventListener('click', () => deleteCharacter(character._id, characterName));
+                    actions.appendChild(deleteBtn);
+                }
+
+                characterElement.appendChild(info);
+                characterElement.appendChild(actions);
                 container.appendChild(characterElement);
             });
         }
@@ -343,7 +388,7 @@
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${window.APP_CONFIG?.API_KEY || '860de3877c2de19b8c88f34c34b71580'}`
+                        'X-Moderator-Password': moderatorPassword
                     },
                     body: JSON.stringify({ moderatorPassword })
                 });
@@ -373,9 +418,13 @@
             const fullUrl = url.startsWith('http') ? url : `${baseURL}${url}`;
             
             const headers = {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${window.APP_CONFIG?.API_KEY || '860de3877c2de19b8c88f34c34b71580'}`
+                'Content-Type': 'application/json'
             };
+
+            const moderatorPassword = localStorage.getItem('moderator_token');
+            if (moderatorPassword) {
+                headers['X-Moderator-Password'] = moderatorPassword;
+            }
             
             if (options.headers) {
                 Object.assign(headers, options.headers);
@@ -410,11 +459,15 @@
                 console.log('Characters found:', characters.length);
                 
                 if (characters.length === 0) {
-                    container.innerHTML = '<div class="empty-state">No pending characters found.</div>';
+                    container.textContent = '';
+                    const el = document.createElement('div');
+                    el.className = 'empty-state';
+                    el.textContent = 'No pending characters found.';
+                    container.appendChild(el);
                     return;
                 }
                 
-                container.innerHTML = '';
+                container.textContent = '';
                 characters.forEach((character, index) => {
                     console.log(`Character ${index}:`, character);
                     const characterElement = document.createElement('div');
@@ -423,28 +476,76 @@
                     // Extract character name from various possible fields
                     const characterName = character.characterName || character.name || 'Unnamed Character';
                     const submittedDate = character.submittedAt || character.createdAt || character.createdAt;
-                    
-                    characterElement.innerHTML = `
-                        <div class="character-info">
-                            <h3>${characterName}</h3>
-                            <p><strong>Type:</strong> ${character.characterType || 'Unknown'}</p>
-                            <p><strong>Submitted:</strong> ${submittedDate ? new Date(submittedDate).toLocaleDateString() : 'Unknown'}</p>
-                            ${character.backstory ? `<p><strong>Backstory:</strong> ${character.backstory.substring(0, 100)}${character.backstory.length > 100 ? '...' : ''}</p>` : ''}
-                        </div>
-                        <div class="character-actions">
-                            <button class="btn btn-edit" onclick="viewCharacter('${character._id}')">View</button>
-                            ${isAuthenticated() ? `
-                                <button class="btn btn-approve" onclick="moderateCharacter('${character._id}', 'approve')">Approve</button>
-                                <button class="btn btn-reject" onclick="moderateCharacter('${character._id}', 'reject')">Reject</button>
-                            ` : ''}
-                        </div>
-                    `;
+
+                    const info = document.createElement('div');
+                    info.className = 'character-info';
+
+                    const h3 = document.createElement('h3');
+                    h3.textContent = characterName;
+                    info.appendChild(h3);
+
+                    const typeP = document.createElement('p');
+                    const typeStrong = document.createElement('strong');
+                    typeStrong.textContent = 'Type:';
+                    typeP.appendChild(typeStrong);
+                    typeP.appendChild(document.createTextNode(` ${character.characterType || 'Unknown'}`));
+                    info.appendChild(typeP);
+
+                    const submittedP = document.createElement('p');
+                    const submittedStrong = document.createElement('strong');
+                    submittedStrong.textContent = 'Submitted:';
+                    submittedP.appendChild(submittedStrong);
+                    submittedP.appendChild(document.createTextNode(` ${submittedDate ? new Date(submittedDate).toLocaleDateString() : 'Unknown'}`));
+                    info.appendChild(submittedP);
+
+                    if (character.backstory) {
+                        const backstoryPreview = `${character.backstory.substring(0, 100)}${character.backstory.length > 100 ? '...' : ''}`;
+                        const backstoryP = document.createElement('p');
+                        const backstoryStrong = document.createElement('strong');
+                        backstoryStrong.textContent = 'Backstory:';
+                        backstoryP.appendChild(backstoryStrong);
+                        backstoryP.appendChild(document.createTextNode(` ${backstoryPreview}`));
+                        info.appendChild(backstoryP);
+                    }
+
+                    const actions = document.createElement('div');
+                    actions.className = 'character-actions';
+
+                    const viewBtn = document.createElement('button');
+                    viewBtn.className = 'btn btn-edit';
+                    viewBtn.type = 'button';
+                    viewBtn.textContent = 'View';
+                    viewBtn.addEventListener('click', () => viewCharacter(character._id));
+                    actions.appendChild(viewBtn);
+
+                    if (isAuthenticated()) {
+                        const approveBtn = document.createElement('button');
+                        approveBtn.className = 'btn btn-approve';
+                        approveBtn.type = 'button';
+                        approveBtn.textContent = 'Approve';
+                        approveBtn.addEventListener('click', () => moderateCharacter(character._id, 'approve'));
+                        actions.appendChild(approveBtn);
+
+                        const rejectBtn = document.createElement('button');
+                        rejectBtn.className = 'btn btn-reject';
+                        rejectBtn.type = 'button';
+                        rejectBtn.textContent = 'Reject';
+                        rejectBtn.addEventListener('click', () => moderateCharacter(character._id, 'reject'));
+                        actions.appendChild(rejectBtn);
+                    }
+
+                    characterElement.appendChild(info);
+                    characterElement.appendChild(actions);
                     container.appendChild(characterElement);
                 });
             } catch (error) {
                 console.error('Error loading pending characters:', error);
-                document.getElementById('pending-characters').innerHTML = 
-                    `<div class="empty-state">Error loading pending characters: ${error.message || 'Please try again later'}</div>`;
+                const container = document.getElementById('pending-characters');
+                container.textContent = '';
+                const el = document.createElement('div');
+                el.className = 'empty-state';
+                el.textContent = `Error loading pending characters: ${error.message || 'Please try again later'}`;
+                container.appendChild(el);
             }
         }
         
@@ -458,11 +559,15 @@
                 const characters = Array.isArray(response) ? response : [];
                 
                 if (characters.length === 0) {
-                    container.innerHTML = '<div class="empty-state">No approved characters found.</div>';
+                    container.textContent = '';
+                    const el = document.createElement('div');
+                    el.className = 'empty-state';
+                    el.textContent = 'No approved characters found.';
+                    container.appendChild(el);
                     return;
                 }
                 
-                container.innerHTML = '';
+                container.textContent = '';
                 characters.forEach(character => {
                     const characterElement = document.createElement('div');
                     characterElement.className = 'character-card';
@@ -470,26 +575,76 @@
                     // Extract character name from various possible fields
                     const characterName = character.characterName || character.name || 'Unnamed Character';
                     const updatedDate = character.updatedAt || character.approvedAt || character.createdAt;
-                    
-                    characterElement.innerHTML = `
-                        <div class="character-info">
-                            <h3>${characterName}</h3>
-                            <p><strong>Type:</strong> ${character.characterType || 'Unknown'}</p>
-                            <p><strong>Status:</strong> ${character.status || 'Unknown'}</p>
-                            <p><strong>Approved:</strong> ${updatedDate ? new Date(updatedDate).toLocaleDateString() : 'N/A'}</p>
-                            ${character.backstory ? `<p><strong>Backstory:</strong> ${character.backstory.substring(0, 100)}${character.backstory.length > 100 ? '...' : ''}</p>` : ''}
-                        </div>
-                        <div class="character-actions">
-                            <button class="btn btn-edit" onclick="viewCharacter('${character._id}')">View</button>
-                            ${isAuthenticated() ? `<button class="btn btn-reject" onclick="deleteCharacter('${character._id}', '${characterName.replace(/'/g, "\\'")}')">Delete</button>` : ''}
-                        </div>
-                    `;
+
+                    const info = document.createElement('div');
+                    info.className = 'character-info';
+
+                    const h3 = document.createElement('h3');
+                    h3.textContent = characterName;
+                    info.appendChild(h3);
+
+                    const typeP = document.createElement('p');
+                    const typeStrong = document.createElement('strong');
+                    typeStrong.textContent = 'Type:';
+                    typeP.appendChild(typeStrong);
+                    typeP.appendChild(document.createTextNode(` ${character.characterType || 'Unknown'}`));
+                    info.appendChild(typeP);
+
+                    const statusP = document.createElement('p');
+                    const statusStrong = document.createElement('strong');
+                    statusStrong.textContent = 'Status:';
+                    statusP.appendChild(statusStrong);
+                    statusP.appendChild(document.createTextNode(` ${character.status || 'Unknown'}`));
+                    info.appendChild(statusP);
+
+                    const approvedP = document.createElement('p');
+                    const approvedStrong = document.createElement('strong');
+                    approvedStrong.textContent = 'Approved:';
+                    approvedP.appendChild(approvedStrong);
+                    approvedP.appendChild(document.createTextNode(` ${updatedDate ? new Date(updatedDate).toLocaleDateString() : 'N/A'}`));
+                    info.appendChild(approvedP);
+
+                    if (character.backstory) {
+                        const backstoryPreview = `${character.backstory.substring(0, 100)}${character.backstory.length > 100 ? '...' : ''}`;
+                        const backstoryP = document.createElement('p');
+                        const backstoryStrong = document.createElement('strong');
+                        backstoryStrong.textContent = 'Backstory:';
+                        backstoryP.appendChild(backstoryStrong);
+                        backstoryP.appendChild(document.createTextNode(` ${backstoryPreview}`));
+                        info.appendChild(backstoryP);
+                    }
+
+                    const actions = document.createElement('div');
+                    actions.className = 'character-actions';
+
+                    const viewBtn = document.createElement('button');
+                    viewBtn.className = 'btn btn-edit';
+                    viewBtn.type = 'button';
+                    viewBtn.textContent = 'View';
+                    viewBtn.addEventListener('click', () => viewCharacter(character._id));
+                    actions.appendChild(viewBtn);
+
+                    if (isAuthenticated()) {
+                        const deleteBtn = document.createElement('button');
+                        deleteBtn.className = 'btn btn-reject';
+                        deleteBtn.type = 'button';
+                        deleteBtn.textContent = 'Delete';
+                        deleteBtn.addEventListener('click', () => deleteCharacter(character._id, characterName));
+                        actions.appendChild(deleteBtn);
+                    }
+
+                    characterElement.appendChild(info);
+                    characterElement.appendChild(actions);
                     container.appendChild(characterElement);
                 });
             } catch (error) {
                 console.error('Error loading approved characters:', error);
-                document.getElementById('approved-characters').innerHTML = 
-                    `<div class="empty-state">Error loading approved characters: ${error.message || 'Please try again later'}</div>`;
+                const container = document.getElementById('approved-characters');
+                container.textContent = '';
+                const el = document.createElement('div');
+                el.className = 'empty-state';
+                el.textContent = `Error loading approved characters: ${error.message || 'Please try again later'}`;
+                container.appendChild(el);
             }
         }
         
@@ -503,11 +658,15 @@
                 const characters = Array.isArray(response) ? response : [];
                 
                 if (characters.length === 0) {
-                    container.innerHTML = '<div class="empty-state">No rejected characters found.</div>';
+                    container.textContent = '';
+                    const el = document.createElement('div');
+                    el.className = 'empty-state';
+                    el.textContent = 'No rejected characters found.';
+                    container.appendChild(el);
                     return;
                 }
                 
-                container.innerHTML = '';
+                container.textContent = '';
                 characters.forEach(character => {
                     const characterElement = document.createElement('div');
                     characterElement.className = 'character-card';
@@ -515,29 +674,83 @@
                     // Extract character name from various possible fields
                     const characterName = character.characterName || character.name || 'Unnamed Character';
                     const updatedDate = character.updatedAt || character.rejectedAt || character.createdAt;
-                    
-                    characterElement.innerHTML = `
-                        <div class="character-info">
-                            <h3>${characterName}</h3>
-                            <p><strong>Type:</strong> ${character.characterType || 'Unknown'}</p>
-                            <p><strong>Status:</strong> ${character.status || 'Unknown'}</p>
-                            <p><strong>Rejection Reason:</strong> ${character.rejectionReason || 'No reason provided'}</p>
-                            <p><strong>Rejected:</strong> ${updatedDate ? new Date(updatedDate).toLocaleDateString() : 'N/A'}</p>
-                            ${character.backstory ? `<p><strong>Backstory:</strong> ${character.backstory.substring(0, 100)}${character.backstory.length > 100 ? '...' : ''}</p>` : ''}
-                        </div>
-                        <div class="character-actions">
-                            <button class="btn btn-edit" onclick="viewCharacter('${character._id}')">View</button>
-                            ${isAuthenticated() ? `
-                                <button class="btn btn-approve" onclick="moderateCharacter('${character._id}', 'approve')">Approve</button>
-                            ` : ''}
-                        </div>
-                    `;
+
+                    const info = document.createElement('div');
+                    info.className = 'character-info';
+
+                    const h3 = document.createElement('h3');
+                    h3.textContent = characterName;
+                    info.appendChild(h3);
+
+                    const typeP = document.createElement('p');
+                    const typeStrong = document.createElement('strong');
+                    typeStrong.textContent = 'Type:';
+                    typeP.appendChild(typeStrong);
+                    typeP.appendChild(document.createTextNode(` ${character.characterType || 'Unknown'}`));
+                    info.appendChild(typeP);
+
+                    const statusP = document.createElement('p');
+                    const statusStrong = document.createElement('strong');
+                    statusStrong.textContent = 'Status:';
+                    statusP.appendChild(statusStrong);
+                    statusP.appendChild(document.createTextNode(` ${character.status || 'Unknown'}`));
+                    info.appendChild(statusP);
+
+                    const reasonP = document.createElement('p');
+                    const reasonStrong = document.createElement('strong');
+                    reasonStrong.textContent = 'Rejection Reason:';
+                    reasonP.appendChild(reasonStrong);
+                    reasonP.appendChild(document.createTextNode(` ${character.rejectionReason || 'No reason provided'}`));
+                    info.appendChild(reasonP);
+
+                    const rejectedP = document.createElement('p');
+                    const rejectedStrong = document.createElement('strong');
+                    rejectedStrong.textContent = 'Rejected:';
+                    rejectedP.appendChild(rejectedStrong);
+                    rejectedP.appendChild(document.createTextNode(` ${updatedDate ? new Date(updatedDate).toLocaleDateString() : 'N/A'}`));
+                    info.appendChild(rejectedP);
+
+                    if (character.backstory) {
+                        const backstoryPreview = `${character.backstory.substring(0, 100)}${character.backstory.length > 100 ? '...' : ''}`;
+                        const backstoryP = document.createElement('p');
+                        const backstoryStrong = document.createElement('strong');
+                        backstoryStrong.textContent = 'Backstory:';
+                        backstoryP.appendChild(backstoryStrong);
+                        backstoryP.appendChild(document.createTextNode(` ${backstoryPreview}`));
+                        info.appendChild(backstoryP);
+                    }
+
+                    const actions = document.createElement('div');
+                    actions.className = 'character-actions';
+
+                    const viewBtn = document.createElement('button');
+                    viewBtn.className = 'btn btn-edit';
+                    viewBtn.type = 'button';
+                    viewBtn.textContent = 'View';
+                    viewBtn.addEventListener('click', () => viewCharacter(character._id));
+                    actions.appendChild(viewBtn);
+
+                    if (isAuthenticated()) {
+                        const approveBtn = document.createElement('button');
+                        approveBtn.className = 'btn btn-approve';
+                        approveBtn.type = 'button';
+                        approveBtn.textContent = 'Approve';
+                        approveBtn.addEventListener('click', () => moderateCharacter(character._id, 'approve'));
+                        actions.appendChild(approveBtn);
+                    }
+
+                    characterElement.appendChild(info);
+                    characterElement.appendChild(actions);
                     container.appendChild(characterElement);
                 });
             } catch (error) {
                 console.error('Error loading rejected characters:', error);
-                document.getElementById('rejected-characters').innerHTML = 
-                    `<div class="empty-state">Error loading rejected characters: ${error.message || 'Please try again later'}</div>`;
+                const container = document.getElementById('rejected-characters');
+                container.textContent = '';
+                const el = document.createElement('div');
+                el.className = 'empty-state';
+                el.textContent = `Error loading rejected characters: ${error.message || 'Please try again later'}`;
+                container.appendChild(el);
             }
         }
         
@@ -556,18 +769,15 @@
             try {
                 const moderatorPassword = localStorage.getItem('moderator_token');
                 const endpoint = action === 'approve' ? `/characters/${characterId}/approve` : `/characters/${characterId}/reject`;
-                
-                // Make the request directly since fetchWithAuth returns parsed data
                 const baseURL = window.APP_CONFIG ? window.APP_CONFIG.apiURL : '/api';
-                const fullUrl = endpoint.startsWith('http') ? endpoint : `${baseURL}${endpoint}`;
-                
-                const response = await fetch(fullUrl, {
+
+                const response = await fetch(`${baseURL}${endpoint}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${window.APP_CONFIG?.API_KEY || '860de3877c2de19b8c88f34c34b71580'}`
+                        'X-Moderator-Password': moderatorPassword
                     },
-                    body: JSON.stringify({ 
+                    body: JSON.stringify({
                         moderatorPassword,
                         feedback: reason,
                         reviewedBy: 'moderator'

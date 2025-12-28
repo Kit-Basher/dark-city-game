@@ -16,6 +16,9 @@ jobs:
       
     - name: Setup Pages
       uses: actions/configure-pages@v4
+
+    - name: Remove legacy PHP endpoints
+      run: rm -rf api
       
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v3
